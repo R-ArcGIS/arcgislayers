@@ -1,0 +1,13 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.Renviron$
+^\.httr-oauth$
+^\.Rprofile$
+^defunct$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^vignettes/articles$
+^LICENSE\.md$
+^dev$

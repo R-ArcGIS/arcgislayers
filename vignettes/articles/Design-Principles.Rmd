@@ -1,0 +1,288 @@
+---
+title: "Design Principles"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+The immediate goal of `arcgis` is to provide an interface to ArcGIS Online and Enterprise enabling the download of data. 
+
+
+## Background 
+
+### R object representation
+
+ArcGIS REST API provides access to 3 main types of GIS data: tables, feature layers, and image layers. In R these are represented by `data.frame` and `tibble` objects, `sf` objects, and `SpatRaster` objects respectively.
+
+#### Tables
+
+R is one of the first and only languages to have built in support for data frame structures. Data frames are rectangular structures that represent a table-like dataset (think of a database or excel table). Data frames are composed of columns, all of equal length. Each column is a vector (a one dimensional data set) of the same type—fundamental types being integer, numeric, character, and logical. 
+
+When using R the preeminent tool to work with data frames is called `dplyr` (data pliers) which is intended to work with an extension of the data frame called tibbles. Tibbles are type safe(ish) and far more strict (and prettier) than the base R `data.frame`.
+
+#### Vector Data
+
+The `sf` package in R was entirely transformative for the way that spatial analysis was conducted in R and reduced the barrier to entry for many (including myself). "sf" stands for simple features. The package is based off of the simple feature standard which are represented by the well-known text (WKT) standard. 
+
+> [Read the standard here.](https://www.ogc.org/standards/sfa)
+
+The most basic unit in sf is an `sfg` class object (simple feature geometry). 
+
+```{r}
+# note that wrapping an assignment in parens also prints it
+(pnt <- sf::st_point(c(0, 1)))
+
+class(pnt)
+```
+
+ 
+When we have more than one feature, it is stored in a simple feature collection (sfc). 
+
+```{r}
+library(sf)
+
+pnts <- st_sfc(
+  st_point(c(0, 0)),
+  st_point(c(0, 1)),
+  st_point(c(1, 1)),
+  st_point(c(1, 0))
+)
+
+pnts
+
+class(pnts)
+```
+
+sfc classes are further delineated into POINT, MULTIPOINT, POLYGON, MULTIPOLYGON, LINESTRING, MULTILINESTRING, and the catch all GEOMETRY which is used when there is more than one type of simple feature. Note the class is `sfc_{TYPE}`.
+
+```{r}
+# illustrate catch all geometry.
+st_sfc(
+  st_point(),
+  st_linestring()
+) 
+```
+
+The real power of sf is from it's ability to be utilized in conjunction with data frames and thus tools that manipulate them. The `sf` class object is a data frame with an sfc column associated with it. 
+
+```{r, message = FALSE}
+# read an sf object 
+nc <- read_sf(system.file("shape/nc.shp", package = "sf"))
+nc
+```
+
+Note the extra information that it prints before it prints the data frame. This is a sign that it is explicitly spatial. 
+
+The big benefit, as stated, is that they can work with existing tools like dplyr and even ggplot. 
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+nc |> 
+  mutate(prop_sids = SID74 / sum(SID74)) |> 
+  ggplot(aes(fill = prop_sids)) +
+  geom_sf(color = "black", lwd = 0.15) +
+  scale_fill_viridis_c(option = "F") +
+  theme_void()
+```
+
+
+#### Raster Data 
+
+I am admitedly not very comfortable with raster data and even less so in R. I do keep up with the times and pay attention, however. And I do know that the package [`terra`](https://rspatial.github.io/terra/index.html) is the new kid on the block and is being used to phase out the older `raster` package (a transition is currently underway in the wider rspatial and r-spatial communities—different, annoying, I know).
+
+
+There is also the possibility of using the package [stars](https://github.com/r-spatial/stars/) which is for "spatio-temporal arrays and raster cubes." Which feels like it's trying to do too much all at once. It can read NetCDF files and raster images and other things. 
+
+I think stars should be reserved for special cases. 
+
+This is definitely something I should learn more about. 
+
+[Geocomputation with R](https://geocompr.robinlovelace.net/spatial-class.html#raster-data) talks about the difference between the two a bit. 
+
+[R as GIS for Economists](https://tmieno2.github.io/R-as-GIS-for-Economists/raster-basics.html#terra-package-spatraster) mentions using terra and also using [stars for spatial temporal rasters](https://tmieno2.github.io/R-as-GIS-for-Economists/stars-basics.html)
+
+So one of those two should do it. 
+
+
+### Lazy evaluation and `dbplyr`
+
+
+First, to define lazy evaluation. It is the delaying of computing until the very last moment. Computation is only carried out when a value is needed or when told explicitly.
+
+[`dbplyr`](https://dbplyr.tidyverse.org/) is an R package built upon the packages dplpyr and DBI (database interface). DBI creates database connections. And dbplyr allows you to write dplyr code that is then translated into SQL code and lazily evaluated. 
+
+dbplyr is amazing for quite a few reasons. First, it allows you to use the same syntax that you would use for normal data frame manipulation on a database. Meaning that dplyr becomes a front end that is consistent and doesn't care about the back end. So, one could, in theory (and in practice—I've done it) write code on a CSV file to prototype code and then change the source to a database and the same code will funciton. 
+
+Second, dbplyr is amazing because it is lazy. You can write all the dplyr code you want, but nothing actually is happening behind the scenes other than building up the query that will be eventually computed by the database. This means that you can do the vast majority of your computation up front in the database and take the lift off of your machine. This is a standard practice for speeding up production code at the enterprise level. 
+
+Third, with dbplyr you control when a query is executed by running the `collect()` function. 
+
+Let's look at an example. Take the `mtcars` data set. We can group by the `cyl` column and compute the average `mpg`
+
+    
+```{r}
+mtcars |> 
+  group_by(cyl) |> 
+  summarise(avg_mpg = mean(mpg))
+```
+This is using basic dplyr code. 
+
+Now, we can create a fake database back end to use dbplyr. This example is taken [from the DBI documentation](https://dbi.r-dbi.org/).
+
+```{r}
+library(DBI)
+
+# Create an ephemeral in-memory RSQLite database
+con <- dbConnect(RSQLite::SQLite(), dbname = ":memory:")
+
+# write to the connection
+dbWriteTable(con, "mtcars", mtcars)
+
+```
+
+We create a reference to the table using our connection.
+
+```{r}
+cars <- tbl(con, "mtcars")
+
+cars
+```
+
+Notice that the source is a `table<mtcars> [?? x 11]`. The `??` is very telling in that it doesn't know how many there are because the computation hasn't happened.
+
+```{r}
+
+mpg_query <- cars |> 
+  group_by(cyl) |> 
+  summarise(avg_mpg = mean(mpg, na.rm = TRUE))
+```
+
+Since we assigned this to an object no computation has happened yet. If we print it we request the value of the object so it is computed. At this moment it is just a _promise_. It promises that it will give us the value if we ask for it. Right now we can show the query that has been generated for us. 
+
+```{r}
+dplyr::show_query(mpg_query)
+```
+
+To trigger computation there are two things we can do:
+
+1. run `compute()` which will run the query inside the database or 
+2. use `collect()` which will run the query inside the database **and** return the result as an R native object. 
+
+Compare the two:
+
+
+Compute it inside of the database (check the source)
+
+```{r}
+dplyr::compute(mpg_query)
+```
+
+Collect it into memory (source no longer there)
+
+```{r}
+dplyr::collect(mpg_query)
+```
+
+With all of that said, I think we can continue to my thinking of design a bit more. 
+
+
+## Features 
+
+Since I'm really familiar with vector data and that's what I care about most, I figured we can start here. 
+
+All vector data is represented in AGOL as a feature layer whereas non-spatial data is represented as a Table. These are represented by the `FeatureLayer` and `Table` classes respectively. The goal is to take inspiration from dbplyr. Each of these classes contains the metadata associated with it but not the data. Since feature layers and tables support querying, we want to make them lazy where we allow the user to define their filters and selections in advance so that the ArcGIS API can do the computation for them. 
+
+In this case the ArcGIS REST API is the database back-end. The `FeatureLayer` and `Table` class objects are like our remote tables that we can work with to define the computation needed by the back-end and then bring information into R only as necessary. 
+
+### Query capabilities 
+
+Feature Layers and Tables both support querying which is the way to extract information out of the API and into memory. The queries permit a `where` parameter which is super basic SQL. Users can use dplyr select and filter functions to build up the query that they want. 
+
+Let's take an example:
+
+```{r}
+library(arcgis)
+
+
+tbl_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
+
+tbl <- feature_table(tbl_url)
+
+tbl
+```
+
+This is a table object. It is a list with all of it's metadata and a fancy print method. We can see the list by running `unclass(tbl)` or `str(tbl)`. It's a whole lot.
+
+```{r}
+# str(tbl)
+```
+
+
+Using the power of `dbplyr` we can use select and filter functions on tbl.
+
+```{r}
+tbl_select <- tbl |> 
+  select(OBJECTID, Adoption_Service_Provider, state, starts_with("Accredit"))
+
+tbl_select
+```
+
+Now the fields of the query are being printed below. Since we are using dbplyr under the hood we can use the tidyselect helper functions to select certain columns based on strings or other helpful selectors. 
+
+This is still a `Table` object that can be used to further build up our query. 
+
+```{r}
+tbl_filter <- tbl_select |> 
+  filter(state == "Wisconsin")
+
+tbl_filter
+```
+
+This now has two parameters in the query populated `outFields` and `where`. Since this is actually just a list object, you can extract these parameters by grabbing the `query` attribute of the underlying object. 
+
+```{r}
+attr(tbl_filter, "query")
+```
+
+When we run `collect()` these are fed into the http request and sent to ArcGIS to determine what is brought back into the session. 
+
+
+```{r}
+wisconsin_providers <- collect(tbl_filter)
+
+wisconsin_providers
+```
+
+## The Grand Vision™
+
+My idea here is that we can create objects for each representation in the ArcGIS API that look nice, store metadata, and are lazy. 
+
+A Feature Server is simply a list with metadata that we can use to determine which Feature Layers we want. Say we fetch a feature layer, it is also just metadata with a pretty print method that we can use to bring data into memory with if we so need! By being lazy about everything we keep the computation small and thus very fast! 
+
+Here we have a Feature Server
+
+```{r}
+ft_srv <- feature_server("https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/")
+
+ft_srv
+```
+
+We know something about it, but we don't have all of the data (which is good!). We can get a feature by it's ID. 
+
+```{r}
+get_layer(ft_srv, 24)
+```
+
+That's the gist of my vision thus far with ideas towards the future of imagery 
+
+```{r}
+image_server("https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer")
+```
+

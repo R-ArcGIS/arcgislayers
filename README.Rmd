@@ -1,0 +1,165 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# arcgis
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of arcgis is to provide an R interface to the ArcGIS REST API and a completely open source analogue to the ArcGIS Python API.
+
+## Installation
+
+You can install the development version of arcgis like so:
+
+You need to be connected to the VPN.
+
+``` r
+remotes::install_git("https://devtopia.esri.com/jos13045/arcgis")
+```
+
+## Feature Layers
+
+Read in data from a feature layer. arcgis implements a `FeatureLayer` class object which is used to control how we read data from a Feature Layer service. 
+
+Create a `FeatureLayer` with `feature_layer()` which takes the url of the feature layer as its only argument. 
+
+```{r example}
+library(arcgis)
+
+# define the feature layer url
+furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+
+# create a feature layer
+county_fl <- feature_layer(furl)
+
+county_fl
+```
+
+`FeatureLayer` objects are lists that contain metadata from the FeatureServer. The data that is used to create the `FeatureLayer` is taken directly from the url when displayed in json format. `FeatureLayer`s are intended to work somewhat similarly to a lazy table where data is only brought into memory when explicitly requested. 
+
+The `collect()` function will fetch data from the REST endpoint and write it to the appropriate type—either an sf object or a data frame. 
+
+```{r cars}
+county_sf <- collect(county_fl)
+
+county_sf
+```
+
+We can check to see what fields and types are present in our feature layer using `list_fields()`. 
+
+```{r}
+list_fields(county_fl)
+```
+
+
+### dplyr-like syntax
+
+You may not need all of these fields or features in your R session. If that's the case, it is more effective to bring in only a subset of the data that you need. We can limit what is brought into memory by using `select()` and `filter()` functions to build up a query that can be sent the rest API. 
+
+The `select()` `FeatureLayer` method supports using `{tidyselect}` functions except the `where()` function.
+
+```{r}
+county_fl |> 
+  select(contains("STATE"))
+```
+
+Now that we've ran `select()` on the `FeatureLayer` query parameters are printed out. The parameters will be sent along when the results are `collect()`ed. 
+
+You can further subset your data by using `filter()`. Note that filtering is fairly limited ([see API documentation for more](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614)).
+
+```{r}
+county_query <- county_fl |> 
+  select(starts_with("STATE")) |> 
+  filter(STATE_NAME == "Alabama")
+
+county_query
+```
+
+Bring it into memory with `collect()`.
+
+```{r}
+res <- collect(county_query)
+res
+```
+
+
+### Other `FeatureLayer` functions
+
+You can add any parameter that you'd like that is supported by the query parameters [listed in the documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) with the using the `update_params()` function.
+
+
+```{r}
+county_query |> 
+  update_params(returnIdsOnly = "true") |> 
+  collect()
+```
+
+Maybe, you want to clear our your query parameters, use `clear_query()`.
+
+```{r}
+clear_query(county_query)
+```
+
+To preview only a few features from the feature layer use `head()`
+
+```{r}
+head(county_query)
+```
+
+
+## `FeatureServers`
+
+
+FeatureServers contain one or more `FeatureLayers` or `Tables`. 
+
+```{r}
+ft_srv <- feature_server(
+  "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/"
+  )
+
+ft_srv
+```
+
+Access elements by ID with `get_layer()`
+
+```{r}
+get_layer(ft_srv, 27)
+```
+
+Get a list of all elements.
+
+```{r}
+get_all_layers(ft_srv)
+```
+
+## Conversion to Esri JSON
+
+
+sf objects can be converted to Esri JSON representation. These can be Geometry Objects, FeatureSets, or arrays of Features. 
+
+`st_as_geometry()` works with objects of class `sfg` and creates a Geometry Object. `st_as_featureset()` creates a FeatureSet from an sf or sfc object. sfc objects will have 0 length attributes. `st_as_features()` works with an sf or sfc object. 
+
+
+```{r}
+st_as_geometry(res[["geometry"]][[30]]) |> 
+  # print nicely with jsonify
+  jsonify::pretty_json()
+```
+
+```{r}
+st_as_featureset(res[30,]) |> 
+  jsonify::pretty_json()
+```

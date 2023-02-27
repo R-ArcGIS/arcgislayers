@@ -1,0 +1,13 @@
+---
+title: "Comparison with ArcGIS Python API"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+

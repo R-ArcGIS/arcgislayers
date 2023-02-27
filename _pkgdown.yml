@@ -1,0 +1,41 @@
+url: ~
+template:
+  bootstrap: 5
+
+
+reference:
+
+- title: Features
+  contents:
+  - feature_server
+  - feature_layer
+  - feature_table
+  - get_layer
+  - get_all_layers
+  - add_features
+
+- title: Imagery
+  contents:
+  - image_server
+
+- title: Authentication
+  contents:
+    - contains("auth")
+
+- title: Esri JSON constructors
+  contents:
+  - st_as_geometry
+  - st_as_features
+  - st_as_featureset
+
+- title: dplyr
+  contents:
+  - dplyr
+
+- title: Utilities
+  contents:
+  - starts_with("print")
+  - starts_with("head")
+  - list_fields
+  - update_params
+  - clear_query
