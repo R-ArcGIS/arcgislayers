@@ -11,6 +11,5 @@ Feature Table
 }
 \examples{
 tbl_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
-
 feature_table(tbl_url)
 }

@@ -10,7 +10,6 @@
 #' @keywords internal
 read_fl_page <- function(geojson, crs) {
 
-
   feats_raw <- RcppSimdJson::fparse(
     geojson,
     empty_array = NA,
@@ -24,7 +23,7 @@ read_fl_page <- function(geojson, crs) {
 
   # early return if geometry is missing skips parsing with geos
   if (all(is.na(feats_raw$features$geometry))) {
-    return(res_fields)
+    return(tibble::as_tibble(res_fields))
   }
 
   geometry <- geos::geos_read_geojson(geojson, crs = crs) |>

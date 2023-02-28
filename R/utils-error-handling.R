@@ -6,9 +6,9 @@
 #' @keywords internal
 detect_errors <- function(response) {
   if (!is.null(response[["error"]])) {
-    cli::cli_abort(c(
-      'Status code: {response[["error"]][["code"]]}',
-      "x" = 'Error {response$error$messageCode}: {response$error$message}'
+    stop(c(
+      "Status code: ", response[["error"]][["code"]], "\n",
+      "  Error ", response$error$messageCode, ": ", response$error$message
     ))
   }
 }

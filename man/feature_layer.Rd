@@ -14,3 +14,8 @@ feature_layer(url, token = Sys.getenv("ARCGIS_TOKEN"))
 \description{
 Ideally, we can use this s3 object to build up queries
 }
+\examples{
+library(arcgis)
+furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+county_fl <- feature_layer(furl)
+}

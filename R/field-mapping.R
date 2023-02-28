@@ -1,15 +1,3 @@
-
-
-
-# fields should be mapped based on their type
-# first, check if any of the types are POSIXct, POSIXlt, or Date
-
-
-# any date fields need to be converted to POSIXct with UTC time stamp
-# cast as integer and multiplied by 1000
-
-
-
 #' fields will always take preference over .data
 add_fields <- function(feature, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
 
@@ -76,6 +64,84 @@ infer_esri_type <- function(.data) {
 }
 
 
+
+
+#' Create a lazy frame prototype
+#'
+#' Given the fields of a feature layer create a lazy frame with
+#' the name field names and the corresponding R type. Used for partial_eval
+#'
+#' @details
+#'
+#' - `get_ptype()` takes a scalar character containing the Esri field type and returns a prototype of the pertinent R type
+#' - `remote_ptype_tbl()` takes a data frame of fields as derived from `list_fields()` and creates a lazy table
+#' @keywords internal
+#' @rdname field_mapping
+remote_ptype_tbl <- function(fields) {
+
+  ftype <- fields[["type"]]
+  fname <- fields[["name"]]
+
+  dbplyr::lazy_frame(as.data.frame(lapply(setNames(ftype, fname), get_ptype)))
+
+}
+
+
+#' @keywords internal
+#' @rdname field_mapping
+get_ptype <- function(field_type) {
+  res <- switch(
+    field_type,
+    "esriFieldTypeSmallInteger" = integer(1),
+    "esriFieldTypeSingle" = double(1),
+    "esriFieldTypeGUID" = integer(1),
+    "esriFieldTypeOID" = integer(1),
+    "esriFieldTypeInteger" = integer(1),
+    "esriFieldTypeBigInteger" = double(1),
+    "esriFieldTypeDouble" = double(1),
+    "esriFieldTypeString" = character(1),
+    "esriFieldTypeDate" = Sys.Date()
+  )
+
+  if (is.null(res)) stop("Column of type `", field_type, "` cannot be mapped")
+
+  res
+}
+
+
+vec_mapping <- c(
+  "double" = "esriFieldTypeDouble",
+  "integer" = "esriFieldTypeInteger",
+  "character" = "esriFieldTypeString",
+  # date will be manually defined as being Date or POSIX
+  "date" = "esriFieldTypeDate",
+  # i think....
+  "raw" = "esriFieldTypeBlob"
+)
+
+
+# Date handling -----------------------------------------------------------
+
+#' Date handling
+#'
+#' @keywords internal
+#' @rdname dates
+#' @details
+#' - `is_date()` checks to see if an object is a date
+#' - `date_to_ms()` converts a date to miliseconds from Unix Epoch
+is_date <- function(x) inherits(x, c("Date", "POSIXt"))
+
+# a function to convert dates to ms
+#' @rdname dates
+#' @keywords internal
+date_to_ms <- function(x, tz = "UTC") {
+  as.numeric(as.POSIXlt(x, tz = tz)) * 1000
+}
+
+
+# notes -------------------------------------------------------------------
+
+
 # fields is a dateframe
 
 # users are to provide a character vector name of the
@@ -98,62 +164,3 @@ infer_esri_type <- function(.data) {
 # layer should be snet up because they will be ignored
 # if there are non-matching field names emit a warning and
 # suggest them to use update_fields
-
-vec_mapping <- c(
-  "double" = "esriFieldTypeDouble",
-  "integer" = "esriFieldTypeInteger",
-  "character" = "esriFieldTypeString",
-  # date will be manually defined as being Date or POSIX
-  "date" = "esriFieldTypeDate",
-  # i think....
-  "raw" = "esriFieldTypeBlob"
-)
-
-
-#' Create a lazy frame prototype
-#'
-#' Given the fields of a feature layer create a lazy frame with
-#' the name field names and the corresponding R type. Used for partial_eval
-#' @keywords internal
-remote_ptype_tbl <- function(fields) {
-
-  ftype <- fields[["type"]]
-  fname <- fields[["name"]]
-
-  dbplyr::lazy_frame(as.data.frame(lapply(setNames(ftype, fname), get_ptype)))
-
-}
-
-
-get_ptype <- function(field_type) {
-  res <- switch(
-    field_type,
-    "esriFieldTypeSmallInteger" = integer(1),
-    "esriFieldTypeSingle" = double(1),
-    "esriFieldTypeGUID" = integer(1),
-    "esriFieldTypeOID" = integer(1),
-    "esriFieldTypeInteger" = integer(1),
-    "esriFieldTypeBigInteger" = double(1),
-    "esriFieldTypeDouble" = double(1),
-    "esriFieldTypeString" = character(1),
-    "esriFieldTypeDate" = Sys.Date()
-  )
-
-  if (is.null(res)) cli::cli_abort("Column of type {.cls {field_type}} cannot be mapped")
-
-  res
-}
-
-
-
-
-is_date <- function(x) inherits(x, c("Date", "POSIXt"))
-
-# a function to convert dates to ms
-date_to_ms <- function(x, tz = "UTC") {
-  as.numeric(as.POSIXlt(x, tz = tz)) * 1000
-}
-
-
-
-

@@ -1,8 +1,5 @@
 
 
-#> Feature Layer flow:
-#> 1. Create a feature layer object
-#> 2. read features ?
 
 # TODO - implement:
 #> select (for outFields)
@@ -24,6 +21,10 @@
 #' @param url the url of a feature layer
 #' @param token authentication toekn as provided by `auth_client()` or `auth_code()`
 #' @export
+#' @examples
+#' library(arcgis)
+#' furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+#' county_fl <- feature_layer(furl)
 feature_layer <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   req <- httr2::request(url)
   meta <- fetch_layer_metadata(req, token = token)
