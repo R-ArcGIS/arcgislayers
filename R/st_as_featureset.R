@@ -138,7 +138,8 @@ featureset_geometry <- function(x) {
   geom_type <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
 
   # identify geometry type
-  esri_geo_type <- determine_esri_geo_type(geom_type)
+  # TODO this duplicates the above call..maybe this can be simplified
+  esri_geo_type <- determine_esri_geo_type(x)
 
   # error out if not one of the 6 types above
   if (is.null(esri_geo_type)) {

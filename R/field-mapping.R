@@ -1,5 +1,9 @@
 #' fields will always take preference over .data
-add_fields <- function(feature, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+#' @details
+#'
+#' `fields` must be a data frame with 5 columns `name`, `type`, `alias`, `nullable`, and `editable`
+#'
+add_fields <- function(x, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   if (!is.null(.data) && !is.null(fields)) {
     warning(
@@ -14,31 +18,68 @@ add_fields <- function(feature, .data = NULL, fields = NULL, token = Sys.getenv(
   }
 
   field_json <- jsonify::to_json(
-    list(fields = purrr::transpose(fields)),
+    list(addToDefinition = list(fields = purrr::transpose(fields))),
     unbox = TRUE
   )
 
   # begin making the request
-  b_url <- flayer[["url"]]
+  b_url <- x[["url"]]
 
   # https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer-.htm
   req <-
-    httr2::request(b_url)
+    httr2::request(b_url) |>
+    httr2::req_url_path_append("addToDefinition")
 
 
-  reqq <- httr2::req_body_raw(
-    req,
-    field_json
-  ) |>
-    httr2::req_url_query(token = token, f = "json")
+  req <-
+    httr2::req_url_query(req, token = token) |>
+    httr2::req_body_json(
+      list(
+        addToDefinition = jsn,
+        async = FALSE
+      )
+    )
 
 
-  resp <- httr2::req_perform(reqq)
+  resp <- httr2::req_perform(req)
 
-  httr2::resp_body_string(resp) |>
-    RcppSimdJson::fparse()
+  (res <- RcppSimdJson::fparse(httr2::resp_body_string(resp)))
+  invisible(res)
 
 }
+
+jsn <- r"{
+{
+  "fields": [
+  {
+  "name": "GlobalID", 50/1
+  "type": "esriFieldTypeGlobalID",
+  "alias": "GlobalID",
+  "nullable": false,
+  "editable": false
+  },
+  {
+  "name": "date1",
+  "type": "esriFieldTypeDate",
+  "alias": "date1",
+  "nullable": true,
+  "editable": false,
+  "domain": null,
+  "defaultValue": "GetDate() WITH VALUES"
+  },
+  {
+  "name": "str2",
+  "type": "esriFieldTypeString",
+  "alias": "str2",
+  "nullable": true,
+  "editable": true,
+  "domain": null,
+  "defaultValue": "'A' WITH VALUES"
+  }
+
+  ]
+}
+}"
 
 
 #' Given a data frame infer the esri field types

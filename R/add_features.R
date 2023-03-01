@@ -6,27 +6,32 @@
 
 #' Add Features to Feature Layer
 #'
-#' @param feature an object of class `FeatureLayer`
+#' @param x an object of class `FeatureLayer`
 #' @param .data an object of class `sf` or `data.frame`
 #' @param rollback_on_fail if anything errors, roll back writes. Defaults to `TRUE`
 #' @param token your authentication token. By default checks the environment variable `ARCGIS_TOKEN`
 #' @export
-add_features <- function(feature,
-                            .data,
-                            rollback_on_fail = TRUE,
-                            token = Sys.getenv("ARCGIS_TOKEN")) {
+add_features <- function(
+    x,
+    .data,
+    rollback_on_fail = TRUE,
+    token = Sys.getenv("ARCGIS_TOKEN")
+) {
 
 
-  target_crs <- st_crs(feature)
+  target_crs <- sf::st_crs(x)
   provided_crs <- sf::st_crs(.data)
 
   if (!identical(target_crs, provided_crs)) {
 
-    warning("CRS do not match")
-    message(glue::glue(
-      "Transforming `.data` from {provided_crs$input} to {target_crs$input}"
-      ))
-    .data <- st_transform(.data, target_crs)
+    if (is.na(provided_crs)) {
+      warning("`.data` is missing a CRS. Setting to `x`'s CRS.")
+      sf::st_crs(.data) <- sf::st_crs(x)
+    } else {
+      warning("  `.data` CRS differs from `x`.\n  Transforming from ", provided_crs$input," to ", target_crs$input)
+      .data <- sf::st_transform(.data, target_crs)
+    }
+
   }
 
   # TODO check CRS of the feature layer vs the data provided
@@ -38,7 +43,7 @@ add_features <- function(feature,
 
   # TODO assumes that the names of the features are identical
 
-  feature_fields <- list_fields(feature)
+  feature_fields <- list_fields(x)
 
   cnames <- colnames(.data)
 
@@ -49,15 +54,30 @@ add_features <- function(feature,
   # columns not in the feature layer
   nin_feature <- setdiff(cnames[!present_index], geo_col)
 
-  if (length(nin_feature) > 0 ) warning(
-    "Columns in `.data` not in feature(s): ",
-    ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
-  )
+  if (length(nin_feature) > 0 ) {
+    message(
+      "Columns in `.data` not in feature(s): ",
+      ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
+    )
+
+      # Prompt if we want to have it be a bit more interactive
+      # if (interactive()) {
+      #   prmpt <- readline("Do you wish to continue? (y/n): ")
+      #
+      #   while(!prmpt %in% c("y", "n")) {
+      #     message(r"{Please enter "y" or "n":}")
+      #     prmpt <- readline("Do you wish to continue? (y/n): ")
+      #
+      #     if (prmpt == "y") stop("Stopping...", call. = FALSE)
+      #   }
+      # }
+    }
+
 
   .data <- .data[, present_index]
   body <- st_as_features(.data)
 
-  req <- httr2::request(feature[["url"]])
+  req <- httr2::request(x[["url"]])
   req <- httr2::req_url_path_append(req, "addFeatures")
   req <- httr2::req_url_query(req, token = token)
 
