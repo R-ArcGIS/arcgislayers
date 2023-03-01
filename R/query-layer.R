@@ -12,24 +12,26 @@ query_layer <- function(
     x,
     fields,
     where,
-    crs = st_crs(x),
+    crs = sf::st_crs(x),
     filter_geom,
     predicate = "intersects",
     n_max = Inf,
     ...
 ) {
 
-  # if its an sfc object it must be length one
-  if (inherits(filter_geom, "sfc") && length(filter_geom) > 1) {
-    stop("`filter` must be a single geometry")
-  }
 
   if (!missing(filter_geom)) {
+
+    # if its an sfc object it must be length one
+    if (inherits(filter_geom, "sfc") && length(filter_geom) > 1) {
+      stop("`filter` must be a single geometry")
+    }
+
 
     if (inherits(filter_geom, "sfc")) {
       # if the CRS is missing use the layer's CRS
       # otherwise use the CRS of the filter_geom object
-      filt_crs <- st_crs(filter_geom)
+      filt_crs <- sf::st_crs(filter_geom)
 
       if (is.na(filt_crs)) {
         filt_crs <- crs

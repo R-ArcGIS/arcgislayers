@@ -61,8 +61,8 @@ new_envelope <- function(x, crs) {
   n <- length(x)
 
   if (!(is.numeric(x) && (n %in% c(4, 6, 8)))) {
-    cli::cli_abort(
-      "{.cls envelope} must be numeric and be of length 4, 6, or 8"
+    stop(
+      "`envelope` must be numeric and be of length 4, 6, or 8"
     )
   }
 

@@ -41,11 +41,13 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
       returnCountOnly = "true"
     )
 
+  suppressMessages(
   n_feats <- httr2::resp_body_json(
     httr2::req_perform(
       httr2::req_url_query(n_req, f = "pjson")
     ), check_type = FALSE
   )[["count"]]
+  )
 
   # identify the number of pages needed to return all features
   n_pages <- floor(n_feats / feats_per_page)

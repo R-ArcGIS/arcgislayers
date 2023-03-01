@@ -50,10 +50,10 @@ county_fl
 
 `FeatureLayer` objects are lists that contain metadata from the FeatureServer. The data that is used to create the `FeatureLayer` is taken directly from the url when displayed in json format. `FeatureLayer`s are intended to work somewhat similarly to a lazy table where data is only brought into memory when explicitly requested. 
 
-The `collect()` function will fetch data from the REST endpoint and write it to the appropriate type—either an sf object or a data frame. 
+The `collect_layer()` function will fetch data from the REST endpoint and write it to the appropriate type—either an sf object or a data frame. 
 
 ```{r cars}
-county_sf <- collect(county_fl)
+county_sf <- collect_layer(county_fl)
 
 county_sf
 ```
@@ -63,6 +63,9 @@ We can check to see what fields and types are present in our feature layer using
 ```{r}
 list_fields(county_fl)
 ```
+
+
+You can provide a more detailed query to the layer using `query_layer()`. 
 
 
 ### dplyr-like syntax
