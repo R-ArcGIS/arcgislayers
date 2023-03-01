@@ -68,6 +68,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
   #
   #   if (any(has_error)) {
+        # TODO determine how to handle errors
   #   }
 
   # fetch the results
@@ -98,7 +99,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
 #' @export
 update_params <- function(x, ...) {
   query <- attr(x, "query")
-  params <- list(...)
+  params <- rlang::list2(...)
 
   for (name in names(params)) {
     query[[name]] <- params[[name]]

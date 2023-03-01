@@ -9,19 +9,19 @@
 \alias{dplyr}
 \title{dplyr methods}
 \usage{
-\method{select}{FeatureLayer}(x, ...)
+select.FeatureLayer(x, ...)
 
-\method{select}{Table}(x, ...)
+select.Table(x, ...)
 
-\method{filter}{FeatureLayer}(x, ...)
+filter.FeatureLayer(x, ...)
 
-\method{filter}{Table}(x, ...)
+filter.Table(x, ...)
 
-\method{collect}{FeatureLayer}(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ...)
+collect.FeatureLayer(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ...)
 }
 \description{
 dplyr methods
 }
 \details{
-The Feature Layer method of `collect()` will overwrite the `returnGeometry` parameter if set with `update_params()`. Use the `geometry` argument in `collect()` to set the parameter.
+The Feature Layer method of \code{collect()} will overwrite the \code{returnGeometry} parameter if set with \code{update_params()}. Use the \code{geometry} argument in \code{collect()} to set the parameter.
 }

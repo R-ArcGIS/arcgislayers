@@ -7,7 +7,7 @@
 update_params(x, ...)
 }
 \arguments{
-\item{x}{a `FeatureLayer` object}
+\item{x}{a \code{FeatureLayer} object}
 
 \item{...}{key value pairs of query parameters and values.}
 }

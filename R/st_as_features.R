@@ -8,31 +8,9 @@
 
 # sfc objects to feature array json -----------------------------------------------------
 
-#' Create Esri Feature JSON array
-#' Represent simple features as Esri JSON features.
-#'
-#' @param x an sf or sfc class object
 #' @param ... unused
 #' @export
-#' @rdname st_as_features
-#' @examples
-#'
-#' # create sfc object of points from multipoint
-#' mpnt <- st_multipoint(
-#'   matrix(runif(10, min = -180, max = 180), ncol = 2)
-#' )
-#'
-#' pnt_sfc <- st_cast(st_sfc(mpnt), "POINT")
-#'
-#' # sfc method
-#' st_as_features(pnt_sfc)
-#'
-#' # sf method
-#' pnt_sf <- st_sf(pnt_sfc)
-#' pnt_sf[["id"]] <- 1:5
-#'
-#' st_as_features(pnt_sf)
-
+#' @rdname st_as_json
 st_as_features <- function(x, ...) {
   UseMethod("st_as_features")
 }
@@ -40,7 +18,6 @@ st_as_features <- function(x, ...) {
 
 
 #' @export
-#' @rdname st_as_features
 st_as_features.sfc <- function(x, ...) {
 
   geoms <- featureset_geometry(x)
@@ -56,7 +33,6 @@ st_as_features.sfc <- function(x, ...) {
 
 # sf objects --------------------------------------------------------------
 #' @export
-#' @rdname st_as_features
 st_as_features.sf <- function(x, ...) {
 
   geo <- sf::st_geometry(x)
@@ -90,7 +66,6 @@ st_as_features.sf <- function(x, ...) {
 
 # data.frame --------------------------------------------------------------
 #' @export
-#' @rdname st_as_features
 st_as_features.data.frame <- function(x, ...) {
   fields <- purrr::transpose(x)
 

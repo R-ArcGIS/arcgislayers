@@ -2,15 +2,15 @@
 add_fields <- function(feature, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   if (!is.null(.data) && !is.null(fields)) {
-    cli::cli_alert_warning(
-      "Both {.arg .data} and {.arg fields} were provided. Using {.arg fields}."
+    warning(
+      "Both `.data` and `fields` were provided. Using `fields`."
     )
   }
 
   if (is.null(fields) && !is.null(.data)) fields <- infer_esri_type(.data)
 
   if (is.null(.data) && is.null(fields)) {
-    cli::cli_abort("{.arg .data} or {.arg fields} must be provided")
+    stop("`.data` or `fields` must be provided")
   }
 
   field_json <- jsonify::to_json(
@@ -44,7 +44,7 @@ add_fields <- function(feature, .data = NULL, fields = NULL, token = Sys.getenv(
 #' Given a data frame infer the esri field types
 infer_esri_type <- function(.data) {
 
-  if (!inherits(.data, "data.frame")) cli::cli_abort("{.arg .data} must be a data frame like object")
+  if (!inherits(.data, "data.frame")) stop("`.data` must be a data frame like object")
   if (inherits(.data, "sf")) .data <- sf::st_drop_geometry(.data)
 
   # field mappings

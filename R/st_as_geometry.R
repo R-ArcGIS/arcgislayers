@@ -1,10 +1,4 @@
-library(sf)
-library(jsonify)
 
-# TODO add hasZ and hasM attributes
-
-# these functions cast an sfc geometry object into a list that, when passed into
-# jsonify::to_json() will return the appropriate json structure for esri Geometry
 
 
 
@@ -37,17 +31,43 @@ library(jsonify)
 
 
 # sfg object conversion ---------------------------------------------------
-#' Convert an sf object to esri geometry
+#' Create Esri objects
+#'
+#' These functions convert R objects to Esri json representations. There are three
+#' types of representations. These are, from smallest to largest, a [geometry object](https://developers.arcgis.com/documentation/common-data-types/geometry-objects.htm), a [feature](https://developers.arcgis.com/documentation/common-data-types/feature-object.htm) and a [feature set](https://developers.arcgis.com/documentation/common-data-types/featureset-object.htm).
+#'
+#' @details
+#'
+#' - `st_as_json()` converts an `sfg` object to a geometry object
+#' - `st_as_features()` converts an `sfc` or `sf` object to a list of features
+#' - `st_as_featureset()` converts an `sf`, `sfc`, or `data.frame` to a feature set object
+#'
+#' Geometry object contain the coordinates for a geometry. Features are geometries that
+#' have associated attributes with them. This would be similar to a row in an sf object.
+#' FeatureSets are a list of features that have additional metadata fields such as
+#' `spatialReference`, `geomtryType`, and `fields`. FeatureSets correspond to an
+#' `sf` object.
+#'
+#' Geometry objects are defined for 5 different types. These are:
+#'
+#'  - Point: `esriGeometryPoint`
+#'  - Multipoint: `esriGeometryMultipoint`
+#'  - Polyline: `esriGeometryPolyline`
+#'    - note that polyline encompasses both LINESTRING and MULTILINESTRING
+#'  - Polygon: `esriGeometryPolygon`
+#'    - note that polygon encompasses both POLYGON and MULTIPOLYGON
+#'  - Envelope: `esriGeometryEnvelope`
+#'    - envelopes correspond with bounding boxes but can have a Z dimension
 #'
 #' @export
 #' @param x an object of class `sfg`
 #' @param crs a CRS ID, crs object, or a well-known text representation of CRS
 #' @examples
 #' library(sf)
-#' st_as_geometry(st_point(c(0, 1, 3, 4)))
-#' st_as_geometry(st_multipoint(x = matrix(runif(4), ncol = 2)))
-#' st_as_geometry(st_linestring(x = matrix(runif(2), ncol = 2)))
-#' st_as_geometry(st_linestring(x = matrix(runif(2), ncol = 2)))
+#' st_as_json(st_point(c(0, 1, 3, 4)))
+#' st_as_json(st_multipoint(x = matrix(runif(4), ncol = 2)))
+#' st_as_json(st_linestring(x = matrix(runif(2), ncol = 2)))
+#' st_as_json(st_linestring(x = matrix(runif(2), ncol = 2)))
 #'
 #' # polygon
 #' m <- matrix(
@@ -55,14 +75,13 @@ library(jsonify)
 #'   ncol = 3,
 #'   byrow = TRUE
 #' )
-#' st_as_geometry(st_polygon(list(m)))
-st_as_geometry <- function(x, crs, ...) {
-  UseMethod("st_as_geometry")
+#' st_as_json(st_polygon(list(m)))
+st_as_json <- function(x, crs, ...) {
+  UseMethod("st_as_json")
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.POINT <- function(x, crs = 4326, ...) {
+st_as_json.POINT <- function(x, crs = 4326, ...) {
 
   crs_text <- validate_crs(crs)
 
@@ -81,8 +100,7 @@ st_as_geometry.POINT <- function(x, crs = 4326, ...) {
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.MULTIPOINT <- function(x, crs = 4326, ...) {
+st_as_json.MULTIPOINT <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multipoint_impl(list(x))[[1]]
 
@@ -91,8 +109,7 @@ st_as_geometry.MULTIPOINT <- function(x, crs = 4326, ...) {
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.LINESTRING <- function(x, crs = 4326, ...) {
+st_as_json.LINESTRING <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_linestring_impl(list(x))[[1]]
 
@@ -101,8 +118,7 @@ st_as_geometry.LINESTRING <- function(x, crs = 4326, ...) {
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.MULTILINESTRING <- function(x, crs = 4326, ...) {
+st_as_json.MULTILINESTRING <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multilinestring_impl(list(x))[[1]]
 
@@ -111,8 +127,7 @@ st_as_geometry.MULTILINESTRING <- function(x, crs = 4326, ...) {
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.POLYGON <- function(x, crs = 4326, ...) {
+st_as_json.POLYGON <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfg_polygon_impl(x)
   res <- c(hasZ = has_z(x), hasM = has_m(x), geometry, crs_text)
@@ -120,8 +135,7 @@ st_as_geometry.POLYGON <- function(x, crs = 4326, ...) {
 }
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.MULTIPOLYGON <- function(x, crs = 4326, ...) {
+st_as_json.MULTIPOLYGON <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multipolygon_impl(list(x))[[1]]
   res <- c(hasZ = has_z(x), hasM = has_m(x), geometry, crs_text)
@@ -131,8 +145,7 @@ st_as_geometry.MULTIPOLYGON <- function(x, crs = 4326, ...) {
 
 
 #' @export
-#' @rdname st_as_geometry
-st_as_geometry.envelope <- function(x, crs = sf::st_crs(x)) {
+st_as_json.envelope <- function(x, crs = sf::st_crs(x)) {
   crs_text <- validate_crs(crs)
   jsonify::to_json(c(as.list(x), crs_text), unbox = TRUE)
 
@@ -181,17 +194,16 @@ determine_dims.sfg <- function(x) {
 validate_crs <- function(crs) {
 
   if (!(inherits(crs, "character") || inherits(crs, "crs") || inherits(crs, "numeric"))) {
-    cli::cli_abort(c(
-      "Invalid {.arg crs} argument supplied",
-      "i" = "must be a CRS ID, well-known text representation,
-        or a {.cls crs} object",
-      "*" = "see `sf::st_crs()`"
-    ))
+    stop(
+      "Invalid `crs` argument supplied must be a \n  ",
+      "- CRS ID,\n  ",
+      "- well-known text representation,\n  ",
+      "- or a `crs` object see `sf::st_crs()`"
+    )
   }
 
   crs <- sf::st_crs(crs)
 
-  if (is.na(crs)) cli::cli_alert_warning("{.var crs} is not set")
   srid <- crs$srid
 
   if (!is.null(srid)) {

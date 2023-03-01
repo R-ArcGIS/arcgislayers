@@ -16,6 +16,6 @@ for each requisite page.}
 \description{
 For a feature layer, create a list of requests that use the
 appropriate offsets. This allows us to not paginate but rather
-create the requests in parallel with `httr2::multi_req_perform`.
+create the requests in parallel with \code{httr2::multi_req_perform}.
 }
 \keyword{internal}

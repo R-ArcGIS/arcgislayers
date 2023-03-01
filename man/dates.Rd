@@ -13,7 +13,9 @@ date_to_ms(x, tz = "UTC")
 Date handling
 }
 \details{
-- `is_date()` checks to see if an object is a date
-- `date_to_ms()` converts a date to miliseconds from Unix Epoch
+\itemize{
+\item \code{is_date()} checks to see if an object is a date
+\item \code{date_to_ms()} converts a date to miliseconds from Unix Epoch
+}
 }
 \keyword{internal}

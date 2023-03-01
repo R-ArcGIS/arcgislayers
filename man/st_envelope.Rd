@@ -22,7 +22,7 @@ new_envelope(x, crs)
 \method{print}{envelope}(x, digits = 4, ...)
 }
 \arguments{
-\item{x}{an object of class `sfg`, `sfc`, or `sf`}
+\item{x}{an object of class \code{sfg}, \code{sfc}, or \code{sf}}
 }
 \description{
 Return an envelope of a simple feature or simple feature set
@@ -30,7 +30,7 @@ Return an envelope of a simple feature or simple feature set
 \details{
 An envelope is much like a bounding box. In fact, it is a bounding box when data
 is only two dimensional. An envelope records the mimimum and maximum's of each
-dimension. In 2D space this is `xmin`, `ymin`, `xmax`, and `ymax`. When a Z or M
+dimension. In 2D space this is \code{xmin}, \code{ymin}, \code{xmax}, and \code{ymax}. When a Z or M
 dimension is present, it also records the min and maxes of those as well.
 }
 \examples{

@@ -7,7 +7,7 @@
 fetch_layer_metadata(request, token)
 }
 \arguments{
-\item{request}{an httr2 request object. Should be the `base_req`
+\item{request}{an httr2 request object. Should be the \code{base_req}
 object that is created from the provided feature layer url}
 }
 \description{

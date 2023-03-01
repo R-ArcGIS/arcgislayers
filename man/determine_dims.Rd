@@ -13,7 +13,7 @@ determine_dims(x)
 \method{determine_dims}{sfg}(x)
 }
 \value{
-a scalar character of the value `"xy"`, `"xyz"`, or `"xyzm"` depending
+a scalar character of the value \code{"xy"}, \code{"xyz"}, or \code{"xyzm"} depending
 on what dimensions are represented.
 }
 \description{

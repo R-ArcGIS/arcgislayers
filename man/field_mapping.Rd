@@ -14,7 +14,9 @@ Given the fields of a feature layer create a lazy frame with
 the name field names and the corresponding R type. Used for partial_eval
 }
 \details{
-- `get_ptype()` takes a scalar character containing the Esri field type and returns a prototype of the pertinent R type
-- `remote_ptype_tbl()` takes a data frame of fields as derived from `list_fields()` and creates a lazy table
+\itemize{
+\item \code{get_ptype()} takes a scalar character containing the Esri field type and returns a prototype of the pertinent R type
+\item \code{remote_ptype_tbl()} takes a data frame of fields as derived from \code{list_fields()} and creates a lazy table
+}
 }
 \keyword{internal}

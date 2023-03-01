@@ -12,13 +12,13 @@ add_features(
 )
 }
 \arguments{
-\item{feature}{an object of class `FeatureLayer`}
+\item{feature}{an object of class \code{FeatureLayer}}
 
-\item{.data}{an object of class `sf` or `data.frame`}
+\item{.data}{an object of class \code{sf} or \code{data.frame}}
 
-\item{rollback_on_fail}{if anything errors, roll back writes. Defaults to `TRUE`}
+\item{rollback_on_fail}{if anything errors, roll back writes. Defaults to \code{TRUE}}
 
-\item{token}{your authentication token. By default checks the environment variable `ARCGIS_TOKEN`}
+\item{token}{your authentication token. By default checks the environment variable \code{ARCGIS_TOKEN}}
 }
 \description{
 Add Features to Feature Layer

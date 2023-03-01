@@ -18,23 +18,7 @@
 #' @param crs the coordinate reference system of the FeatureSet. Must be interpretable by `sf::st_crs()`
 #' @param ... unused
 #' @export
-#' @rdname st_as_featureset
-#' @examples
-#' # create sfc object of points from multipoint
-#' mpnt <- st_multipoint(
-#'   matrix(runif(10, min = -180, max = 180), ncol = 2)
-#' )
-#'
-#' pnt_sfc <- st_cast(st_sfc(mpnt), "POINT")
-#'
-#' # sfc method
-#' st_as_featureset(pnt_sfc, crs = 4326)
-#'
-#' # sf method
-#' pnt_sf <- st_sf(pnt_sfc)
-#' pnt_sf[["id"]] <- 1:5
-#'
-#' st_as_featureset(pnt_sf, crs = 4326)
+#' @rdname st_as_json
 st_as_featureset <- function(x, ...) {
   UseMethod("st_as_featureset")
 }
@@ -42,8 +26,7 @@ st_as_featureset <- function(x, ...) {
 
 
 #' @export
-#' @rdname st_as_featureset
-st_as_featureset.sfc <- function(x, crs = 4326, ...) {
+st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 
   # check CRS first
   if (is.na(sf::st_crs(x)) && is.na(sf::st_crs(crs))) {
@@ -75,7 +58,6 @@ st_as_featureset.sfc <- function(x, crs = 4326, ...) {
 
 # sf objects --------------------------------------------------------------
 #' @export
-#' @rdname st_as_featureset
 st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
   # check CRS first
@@ -125,7 +107,6 @@ st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
 # data.frame --------------------------------------------------------------
 #' @export
-#' @rdname st_as_featureset
 st_as_featureset.data.frame <- function(x, ...) {
   fields <- purrr::transpose(x)
 
@@ -147,24 +128,21 @@ st_as_featureset.data.frame <- function(x, ...) {
 
 
 # featureset geometry helper ----------------------------------------------
-
-
+#' Convert an object to featureset list structure
+#'
+#' The output of this is intended to be passed to `jsonify::to_json()`
+#'
+#' @param x an object of class `sfc` or `sf`
+#' @keywords internal
 featureset_geometry <- function(x) {
   geom_type <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
+
   # identify geometry type
-  esri_geo_type <- switch(
-    geom_type,
-    "POINT" = "esriGeometryPoint",
-    "MULTIPOINT" = "esriGeometryMultipoint",
-    "LINESTRING" = "esriGeometryPolyline",
-    "MULTILINESTRING" = "esriGeometryPolyline",
-    "POLYGON" = "esriGeometryPolygon",
-    "MULTIPOLYGON" = "esriGeometryPolygon"
-  )
+  esri_geo_type <- determine_esri_geo_type(geom_type)
 
   # error out if not one of the 6 types above
   if (is.null(esri_geo_type)) {
-    cli::cli_abort("{.cls {geom_type}} is not a supported Esri geometry type")
+    stop("`", geom_type, "` is not a supported Esri geometry type")
   }
 
   # convert geometry
@@ -180,5 +158,22 @@ featureset_geometry <- function(x) {
   )
 
   setNames(list(geo_conversion_fn(x)), esri_geo_type)
+
+}
+
+
+# For an object of class sfc determine the corresponding Esri
+# geometry object type
+determine_esri_geo_type <- function(geom) {
+  geom_type <- as.character(sf::st_geometry_type(geom, by_geometry = FALSE))
+  switch(
+    geom_type,
+    "POINT" = "esriGeometryPoint",
+    "MULTIPOINT" = "esriGeometryMultipoint",
+    "LINESTRING" = "esriGeometryPolyline",
+    "MULTILINESTRING" = "esriGeometryPolyline",
+    "POLYGON" = "esriGeometryPolygon",
+    "MULTIPOLYGON" = "esriGeometryPolygon"
+  )
 
 }
