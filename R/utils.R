@@ -5,3 +5,9 @@ compact <- function(.x) Filter(length, .x)
 
 #' @keywords internal
 `%||%` <- function(a, b) if (is.null(a)) b else a
+
+
+# Taken directly from purrr
+transpose <- function(.l, .names = NULL) {
+  transpose_cpp(.l, .names)
+}

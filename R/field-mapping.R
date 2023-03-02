@@ -1,88 +1,57 @@
-#' fields will always take preference over .data
-#' @details
-#'
-#' `fields` must be a data frame with 5 columns `name`, `type`, `alias`, `nullable`, and `editable`
-#'
-add_fields <- function(x, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
-
-  if (!is.null(.data) && !is.null(fields)) {
-    warning(
-      "Both `.data` and `fields` were provided. Using `fields`."
-    )
-  }
-
-  if (is.null(fields) && !is.null(.data)) fields <- infer_esri_type(.data)
-
-  if (is.null(.data) && is.null(fields)) {
-    stop("`.data` or `fields` must be provided")
-  }
-
-  field_json <- jsonify::to_json(
-    list(addToDefinition = list(fields = purrr::transpose(fields))),
-    unbox = TRUE
-  )
-
-  # begin making the request
-  b_url <- x[["url"]]
-
-  # https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer-.htm
-  req <-
-    httr2::request(b_url) |>
-    httr2::req_url_path_append("addToDefinition")
-
-
-  req <-
-    httr2::req_url_query(req, token = token) |>
-    httr2::req_body_json(
-      list(
-        addToDefinition = jsn,
-        async = FALSE
-      )
-    )
-
-
-  resp <- httr2::req_perform(req)
-
-  (res <- RcppSimdJson::fparse(httr2::resp_body_string(resp)))
-  invisible(res)
-
-}
-
-jsn <- r"{
-{
-  "fields": [
-  {
-  "name": "GlobalID", 50/1
-  "type": "esriFieldTypeGlobalID",
-  "alias": "GlobalID",
-  "nullable": false,
-  "editable": false
-  },
-  {
-  "name": "date1",
-  "type": "esriFieldTypeDate",
-  "alias": "date1",
-  "nullable": true,
-  "editable": false,
-  "domain": null,
-  "defaultValue": "GetDate() WITH VALUES"
-  },
-  {
-  "name": "str2",
-  "type": "esriFieldTypeString",
-  "alias": "str2",
-  "nullable": true,
-  "editable": true,
-  "domain": null,
-  "defaultValue": "'A' WITH VALUES"
-  }
-
-  ]
-}
-}"
+# #' fields will always take preference over .data
+# #' @details
+# #'
+# #' `fields` must be a data frame with 5 columns `name`, `type`, `alias`, `
+# nullable`, and `editable`
+#
+# add_fields <- function(x, .data = NULL, fields = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+#
+#   if (!is.null(.data) && !is.null(fields)) {
+#     warning(
+#       "Both `.data` and `fields` were provided. Using `fields`."
+#     )
+#   }
+#
+#   if (is.null(fields) && !is.null(.data)) fields <- infer_esri_type(.data)
+#
+#   if (is.null(.data) && is.null(fields)) {
+#     stop("`.data` or `fields` must be provided")
+#   }
+#
+#   field_json <- jsonify::to_json(
+#     list(addToDefinition = list(fields = transpose(fields))),
+#     unbox = TRUE
+#   )
+#
+#   # begin making the request
+#   b_url <- x[["url"]]
+#
+#   # https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-ayer-.htm
+#   req <-
+#     httr2::request(b_url) |>
+#     httr2::req_url_path_append("addToDefinition")
+#
+#
+#   req <-
+#     httr2::req_url_query(req, token = token) |>
+#     httr2::req_body_json(
+#       list(
+#         addToDefinition = jsn,
+#         async = FALSE
+#       )
+#     )
+#
+#
+#   resp <- httr2::req_perform(req)
+#
+#   (res <- RcppSimdJson::fparse(httr2::resp_body_string(resp)))
+#   invisible(res)
+#
+# }
 
 
 #' Given a data frame infer the esri field types
+#' @keywords internal
 infer_esri_type <- function(.data) {
 
   if (!inherits(.data, "data.frame")) stop("`.data` must be a data frame like object")

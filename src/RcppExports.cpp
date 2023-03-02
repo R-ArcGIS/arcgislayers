@@ -177,6 +177,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// transpose_cpp
+SEXP transpose_cpp(SEXP x, SEXP names_template);
+RcppExport SEXP _arcgis_transpose_cpp(SEXP xSEXP, SEXP names_templateSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type names_template(names_templateSEXP);
+    rcpp_result_gen = Rcpp::wrap(transpose_cpp(x, names_template));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_arcgis_get_envelope_z", (DL_FUNC) &_arcgis_get_envelope_z, 2},
@@ -194,6 +206,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_arcgis_sfg_multipolygon_inner_impl", (DL_FUNC) &_arcgis_sfg_multipolygon_inner_impl, 1},
     {"_arcgis_sfg_multipolygon_impl", (DL_FUNC) &_arcgis_sfg_multipolygon_impl, 1},
     {"_arcgis_sfc_multipolygon_impl", (DL_FUNC) &_arcgis_sfc_multipolygon_impl, 1},
+    {"_arcgis_transpose_cpp", (DL_FUNC) &_arcgis_transpose_cpp, 2},
     {NULL, NULL, 0}
 };
 

@@ -39,7 +39,7 @@ st_as_features.sf <- function(x, ...) {
   geom_list <- featureset_geometry(geo)
   x <- sf::st_drop_geometry(x)
 
-  fields <- purrr::transpose(x)
+  fields <- transpose(x)
 
   if (length(x) == 0) {
     rows <- purrr::map(
@@ -67,7 +67,7 @@ st_as_features.sf <- function(x, ...) {
 # data.frame --------------------------------------------------------------
 #' @export
 st_as_features.data.frame <- function(x, ...) {
-  fields <- purrr::transpose(x)
+  fields <- transpose(x)
 
   rows <- purrr::map(fields, ~list(attributes = .x))
 

@@ -34,14 +34,8 @@ add_features <- function(
 
   }
 
-  # TODO check CRS of the feature layer vs the data provided
-  # will have to perform transformation if incorrect or provide error
-  # either or
-
   # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
-
-  # TODO assumes that the names of the features are identical
 
   feature_fields <- list_fields(x)
 
@@ -93,6 +87,9 @@ add_features <- function(
   resp |>
     httr2::resp_body_string() |>
     RcppSimdJson::fparse()
+
+  # TODO what is the behavior be after this is completed?
+  # should the x object be returned? Should the successes / results be returned?
 
 }
 #

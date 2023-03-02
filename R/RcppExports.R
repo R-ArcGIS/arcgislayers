@@ -61,3 +61,7 @@ sfc_multipolygon_impl <- function(mply) {
     .Call(`_arcgis_sfc_multipolygon_impl`, mply)
 }
 
+transpose_cpp <- function(x, names_template) {
+    .Call(`_arcgis_transpose_cpp`, x, names_template)
+}
+
