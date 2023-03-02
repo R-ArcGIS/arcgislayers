@@ -8,7 +8,7 @@ query_layer(
   x,
   fields,
   where,
-  crs = st_crs(x),
+  crs = sf::st_crs(x),
   filter_geom,
   predicate = "intersects",
   n_max = Inf,
@@ -22,7 +22,11 @@ query_layer(
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than the \code{FeatureLayer}'s CRS, a transformation will occur server-side. Ignored for \code{Table} objects.}
 
-\item{n_max}{the maximum number of features to return. By default returns every feature available.}
+\item{filter_geom}{an object of class \code{sfc} or \code{sfg} used to filter query results based on a predicate function. If an \code{sfc} object is provided it will be transformed to the layers spatial reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is assumed to be in the layers spatial reference.}
+
+\item{predicate}{default \code{"intersects"}. Possible options are \code{"intersects"},  \code{"contains"},  \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
+
+\item{n_max}{the maximum number of features to return. By default returns every feature available. Unused at the moment.}
 
 \item{...}{additional query parameters passed to \code{update_params()}. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
 }

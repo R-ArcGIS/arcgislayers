@@ -9,3 +9,4 @@ infer_esri_type(.data)
 \description{
 Given a data frame infer the esri field types
 }
+\keyword{internal}

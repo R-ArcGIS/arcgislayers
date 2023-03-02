@@ -17,6 +17,8 @@ head.FeatureLayer <- function(x, n = 6, token = "", ...) {
       "`n` is larger than `maxRecordCount`",
         "\n - returning ", x[['maxRecordCount']], " rows"
       )
+
+    n <- attr(x, "n")
   }
 
   req <- httr2::request(x[["url"]])
@@ -41,5 +43,25 @@ head.FeatureLayer <- function(x, n = 6, token = "", ...) {
 #' @export
 clear_query <- function(x) {
   attr(x, "query") <- list()
+  x
+}
+
+
+
+#' Refresh layer
+#'
+#' Useful to update metadata after modifying a remote
+#'
+#' @export
+refresh_layer <- function(x) {
+  query <- attr(x, "query")
+  xurl <- x[["url"]]
+  x <- switch(
+    class(x)[1],
+    FeatureLayer = feature_layer(xurl),
+    Table = feature_table(xurl)
+  )
+
+  attr(x, "query") <- query
   x
 }

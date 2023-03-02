@@ -3,6 +3,7 @@
 \name{auth_client}
 \alias{auth_client}
 \alias{auth_code}
+\alias{auth_password}
 \alias{set_auth_token}
 \title{Authentication}
 \usage{
@@ -15,6 +16,13 @@ auth_client(
 auth_code(
   client = Sys.getenv("ARCGIS_CLIENT"),
   host = "https://www.arcgis.com"
+)
+
+auth_password(
+  username = Sys.getenv("ARCGIS_USER"),
+  password = Sys.getenv("ARCGIS_PASSWORD"),
+  host = "https://www.arcgis.com",
+  expiration = 60
 )
 
 set_auth_token(token, quietly = FALSE)

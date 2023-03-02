@@ -5,14 +5,14 @@
 \title{Add Features to Feature Layer}
 \usage{
 add_features(
-  feature,
+  x,
   .data,
   rollback_on_fail = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 }
 \arguments{
-\item{feature}{an object of class \code{FeatureLayer}}
+\item{x}{an object of class \code{FeatureLayer}}
 
 \item{.data}{an object of class \code{sf} or \code{data.frame}}
 
