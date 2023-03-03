@@ -8,7 +8,8 @@
 #' @rdname auth
 auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
                         secret = Sys.getenv("ARCGIS_SECRET"),
-                        host = "https://www.arcgis.com") {
+                        host = "https://www.arcgis.com",
+                        expiration = 120) {
   # https://developers.arcgis.com/documentation/mapping-apis-and-services/security/application-credentials/
   token_url <- paste(
     host,
@@ -19,39 +20,12 @@ auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
     sep = "/"
   )
 
-  req <- httr2::request(token_url)
-
-  # build the entire query url
-  req_built <-
-    httr2::req_url_query(
-      req,
-      client_id = httr2::obfuscated(client),
-      client_secret = httr2::obfuscated(secret),
-      grant_type = "client_credentials"
-    )
-
-  # send the request
-  result <- httr2::req_perform(req_built)
-
-  token <- httr2::resp_body_json(result)
-
-  # handle errors
-  if (is.null(token[["access_token"]])) {
-    stop(
-      "\n  Status code: ", token[["error"]][["code"]], "\n  ", token$error$message,
-      call. = FALSE
-    )
-  }
-
-  # return the token
-  httr2::oauth_token(
-    token[["access_token"]],
-    expires_in = token[["expires_in"]]
+  cln <- httr2::oauth_client(client, token_url, secret)
+  httr2::oauth_flow_client_credentials(
+    cln,
+    token_params = list(expiration = 120)
   )
-
 }
-
-
 
 
 # Code flow ---------------------------------------------------------------
