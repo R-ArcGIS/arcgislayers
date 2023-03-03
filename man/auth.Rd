@@ -10,7 +10,8 @@
 auth_client(
   client = Sys.getenv("ARCGIS_CLIENT"),
   secret = Sys.getenv("ARCGIS_SECRET"),
-  host = "https://www.arcgis.com"
+  host = "https://www.arcgis.com",
+  expiration = 120
 )
 
 auth_code(

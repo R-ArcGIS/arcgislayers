@@ -1,36 +1,14 @@
 
-# Client auth -------------------------------------------------------------
-
-
-#' Authentication
-#'
-#' @export
-#' @rdname auth
-auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
-                        secret = Sys.getenv("ARCGIS_SECRET"),
-                        host = "https://www.arcgis.com",
-                        expiration = 120) {
-  # https://developers.arcgis.com/documentation/mapping-apis-and-services/security/application-credentials/
-  token_url <- paste(
-    host,
-    "sharing",
-    "rest",
-    "oauth2",
-    "token",
-    sep = "/"
-  )
-
-  cln <- httr2::oauth_client(client, token_url, secret)
-  httr2::oauth_flow_client_credentials(
-    cln,
-    token_params = list(expiration = 120)
-  )
-}
-
-
 # Code flow ---------------------------------------------------------------
 
 
+#' Authenticate to a remote resource
+#'
+#' In order to access secured content one must authenticate to your remote resource—
+#' either ArcGIS Online (default) or ArcGIS enterprise. These functions perform
+#' Oauth2 authentication with the remote resource and return you a token
+#'
+#'
 #' @export
 #' @rdname auth
 auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
@@ -85,6 +63,30 @@ auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
 
 
 }
+# Client auth -------------------------------------------------------------
+#' @export
+#' @rdname auth
+auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
+                        secret = Sys.getenv("ARCGIS_SECRET"),
+                        host = "https://www.arcgis.com",
+                        expiration = 120) {
+  # https://developers.arcgis.com/documentation/mapping-apis-and-services/security/application-credentials/
+  token_url <- paste(
+    host,
+    "sharing",
+    "rest",
+    "oauth2",
+    "token",
+    sep = "/"
+  )
+
+  cln <- httr2::oauth_client(client, token_url, secret)
+  httr2::oauth_flow_client_credentials(
+    cln,
+    token_params = list(expiration = 120)
+  )
+}
+
 
 
 # legacy auth -------------------------------------------------------------
@@ -156,8 +158,30 @@ set_auth_token <- function(token, quietly = FALSE) {
 
 # refreshment -------------------------------------------------------------
 
+#' @export
+#' @rdname auth
+refresh_token <- function(
+    client = Sys.getenv("ARCGIS_CLIENT"),
+    host = "https://arcgis.com",
+    token
+) {
+
+  if (is.null(token[["refresh_token"]])) {
+    stop("`token` has expired and no `refresh_token` available")
+  } else
+    # if it has a refresh check to see if refresh hasn't expired
+    if ((cur_time + token[["refresh_token_expires_in"]]) < cur_time) {
+      stop("`refresh_token` has gone past its expiry")
+    }
+
+  # should be able to refresh, go ahead.
+  httr2::oauth_flow_refresh(cln, token[["refresh_token"]])
+
+}
+
 
 #' @export
+#' @rdname auth
 validate_or_refresh_token <- function(
     token,
     client = Sys.getenv("ARCGIS_CLIENT"),
@@ -185,26 +209,6 @@ validate_or_refresh_token <- function(
     # if not return token
     token
   }
-
-}
-
-#' @export
-refresh_token <- function(
-    client = Sys.getenv("ARCGIS_CLIENT"),
-    host = "https://arcgis.com",
-    token
-) {
-
-  if (is.null(token[["refresh_token"]])) {
-    stop("`token` has expired and no `refresh_token` available")
-  } else
-    # if it has a refresh check to see if refresh hasn't expired
-    if ((cur_time + token[["refresh_token_expires_in"]]) < cur_time) {
-      stop("`refresh_token` has gone past its expiry")
-    }
-
-  # should be able to refresh, go ahead.
-  httr2::oauth_flow_refresh(cln, token[["refresh_token"]])
 
 }
 
