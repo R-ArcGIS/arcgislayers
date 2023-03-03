@@ -154,6 +154,60 @@ set_auth_token <- function(token, quietly = FALSE) {
 
 
 
+# refreshment -------------------------------------------------------------
+
+
+#' @export
+validate_or_refresh_token <- function(
+    token,
+    client = Sys.getenv("ARCGIS_CLIENT"),
+    host = "https://arcgis.com",
+    refresh_threshold = 0
+) {
+
+  token_url <- paste(
+    host,
+    "sharing",
+    "rest",
+    "oauth2",
+    "token",
+    sep = "/"
+  )
+
+  cln <- httr2::oauth_client(client, token_url)
+  cur_time <- as.numeric(Sys.time())
+  # check if token is expired or expires within threshold
+  # the idea being if the token is going to expire soon, refresh it
+  if (token[["expires_at"]] - refresh_threshold <= cur_time) {
+    # if it is refresh the token
+    token <- refresh_token(client, host, token)
+  } else {
+    # if not return token
+    token
+  }
+
+}
+
+#' @export
+refresh_token <- function(
+    client = Sys.getenv("ARCGIS_CLIENT"),
+    host = "https://arcgis.com",
+    token
+) {
+
+  if (is.null(token[["refresh_token"]])) {
+    stop("`token` has expired and no `refresh_token` available")
+  } else
+    # if it has a refresh check to see if refresh hasn't expired
+    if ((cur_time + token[["refresh_token_expires_in"]]) < cur_time) {
+      stop("`refresh_token` has gone past its expiry")
+    }
+
+  # should be able to refresh, go ahead.
+  httr2::oauth_flow_refresh(cln, token[["refresh_token"]])
+
+}
+
 
 
 
