@@ -31,11 +31,12 @@ reference:
 
 - title: Utilities
   contents:
-  - starts_with("print")
-  - starts_with("head")
   - list_fields
   - update_params
   - clear_query
+  - refresh_layer
+  - starts_with("print")
+  - starts_with("head")
 
 
 
