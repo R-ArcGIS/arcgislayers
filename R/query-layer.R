@@ -77,13 +77,28 @@ query_layer <- function(
   }
 
   query <- attr(x, "query")
+
   # handle fields and where clause if missing
   if (missing(fields)) {
     fields <- query[["outFields"]] %||% "*"
   }
 
   # if not missing fields collapse to scalar character
-  if (!missing(fields) && (length(fields) > 1)) fields <- paste0(fields, collapse = ",")
+  if (!missing(fields) && (length(fields) > 1)) {
+    # check if incorrect field names provided
+    x_fields <- x[["fields"]][["name"]]
+    nindex <- tolower(fields) %in% tolower(x_fields)
+
+    if (!any(nindex)) {
+
+      stop(
+        "Field(s) not in `x`:\n  ",
+        paste(fields[!nindex], collapse = ", ")
+      )
+
+    }
+    fields <- paste0(fields, collapse = ",")
+  }
 
   # if where is missing set to 1=1
   if (missing(where)) {
