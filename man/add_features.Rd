@@ -18,7 +18,7 @@ add_features(
 
 \item{rollback_on_fail}{if anything errors, roll back writes. Defaults to \code{TRUE}}
 
-\item{token}{your authentication token. By default checks the environment variable \code{ARCGIS_TOKEN}}
+\item{token}{your authorization token. By default checks the environment variable \code{ARCGIS_TOKEN}}
 }
 \description{
 Add Features to Feature Layer

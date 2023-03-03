@@ -2,13 +2,21 @@
 # Code flow ---------------------------------------------------------------
 
 
-#' Authenticate to a remote resource
+#' Authorization
 #'
-#' In order to access secured content one must authenticate to your remote resource—
-#' either ArcGIS Online (default) or ArcGIS enterprise. These functions perform
-#' Oauth2 authentication with the remote resource and return you a token
+#' Authorize your R session to connect to an ArcGIS Portal. ArcGIS Online and ArcGIS Enterprise
+#' utilize OAuth2 authorization flow.
 #'
+#' @details
 #'
+#' Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
+#'
+#' @param client an OAuth 2.0 developer application client ID. By default uses the
+#'  environment variable `ARCGIS_CLIENT`.
+#' @param secret an OAuth 2.0 developer application secret. By default uses the environment
+#'   variable `ARCGIS_SECRET`.
+#' @param host default `"https://www.arcgis.com`
+#' @param expiration the duration of the token in minutes.
 #' @export
 #' @rdname auth
 auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
@@ -136,7 +144,6 @@ auth_password <- function(
 }
 
 # this is not exported for now. We may not need it.
-#' @rdname auth
 set_auth_token <- function(token, quietly = FALSE) {
 
   stopifnot(inherits(token, c("httr2_token", "character")))

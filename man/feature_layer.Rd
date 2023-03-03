@@ -9,7 +9,7 @@ feature_layer(url, token = Sys.getenv("ARCGIS_TOKEN"))
 \arguments{
 \item{url}{the url of a feature layer}
 
-\item{token}{authentication toekn as provided by \code{auth_client()} or \code{auth_code()}}
+\item{token}{authorization token as provided by \code{auth_client()} or \code{auth_code()}}
 }
 \description{
 Ideally, we can use this s3 object to build up queries

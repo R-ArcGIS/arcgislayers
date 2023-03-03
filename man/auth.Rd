@@ -4,10 +4,9 @@
 \alias{auth_code}
 \alias{auth_client}
 \alias{auth_password}
-\alias{set_auth_token}
 \alias{refresh_token}
 \alias{validate_or_refresh_token}
-\title{Authenticate to a remote resource}
+\title{Authorization}
 \usage{
 auth_code(
   client = Sys.getenv("ARCGIS_CLIENT"),
@@ -28,12 +27,10 @@ auth_password(
   expiration = 60
 )
 
-set_auth_token(token, quietly = FALSE)
-
 refresh_token(
+  token,
   client = Sys.getenv("ARCGIS_CLIENT"),
-  host = "https://arcgis.com",
-  token
+  host = "https://arcgis.com"
 )
 
 validate_or_refresh_token(
@@ -43,8 +40,21 @@ validate_or_refresh_token(
   refresh_threshold = 0
 )
 }
+\arguments{
+\item{client}{an OAuth 2.0 developer application client ID. By default uses the
+environment variable \code{ARCGIS_CLIENT}.}
+
+\item{host}{default \verb{"https://www.arcgis.com}}
+
+\item{secret}{an OAuth 2.0 developer application secret. By default uses the environment
+variable \code{ARCGIS_SECRET}.}
+
+\item{expiration}{the duration of the token in minutes.}
+}
 \description{
-In order to access secured content one must authenticate to your remote resource—
-either ArcGIS Online (default) or ArcGIS enterprise. These functions perform
-Oauth2 authentication with the remote resource and return you a token
+Authorize your R session to connect to an ArcGIS Portal. ArcGIS Online and ArcGIS Enterprise
+utilize OAuth2 authorization flow.
+}
+\details{
+Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
 }

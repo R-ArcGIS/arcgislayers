@@ -1,5 +1,5 @@
 ---
-title: "Authentication"
+title: "Authorization"
 ---
 
 ```{r, include = FALSE}
@@ -10,15 +10,15 @@ knitr::opts_chunk$set(
 ```
 
 
-Authentication is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL. 
+Authorization is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL. 
 
-[Authentication is done using OAuth2](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/oauth-2.0/). There are two ways to authenticate with OAuth2: either by using a a `code` or a `client` flow. The recommendation for most people is to utilize code based authentication.
+[Authorization is done using OAuth2](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/oauth-2.0/). There are two ways to authenticate with OAuth2: either by using a a `code` or a `client` flow. The recommendation for most people is to utilize code based authentication.
 
-> Tip: use client based authentication for non-interactive work. 
+> Tip: use client based authorization for non-interactive work. 
 
-## Code based authentication
+## Code based authorization
 
-To use code based authentication use the `auth_code()` function. This requires a client ID. A [client ID](https://www.oauth.com/oauth2-servers/client-registration/client-id-secret) is a public identifier to an application that you will authenticate against. This is the **only** method of authentication that provides you with a refresh token. 
+To use code based authorization use the `auth_code()` function. This requires a client ID. A [client ID](https://www.oauth.com/oauth2-servers/client-registration/client-id-secret) is a public identifier to an application that you will authenticate against. This is the **only** method of authorization that provides you with a refresh token. 
 
 ### Getting the Client ID 
 
@@ -72,7 +72,7 @@ Once you've signed in, copy the code that appears, and return to R. Enter the co
 
 ![](images/oauth-code.png){width=70%}
 
-Your authentication will have completed. 
+Your authorization will have completed. 
 
 
 ```{r, eval = FALSE}
@@ -106,11 +106,11 @@ Additionally the function `validate_or_refresh_token()` is provided. This can be
 
 
 
-## Client Authentication 
+## Client authorization 
 
 For non-interactive workflows a client OAuth2 flow is more appropriate. This approach does not require you to copy and paste a code from the browser into your R session. This method does not generate a refresh token, though. 
 
-Use `auth_client()` to perform client based authentication. `auth_client()` has a `secret` argument which, by default, uses the environment variable `ARCGIS_SECRET` which was set in your `.Renviron` file above. Running
+Use `auth_client()` to perform client based authorization. `auth_client()` has a `secret` argument which, by default, uses the environment variable `ARCGIS_SECRET` which was set in your `.Renviron` file above. Running
 
 ```{r eval = FALSE}
 auth_client()
@@ -121,9 +121,9 @@ auth_client()
 ```
 
 
-## Legacy Password Authentication
+## Legacy Password authorization
 
-If you find yourself on a legacy system that requires username and password authentication, you can accomplish this with `auth_password()`. While this method of authentication is not recommended, it is still possible. 
+If you find yourself on a legacy system that requires username and password authorization, you can accomplish this with `auth_password()`. While this method of authorization is not recommended, it is still possible. 
 
 `auth_password()` has the arguments `username` and `password` which, by default, use the `.Renviron` environment variables `ARCGIS_USER` and `ARCGIS_PASSWORD`. It is _strongly_ recommended that you use environment variables and never store your credentials in plain text in your scripts. 
 

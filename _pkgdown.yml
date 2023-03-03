@@ -19,7 +19,7 @@ reference:
   contents:
   - image_server
 
-- title: Authentication
+- title: Authorization
   contents:
     - contains("auth")
 

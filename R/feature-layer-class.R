@@ -19,7 +19,7 @@
 #' Ideally, we can use this s3 object to build up queries
 #'
 #' @param url the url of a feature layer
-#' @param token authentication toekn as provided by `auth_client()` or `auth_code()`
+#' @param token authorization token as provided by `auth_client()` or `auth_code()`
 #' @export
 #' @examples
 #' library(arcgis)

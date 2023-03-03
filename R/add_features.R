@@ -9,7 +9,7 @@
 #' @param x an object of class `FeatureLayer`
 #' @param .data an object of class `sf` or `data.frame`
 #' @param rollback_on_fail if anything errors, roll back writes. Defaults to `TRUE`
-#' @param token your authentication token. By default checks the environment variable `ARCGIS_TOKEN`
+#' @param token your authorization token. By default checks the environment variable `ARCGIS_TOKEN`
 #' @export
 add_features <- function(
     x,
