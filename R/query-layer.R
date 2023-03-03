@@ -89,7 +89,7 @@ query_layer <- function(
     x_fields <- x[["fields"]][["name"]]
     nindex <- tolower(fields) %in% tolower(x_fields)
 
-    if (!any(nindex)) {
+    if (any(!nindex)) {
 
       stop(
         "Field(s) not in `x`:\n  ",
@@ -97,6 +97,7 @@ query_layer <- function(
       )
 
     }
+
     fields <- paste0(fields, collapse = ",")
   }
 
