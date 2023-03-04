@@ -11,6 +11,7 @@ reference:
   - feature_table
   - query_layer
   - add_features
+  - delete_features
   - feature_server
   - get_layer
   - get_all_layers

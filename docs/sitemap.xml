@@ -55,6 +55,9 @@
     <loc>/reference/dates.html</loc>
   </url>
   <url>
+    <loc>/reference/delete_features.html</loc>
+  </url>
+  <url>
     <loc>/reference/detect_errors.html</loc>
   </url>
   <url>
@@ -113,6 +116,9 @@
   </url>
   <url>
     <loc>/reference/make_sf_compat.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prepare_spatial_filter.html</loc>
   </url>
   <url>
     <loc>/reference/prettify_param.html</loc>
