@@ -45,31 +45,14 @@ query_layer <- function(
     # related issue: https://github.com/R-ArcGIS/api-interface/issues/4
     if (inherits(filter_geom, "MULTIPOLYGON")) stop("`filter_geom` cannot be a MULTIPOLYGON")
 
-    # check if fitle
+
     esri_geometry <- st_as_json(filter_geom, filt_crs)
-
-    # determine the spatial relationship (predicate)
-    esri_predicates <- c(
-        "esriSpatialRelIntersects",
-        "esriSpatialRelContains",
-        "esriSpatialRelCrosses",
-        # "esriSpatialRelEnvelopeIntersects",
-        #   - don't provide this, just provide bbox and intersects
-        # "esriSpatialRelIndexIntersects", idk what this is remove
-        "esriSpatialRelOverlaps",
-        "esriSpatialRelTouches",
-        "esriSpatialRelWithin"
-      )
-
-    pred_arg_vals <- tolower(substr(esri_predicates, 15, nchar(esri_predicates)))
-
-    # ensure a correct one has been chosen
-    match.arg(predicate, pred_arg_vals)
 
     filter_params <- list(
       geometryType = determine_esri_geo_type(filter_geom),
       geometry = st_as_json(filter_geom),
-      spatialRel = esri_predicates[grepl(predicate, esri_predicates, ignore.case = TRUE)]
+      spatialRel = match_spatial_rel(predicate)
+      # TODO is `inSR` needed if the CRS is specified in the geometry???
     )
 
     x <- update_params(x, rlang::splice(filter_params))
