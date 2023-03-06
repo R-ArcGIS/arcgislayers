@@ -19,9 +19,14 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   # extract existing query
   query <- attr(x, "query")
 
-  # set returnGeometry depending on on geometry arg
-  if (is.null(query[["returnGeometry"]])) {
+  # set returnGeometry depending on on geometry arg and is FeatureLayer
+  if (is.null(query[["returnGeometry"]]) && inherits(x, "FeatureLayer")) {
     query[["returnGeometry"]] <- TRUE
+  }
+
+  # if the outSR isn't set, set it to be the same as x
+  if (inherits(x, "FeatureLayer") && is.null(query[["outSR"]])) {
+    query[["outSR"]] <- jsonify::to_json(validate_crs(sf::st_crs(x))[[1]], unbox = TRUE)
   }
 
   # parameter validation ----------------------------------------------------
@@ -36,7 +41,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
     httr2::req_url_query(
       httr2::req_url_query(
         httr2::req_url_path_append(req, "query"),
-        !!!query_params[names(query_params) != "geometry"]
+        !!!query_params[c("where", "outFields", "f", "token")]
       ),
       returnCountOnly = "true"
     )
