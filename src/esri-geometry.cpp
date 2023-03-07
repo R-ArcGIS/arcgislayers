@@ -6,7 +6,7 @@ using namespace std;
 
 
 // [[Rcpp::export]]
-List sfc_point_xy(List points) {
+List sfc_point_xy(const List points) {
 
   int n = points.length();
 
@@ -23,7 +23,7 @@ List sfc_point_xy(List points) {
 
 
 // [[Rcpp::export]]
-List sfc_point_xyz(List points) {
+List sfc_point_xyz(const List points) {
   int n = points.length();
 
   List res(n);
@@ -42,7 +42,7 @@ List sfc_point_xyz(List points) {
 }
 
 // [[Rcpp::export]]
-List sfc_point_xyzm(List points) {
+List sfc_point_xyzm(const List points) {
   int n = points.length();
 
   List res(n);
@@ -74,7 +74,7 @@ bool contains(std::string s, std::vector<string> nv) {
 }
 
 // [[Rcpp::export]]
-List sfc_point_impl(List points) {
+List sfc_point_impl(const List points) {
 
   std::vector<string> attr_names = points.attributeNames();
 
@@ -95,7 +95,7 @@ List sfc_point_impl(List points) {
 }
 
 // [[Rcpp::export]]
-List sfc_multipoint_impl(List mpoints) {
+List sfc_multipoint_impl(const List mpoints) {
   int n = mpoints.length();
 
   List res(n);
@@ -121,7 +121,7 @@ List sfc_multipoint_impl(List mpoints) {
 
 
 // [[Rcpp::export]]
-List sfc_linestring_impl(List mpoints) {
+List sfc_linestring_impl(const List mpoints) {
   int n = mpoints.length();
 
   List res(n);
@@ -173,7 +173,7 @@ List sfc_multilinestring_inner_impl(List mpoints) {
 
 
 // [[Rcpp::export]]
-List sfc_multilinestring_impl(List mlines) {
+List sfc_multilinestring_impl(const List mlines) {
   int n = mlines.length();
 
   List res(n);
@@ -225,7 +225,7 @@ List sfg_polygon_impl(List mply) {
 
 
 // [[Rcpp::export]]
-List sfc_polygon_impl(List mply) {
+List sfc_polygon_impl(const List mply) {
   int n = mply.length();
 
   List res(n);
@@ -246,7 +246,7 @@ List sfc_polygon_impl(List mply) {
 // This iterates through a single multipolygon's component polygon
 // each polygon is a numeric matrix which is extracted
 // [[Rcpp::export]]
-List sfg_multipolygon_inner_impl(List mply) {
+List sfg_multipolygon_inner_impl(const List mply) {
   int n = mply.length();
 
   // preallocate result list
@@ -303,39 +303,3 @@ List sfc_multipolygon_impl(List mply) {
 
 }
 
-
-// List sfc_multipolygon_impl(List mply) {
-//   int n = mply.length();
-//
-//   // preallocate result list
-//   // each MULTIPOLYGON feature
-//   List res(n);
-//
-//   for (int i = 0; i < n; i++) {
-//
-//     //
-//     List mpoly = mply[i];
-//
-//     int nn = mpoly.length();
-//
-//     // POLYGON comonent
-//     List res_mply = List(nn);
-//
-//     for (int j = 0; j < nn; j++) {
-//       List poly = mpoly[j];
-//       // Rcpp::print(poly);
-//       res_mply[j] = sfc_multipolygon_inner_impl(poly);
-//     }
-//
-//     // Rcpp::print(res_mply);
-//     res[i] = res_mply;
-//   }
-//
-//   // set names
-//   CharacterVector rng = "rings";
-//   CharacterVector nms = Rcpp::rep(rng, n);
-//   res.attr("names") = nms;
-//
-//   return res;
-//
-// }
