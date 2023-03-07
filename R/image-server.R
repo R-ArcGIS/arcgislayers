@@ -19,7 +19,7 @@
 #
 #' Image Server Representation
 #' @export
-image_server <- function(url, token = "") {
+image_server <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   req <- httr2::request(url)
   meta <- fetch_layer_metadata(req, token = token)
   meta <- compact(meta)
@@ -36,16 +36,11 @@ image_server <- function(url, token = "") {
 #' Print Method
 #' @export
 print.ImageServer <- function(x, ...) {
-  cli::cli_text(
-    cli::style_bold("<", paste(class(x), collapse = "/"), " <"),
 
-    cli::style_bold(
-      cli::style_italic(
-        "{x$bandCount} band{?s}, {length(x$fields$name)} field{?/s}"
-      )),
-    cli::style_bold(">>")
+  header <- sprintf(
+    "<%s <%i bands, %i fields>>",
+    class(x), x$bandCount, length(x$fields$name) %||% 0
   )
-
 
   extent <- paste(
     round(x[["extent"]][["xmin"]], 2),
@@ -57,14 +52,17 @@ print.ImageServer <- function(x, ...) {
 
   to_print <- compact(list(
     "Name" = x[["name"]],
-    "Description" = cli::ansi_strtrim(x[["description"]], width = cli::console_width() - 14),
+    "Description" = substr(x[["description"]], 1, options('width')$width %||% 80 - 14),
     "Extent" = extent,
     "Resolution" = paste(round(x$pixelSizeX, 2), "x", round(x$pixelSizeY, 2)),
     "CRS" = x[["extent"]][["spatialReference"]][["latestWkid"]],
     "Capabilities" = x[["capabilities"]]
   ))
 
-  cli::cli_dl(to_print)
+  body <- paste0(names(to_print), ": ", to_print)
+  # cat out
+  cat(header, body, sep = "\n")
+  invisible(x)
 
 }
 #
