@@ -1,3 +1,7 @@
+# TODO field types from x need to be compared to that of `.data`
+# if the field types do not match either error or do the conversion for the user
+
+# What is the difference between `applyEdits`, and `append` both are a way to do upserting.
 
 #' Update Feature Layer
 #'
@@ -67,37 +71,3 @@ update_features <- function(
   resp <- httr2::req_perform(req)
   jsonify::from_json(httr2::resp_body_string(resp))
 }
-
-#
-#
-# set_auth_token(auth_client())
-#
-# x <- feature_layer("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/geomtesting/FeatureServer/0")
-#
-#
-#
-# .data <- sfdep::guerry |>
-#   sf::st_set_crs(27572) |>
-#   sf::st_transform(sf::st_crs(x))
-#
-# add data
-# add_features(x, .data)
-#
-#
-# bring into memory
-# y <- collect_layer(x)
-#
-# convert geometries to their bounding rectangles
-# .data <- y |>
-#   tibble::as_tibble() |>
-#   dplyr::transmute(
-#     OBJECTID = OBJECTID,
-#     geometry = sf::st_as_sfc(rsgeo::bounding_rectangles(rsgeo::as_rsgeom(geometry)))
-#   ) |>
-#   sf::st_as_sf(crs = sf::st_crs(x))
-#
-#
-# update features
-# update_features(x, .data)
-#
-#

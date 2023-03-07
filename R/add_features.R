@@ -22,17 +22,16 @@ add_features <- function(
   target_crs <- sf::st_crs(x)
   provided_crs <- sf::st_crs(.data)
 
-  if (!identical(target_crs, provided_crs)) {
-
-    if (is.na(provided_crs)) {
-      warning("`.data` is missing a CRS. Setting to `x`'s CRS.")
-      sf::st_crs(.data) <- sf::st_crs(x)
+  # see commentary in `update_features.R`
+  if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
+    if (is.na(sf::st_crs(.data))) {
+      warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
     } else {
-      warning("  `.data` CRS differs from `x`.\n  Transforming from ", provided_crs$input," to ", target_crs$input)
-      .data <- sf::st_transform(.data, target_crs)
+      stop("`FeatureLayer` and `.data` have different CRS\nTranform to the same CRS:\n",
+           "  `sf::st_transform(.data, sf::st_crs(x))`")
     }
-
   }
+
 
   # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
