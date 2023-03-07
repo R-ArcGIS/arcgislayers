@@ -99,6 +99,6 @@ query_layer <- function(
   )
 
   # return(x)
-  collect_layer(x)
+  collect_layer(x, n_max = n_max)
 }
 

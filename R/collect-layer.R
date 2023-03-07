@@ -61,6 +61,13 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   }
 
   # identify the number of pages needed to return all features
+  # if n_max is provided need to reduce the number of pages
+  if (n_feats > n_max) {
+    n_feats <- n_max
+    # set `resultRecordCount` to `n_max`
+    query_params[["resultRecordCount"]] <- n_max
+  }
+
   n_pages <- floor(n_feats / feats_per_page)
 
   # identify the offsets needed to get all pages
