@@ -4,7 +4,7 @@
 \alias{image_server}
 \title{Image Server Representation}
 \usage{
-image_server(url, token = "")
+image_server(url, token = Sys.getenv("ARCGIS_TOKEN"))
 }
 \description{
 Image Server Representation

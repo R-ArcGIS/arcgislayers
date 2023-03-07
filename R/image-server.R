@@ -23,6 +23,7 @@ image_server <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   req <- httr2::request(url)
   meta <- fetch_layer_metadata(req, token = token)
   meta <- compact(meta)
+  meta[["url"]] <- url
 
   structure(
     meta,
