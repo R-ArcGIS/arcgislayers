@@ -1,6 +1,7 @@
 .onLoad <- function(...) {
   # register_all_s3_methods()
-  requireNamespace("dplyr")
+  # requireNamespace("dplyr")
+  requireNamespace("jsonify")
   register_all_s3_methods()
   invisible()
 }

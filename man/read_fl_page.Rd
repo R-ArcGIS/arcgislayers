@@ -9,7 +9,7 @@ read_fl_page(geojson, crs)
 \description{
 \code{collect()} performs multiple queries at a time. Each query is parsed using this function.
 This function first reads the geojson for the fields. If there is no geometry present
-it skips reading with geos and returns a data frame. If goeometry is present, it reads
+it skips reading with geos and returns a data frame. If geometry is present, it reads
 it with geos
 }
 \keyword{internal}

@@ -35,67 +35,67 @@ BEGIN_RCPP
 END_RCPP
 }
 // sfc_point_xy
-List sfc_point_xy(List points);
+List sfc_point_xy(const List points);
 RcppExport SEXP _arcgis_sfc_point_xy(SEXP pointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type points(pointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_point_xy(points));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfc_point_xyz
-List sfc_point_xyz(List points);
+List sfc_point_xyz(const List points);
 RcppExport SEXP _arcgis_sfc_point_xyz(SEXP pointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type points(pointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_point_xyz(points));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfc_point_xyzm
-List sfc_point_xyzm(List points);
+List sfc_point_xyzm(const List points);
 RcppExport SEXP _arcgis_sfc_point_xyzm(SEXP pointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type points(pointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_point_xyzm(points));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfc_point_impl
-List sfc_point_impl(List points);
+List sfc_point_impl(const List points);
 RcppExport SEXP _arcgis_sfc_point_impl(SEXP pointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type points(pointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_point_impl(points));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfc_multipoint_impl
-List sfc_multipoint_impl(List mpoints);
+List sfc_multipoint_impl(const List mpoints);
 RcppExport SEXP _arcgis_sfc_multipoint_impl(SEXP mpointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type mpoints(mpointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type mpoints(mpointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_multipoint_impl(mpoints));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfc_linestring_impl
-List sfc_linestring_impl(List mpoints);
+List sfc_linestring_impl(const List mpoints);
 RcppExport SEXP _arcgis_sfc_linestring_impl(SEXP mpointsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type mpoints(mpointsSEXP);
+    Rcpp::traits::input_parameter< const List >::type mpoints(mpointsSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_linestring_impl(mpoints));
     return rcpp_result_gen;
 END_RCPP
@@ -112,12 +112,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // sfc_multilinestring_impl
-List sfc_multilinestring_impl(List mlines);
+List sfc_multilinestring_impl(const List mlines);
 RcppExport SEXP _arcgis_sfc_multilinestring_impl(SEXP mlinesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type mlines(mlinesSEXP);
+    Rcpp::traits::input_parameter< const List >::type mlines(mlinesSEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_multilinestring_impl(mlines));
     return rcpp_result_gen;
 END_RCPP
@@ -134,23 +134,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // sfc_polygon_impl
-List sfc_polygon_impl(List mply);
+List sfc_polygon_impl(const List mply);
 RcppExport SEXP _arcgis_sfc_polygon_impl(SEXP mplySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type mply(mplySEXP);
+    Rcpp::traits::input_parameter< const List >::type mply(mplySEXP);
     rcpp_result_gen = Rcpp::wrap(sfc_polygon_impl(mply));
     return rcpp_result_gen;
 END_RCPP
 }
 // sfg_multipolygon_inner_impl
-List sfg_multipolygon_inner_impl(List mply);
+List sfg_multipolygon_inner_impl(const List mply);
 RcppExport SEXP _arcgis_sfg_multipolygon_inner_impl(SEXP mplySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type mply(mplySEXP);
+    Rcpp::traits::input_parameter< const List >::type mply(mplySEXP);
     rcpp_result_gen = Rcpp::wrap(sfg_multipolygon_inner_impl(mply));
     return rcpp_result_gen;
 END_RCPP
