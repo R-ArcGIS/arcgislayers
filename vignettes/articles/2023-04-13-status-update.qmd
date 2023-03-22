@@ -1,0 +1,93 @@
+---
+title: "2023-03-13 updates"
+format: html
+---
+
+## Authorization
+
+See authorization article.
+
+- OAuth2 Client
+- OAuth2 Code
+- Username and password
+- Token refresh for code auth
+
+```{r}
+library(arcgis)
+
+auth_client()
+auth_user()
+# auth_code() - requires interactivity
+```
+
+
+## Layer Querying
+
+Supports the following endpoint parameters: 
+
+- `outFields`
+- `where`
+- `outSR`
+- `filter` for a single geometry (excluding MULTIPOLYGON)
+- `spatialRel` to determine spatial binary predicate
+- `resultRecordCount` the maximum number of records to return
+
+```{r}
+# define the feature layer url
+furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+
+# create a feature layer
+county_fl <- feature_layer(furl)
+
+# create a geometry object
+west_coast_bbox <- sf::st_as_sfc(
+  sf::st_bbox(c(xmin = -125, ymin = 32, xmax = -114, ymax = 49))
+)
+
+# spatial filter query
+res <- query_layer(
+  county_fl, 
+  fields = c("state_name", "population"),
+  where = "state_name in ('California', 'Washington', 'Oregon', 'New Mexico', 'Wyoming')",
+  filter_geom = west_coast_bbox,
+  predicate = "intersects",
+  n_max = 100
+)
+
+res
+
+plot(res$geometry)
+plot(west_coast_bbox, lty = 3, add = TRUE)
+```
+
+## Modifying feature layers 
+
+- Add features: `add_features()`
+- Delete features: `delete_features()`
+  - supports where clause, `filter` geometries using predicates, or vector of object IDs
+- Update features: `update_features()` 
+
+## Basic image layer
+
+- create an `ImageServer` 
+
+```{r}
+landsat <- image_server(
+  "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+  )
+
+landsat
+```
+
+- export image to R session as terra 
+
+```{r}
+bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
+
+res <- query_imagery(landsat, bbox, width = 500, height = 500)
+
+terra::plotRGB(res, 4, 3, 2, scale = 10000)
+```
+
+
+

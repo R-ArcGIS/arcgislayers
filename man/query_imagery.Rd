@@ -13,6 +13,35 @@ query_imagery(
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 }
+\arguments{
+\item{x}{an \code{ImageServer} as created with \code{image_server()}}
+
+\item{bbox}{an object of class \code{bbox} from the sf package. Determines the extent of the raster returned. If the \code{bbox} object has a CRS, it will be used as the \code{bboxSR} parameter, otherwise the CRS of \code{x} is used.}
+
+\item{format}{default \code{"tiff"}. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".}
+
+\item{width}{default \code{NULL}. Cannot exceed \code{x[["maxImageWidth"]]}.}
+
+\item{height}{default \code{NULL}. Cannot exceed \code{x[["maxImageHeight"]]}.}
+
+\item{token}{authorization token fetched from the environment variable \code{ARCGIS_TOKEN}}
+}
+\value{
+An object of class \code{SpatRaster}.
+}
 \description{
 Retrieve Imagery
+}
+\examples{
+if (interactive()) {
+landsat_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+# create a bbox
+bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
+
+x <- image_server(landsat_url)
+
+res <- query_imagery(x, bbox, width = 1000, height = 1000)
+
+}
+
 }

@@ -8,7 +8,8 @@ detect_errors <- function(response) {
   if (!is.null(response[["error"]])) {
     stop(c(
       "Status code: ", response[["error"]][["code"]], "\n",
-      "  Error ", response$error$messageCode, ": ", response$error$message
+      "  Error ", response$error$messageCode, ": ", response$error$message,
+      "\n  Details: ", response$error$details
     ))
   }
 }

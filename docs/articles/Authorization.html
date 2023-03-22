@@ -129,8 +129,7 @@ in <code><a href="../reference/auth.html">auth_client()</a></code> and not neces
 </h3>
 <p>First, load the library.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required namespace: dplyr</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span></code></pre></div>
 <p>Next run <code><a href="../reference/auth.html">auth_code()</a></code> which will open a tab in your
 browser. If you are authenticating to somewhere other than AGOL, set the
 <code>host</code> argument.</p>
@@ -200,16 +199,16 @@ was set in your <code>.Renviron</code> file above. Running</p>
 </h2>
 <p>If you find yourself on a legacy system that requires username and
 password authorization, you can accomplish this with
-<code><a href="../reference/auth.html">auth_password()</a></code>. While this method of authorization is not
+<code>auth_password()</code>. While this method of authorization is not
 recommended, it is still possible.</p>
-<p><code><a href="../reference/auth.html">auth_password()</a></code> has the arguments <code>username</code>
-and <code>password</code> which, by default, use the
-<code>.Renviron</code> environment variables <code>ARCGIS_USER</code>
-and <code>ARCGIS_PASSWORD</code>. It is <em>strongly</em> recommended
-that you use environment variables and never store your credentials in
-plain text in your scripts.</p>
+<p><code><a href="../reference/auth.html">auth_user()</a></code> has the arguments <code>username</code> and
+<code>password</code> which, by default, use the <code>.Renviron</code>
+environment variables <code>ARCGIS_USER</code> and
+<code>ARCGIS_PASSWORD</code>. It is <em>strongly</em> recommended that
+you use environment variables and never store your credentials in plain
+text in your scripts.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth.html">auth_password</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth.html">auth_user</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
 <span><span class="co">#&gt; token_type: bearer</span></span>
 <span><span class="co">#&gt; access_token: &lt;REDACTED&gt;</span></span>

@@ -125,10 +125,10 @@ auth_client()
 
 If you find yourself on a legacy system that requires username and password authorization, you can accomplish this with `auth_password()`. While this method of authorization is not recommended, it is still possible. 
 
-`auth_password()` has the arguments `username` and `password` which, by default, use the `.Renviron` environment variables `ARCGIS_USER` and `ARCGIS_PASSWORD`. It is _strongly_ recommended that you use environment variables and never store your credentials in plain text in your scripts. 
+`auth_user()` has the arguments `username` and `password` which, by default, use the `.Renviron` environment variables `ARCGIS_USER` and `ARCGIS_PASSWORD`. It is _strongly_ recommended that you use environment variables and never store your credentials in plain text in your scripts. 
 
 ```{r, eval = FALSE}
-auth_password()
+auth_user()
 #> <httr2_token>
 #> token_type: bearer
 #> access_token: <REDACTED>

@@ -40,6 +40,10 @@ query_layer <- function(
       }
       # extract the sfg object which is used to write Esri json
       filter_geom <- filter_geom[[1]]
+    } else if (inherits(filter_geom, "sfg")) {
+      filt_crs <- crs
+    } else {
+      stop("`filter_geom` must be an `sfg` or `sfc` object of length 1")
     }
     # if a multi polygon stop, must be a single polygon see
     # related issue: https://github.com/R-ArcGIS/api-interface/issues/4

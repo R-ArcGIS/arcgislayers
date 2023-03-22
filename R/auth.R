@@ -104,7 +104,7 @@ auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
 # use oauth as the recommended approach
 #' @export
 #' @rdname auth
-auth_password <- function(
+auth_user <- function(
     username = Sys.getenv("ARCGIS_USER"),
     password = Sys.getenv("ARCGIS_PASSWORD"),
     host = "https://www.arcgis.com",

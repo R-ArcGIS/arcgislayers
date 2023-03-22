@@ -11,6 +11,7 @@ reference:
   - feature_table
   - query_layer
   - add_features
+  - update_features
   - delete_features
   - feature_server
   - get_layer
@@ -19,6 +20,7 @@ reference:
 - title: Imagery
   contents:
   - image_server
+  - query_imagery
 
 - title: Authorization
   contents:

@@ -17,8 +17,10 @@ Imports:
     RcppSimdJson,
     rlang,
     sf,
+    terra,
     tibble,
-    utils
+    utils,
+    vctrs
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 

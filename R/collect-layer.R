@@ -104,6 +104,11 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   # combine
   res <- do.call(rbind, res)
 
+  if (is.null(res)) {
+    warning("No features returned from query")
+    return(data.frame())
+  }
+
   if (inherits(res, "sf")) sf::st_crs(res) <- sf::st_crs(x)
 
   res

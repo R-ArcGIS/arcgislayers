@@ -3,7 +3,7 @@
 \name{auth_code}
 \alias{auth_code}
 \alias{auth_client}
-\alias{auth_password}
+\alias{auth_user}
 \alias{refresh_token}
 \alias{validate_or_refresh_token}
 \title{Authorization}
@@ -20,7 +20,7 @@ auth_client(
   expiration = 120
 )
 
-auth_password(
+auth_user(
   username = Sys.getenv("ARCGIS_USER"),
   password = Sys.getenv("ARCGIS_PASSWORD"),
   host = "https://www.arcgis.com",
