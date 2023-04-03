@@ -11,6 +11,8 @@
 #'
 #' Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
 #'
+#' - `set_auth_token()` is a helper function that takes an `httr2_token` as created by `auth_code()` or `auth_client()` and sets the `ARCGIS_TOKEN` environment variable
+#'
 #' @param client an OAuth 2.0 developer application client ID. By default uses the
 #'  environment variable `ARCGIS_CLIENT`.
 #' @param secret an OAuth 2.0 developer application secret. By default uses the environment
@@ -19,6 +21,7 @@
 #' @param expiration the duration of the token in minutes.
 #' @export
 #' @rdname auth
+
 auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
                       host = "https://www.arcgis.com") {
 
@@ -144,6 +147,8 @@ auth_user <- function(
 }
 
 # this is not exported for now. We may not need it.
+#' @export
+#' @rdname auth
 set_auth_token <- function(token, quietly = FALSE) {
 
   stopifnot(inherits(token, c("httr2_token", "character")))

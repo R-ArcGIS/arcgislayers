@@ -4,6 +4,7 @@
 \alias{auth_code}
 \alias{auth_client}
 \alias{auth_user}
+\alias{set_auth_token}
 \alias{refresh_token}
 \alias{validate_or_refresh_token}
 \title{Authorization}
@@ -26,6 +27,8 @@ auth_user(
   host = "https://www.arcgis.com",
   expiration = 60
 )
+
+set_auth_token(token, quietly = FALSE)
 
 refresh_token(
   token,
@@ -57,4 +60,7 @@ utilize OAuth2 authorization flow.
 }
 \details{
 Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
+\itemize{
+\item \code{set_auth_token()} is a helper function that takes an \code{httr2_token} as created by \code{auth_code()} or \code{auth_client()} and sets the \code{ARCGIS_TOKEN} environment variable
+}
 }
