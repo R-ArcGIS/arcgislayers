@@ -1,7 +1,7 @@
 #' List fields in a a feature layer
 #' @export
 list_fields <- function(x) {
-  tibble::as_tibble(x[["fields"]])
+  x[["fields"]]
 }
 
 

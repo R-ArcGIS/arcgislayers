@@ -10,7 +10,6 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    geos,
     httr2,
     jsonify,
     Rcpp,
@@ -18,7 +17,6 @@ Imports:
     rlang,
     sf,
     terra,
-    tibble,
     utils,
     vctrs
 Roxygen: list(markdown = TRUE)
@@ -27,6 +25,8 @@ Suggests:
     dbplyr,
     dplyr,
     rmarkdown,
+    testthat (>= 3.0.0),
     tidyselect
 LinkingTo: 
     Rcpp
+Config/testthat/edition: 3
