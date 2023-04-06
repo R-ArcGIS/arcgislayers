@@ -1,11 +1,3 @@
-# furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
-#
-# url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0/query?returnGeometry=TRUE&outSR=%7B%22wkid%22%3A4326%7D&token=&outFields=%2A&where=1%3D1&f=json&resultOffset=2001"
-#
-# body_str <- httr2::request(url) |>
-#   httr2::req_perform() |>
-#   httr2::resp_body_string()
-
 parse_esri_json <- function(string) {
 
   # parse the string
