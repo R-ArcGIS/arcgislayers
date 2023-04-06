@@ -32,9 +32,11 @@ parse_esri_json <- function(string) {
     esriGeometryPolygon = identify_class("POLYGON", list_ele_class)
   )
 
+  obj_classes <- c("XY", sfg_class, "sfg")
+
   # manually apply the sfg class
   for (i in seq_along(geo_raw)) {
-    class(geo_raw[[i]]) <- c("XY", sfg_class, "sfg")
+    class(geo_raw[[i]]) <- obj_classes
   }
 
   crs_raw <- b_parsed[["spatialReference"]][["latestWkid"]]
