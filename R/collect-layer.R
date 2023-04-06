@@ -94,10 +94,8 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   # fetch the results
   res <- lapply(
     all_resps[!has_error],
-    function(x) read_fl_page(
-      httr2::resp_body_string(x),
-      # TODO check for any transformations in the request
-      crs = x[["extent"]][["spatialReference"]][["latestWkid"]]
+    function(x) parse_esri_json(
+      httr2::resp_body_string(x)
     )
   )
 
@@ -159,9 +157,9 @@ validate_params <- function(params, token) {
 
   # set output type to geojson if we return geometry, json if not
   if (is.null(params[["returnGeometry"]]) || isTRUE(params[["returnGeometry"]])) {
-    params[["f"]] <- "pgeojson"
+    params[["f"]] <- "json"
   } else {
-    params[["f"]] <- "pgeojson"
+    params[["f"]] <- "json"
   }
 
   params
