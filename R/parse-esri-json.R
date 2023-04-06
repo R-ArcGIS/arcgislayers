@@ -33,7 +33,7 @@ parse_esri_json <- function(string) {
   )
 
   # manually apply the sfg class
-  for (i in seq_along(fts_raw[["geometry"]])) {
+  for (i in seq_along(geo_raw)) {
     class(geo_raw[[i]]) <- c("XY", sfg_class, "sfg")
   }
 
