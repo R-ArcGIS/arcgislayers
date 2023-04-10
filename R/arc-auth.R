@@ -19,9 +19,9 @@
 #'   variable `ARCGIS_SECRET`.
 #' @param host default `"https://www.arcgis.com`
 #' @param expiration the duration of the token in minutes.
-#' @export
+#'
 #' @rdname auth
-
+#' @export
 auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
                       host = "https://www.arcgis.com") {
 
@@ -147,8 +147,9 @@ auth_user <- function(
 }
 
 # this is not exported for now. We may not need it.
-#' @export
+#'
 #' @rdname auth
+#' @export
 set_auth_token <- function(token, quietly = FALSE) {
 
   stopifnot(inherits(token, c("httr2_token", "character")))
@@ -170,8 +171,9 @@ set_auth_token <- function(token, quietly = FALSE) {
 
 # refreshment -------------------------------------------------------------
 
-#' @export
+#'
 #' @rdname auth
+#' @export
 refresh_token <- function(
     token,
     client = Sys.getenv("ARCGIS_CLIENT"),
@@ -203,8 +205,9 @@ refresh_token <- function(
 }
 
 
-#' @export
+#'
 #' @rdname auth
+#' @export
 validate_or_refresh_token <- function(
     token,
     client = Sys.getenv("ARCGIS_CLIENT"),

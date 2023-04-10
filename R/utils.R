@@ -69,3 +69,98 @@ prepare_spatial_filter <- function(x, y, predicate) {
   )
 }
 
+
+#' Retrieve metadata for a feature layer
+#'
+#' @param request an httr2 request object. Should be the `base_req`
+#'   object that is created from the provided feature layer url
+#'
+#' @keywords internal
+fetch_layer_metadata <- function(request, token) {
+  httr2::req_url_query(
+    request,
+    f = "pjson",
+    token = token
+  ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_string() |>
+    RcppSimdJson::fparse(
+      int64_policy = "double"
+    )
+}
+
+
+#' Count the number of features in a feature layer
+#'
+#' @param request the base request created from the feature layer url.
+#' @keywords internal
+#' @returns a numeric with the total number of features in the feature layer
+count_features <- function(request, token) {
+  request |>
+    httr2::req_url_path_append("query") |>
+    httr2::req_url_query(
+      returnCountOnly = "true",
+      where = "1 = 1",
+      f = "pjson",
+      token = token
+    ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_string() |>
+    RcppSimdJson::fparse(query = "/count")
+}
+
+
+#' Cleary all query parameters
+#'
+#'
+#'@keywords internal
+clear_query <- function(x) {
+  attr(x, "query") <- list()
+  x
+}
+
+#' List fields in a a feature layer
+#'
+#'@keywords internal
+list_fields <- function(x) {
+  x[["fields"]]
+}
+
+
+#' Refresh layer
+#'
+#' Useful to update metadata after modifying a remote
+#' @keywords internal
+refresh_layer <- function(x) {
+  query <- attr(x, "query")
+  xurl <- x[["url"]]
+  x <- switch(
+    class(x)[1],
+    FeatureLayer = feature_layer(xurl),
+    Table = feature_table(xurl)
+  )
+
+  attr(x, "query") <- query
+  x
+}
+
+
+
+#' Detect errors in parsed json response
+#'
+#' The requests responses from ArcGIS don't return the status code
+#' in the response itself but rather from the body in the json.
+#' So this function checks for the existence of the error field.
+#' @keywords internal
+detect_errors <- function(response) {
+  if (!is.null(response[["error"]])) {
+    stop(c(
+      "Status code: ", response[["error"]][["code"]], "\n",
+      "  Error ", response$error$messageCode, ": ", response$error$message,
+      "\n  Details: ", response$error$details
+    ))
+  }
+}
+
+
+

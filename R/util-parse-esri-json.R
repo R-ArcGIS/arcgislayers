@@ -1,7 +1,13 @@
 parse_esri_json <- function(string) {
 
   # parse the string
-  b_parsed <- RcppSimdJson::fparse(string)
+  # ensure any json nulls are NAs
+  b_parsed <- RcppSimdJson::fparse(
+    string,
+    empty_object = NA,
+    empty_array = NA,
+    single_null = NA
+  )
 
   # extract the geometry features
   fts_raw <- b_parsed[["features"]]

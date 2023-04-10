@@ -9,15 +9,17 @@
 #' dimension is present, it also records the min and maxes of those as well.
 #'
 #' @param x an object of class `sfg`, `sfc`, or `sf`
-#' @export
+#'
 #' @examples
 #' st_envelope(sf::st_point())
+#' @keywords internal
 st_envelope <- function(x, crs) {
   UseMethod("st_envelope")
 }
 
-#' @export
+#'
 #' @rdname st_envelope
+#' @keywords internal
 st_envelope.sfc <- function(x, crs = sf::st_crs(x)) {
 
   zrng <- attr(x, "z_range")
@@ -29,34 +31,27 @@ st_envelope.sfc <- function(x, crs = sf::st_crs(x)) {
 }
 
 
-#' @export
+#'
 #' @rdname st_envelope
+#' @keywords internal
 st_envelope.sf <- function(x, crs = sf::st_crs(x)) {
   st_envelope(sf::st_geometry(x))
 }
 
-#' @export
+#'
 #' @rdname st_envelope
-st_envelope.sfg <- function(x, crs = 4326) {
-  dims <- determine_dims(x)
+#' @keywords internal
+st_envelope.sfg <- function(x, crs = NA) {
 
-  depth <- purrr::vec_depth(x) - 1
-
-  res <- switch(
-    dims,
-    "xy" = st_bbox(x),
-    "xyz" = get_envelope_z(x, depth),
-    "xyzm" = get_envelope_zm(x, depth)
-  )
-
-  new_envelope(res, crs = sf::st_crs(crs))
-
+  x <- sf::st_sfc(x)
+  st_envelope(x)
 
 }
 
 
-#' @export
+#'
 #' @rdname st_envelope
+#' @keywords internal
 new_envelope <- function(x, crs) {
   n <- length(x)
 
@@ -72,8 +67,9 @@ new_envelope <- function(x, crs) {
 }
 
 
-#' @export
+#'
 #' @rdname st_envelope
+#' @keywords internal
 print.envelope <- function(x, digits = 4, ...) {
   print(round(structure(x, class = NULL, crs = NULL), digits))
   invisible(x)

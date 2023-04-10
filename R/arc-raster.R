@@ -9,13 +9,13 @@
 #'
 #' @examples
 #' if (interactive()) {
-#' landsat_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
-#' # create a bbox
+#' img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+#'
+#' landsat <- arc_open(img_url, token = "")
+#'
 #' bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
 #'
-#' x <- image_server(landsat_url)
-#'
-#' res <- query_imagery(x, bbox, width = 1000, height = 1000)
+#' arc_raster(landsat, bbox, 1000, 1000)
 #'
 #' }
 #'
@@ -24,12 +24,12 @@
 #' An object of class `SpatRaster`.
 #'
 #' @export
-query_imagery <- function(
+arc_raster <- function(
     x,
     bbox,
-    format = "tiff",
     width = NULL,
     height = NULL,
+    format = "tiff",
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 

@@ -10,30 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// get_envelope_z
-Rcpp::NumericVector get_envelope_z(Rcpp::List sf, int depth);
-RcppExport SEXP _arcgis_get_envelope_z(SEXP sfSEXP, SEXP depthSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type sf(sfSEXP);
-    Rcpp::traits::input_parameter< int >::type depth(depthSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_envelope_z(sf, depth));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_envelope_zm
-Rcpp::NumericVector get_envelope_zm(Rcpp::List sf, int depth);
-RcppExport SEXP _arcgis_get_envelope_zm(SEXP sfSEXP, SEXP depthSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type sf(sfSEXP);
-    Rcpp::traits::input_parameter< int >::type depth(depthSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_envelope_zm(sf, depth));
-    return rcpp_result_gen;
-END_RCPP
-}
 // sfc_point_xy
 List sfc_point_xy(const List points);
 RcppExport SEXP _arcgis_sfc_point_xy(SEXP pointsSEXP) {
@@ -191,8 +167,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_arcgis_get_envelope_z", (DL_FUNC) &_arcgis_get_envelope_z, 2},
-    {"_arcgis_get_envelope_zm", (DL_FUNC) &_arcgis_get_envelope_zm, 2},
     {"_arcgis_sfc_point_xy", (DL_FUNC) &_arcgis_sfc_point_xy, 1},
     {"_arcgis_sfc_point_xyz", (DL_FUNC) &_arcgis_sfc_point_xyz, 1},
     {"_arcgis_sfc_point_xyzm", (DL_FUNC) &_arcgis_sfc_point_xyzm, 1},
