@@ -5,9 +5,9 @@
 \alias{get_all_layers}
 \title{Extract a feature layer}
 \usage{
-get_layer(x, id = 0, token = "")
+get_layer(x, id = 0, token = Sys.getenv("ARCGIS_TOKEN"))
 
-get_all_layers(x, token = "")
+get_all_layers(x, token = Sys.getenv("ARCGIS_TOKEN"))
 }
 \value{
 \code{get_layer()} returns a single \code{FeatureLayer} or \code{Table} based on its ID

@@ -19,7 +19,7 @@
 #'   variable `ARCGIS_SECRET`.
 #' @param host default `"https://www.arcgis.com`
 #' @param expiration the duration of the token in minutes.
-#' @export
+#' 
 #' @rdname auth
 
 auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
@@ -75,7 +75,7 @@ auth_code <- function(client = Sys.getenv("ARCGIS_CLIENT"),
 
 }
 # Client auth -------------------------------------------------------------
-#' @export
+#' 
 #' @rdname auth
 auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
                         secret = Sys.getenv("ARCGIS_SECRET"),
@@ -105,7 +105,7 @@ auth_client <- function(client = Sys.getenv("ARCGIS_CLIENT"),
 
 # uses request ip does not support other forms
 # use oauth as the recommended approach
-#' @export
+#' 
 #' @rdname auth
 auth_user <- function(
     username = Sys.getenv("ARCGIS_USER"),
@@ -147,7 +147,7 @@ auth_user <- function(
 }
 
 # this is not exported for now. We may not need it.
-#' @export
+#' 
 #' @rdname auth
 set_auth_token <- function(token, quietly = FALSE) {
 
@@ -170,7 +170,7 @@ set_auth_token <- function(token, quietly = FALSE) {
 
 # refreshment -------------------------------------------------------------
 
-#' @export
+#' 
 #' @rdname auth
 refresh_token <- function(
     token,
@@ -203,7 +203,7 @@ refresh_token <- function(
 }
 
 
-#' @export
+#' 
 #' @rdname auth
 validate_or_refresh_token <- function(
     token,

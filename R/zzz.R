@@ -1,12 +1,36 @@
+s3_register <- function(pkg, generic, class, fun = NULL) {
+  stopifnot(is.character(pkg), length(pkg) == 1)
+  stopifnot(is.character(generic), length(generic) == 1)
+  stopifnot(is.character(class), length(class) == 1)
+
+  if (is.null(fun)) {
+    fun <- get(paste0(generic, ".", class), envir = parent.frame())
+  } else {
+    stopifnot(is.function(fun))
+  }
+
+  if (pkg %in% loadedNamespaces()) {
+    registerS3method(generic, class, fun, envir = asNamespace(pkg))
+  }
+
+  # Always register hook in case package is later unloaded & reloaded
+  setHook(
+    packageEvent(pkg, "onLoad"),
+    function(...) {
+      registerS3method(generic, class, fun, envir = asNamespace(pkg))
+    }
+  )
+}
+
 .onLoad <- function(...) {
-  vctrs::s3_register("sf::st_as_sfc", "envelope")
-  vctrs::s3_register("sf::st_crs", "FeatureLayer")
-  vctrs::s3_register("sf::st_crs", "ImageServer")
-  vctrs::s3_register("dplyr::collect", "FeatureLayer")
-  vctrs::s3_register("dplyr::collect", "Table")
-  vctrs::s3_register("dplyr::filter", "Table")
-  vctrs::s3_register("dplyr::filter", "FeatureLayer")
-  vctrs::s3_register("dplyr::select", "FeatureLayer")
-  vctrs::s3_register("dplyr::select", "Table")
+  s3_register("sf", "st_as_sfc", "envelope")
+  s3_register("sf", "st_crs", "FeatureLayer")
+  s3_register("sf", "st_crs", "ImageServer")
+  s3_register("dplyr", "collect", "FeatureLayer")
+  s3_register("dplyr", "collect", "Table")
+  s3_register("dplyr", "filter", "Table")
+  s3_register("dplyr", "filter", "FeatureLayer")
+  s3_register("dplyr", "select", "FeatureLayer")
+  s3_register("dplyr", "select", "Table")
 }
 

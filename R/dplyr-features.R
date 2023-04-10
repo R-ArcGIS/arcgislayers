@@ -2,6 +2,7 @@
 # Select ------------------------------------------------------------------
 
 
+#' @keywords internal
 #' @rdname dplyr
 select.FeatureLayer <- function(x, ...) {
   selections <- rlang::expr(c(...))
@@ -28,8 +29,8 @@ select.Table <- select.FeatureLayer
 
 # Filter ------------------------------------------------------------------
 
+#' @keywords internal
 #' @rdname dplyr
-
 filter.FeatureLayer <- function(x, ...) {
 
   where_clause <- attr(x, "query")[["where"]]
@@ -48,9 +49,10 @@ filter.FeatureLayer <- function(x, ...) {
   x
 }
 
+
 # Table will use same filtering as feature layer. nothing special
+#' @keywords internal
 #' @rdname dplyr
-#' @export
 filter.Table <- filter.FeatureLayer
 
 
@@ -73,6 +75,9 @@ filter.Table <- filter.FeatureLayer
 #'
 #' @aliases dplyr
 #' @rdname dplyr
+#' @keywords internal
 collect.FeatureLayer <- collect_layer
+#' @keywords internal
+#' @rdname dplyr
 collect.Table <- collect_layer
 

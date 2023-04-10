@@ -15,7 +15,7 @@ st_envelope(x, crs)
 
 \method{st_envelope}{sf}(x, crs = sf::st_crs(x))
 
-\method{st_envelope}{sfg}(x, crs = 4326)
+\method{st_envelope}{sfg}(x, crs = NA)
 
 new_envelope(x, crs)
 
@@ -36,3 +36,4 @@ dimension is present, it also records the min and maxes of those as well.
 \examples{
 st_envelope(sf::st_point())
 }
+\keyword{internal}
