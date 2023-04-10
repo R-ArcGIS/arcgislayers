@@ -17,7 +17,7 @@
 #' @param x an sf or sfc class object
 #' @param crs the coordinate reference system of the FeatureSet. Must be interpretable by `sf::st_crs()`
 #' @param ... unused
-#' 
+#'
 #' @rdname st_as_json
 st_as_featureset <- function(x, ...) {
   UseMethod("st_as_featureset")
@@ -25,12 +25,12 @@ st_as_featureset <- function(x, ...) {
 
 
 
-#' 
+#'
 st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 
   # check CRS first
   if (is.na(sf::st_crs(x)) && is.na(sf::st_crs(crs))) {
-    cli::cli_alert_warning("CRS missing. Setting to EPSG:4326")
+    warning("CRS missing. Setting to EPSG:4326")
     crs <- 4326
   }
   crs_text <- validate_crs(crs)
@@ -57,12 +57,12 @@ st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 }
 
 # sf objects --------------------------------------------------------------
-#' 
+#'
 st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
   # check CRS first
   if (is.na(sf::st_crs(crs))) {
-    cli::cli_alert_warning("CRS missing. Setting to EPSG:4326")
+    warning("CRS missing. Setting to EPSG:4326")
     crs <- 4326
   }
 
@@ -106,7 +106,7 @@ st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
 
 # data.frame --------------------------------------------------------------
-#' 
+#'
 st_as_featureset.data.frame <- function(x, ...) {
   fields <- transpose(x)
 
