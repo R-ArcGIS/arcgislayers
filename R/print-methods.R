@@ -108,9 +108,22 @@ print.FeatureServer <- function(x, n, ...) {
   n_fts <- length(x[["layers"]][["id"]])
   n_tbls <- length(x[["tables"]][["id"]])
 
+  # handle pluralization
+  fts_lbl <- if (n_fts == 1) {
+    sprintf("%i layer", n_fts)
+  } else {
+    sprintf("%i layers", n_fts)
+  }
+
+  tbls_lbl <- if (n_tbls == 1) {
+    sprintf("%i table", n_tbls)
+  } else {
+    sprintf("%i tables", n_tbls)
+  }
+
   header <- sprintf(
-    "<%s <%i layers>>",
-    class(x), n_fts + n_tbls
+    "<%s <%s, %s>>",
+    class(x), fts_lbl, tbls_lbl
   )
 
 
@@ -118,7 +131,9 @@ print.FeatureServer <- function(x, n, ...) {
   crs <- x[["spatialReference"]][["latestWkid"]]
 
   # if this doesn't catch crs, then it will be NULL and omitted
-  if (is.null(crs)) crs <- x[["fullExtent"]][["spatialReference"]][["latestWkid"]]
+  if (is.null(crs)) {
+    crs <- x[["fullExtent"]][["spatialReference"]][["latestWkid"]]
+  }
 
   # crs and capabilities will always be printed
   to_print <- compact(
@@ -137,7 +152,7 @@ print.FeatureServer <- function(x, n, ...) {
 
   box_layers_ln <- paste0(
     "  ",
-    seq_len(nrow(lyr)),
+    lyr[["id"]],
     ": ",
     lyr[["name"]],
     " (",
@@ -152,11 +167,11 @@ print.FeatureServer <- function(x, n, ...) {
 
     box_tbl <- paste0(
       "  ",
-      seq_len(nrow(tbls)),
+      tbls[["id"]],
       ": ",
       tbls[["name"]],
       " (",
-      tbls[["geometryType"]],
+      "Table",
       ")"
     )
 
