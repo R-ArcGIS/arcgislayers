@@ -29,6 +29,8 @@ st_as_featureset <- function(x, ...) {
 st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 
   # check CRS first
+  # TODO have better CRS handling. We prefer having _no_ crs over
+  # a wrong one.
   if (is.na(sf::st_crs(x)) && is.na(sf::st_crs(crs))) {
     warning("CRS missing. Setting to EPSG:4326")
     crs <- 4326
@@ -38,9 +40,9 @@ st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 
   geoms <- featureset_geometry(x)
 
-  res <- purrr::map(
+  res <- lapply(
     geoms[[1]],
-    ~c(list(attributes = c()), geometry = list(.x))
+    function(.x) c(list(attributes = c()), geometry = list(.x))
   )
 
   # cast to json
@@ -74,18 +76,19 @@ st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
   fields <- transpose(x)
 
-  if (length(x) == 0) {
-    rows <- purrr::map(
-      geom_list[[1]],
-      ~c(list(attributes = c()), geometry = list(.x))
+  # if there are no attributes
+  if (nrow(x) == 0) {
+    rows <- lapply(
+      geoms_list[[1]],
+      function(.x) c(list(attributes = c()), geometry = list(.x))
     )
-
   } else {
-
-    rows <- purrr::map2(
-      fields,
+    # if attributes extract the fields
+    rows <- mapply(
+      function(.x, .y) c(list(attributes = c(.y)), geometry = list(.x)),
       geom_list[[1]],
-      ~c(list(attributes = .x, geometry = .y))
+      fields,
+      SIMPLIFY = FALSE
     )
 
   }
@@ -110,19 +113,10 @@ st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 st_as_featureset.data.frame <- function(x, ...) {
   fields <- transpose(x)
 
-  rows <- purrr::map(fields, ~list(attributes = .x))
+  rows <- lapply(fields, function(.x) list(attributes = .x))
 
   # cast to json
-  jsonify::to_json(
-    c(
-     #  geometryType = names(geom_list),
-      # crs_text,
-      #hasZ = has_z(geo),
-      #hasM = has_m(geo),
-      list(features = rows)
-    ),
-    unbox = TRUE
-  )
+  jsonify::to_json(c(list(features = rows)), unbox = TRUE)
 
 }
 
@@ -135,6 +129,10 @@ st_as_featureset.data.frame <- function(x, ...) {
 #' @param x an object of class `sfc` or `sf`
 #' @keywords internal
 featureset_geometry <- function(x) {
+  # extract geometry
+  x <- sf::st_geometry(x)
+
+  # get class of geometry
   geom_type <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
 
   # identify geometry type

@@ -22,9 +22,9 @@ st_as_features.sfc <- function(x, ...) {
 
   geoms <- featureset_geometry(x)
 
-  res <- purrr::map(
+  res <- lapply(
     geoms[[1]],
-    ~c(list(attributes = c()), geometry = list(.x))
+    function(.x) c(list(attributes = c()), geometry = list(.x))
   )
 
   # cast to json
@@ -39,20 +39,19 @@ st_as_features.sf <- function(x, ...) {
   geom_list <- featureset_geometry(geo)
   x <- sf::st_drop_geometry(x)
 
-  fields <- transpose(x)
-
-  if (length(x) == 0) {
-    rows <- purrr::map(
-      geom_list[[1]],
-      ~c(list(attributes = c()), geometry = list(.x))
+  # if there are no attributes
+  if (nrow(x) == 0) {
+    rows <- lapply(
+      geoms_list[[1]],
+      function(.x) c(list(attributes = c()), geometry = list(.x))
     )
-
   } else {
-
-    rows <- purrr::map2(
-      fields,
+    # if attributes extract the fields
+    rows <- mapply(
+      function(.x, .y) c(list(attributes = c(.y)), geometry = list(.x)),
       geom_list[[1]],
-      ~c(list(attributes = .x, geometry = .y))
+      fields,
+      SIMPLIFY = FALSE
     )
 
   }
@@ -65,11 +64,13 @@ st_as_features.sf <- function(x, ...) {
 
 
 # data.frame --------------------------------------------------------------
-
 st_as_features.data.frame <- function(x, ...) {
+
+  # listify the fields
   fields <- transpose(x)
 
-  rows <- purrr::map(fields, ~list(attributes = .x))
+  # iterate over them and make them fit esri json format
+  rows <- lapply(fields, function(.x) list(attributes = .x))
 
   # cast to json
   jsonify::to_json(rows, unbox = TRUE)

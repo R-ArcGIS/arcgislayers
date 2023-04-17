@@ -85,7 +85,7 @@ const char* rlang_obj_type_friendly_full(SEXP x, bool value, bool length) {
 
 void stop_bad_type(SEXP x, const char* expected, const char* what, const char* arg) {
   SEXP fn = Rf_lang3(Rf_install(":::"),
-                     Rf_install("purrr"),
+                     Rf_install("arcgis"),
                      Rf_install("stop_bad_type"));
 
   SEXP call = Rf_lang5(PROTECT(fn),
@@ -109,7 +109,7 @@ void stop_bad_type(SEXP x, const char* expected, const char* what, const char* a
 
 void stop_bad_element_type(SEXP x, R_xlen_t index, const char* expected, const char* what, const char* arg) {
   SEXP fn = Rf_lang3(Rf_install(":::"),
-                     Rf_install("purrr"),
+                     Rf_install("arcgis"),
                      Rf_install("stop_bad_element_type"));
 
   SEXP call = Rf_lang6(PROTECT(fn),
@@ -139,7 +139,7 @@ void stop_bad_element_length(SEXP x,
                              const char* arg,
                              bool recycle) {
   SEXP fn = Rf_lang3(Rf_install(":::"),
-                     Rf_install("purrr"),
+                     Rf_install("arcgis"),
                      Rf_install("stop_bad_element_length"));
 
   SEXP call = lang7(PROTECT(fn),
