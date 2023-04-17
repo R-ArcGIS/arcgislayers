@@ -87,9 +87,11 @@ add_features <- function(
 
   resp <- httr2::req_perform(req)
 
-  resp |>
-    httr2::resp_body_string() |>
-    RcppSimdJson::fparse()
+
+
+  RcppSimdJson::fparse(
+    httr2::resp_body_string(resp)
+  )
 
   # TODO what is the behavior be after this is completed?
   # should the x object be returned? Should the successes / results be returned?

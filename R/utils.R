@@ -77,16 +77,21 @@ prepare_spatial_filter <- function(x, y, predicate) {
 #'
 #' @keywords internal
 fetch_layer_metadata <- function(request, token) {
-  httr2::req_url_query(
+  req_url <- httr2::req_url_query(
     request,
     f = "pjson",
     token = token
-  ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_string() |>
-    RcppSimdJson::fparse(
-      int64_policy = "double"
-    )
+  )
+
+
+  resp_string <- httr2::resp_body_string(
+    httr2::req_perform(req_url)
+  )
+
+  RcppSimdJson::fparse(
+    resp_string,
+    int64_policy = "integer64"
+  )
 }
 
 
@@ -96,17 +101,21 @@ fetch_layer_metadata <- function(request, token) {
 #' @keywords internal
 #' @returns a numeric with the total number of features in the feature layer
 count_features <- function(request, token) {
-  request |>
-    httr2::req_url_path_append("query") |>
-    httr2::req_url_query(
-      returnCountOnly = "true",
-      where = "1 = 1",
-      f = "pjson",
-      token = token
-    ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_string() |>
-    RcppSimdJson::fparse(query = "/count")
+
+  req_url <- httr2::req_url_query(
+    httr2::req_url_path_append(request, "query"),
+    returnCountOnly = "true",
+    where = "1 = 1",
+    f = "pjson",
+    token = token
+  )
+
+  resp <- httr2::req_perform(req_url)
+
+  RcppSimdJson::fparse(
+    httr2::resp_body_string(resp),
+    query = "/count"
+  )
 }
 
 
