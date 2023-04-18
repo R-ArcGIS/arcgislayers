@@ -90,14 +90,9 @@ fetch_layer_metadata <- function(request, token) {
 
   meta <- RcppSimdJson::fparse(resp_string)
 
-  if (!is.null(meta[["error"]])) {
-    stop(
-      meta[[c("error", "code")]],
-      "\n",
-      meta[[c("error", "message")]],
-      call. = FALSE
-    )
-  }
+  detect_errors(meta)
+
+  meta
 }
 
 
@@ -169,11 +164,18 @@ refresh_layer <- function(x) {
 #' @keywords internal
 detect_errors <- function(response) {
   if (!is.null(response[["error"]])) {
-    stop(c(
-      "Status code: ", response[["error"]][["code"]], "\n",
-      "  Error ", response$error$messageCode, ": ", response$error$message,
-      "\n  Details: ", response$error$details
-    ))
+
+    err_msg <- strwrap(
+      paste0("  Error ", response$error$messageCode, ": ", response$error$message),
+      prefix = "    ",
+      initial = ""
+    )
+
+    stop(
+      c("Status code: ", response[["error"]][["code"]], "\n", paste0(err_msg, collapse = "\n")),
+      call. = FALSE
+    )
+
   }
 }
 
