@@ -88,10 +88,16 @@ fetch_layer_metadata <- function(request, token) {
     httr2::req_perform(req_url)
   )
 
-  RcppSimdJson::fparse(
-    resp_string,
-    int64_policy = "integer64"
-  )
+  meta <- RcppSimdJson::fparse(resp_string)
+
+  if (!is.null(meta[["error"]])) {
+    stop(
+      meta[[c("error", "code")]],
+      "\n",
+      meta[[c("error", "message")]],
+      call. = FALSE
+    )
+  }
 }
 
 
