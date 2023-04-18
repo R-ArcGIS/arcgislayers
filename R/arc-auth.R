@@ -12,6 +12,9 @@
 #' Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
 #'
 #' - `set_auth_token()` is a helper function that takes an `httr2_token` as created by `auth_code()` or `auth_client()` and sets the `ARCGIS_TOKEN` environment variable
+
+#' - `auth_user()` uses legacy username and password authorization using the `generateToken` endpoint
+#' - `auth_binding()` fetches a token from the active portal set by arcgisbinding
 #'
 #' @param client an OAuth 2.0 developer application client ID. By default uses the
 #'  environment variable `ARCGIS_CLIENT`.
@@ -117,26 +120,23 @@ auth_user <- function(
   if (expiration > 21600) stop("`expiration` cannot be more than 15 days (21600)")
 
   burl <- paste0(host, "/sharing/rest/generateToken")
-  req <- httr2::request(burl) |>
-    httr2::req_body_form(
-      username = username,
-      password = password,
-      client = "requestip",
-      expiration = expiration,
-      f = "json"
-    )
+
+  req <- httr2::req_body_form(
+    httr2::request(burl),
+    username = username,
+    password = password,
+    client = "requestip",
+    expiration = expiration,
+    f = "json"
+  )
 
   resp <- httr2::req_perform(req)
 
-  token <- httr2::resp_body_json(resp)
+  token_raw <- httr2::resp_body_string(resp)
 
-  # handle errors
-  if (is.null(token[["token"]])) {
-    stop(
-      "\n  Status code: ", token[["error"]][["code"]], "\n  ", token$error$message,
-      call. = FALSE
-    )
-  }
+  token <- RcppSimdJson::fparse(token_raw)
+
+  detect_errors(token)
 
   # return the token
   httr2::oauth_token(
@@ -202,6 +202,18 @@ refresh_token <- function(
   # should be able to refresh, go ahead.
   httr2::oauth_flow_refresh(cln, token[["refresh_token"]])
 
+}
+
+
+
+# arcgisbinding -----------------------------------------------------------
+
+#' @export
+#' @rdname auth
+auth_binding <- function() {
+  rlang::check_installed("arcgisbinding")
+  tkn <- arcgisbinding::arc.check_portal()
+  httr2::oauth_token(res[["token"]])
 }
 
 
