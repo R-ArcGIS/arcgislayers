@@ -1,6 +1,15 @@
+#' Open connection to remote resource
+#'
+#' Provided a URL, create an object referencing the remote resource.
+#' Supports Feature Layers, Tables, Feature Servers, and Image Servers.
+#'
+#' @param url The url of the remote resource. Must be of length one.
+#' @param token
 #'
 #' @export
 arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
+
+  stopifnot("`url` must be of length 1" = length(url) == 1)
 
   # generate base request
   req <- httr2::request(url)
