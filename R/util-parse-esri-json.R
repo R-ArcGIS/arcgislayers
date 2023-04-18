@@ -1,4 +1,4 @@
-parse_esri_json <- function(string) {
+parse_esri_json <- function(string, ...) {
 
   # parse the string
   # ensure any json nulls are NAs
@@ -6,7 +6,8 @@ parse_esri_json <- function(string) {
     string,
     empty_object = NA,
     empty_array = NA,
-    single_null = NA
+    single_null = NA,
+    ...
   )
 
   # extract the geometry features
