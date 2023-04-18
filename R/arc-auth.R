@@ -213,7 +213,7 @@ refresh_token <- function(
 auth_binding <- function() {
   rlang::check_installed("arcgisbinding")
   tkn <- arcgisbinding::arc.check_portal()
-  httr2::oauth_token(res[["token"]])
+  httr2::oauth_token(tkn[["token"]])
 }
 
 
