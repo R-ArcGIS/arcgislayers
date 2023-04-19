@@ -8,16 +8,15 @@
 
 # sfc objects to feature array json -----------------------------------------------------
 
-#' @param ... unused
+
 #'
-#' @rdname st_as_json
 st_as_features <- function(x, ...) {
   UseMethod("st_as_features")
 }
 
 
 
-#'
+#' @export
 st_as_features.sfc <- function(x, ...) {
 
   geoms <- featureset_geometry(x)
@@ -32,7 +31,7 @@ st_as_features.sfc <- function(x, ...) {
 }
 
 # sf objects --------------------------------------------------------------
-#'
+#' @export
 st_as_features.sf <- function(x, ...) {
 
   geo <- sf::st_geometry(x)
@@ -64,6 +63,7 @@ st_as_features.sf <- function(x, ...) {
 
 
 # data.frame --------------------------------------------------------------
+#' @export
 st_as_features.data.frame <- function(x, ...) {
 
   # listify the fields

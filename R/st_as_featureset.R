@@ -19,13 +19,14 @@
 #' @param ... unused
 #'
 #' @rdname st_as_json
+#' @noRd
 st_as_featureset <- function(x, ...) {
   UseMethod("st_as_featureset")
 }
 
 
 
-#'
+#' @export
 st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 
   # check CRS first
@@ -59,7 +60,7 @@ st_as_featureset.sfc <- function(x, crs = st_crs(x), ...) {
 }
 
 # sf objects --------------------------------------------------------------
-#'
+#' @export
 st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
   # check CRS first
@@ -109,7 +110,7 @@ st_as_featureset.sf <- function(x, crs = sf::st_crs(x), ...) {
 
 
 # data.frame --------------------------------------------------------------
-#'
+#' @export
 st_as_featureset.data.frame <- function(x, ...) {
   fields <- transpose(x)
 

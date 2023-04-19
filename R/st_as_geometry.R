@@ -59,7 +59,7 @@
 #'  - Envelope: `esriGeometryEnvelope`
 #'    - envelopes correspond with bounding boxes but can have a Z dimension
 #'
-#' 
+#'
 #' @param x an object of class `sfg`
 #' @param crs a CRS ID, crs object, or a well-known text representation of CRS
 #' @examples
@@ -76,11 +76,12 @@
 #'   byrow = TRUE
 #' )
 #' st_as_json(st_polygon(list(m)))
+#' @noRd
 st_as_json <- function(x, crs, ...) {
   UseMethod("st_as_json")
 }
 
-#' 
+#' @export
 st_as_json.POINT <- function(x, crs = 4326, ...) {
 
   crs_text <- validate_crs(crs)
@@ -99,7 +100,7 @@ st_as_json.POINT <- function(x, crs = 4326, ...) {
   jsonify::to_json(res, unbox = TRUE)
 }
 
-#' 
+#' @export
 st_as_json.MULTIPOINT <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multipoint_impl(list(x))[[1]]
@@ -108,7 +109,7 @@ st_as_json.MULTIPOINT <- function(x, crs = 4326, ...) {
   jsonify::to_json(res, unbox = TRUE)
 }
 
-#' 
+#' @export
 st_as_json.LINESTRING <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_linestring_impl(list(x))[[1]]
@@ -117,7 +118,7 @@ st_as_json.LINESTRING <- function(x, crs = 4326, ...) {
   jsonify::to_json(res, unbox = TRUE)
 }
 
-#' 
+#' @export
 st_as_json.MULTILINESTRING <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multilinestring_impl(list(x))[[1]]
@@ -126,7 +127,7 @@ st_as_json.MULTILINESTRING <- function(x, crs = 4326, ...) {
   jsonify::to_json(res, unbox = TRUE)
 }
 
-#' 
+#' @export
 st_as_json.POLYGON <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfg_polygon_impl(x)
@@ -134,7 +135,7 @@ st_as_json.POLYGON <- function(x, crs = 4326, ...) {
   jsonify::to_json(res, unbox = TRUE)
 }
 
-#' 
+#' @export
 st_as_json.MULTIPOLYGON <- function(x, crs = 4326, ...) {
   crs_text <- validate_crs(crs)
   geometry <- sfc_multipolygon_impl(list(x))[[1]]
@@ -144,7 +145,7 @@ st_as_json.MULTIPOLYGON <- function(x, crs = 4326, ...) {
 
 
 
-#' 
+#' @export
 st_as_json.envelope <- function(x, crs = sf::st_crs(x)) {
   crs_text <- validate_crs(crs)
   jsonify::to_json(c(as.list(x), crs_text), unbox = TRUE)
@@ -157,11 +158,15 @@ st_as_json.envelope <- function(x, crs = sf::st_crs(x)) {
 
 # helpers to check for z or m dimension
 has_m <- function(x) UseMethod("has_m")
+#' @export
 has_m.sfc <- function(x) !is.null(attr(x, "m_range"))
+#' @export
 has_m.sfg <- function(x) grepl("M", class(x)[1])
 
 has_z <- function(x) UseMethod("has_z")
+#' @export
 has_z.sfc <- function(x) !is.null(attr(x, "z_range"))
+#' @export
 has_z.sfg <- function(x) grepl("Z", class(x)[1])
 
 # helpers to identify xy, xyz, or xyzm dimensions
