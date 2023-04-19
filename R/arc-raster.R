@@ -1,7 +1,11 @@
 #' Retrieve Imagery
 #'
-#' @param x an `ImageServer` as created with `image_server()`
-#' @param bbox an object of class `bbox` from the sf package. Determines the extent of the raster returned. If the `bbox` object has a CRS, it will be used as the `bboxSR` parameter, otherwise the CRS of `x` is used.
+#' @param x an `ImageServer` as created with `image_server()`.
+#' @param xmin the minimum bounding longitude value.
+#' @param xmax the maxmimum bounding longitude value.
+#' @param ymin that minimum bounding latitude value.
+#' @param ymax the maximum bounding latitude value.
+#' @param crs the CRS of the resultant raster image and the provided bounding box defined by `xmin`, `xmax`, `ymin`, `ymax` (passed to `bboxSR` and `outSR` query parameters).
 #' @param format default `"tiff"`. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".
 #' @param width default `NULL`. Cannot exceed `x[["maxImageWidth"]]`.
 #' @param height default `NULL`. Cannot exceed `x[["maxImageHeight"]]`.
@@ -26,25 +30,29 @@
 #' @export
 arc_raster <- function(
     x,
-    bbox,
+    xmin,
+    xmax,
+    ymin,
+    ymax,
+    crs = sf::st_crs(x),
     width = NULL,
     height = NULL,
     format = "tiff",
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
-  stopifnot(
-    "`bbox` must be created with `sf::st_bbox()`" = inherits(bbox, "bbox")
-  )
+
   req <- httr2::request(paste0(x[["url"]], "/exportImage"))
 
   req <- httr2::req_url_query(
     req,
-    bbox = paste0(bbox, collapse = ","),
-    bboxSR = validate_crs(sf::st_crs(bbox))[["spatialReference"]][["wkid"]],
+    # bbox = paste0(bbox, collapse = ","),
+    bbox = paste0(c(xmin, ymin, xmax, ymax), collapse = ","),
+    bboxSR = validate_crs(crs)[["spatialReference"]][["wkid"]],
     format = format,
     size = paste0(c(width, height), collapse = ","),
     token = token,
+    outSR = crs,
     f = "json"
   )
 
