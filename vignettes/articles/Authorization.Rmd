@@ -51,7 +51,7 @@ ARCGIS_SECRET=your-super-secret-key
 > The `ARCGIS_SECRET` environment variable will only be used in `auth_client()` and not necessary for `auth_code()`. 
 
 
-### Authenticating 
+### Authorizing
 
 First, load the library. 
 
@@ -59,7 +59,7 @@ First, load the library.
 library(arcgis)
 ```
 
-Next run `auth_code()` which will open a tab in your browser. If you are authenticating to somewhere other than AGOL, set the `host` argument. 
+Next run `auth_code()` which will open a tab in your browser. If you are authorizing to somewhere other than AGOL, set the `host` argument—e.g. `auth_code(host = "https://portal.my-company.com")`
 
 ```{r, eval = FALSE}
 token <- auth_code()
