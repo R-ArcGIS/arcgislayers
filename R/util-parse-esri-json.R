@@ -39,14 +39,17 @@ parse_esri_json <- function(string, ...) {
     esriGeometryPolygon = identify_class("POLYGON", list_ele_class)
   )
 
+  # TODO what about xyz and xyzm?
   obj_classes <- c("XY", sfg_class, "sfg")
 
   # manually apply the sfg class
   for (i in seq_along(geo_raw)) {
+    if (sfg_class == "POINT") geo_raw[[i]] <- unlist(geo_raw[[i]])
     class(geo_raw[[i]]) <- obj_classes
   }
 
-  crs_raw <- b_parsed[["spatialReference"]][["latestWkid"]]
+  sr <- b_parsed[["spatialReference"]]
+  crs_raw <- sr[["latestWkid"]] %||% sr[["wkid"]] %||% NA
 
   sf::st_sf(
     fields, geometry = sf::st_sfc(geo_raw, crs = crs_raw)
@@ -61,7 +64,7 @@ identify_class <- function(object_type, inner_class) {
   object_type <- toupper(object_type)
   match.arg(object_type, c("POLYGON", "LINESTRING"))
   switch(
-    inner_class,
+    inner_class[1],
     list = paste0("MULTI", object_type),
     object_type
   )
