@@ -42,8 +42,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Authorization.html">Authorization</a>
-    <a class="dropdown-item" href="../articles/Design-Principles.html">Design Principles</a>
-    <a class="dropdown-item" href="../articles/python-comparison.html">Comparison with ArcGIS Python API</a>
   </div>
 </li>
       </ul>
@@ -116,8 +114,8 @@ to use a project level <code>.Renviron</code> file use
 <code>usethis::edit_r_environ("project")</code>.</p>
 </blockquote>
 <p>Add the following lines to your <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">ARCGIS_CLIENT</span><span class="op">=</span>your-client-id</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">ARCGIS_SECRET</span><span class="op">=</span>your-super-secret-key</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="va">ARCGIS_CLIENT</span><span class="op">=</span>your-client-id</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="va">ARCGIS_SECRET</span><span class="op">=</span>your-super-secret-key</span></code></pre></div>
 <blockquote>
 <p>The <code>ARCGIS_SECRET</code> environment variable will only be used
 in <code><a href="../reference/auth.html">auth_client()</a></code> and not necessary for
@@ -125,14 +123,15 @@ in <code><a href="../reference/auth.html">auth_client()</a></code> and not neces
 </blockquote>
 </div>
 <div class="section level3">
-<h3 id="authenticating">Authenticating<a class="anchor" aria-label="anchor" href="#authenticating"></a>
+<h3 id="authorizing">Authorizing<a class="anchor" aria-label="anchor" href="#authorizing"></a>
 </h3>
 <p>First, load the library.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span></code></pre></div>
 <p>Next run <code><a href="../reference/auth.html">auth_code()</a></code> which will open a tab in your
-browser. If you are authenticating to somewhere other than AGOL, set the
-<code>host</code> argument.</p>
+browser. If you are authorizing to somewhere other than AGOL, set the
+<code>host</code>
+argument—e.g. <code>auth_code(host = "https://portal.my-company.com")</code></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/auth.html">auth_code</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>You will be prompted to sign in to your portal.</p>

@@ -8,7 +8,7 @@
 #' @param filter_geom an object of class `sfc` or `sfg` used to filter query results based on a predicate function. If an `sfc` object is provided it will be transformed to the layers spatial reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is assumed to be in the layers spatial reference.
 #' @param predicate default `"intersects"`. Possible options are `"intersects"`,  `"contains"`,  `"crosses"`,  `"overlaps"`,  `"touches"`, and `"within"`.
 #' @param n_max the maximum number of features to return. By default returns every feature available. Unused at the moment.
-#' @param ... additional query parameters passed to `update_params()`. See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
+#' @param ... additional query parameters passed to the API. See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
 #' @export
 arc_select <- function(
     x,

@@ -3,6 +3,7 @@
 \name{auth_code}
 \alias{auth_code}
 \alias{auth_client}
+\alias{auth_binding}
 \alias{auth_user}
 \alias{set_auth_token}
 \alias{refresh_token}
@@ -20,6 +21,8 @@ auth_client(
   host = "https://www.arcgis.com",
   expiration = 120
 )
+
+auth_binding()
 
 auth_user(
   username = Sys.getenv("ARCGIS_USER"),
@@ -55,12 +58,15 @@ variable \code{ARCGIS_SECRET}.}
 \item{expiration}{the duration of the token in minutes.}
 }
 \description{
-Authorize your R session to connect to an ArcGIS Portal. ArcGIS Online and ArcGIS Enterprise
-utilize OAuth2 authorization flow.
+Authorize your R session to connect to an ArcGIS Portal. See details.
 }
 \details{
-Create a OAuth2.0 ArcGIS Application at https://developers.arcgis.com/applications/
+ArcGIS Online and Enterprise Portals utilize OAuth2 authorization via their REST APIs.
+For more on configuring OAuth2 authorization see the \url{authorization article}.
 \itemize{
-\item \code{set_auth_token()} is a helper function that takes an \code{httr2_token} as created by \code{auth_code()} or \code{auth_client()} and sets the \code{ARCGIS_TOKEN} environment variable
+\item \code{auth_code()} is the recommend OAuth2 workflow for interactive sessions
+\item \code{auth_client()} is the recommended OAuth2 workflow for non-interactive sessions
+\item \code{auth_user()} uses legacy username and password authorization using the \code{generateToken} endpoint. It is only recommended for legacy systems that do not implement OAuth2.
+\item \code{auth_binding()} fetches a token from the active portal set by \code{arcgisbinding}. Uses \code{arcgisbinding::arc.check_portal()} to extract the authorization token. Recommended if using arcgisbinding.
 }
 }

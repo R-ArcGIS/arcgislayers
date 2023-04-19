@@ -6,7 +6,11 @@
 \usage{
 arc_raster(
   x,
-  bbox,
+  xmin,
+  xmax,
+  ymin,
+  ymax,
+  crs = sf::st_crs(x),
   width = NULL,
   height = NULL,
   format = "tiff",
@@ -14,9 +18,17 @@ arc_raster(
 )
 }
 \arguments{
-\item{x}{an \code{ImageServer} as created with \code{image_server()}}
+\item{x}{an \code{ImageServer} as created with \code{image_server()}.}
 
-\item{bbox}{an object of class \code{bbox} from the sf package. Determines the extent of the raster returned. If the \code{bbox} object has a CRS, it will be used as the \code{bboxSR} parameter, otherwise the CRS of \code{x} is used.}
+\item{xmin}{the minimum bounding longitude value.}
+
+\item{xmax}{the maxmimum bounding longitude value.}
+
+\item{ymin}{that minimum bounding latitude value.}
+
+\item{ymax}{the maximum bounding latitude value.}
+
+\item{crs}{the CRS of the resultant raster image and the provided bounding box defined by \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} (passed to \code{bboxSR} and \code{outSR} query parameters).}
 
 \item{width}{default \code{NULL}. Cannot exceed \code{x[["maxImageWidth"]]}.}
 

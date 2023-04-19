@@ -25,8 +25,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Authorization.html">Authorization</a>
-    <a class="dropdown-item" href="../articles/Design-Principles.html">Design Principles</a>
-    <a class="dropdown-item" href="../articles/python-comparison.html">Comparison with ArcGIS Python API</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -43,7 +41,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a></h2>
+      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
       
       
 
@@ -55,167 +53,36 @@
 
       <dl><dt>
           
-          <code><a href="feature_layer.html">feature_layer()</a></code> 
+          <code><a href="arc_open.html">arc_open()</a></code> 
         </dt>
-        <dd>Create a Feature Layer Object</dd>
+        <dd>Open connection to remote resource</dd>
       </dl><dl><dt>
           
-          <code><a href="feature_table.html">feature_table()</a></code> 
+          <code><a href="arc_raster.html">arc_raster()</a></code> 
         </dt>
-        <dd>Feature Table</dd>
+        <dd>Retrieve Imagery</dd>
       </dl><dl><dt>
           
-          <code><a href="query_layer.html">query_layer()</a></code> 
+          <code><a href="arc_select.html">arc_select()</a></code> 
         </dt>
         <dd>Retrieve a feature layer</dd>
       </dl><dl><dt>
           
-          <code><a href="add_features.html">add_features()</a></code> 
+          <code><a href="auth.html">auth_code()</a></code> <code><a href="auth.html">auth_client()</a></code> <code><a href="auth.html">auth_binding()</a></code> <code><a href="auth.html">auth_user()</a></code> <code><a href="auth.html">set_auth_token()</a></code> <code><a href="auth.html">refresh_token()</a></code> <code><a href="auth.html">validate_or_refresh_token()</a></code> 
         </dt>
-        <dd>Add Features to Feature Layer</dd>
-      </dl><dl><dt>
-          
-          <code><a href="update_features.html">update_features()</a></code> 
-        </dt>
-        <dd>Update Feature Layer</dd>
-      </dl><dl><dt>
-          
-          <code><a href="delete_features.html">delete_features()</a></code> 
-        </dt>
-        <dd>Delete Features from Feature Layer</dd>
-      </dl><dl><dt>
-          
-          <code><a href="feature_server.html">feature_server()</a></code> 
-        </dt>
-        <dd>Create a feature server</dd>
+        <dd>Authorization</dd>
       </dl><dl><dt>
           
           <code><a href="get_layer.html">get_layer()</a></code> <code><a href="get_layer.html">get_all_layers()</a></code> 
         </dt>
         <dd>Extract a feature layer</dd>
-      </dl></div><div class="section level2">
-      <h2 id="imagery">Imagery<a class="anchor" aria-label="anchor" href="#imagery"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="image_server.html">image_server()</a></code> 
-        </dt>
-        <dd>Image Server Representation</dd>
       </dl><dl><dt>
           
-          <code><a href="query_imagery.html">query_imagery()</a></code> 
+          <code><a href="modify.html">add_features()</a></code> <code><a href="modify.html">update_features()</a></code> <code><a href="modify.html">delete_features()</a></code> 
         </dt>
-        <dd>Retrieve Imagery</dd>
-      </dl></div><div class="section level2">
-      <h2 id="authorization">Authorization<a class="anchor" aria-label="anchor" href="#authorization"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="auth.html">auth_code()</a></code> <code><a href="auth.html">auth_client()</a></code> <code><a href="auth.html">auth_user()</a></code> <code><a href="auth.html">refresh_token()</a></code> <code><a href="auth.html">validate_or_refresh_token()</a></code> 
-        </dt>
-        <dd>Authorization</dd>
-      </dl></div><div class="section level2">
-      <h2 id="esri-json-constructors">Esri JSON constructors<a class="anchor" aria-label="anchor" href="#esri-json-constructors"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="st_as_json.html">st_as_features()</a></code> <code><a href="st_as_json.html">st_as_featureset()</a></code> <code><a href="st_as_json.html">st_as_json()</a></code> 
-        </dt>
-        <dd>Create Esri FeatureSet JSON</dd>
-      </dl></div><div class="section level2">
-      <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="list_fields.html">list_fields()</a></code> 
-        </dt>
-        <dd>List fields in a a feature layer</dd>
-      </dl><dl><dt>
-          
-          <code><a href="update_params.html">update_params()</a></code> 
-        </dt>
-        <dd>Modify Query Parameters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="clear_query.html">clear_query()</a></code> 
-        </dt>
-        <dd>Cleary all query parameters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="refresh_layer.html">refresh_layer()</a></code> 
-        </dt>
-        <dd>Refresh layer</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.FeatureLayer.html">print(<i>&lt;FeatureLayer&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for feature layer objects</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.ImageServer.html">print(<i>&lt;ImageServer&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print Method</dd>
-      </dl><dl><dt>
-          
-          <code><a href="st_envelope.html">st_envelope()</a></code> <code><a href="st_envelope.html">new_envelope()</a></code> <code><a href="st_envelope.html">print(<i>&lt;envelope&gt;</i>)</a></code> 
-        </dt>
-        <dd>Return an envelope of a simple feature or simple feature set</dd>
-      </dl><dl><dt>
-          
-          <code><a href="head.FeatureLayer.html">head(<i>&lt;FeatureLayer&gt;</i>)</a></code> 
-        </dt>
-        <dd>Fetch n rows from a feature layer</dd>
-      </dl></div><div class="section level2">
-      <h2 id="dplyr">dplyr<a class="anchor" aria-label="anchor" href="#dplyr"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="dplyr.html">select.FeatureLayer()</a></code> <code><a href="dplyr.html">select.Table()</a></code> <code><a href="dplyr.html">filter.FeatureLayer()</a></code> <code><a href="dplyr.html">filter.Table()</a></code> <code><a href="dplyr.html">collect.FeatureLayer()</a></code> 
-        </dt>
-        <dd>dplyr methods</dd>
+        <dd>Add Features to Feature Layer</dd>
       </dl></div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
-    </nav></aside></div>
+  </main></div>
 
 
     <footer><div class="pkgdown-footer-left">

@@ -28,7 +28,7 @@ arc_select(
 
 \item{n_max}{the maximum number of features to return. By default returns every feature available. Unused at the moment.}
 
-\item{...}{additional query parameters passed to \code{update_params()}. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
+\item{...}{additional query parameters passed to the API. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
 }
 \description{
 Give a \code{FeatureLayer} or \code{Table} object, retrieve its data as an \code{sf} object or \code{tibble} resepctively.

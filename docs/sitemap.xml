@@ -34,6 +34,15 @@
     <loc>/reference/add_offset.html</loc>
   </url>
   <url>
+    <loc>/reference/arc_open.html</loc>
+  </url>
+  <url>
+    <loc>/reference/arc_raster.html</loc>
+  </url>
+  <url>
+    <loc>/reference/arc_select.html</loc>
+  </url>
+  <url>
     <loc>/reference/auth.html</loc>
   </url>
   <url>
@@ -118,6 +127,9 @@
     <loc>/reference/make_sf_compat.html</loc>
   </url>
   <url>
+    <loc>/reference/modify.html</loc>
+  </url>
+  <url>
     <loc>/reference/prepare_spatial_filter.html</loc>
   </url>
   <url>
@@ -128,6 +140,9 @@
   </url>
   <url>
     <loc>/reference/print.ImageServer.html</loc>
+  </url>
+  <url>
+    <loc>/reference/query_imagery.html</loc>
   </url>
   <url>
     <loc>/reference/query_layer.html</loc>
@@ -143,6 +158,9 @@
   </url>
   <url>
     <loc>/reference/st_envelope.html</loc>
+  </url>
+  <url>
+    <loc>/reference/update_features.html</loc>
   </url>
   <url>
     <loc>/reference/update_params.html</loc>
