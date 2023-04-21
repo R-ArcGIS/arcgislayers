@@ -2,8 +2,11 @@
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
+#include <Rcpp.h>
+using namespace Rcpp;
 
 
+// [[Rcpp::export]]
 SEXP transpose_impl(SEXP x, SEXP names_template) {
   if (TYPEOF(x) != VECSXP) {
     error_return("x is not a list-type object");
