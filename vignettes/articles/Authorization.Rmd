@@ -14,6 +14,8 @@ Authorization is required for users who wish to access data that is in a non-pub
 
 [Authorization is done using OAuth2](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/oauth-2.0/). There are two ways to authenticate with OAuth2: either by using a a `code` or a `client` flow. The recommendation for most people is to utilize code based authentication.
 
+**Note**: users of `arcgisbinding` can use `auth_binding()` to utilize the tokens that result from `arc.check_portal()`.
+
 > Tip: use client based authorization for non-interactive work. 
 
 ## Code based authorization
