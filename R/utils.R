@@ -9,7 +9,7 @@ compact <- function(.x) Filter(length, .x)
 
 # Taken directly from purrr
 transpose <- function(.l, .names = NULL) {
-  transpose_cpp(.l, .names)
+  transpose_impl(.l, .names)
 }
 
 
@@ -82,7 +82,6 @@ fetch_layer_metadata <- function(request, token) {
     f = "pjson",
     token = token
   )
-
 
   resp_string <- httr2::resp_body_string(
     httr2::req_perform(req_url)
