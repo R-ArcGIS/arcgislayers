@@ -49,7 +49,7 @@ st_as_features.sf <- function(x, ...) {
     rows <- mapply(
       function(.x, .y) c(list(attributes = c(.y)), geometry = list(.x)),
       geom_list[[1]],
-      fields,
+      x,
       SIMPLIFY = FALSE
     )
 
