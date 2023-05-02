@@ -1,8 +1,11 @@
 #' Retrieve Imagery
 #'
+#' Given an `ImageServer` export an image as a `SpatRaster` from the terra package.
+#' See [`terra::rast`].
+#'
 #' @param x an `ImageServer` as created with `image_server()`.
 #' @param xmin the minimum bounding longitude value.
-#' @param xmax the maxmimum bounding longitude value.
+#' @param xmax the maximum bounding longitude value.
 #' @param ymin that minimum bounding latitude value.
 #' @param ymax the maximum bounding latitude value.
 #' @param crs the CRS of the resultant raster image and the provided bounding box defined by `xmin`, `xmax`, `ymin`, `ymax` (passed to `bboxSR` and `outSR` query parameters).
@@ -34,6 +37,7 @@ arc_raster <- function(
     xmax,
     ymin,
     ymax,
+    bbox_crs = NULL,
     crs = sf::st_crs(x),
     width = NULL,
     height = NULL,
@@ -42,17 +46,21 @@ arc_raster <- function(
 ) {
 
 
+  # validate and extract CRS object
+  out_sr <- validate_crs(crs)[["spatialReference"]][["wkid"]]
+  bbox_sr <- validate_crs(bbox_crs)[[c("spatialReference", "wkid")]]
+
   req <- httr2::request(paste0(x[["url"]], "/exportImage"))
 
   req <- httr2::req_url_query(
     req,
     # bbox = paste0(bbox, collapse = ","),
     bbox = paste0(c(xmin, ymin, xmax, ymax), collapse = ","),
-    bboxSR = validate_crs(crs)[["spatialReference"]][["wkid"]],
+    bboxSR = bbox_sr,
     format = format,
     size = paste0(c(width, height), collapse = ","),
     token = token,
-    outSR = crs,
+    outSR = out_sr,
     f = "json"
   )
 
