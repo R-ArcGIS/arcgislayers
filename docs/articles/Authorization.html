@@ -78,6 +78,9 @@ is done using OAuth2</a>. There are two ways to authenticate with
 OAuth2: either by using a a <code>code</code> or a <code>client</code>
 flow. The recommendation for most people is to utilize code based
 authentication.</p>
+<p><strong>Note</strong>: users of <code>arcgisbinding</code> can use
+<code><a href="../reference/auth.html">auth_binding()</a></code> to utilize the tokens that result from
+<code>arc.check_portal()</code>.</p>
 <blockquote>
 <p>Tip: use client based authorization for non-interactive work.</p>
 </blockquote>
@@ -114,8 +117,8 @@ to use a project level <code>.Renviron</code> file use
 <code>usethis::edit_r_environ("project")</code>.</p>
 </blockquote>
 <p>Add the following lines to your <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="va">ARCGIS_CLIENT</span><span class="op">=</span>your-client-id</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="va">ARCGIS_SECRET</span><span class="op">=</span>your-super-secret-key</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">ARCGIS_CLIENT</span><span class="op">=</span>your-client-id</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">ARCGIS_SECRET</span><span class="op">=</span>your-super-secret-key</span></code></pre></div>
 <blockquote>
 <p>The <code>ARCGIS_SECRET</code> environment variable will only be used
 in <code><a href="../reference/auth.html">auth_client()</a></code> and not necessary for

@@ -111,7 +111,7 @@ variable <code>ARCGIS_SECRET</code>.</p></dd>
 For more on configuring OAuth2 authorization see the <a href="authorization%20article">authorization article</a>.</p><ul><li><p><code>auth_code()</code> is the recommend OAuth2 workflow for interactive sessions</p></li>
 <li><p><code>auth_client()</code> is the recommended OAuth2 workflow for non-interactive sessions</p></li>
 <li><p><code>auth_user()</code> uses legacy username and password authorization using the <code>generateToken</code> endpoint. It is only recommended for legacy systems that do not implement OAuth2.</p></li>
-<li><p><code>auth_binding()</code> fetches a token from the active portal set by <code>arcgisbinding</code>. Uses <code>arcgisbinding::arc.check_portal()</code> to extract the authorization token. Recommended if using arcgisbinding.</p></li>
+<li><p><code>auth_binding()</code> fetches a token from the active portal set by <code>arcgisbinding</code>. Uses <code><a href="https://rdrr.io/pkg/arcgisbinding/man/arc.portal.html" class="external-link">arcgisbinding::arc.check_portal()</a></code> to extract the authorization token. Recommended if using arcgisbinding.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
