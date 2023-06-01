@@ -1,7 +1,0 @@
-test_that("esriGeometryPoint featureset can be parsed", {
-
-  point_json <- r"--{{"objectIdFieldName":"OBJECTID","uniqueIdField":{"name":"OBJECTID","isSystemMaintained":true},"globalIdFieldName":"","geometryType":"esriGeometryPoint","spatialReference":{"wkid":102100,"latestWkid":3857},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"text_field_1","type":"esriFieldTypeString","alias":"text_field_1","sqlType":"sqlTypeOther","length":256,"domain":null,"defaultValue":null},{"name":"int_field_1","type":"esriFieldTypeInteger","alias":"int_field_1","sqlType":"sqlTypeOther","domain":null,"defaultValue":null}],"features":[{"attributes":{"OBJECTID":1,"text_field_1":"feature 1","int_field_1":3452},"geometry":{"x":5386480.0869221846,"y":-1764752.372029118}},{"attributes":{"OBJECTID":2,"text_field_1":"feature 2","int_field_1":13},"geometry":{"x":5388926.0718273092,"y":-1872375.7078546176}},{"attributes":{"OBJECTID":3,"text_field_1":"feature 3","int_field_1":2523456},"geometry":{"x":5019582.3511534361,"y":-2050932.6059287421}},{"attributes":{"OBJECTID":4,"text_field_1":"feature 4","int_field_1":23},"geometry":{"x":5325330.4642940592,"y":-2278409.2021053657}},{"attributes":{"OBJECTID":5,"text_field_1":"feature 5","int_field_1":114},"geometry":{"x":5100299.8530225605,"y":-2684442.696356114}}]}}--"
-
-  expect_snapshot(parse_esri_json(point_json))
-
-})

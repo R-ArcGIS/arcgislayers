@@ -10,6 +10,7 @@ arc_raster(
   xmax,
   ymin,
   ymax,
+  bbox_crs = NULL,
   crs = sf::st_crs(x),
   width = NULL,
   height = NULL,
@@ -22,7 +23,7 @@ arc_raster(
 
 \item{xmin}{the minimum bounding longitude value.}
 
-\item{xmax}{the maxmimum bounding longitude value.}
+\item{xmax}{the maximum bounding longitude value.}
 
 \item{ymin}{that minimum bounding latitude value.}
 
@@ -42,7 +43,8 @@ arc_raster(
 An object of class \code{SpatRaster}.
 }
 \description{
-Retrieve Imagery
+Given an \code{ImageServer} export an image as a \code{SpatRaster} from the terra package.
+See \code{\link[terra:rast]{terra::rast}}.
 }
 \examples{
 if (interactive()) {

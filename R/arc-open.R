@@ -1,12 +1,18 @@
 #' Open connection to remote resource
 #'
 #' Provided a URL, create an object referencing the remote resource.
-#' Supports Feature Layers, Tables, Feature Servers, and Image Servers.
+#' The resultant object acts as a reference to the remote data source.
+#'
+#' To extract data from the remote resource utilize [`arc_select()`] for objects of class
+#' `FeatureLayer` or `Table`. For `ImageServer`s, utilize [`arc_raster()`].
 #'
 #' @param url The url of the remote resource. Must be of length one.
-#' @param token
+#' @param token default uses the `ARCGIS_TOKEN`environment variable.
 #'
+#' @seealso arc_select arc_raster
 #' @export
+#' @returns
+#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, or `ImageServer`.
 arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   stopifnot("`url` must be of length 1" = length(url) == 1)
@@ -25,13 +31,14 @@ arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   if (length(layer_class) == 0) {
     if (any(grepl("pixel|band|raster", names(meta)))) {
       layer_class <- "ImageServer"
-    } else if ("layers" %in% names(meta)) {
+    } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
       layer_class <- "FeatureServer"
     } else {
       stop("Cannot determine layer type")
     }
   }
 
+  # construct the appropriate class based on the resultant `layer_class`
   res <- switch(
     layer_class,
     "FeatureLayer" = structure(

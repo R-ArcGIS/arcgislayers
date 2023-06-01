@@ -10,6 +10,8 @@ test_that("arc_raster() works", {
     xmax = -67,
     ymax = 47.5,
     crs = 4326,
+    height = 100,
+    width = 100
   )
 
   expect_s4_class(res, "SpatRaster")

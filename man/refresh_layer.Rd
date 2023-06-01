@@ -9,4 +9,3 @@ refresh_layer(x)
 \description{
 Useful to update metadata after modifying a remote
 }
-\keyword{internal}

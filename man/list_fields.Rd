@@ -6,7 +6,9 @@
 \usage{
 list_fields(x)
 }
+\arguments{
+\item{x}{and object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
+}
 \description{
 List fields in a a feature layer
 }
-\keyword{internal}

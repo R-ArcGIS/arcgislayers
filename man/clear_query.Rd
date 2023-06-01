@@ -9,4 +9,3 @@ clear_query(x)
 \description{
 Cleary all query parameters
 }
-\keyword{internal}

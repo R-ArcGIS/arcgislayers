@@ -9,6 +9,7 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    arcgisutils (>= 0.1.0),
     httr2,
     jsonify,
     Rcpp,
@@ -25,6 +26,6 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tidyselect
-LinkingTo: 
-    Rcpp
 Config/testthat/edition: 3
+Remotes:  
+    R-ArcGIS/arcgisutils

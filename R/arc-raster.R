@@ -48,7 +48,9 @@ arc_raster <- function(
 
   # validate and extract CRS object
   out_sr <- validate_crs(crs)[["spatialReference"]][["wkid"]]
-  bbox_sr <- validate_crs(bbox_crs)[[c("spatialReference", "wkid")]]
+
+  # if bbox_crs is missing set to `crs`
+  bbox_sr <- validate_crs(bbox_crs %||% crs)[[c("spatialReference", "wkid")]]
 
   req <- httr2::request(paste0(x[["url"]], "/exportImage"))
 

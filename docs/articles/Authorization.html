@@ -79,7 +79,11 @@ OAuth2: either by using a a <code>code</code> or a <code>client</code>
 flow. The recommendation for most people is to utilize code based
 authentication.</p>
 <p><strong>Note</strong>: users of <code>arcgisbinding</code> can use
+<<<<<<< Updated upstream
 <code><a href="../reference/auth.html">auth_binding()</a></code> to utilize the tokens that result from
+=======
+<code>auth_binding()</code> to utilize the tokens that result from
+>>>>>>> Stashed changes
 <code>arc.check_portal()</code>.</p>
 <blockquote>
 <p>Tip: use client based authorization for non-interactive work.</p>
@@ -87,7 +91,7 @@ authentication.</p>
 <div class="section level2">
 <h2 id="code-based-authorization">Code based authorization<a class="anchor" aria-label="anchor" href="#code-based-authorization"></a>
 </h2>
-<p>To use code based authorization use the <code><a href="../reference/auth.html">auth_code()</a></code>
+<p>To use code based authorization use the <code>auth_code()</code>
 function. This requires a client ID. A <a href="https://www.oauth.com/oauth2-servers/client-registration/client-id-secret" class="external-link">client
 ID</a> is a public identifier to an application that you will
 authenticate against. This is the <strong>only</strong> method of
@@ -108,7 +112,7 @@ default selections. Press next and fill out additional fields.</p>
 <p>You will be redirected to the content page. You will see credentials
 for your application. <strong>Do not share these</strong>. <img src="images/oauth-app.png"></p>
 <p>By default environment variables will be used by
-<code><a href="../reference/auth.html">auth_code()</a></code>. To edit your environment variables with your
+<code>auth_code()</code>. To edit your environment variables with your
 newly created credentials use <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>
 which will open an <code>.Renviron</code> file for you.</p>
 <blockquote>
@@ -121,8 +125,8 @@ to use a project level <code>.Renviron</code> file use
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">ARCGIS_SECRET</span><span class="op">=</span>your-super-secret-key</span></code></pre></div>
 <blockquote>
 <p>The <code>ARCGIS_SECRET</code> environment variable will only be used
-in <code><a href="../reference/auth.html">auth_client()</a></code> and not necessary for
-<code><a href="../reference/auth.html">auth_code()</a></code>.</p>
+in <code>auth_client()</code> and not necessary for
+<code>auth_code()</code>.</p>
 </blockquote>
 </div>
 <div class="section level3">
@@ -131,12 +135,12 @@ in <code><a href="../reference/auth.html">auth_client()</a></code> and not neces
 <p>First, load the library.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span></code></pre></div>
-<p>Next run <code><a href="../reference/auth.html">auth_code()</a></code> which will open a tab in your
+<p>Next run <code>auth_code()</code> which will open a tab in your
 browser. If you are authorizing to somewhere other than AGOL, set the
 <code>host</code>
 argument—e.g. <code>auth_code(host = "https://portal.my-company.com")</code></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/auth.html">auth_code</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu">auth_code</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>You will be prompted to sign in to your portal.</p>
 <p><img src="images/oauth-sign-in.png" style="width:50.0%"></p>
 <p>Once you’ve signed in, copy the code that appears, and return to R.
@@ -158,12 +162,12 @@ enter.</p>
 <div class="section level3">
 <h3 id="refreshing-tokens">Refreshing tokens<a class="anchor" aria-label="anchor" href="#refreshing-tokens"></a>
 </h3>
-<p><code><a href="../reference/auth.html">auth_code()</a></code> tokens can be refreshed. These tokens come
+<p><code>auth_code()</code> tokens can be refreshed. These tokens come
 with a refresh token that can be exchanged for a new token. This can be
-done with <code><a href="../reference/auth.html">refresh_token()</a></code>. It requires the original token,
+done with <code>refresh_token()</code>. It requires the original token,
 client ID, and hostname (which is <a href="https://arcgis.com" class="external-link uri">https://arcgis.com</a> by default).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth.html">refresh_token</a></span><span class="op">(</span><span class="va">token</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">refresh_token</span><span class="op">(</span><span class="va">token</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
 <span><span class="co">#&gt; token_type: bearer</span></span>
 <span><span class="co">#&gt; access_token: &lt;REDACTED&gt;</span></span>
@@ -171,7 +175,7 @@ client ID, and hostname (which is <a href="https://arcgis.com" class="external-l
 <span><span class="co">#&gt; username: user-name</span></span>
 <span><span class="co">#&gt; ssl: TRUE</span></span>
 <span><span class="co">#&gt; refresh_token: &lt;REDACTED&gt;</span></span></code></pre></div>
-<p>Additionally the function <code><a href="../reference/auth.html">validate_or_refresh_token()</a></code> is
+<p>Additionally the function <code>validate_or_refresh_token()</code> is
 provided. This can be useful if you have a very long running job that
 may exceed your token’s validity. If your token is a expired, it will be
 refreshed. If it is not expired, and <em>will not</em> expire within the
@@ -185,12 +189,12 @@ refreshed. If it is not expired, and <em>will not</em> expire within the
 appropriate. This approach does not require you to copy and paste a code
 from the browser into your R session. This method does not generate a
 refresh token, though.</p>
-<p>Use <code><a href="../reference/auth.html">auth_client()</a></code> to perform client based authorization.
-<code><a href="../reference/auth.html">auth_client()</a></code> has a <code>secret</code> argument which, by
+<p>Use <code>auth_client()</code> to perform client based authorization.
+<code>auth_client()</code> has a <code>secret</code> argument which, by
 default, uses the environment variable <code>ARCGIS_SECRET</code> which
 was set in your <code>.Renviron</code> file above. Running</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth.html">auth_client</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">auth_client</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
 <span><span class="co">#&gt; token_type: bearer</span></span>
 <span><span class="co">#&gt; access_token: &lt;REDACTED&gt;</span></span>
@@ -203,14 +207,14 @@ was set in your <code>.Renviron</code> file above. Running</p>
 password authorization, you can accomplish this with
 <code>auth_password()</code>. While this method of authorization is not
 recommended, it is still possible.</p>
-<p><code><a href="../reference/auth.html">auth_user()</a></code> has the arguments <code>username</code> and
+<p><code>auth_user()</code> has the arguments <code>username</code> and
 <code>password</code> which, by default, use the <code>.Renviron</code>
 environment variables <code>ARCGIS_USER</code> and
 <code>ARCGIS_PASSWORD</code>. It is <em>strongly</em> recommended that
 you use environment variables and never store your credentials in plain
 text in your scripts.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth.html">auth_user</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">auth_user</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
 <span><span class="co">#&gt; token_type: bearer</span></span>
 <span><span class="co">#&gt; access_token: &lt;REDACTED&gt;</span></span>
@@ -230,7 +234,7 @@ text in your scripts.</p>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
     </footer>

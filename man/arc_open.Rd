@@ -9,9 +9,19 @@ arc_open(url, token = Sys.getenv("ARCGIS_TOKEN"))
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{token}{}
+\item{token}{default uses the \code{ARCGIS_TOKEN}environment variable.}
+}
+\value{
+Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, or \code{ImageServer}.
 }
 \description{
 Provided a URL, create an object referencing the remote resource.
-Supports Feature Layers, Tables, Feature Servers, and Image Servers.
+The resultant object acts as a reference to the remote data source.
+}
+\details{
+To extract data from the remote resource utilize \code{\link[=arc_select]{arc_select()}} for objects of class
+\code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, utilize \code{\link[=arc_raster]{arc_raster()}}.
+}
+\seealso{
+arc_select arc_raster
 }

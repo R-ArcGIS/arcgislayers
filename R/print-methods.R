@@ -150,15 +150,20 @@ print.FeatureServer <- function(x, n, ...) {
 
   # LAYERS create and format vector to populate box
 
-  box_layers_ln <- paste0(
-    "  ",
-    lyr[["id"]],
-    ": ",
-    lyr[["name"]],
-    " (",
-    lyr[["geometryType"]],
-    ")"
-  )
+  if (!is.null(lyr)) {
+    box_layers_ln <- paste0(
+      "  ",
+      lyr[["id"]],
+      ": ",
+      lyr[["name"]],
+      " (",
+      lyr[["geometryType"]],
+      ")"
+    )
+  } else {
+    box_layers_ln <- NULL
+  }
+
 
   # Tables
   # if tables aren't missing populate
