@@ -84,7 +84,7 @@ create_feature_server <- function(
 
   body_json <- jsonify::to_json(body, unbox = TRUE)
 
-  req <- request(burl)
+  req <- request(req_url)
   req <- req_url_query(
     req,
     outputType = "featureService",

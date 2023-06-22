@@ -18,8 +18,10 @@ add_features <- function(
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
+  # DEVELOPER NOTE: date fields and others should be handled
+  # in the json converters in arcgisutils as_features and as_featureset
+
   # TODO separate into multiple different requests
-  # TODO manipulate date types before sending up
   # TODO address data.frame objects / table layers
   # TODO error on list columns
 
@@ -30,6 +32,8 @@ add_features <- function(
   if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
     if (is.na(sf::st_crs(.data))) {
       warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
+    } else if (is.na(sf::st_crs(x))) {
+      warning("CRS missing from `x` cannot verify matching CRS.")
     } else {
       stop("`FeatureLayer` and `.data` have different CRS\nTranform to the same CRS:\n",
            "  `sf::st_transform(.data, sf::st_crs(x))`")
@@ -39,13 +43,13 @@ add_features <- function(
 
   # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
-
   feature_fields <- list_fields(x)
-
   cnames <- colnames(.data)
 
+  # find which columns are present in the layer
   present_index <- cnames %in% feature_fields[["name"]]
 
+  # fetch the geometry column name
   geo_col <- attr(.data, "sf_column")
 
   # columns not in the feature layer
@@ -70,9 +74,11 @@ add_features <- function(
     # }
   }
 
-
+  # subset accordingly
   .data <- .data[, present_index]
-  body <- st_as_features(.data)
+
+  # conver to esri json
+  body <- as_esri_features(.data)
 
   req <- httr2::request(x[["url"]])
   req <- httr2::req_url_path_append(req, "addFeatures")
@@ -95,11 +101,7 @@ add_features <- function(
 
   # TODO what is the behavior be after this is completed?
   # should the x object be returned? Should the successes / results be returned?
-  #
-  # # should the feature layer be refreshed?
-  # flayer2 <- feature_layer("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/ArcGIS/rest/services/polygon_testing/FeatureServer/0", token = token)
-  #
-
+  # should the feature layer be refreshed?
 }
 
 

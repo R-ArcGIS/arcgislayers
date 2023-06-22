@@ -96,6 +96,7 @@ add_item <- function(
       tags = tags,
       snippet = snippet,
       text = jsonify::to_json(feature_collection, unbox = TRUE),
+      # text = jsn,
       extent = extent,
       spatialReference = spatial_reference,
       categories = categories,
@@ -201,17 +202,4 @@ publish_layer <- function(
 }
 
 
-# set_auth_token(auth_code())
-# x <- sf::st_set_crs(sf::st_centroid(sfdep::guerry[5:7,3]), 27572)
-# title = "publishing"
-#
-# user = Sys.getenv("ARCGIS_USER")
-# description = ""
-# tags = character(0)
-# snippet = ""
-# categories = character(0)
-# async = FALSE
-# type = "Feature Service"
-# host = "https://arcgis.com"
-# token = Sys.getenv("ARCGIS_TOKEN")
-#
+
