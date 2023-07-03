@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(arcgis)
+library(arcgislayers)
 
-test_check("arcgis")
+test_check("arcgislayers")
