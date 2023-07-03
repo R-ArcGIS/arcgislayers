@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>/articles/Authentication.html</loc>
   </url>
   <url>
@@ -25,10 +28,10 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>/reference/add_features.html</loc>
   </url>
   <url>
-    <loc>/reference/add_features.html</loc>
+    <loc>/reference/add_item.html</loc>
   </url>
   <url>
     <loc>/reference/add_offset.html</loc>
@@ -79,9 +82,6 @@
     <loc>/reference/dplyr.html</loc>
   </url>
   <url>
-    <loc>/reference/featureset_geometry.html</loc>
-  </url>
-  <url>
     <loc>/reference/feature_layer.html</loc>
   </url>
   <url>
@@ -89,6 +89,9 @@
   </url>
   <url>
     <loc>/reference/feature_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/featureset_geometry.html</loc>
   </url>
   <url>
     <loc>/reference/fetch_layer_metadata.html</loc>

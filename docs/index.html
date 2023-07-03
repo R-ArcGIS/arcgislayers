@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="An R package to interface with Esri's ArcGIS REST Services.">
-<title>R Interface for ArcGIS REST Services • arcgis</title>
+<title>R Interface for ArcGIS REST Services • arcgislayers</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -24,7 +24,7 @@
 
     <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
-    <a class="navbar-brand me-2" href="index.html">arcgis</a>
+    <a class="navbar-brand me-2" href="index.html">arcgislayers</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -132,77 +132,18 @@
 <span><span class="co">#&gt; 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
 <p>Note you can also provide an <code>sfc</code>/<code>sfg</code> object to the <code>filter_geom</code> argument to perform a spatial filter. Note that this is limited to only one object. See documentation for more (<code><a href="reference/arc_select.html">?arc_select</a></code>).</p>
 <p><code>SpatRaster</code> object from the <code>terra</code> package can be extracted from an <code>ImageServer</code> by using <code><a href="reference/arc_raster.html">arc_raster()</a></code>.</p>
-<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> requires a <code>bbox</code> class object from the <code>sf</code> package to define the area to be extracted. Optionally can specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned</p>
+<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> requires a <code>bbox</code> class object from the <code>sf</code> package to define the area to be extracted. Optionally can specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">img_url</span> <span class="op">&lt;-</span> <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span>
 <span></span>
 <span><span class="va">landsat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">img_url</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_raster.html">arc_raster</a></span><span class="op">(</span><span class="va">landsat</span>, xmin <span class="op">=</span> <span class="op">-</span><span class="fl">71</span>, ymin <span class="op">=</span> <span class="fl">43</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">67</span>, ymax <span class="op">=</span> <span class="fl">47.5</span>, bbox_crs <span class="op">=</span> <span class="fl">4326</span>, height <span class="op">=</span> <span class="fl">1000</span>, width <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">71</span>, ymin <span class="op">=</span> <span class="fl">43</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">67</span>, ymax <span class="op">=</span> <span class="fl">47.5</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_raster.html">arc_raster</a></span><span class="op">(</span><span class="va">landsat</span>, <span class="va">bbox</span>, <span class="fl">1000</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plotRGB.html" class="external-link">plotRGB</a></span><span class="op">(</span><span class="va">res</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">landsat</span><span class="op">[[</span><span class="st">"maxValues"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
-</div>
-<div class="section level2">
-<h2 id="authorization">Authorization<a class="anchor" aria-label="anchor" href="#authorization"></a>
-</h2>
-<p>See authorization article.</p>
-</div>
-<div class="section level2">
-<h2 id="benchmarks">Benchmarks<a class="anchor" aria-label="anchor" href="#benchmarks"></a>
-</h2>
-<table class="table">
-<colgroup>
-<col width="42%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="12%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">expression</th>
-<th align="right">min</th>
-<th align="right">median</th>
-<th align="right">itr/sec</th>
-<th align="right">mem_alloc</th>
-<th align="right">total_time</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">arc.data2sf(arc.select(arc.open(furl)))</td>
-<td align="right">0.8447476</td>
-<td align="right">0.8715339</td>
-<td align="right">1.1319673</td>
-<td align="right">22042464</td>
-<td align="right">8.834177</td>
-</tr>
-<tr class="even">
-<td align="left">arc_select(arc_open(furl))</td>
-<td align="right">0.9293584</td>
-<td align="right">1.0583557</td>
-<td align="right">0.8823662</td>
-<td align="right">19360960</td>
-<td align="right">11.333163</td>
-</tr>
-<tr class="odd">
-<td align="left">esri2sf::esri2sf(furl)</td>
-<td align="right">7.0152159</td>
-<td align="right">7.7417628</td>
-<td align="right">0.1290807</td>
-<td align="right">27235736</td>
-<td align="right">77.470929</td>
-</tr>
-<tr class="even">
-<td align="left">arcpullr::get_spatial_layer(furl)</td>
-<td align="right">5.4766765</td>
-<td align="right">6.2454313</td>
-<td align="right">0.1587969</td>
-<td align="right">17681280</td>
-<td align="right">62.973502</td>
-</tr>
-</tbody>
-</table>
 <hr>
 <!-- # DEPRECATED FROM HERE DOWN  --><!-- TODO update and rewrite --><!-- ## Feature Layers --><!-- Read in data from a feature layer. arcgis implements a `FeatureLayer` class object which is used to control how we read data from a Feature Layer service.  --><!-- Create a `FeatureLayer` with `feature_layer()` which takes the url of the feature layer as its only argument.  --><!-- ```{r example} --><!-- library(arcgis) --><!-- # define the feature layer url --><!-- furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0" --><!-- # create a feature layer --><!-- county_fl <- feature_layer(furl) --><!-- county_fl --><!-- ``` --><!-- `FeatureLayer` objects are lists that contain metadata from the FeatureServer. The data that is used to create the `FeatureLayer` is taken directly from the url when displayed in json format. `FeatureLayer`s are intended to work somewhat similarly to a lazy table where data is only brought into memory when explicitly requested.  --><!-- The `collect_layer()` function will fetch all data for a layer from the REST endpoint and write it to the appropriate type—either an sf object or a data frame.  --><!-- ```{r cars} --><!-- county_sf <- collect_layer(county_fl) --><!-- county_sf --><!-- ``` --><!-- We can check to see what fields and types are present in our feature layer using `list_fields()`.  --><!-- ```{r} --><!-- list_fields(county_fl) --><!-- ``` --><!-- You can provide a more detailed query to the layer using `query_layer()`.  --><!-- ```{r} --><!-- res <- query_layer( --><!--   county_fl,  --><!--   where = "STATE_NAME = 'California' and POPULATION >= 30000", --><!--   fields = c("FIPS", "STATE_NAME", "SQMI", "POPULATION") --><!-- ) --><!-- res --><!-- ``` --><!-- Additionally, you can provide sf objects as spatial filters based on a predicate function.  Possible options are "intersects", "contains", "crosses", "overlaps", "touches", and "within". --><!-- In this example we create a polygon representing the bounding box of the West Coast of the US to act as our spatial filter.  --><!-- ```{r} --><!-- west_coast_bbox <- sf::st_as_sfc( --><!--   sf::st_bbox(c(xmin = -125, ymin = 32, xmax = -114, ymax = 49)) --><!-- ) --><!-- west_coast_bbox --><!-- ``` --><!-- We can then provide it as input to the `filter_geom` argument to act as a spatial filter.  --><!-- ```{r} --><!-- res <- query_layer( --><!--   county_fl,  --><!--   filter_geom = west_coast_bbox --><!-- ) --><!-- plot(res$geometry) --><!-- plot(west_coast_bbox, lty = 3, add = TRUE) --><!-- ``` --><!-- For manual control of the parameters that will be sent to the REST API you can use `update_params()`. This function allows you to built up your query iteratively and programmatically without executing the query right away. Use it in conjunction with `collect_layer()` for a lazy-ish process. --><!-- ```{r} --><!-- fl_query <- update_params( --><!--   county_fl,  --><!--   where = "STATE_NAME = 'New Hampshire'", --><!--   outFields = "STATE_NAME,POPULATION" --><!-- ) --><!-- fl_query --><!-- ``` --><!-- Notice the appended query. You can execute the query and bring the results into memory using `collect_layer()`. --><!-- ```{r} --><!-- collect_layer(fl_query) --><!-- ``` --><!-- ## Interfacing with `{arcgisbinding}` --><!-- - to do.... --><!-- ### dplyr-like syntax --><!-- You may not need all of these fields or features in your R session. If that's the case, it is more effective to bring in only a subset of the data that you need. We can limit what is brought into memory by using `select()` and `filter()` functions to build up a query that can be sent the rest API.  --><!-- The `select()` `FeatureLayer` method supports using `{tidyselect}` functions except the `where()` function. --><!-- ```{r} --><!-- county_fl |>  --><!--   select(contains("STATE")) --><!-- ``` --><!-- Now that we've ran `select()` on the `FeatureLayer` query parameters are printed out. The parameters will be sent along when the results are `collect()`ed.  --><!-- You can further subset your data by using `filter()`. Note that filtering is fairly limited ([see API documentation for more](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614)). --><!-- ```{r} --><!-- county_query <- county_fl |>  --><!--   select(starts_with("STATE")) |>  --><!--   filter(STATE_NAME == "Alabama") --><!-- county_query --><!-- ``` --><!-- Bring it into memory with `collect()`. --><!-- ```{r} --><!-- res <- collect(county_query) --><!-- res --><!-- ``` --><!-- ### Other `FeatureLayer` functions --><!-- You can add any parameter that you'd like that is supported by the query parameters [listed in the documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) with the using the `update_params()` function. --><!-- ```{r} --><!-- county_query |>  --><!--   update_params(returnIdsOnly = "true") |>  --><!--   collect() --><!-- ``` --><!-- Maybe, you want to clear our your query parameters, use `clear_query()`. --><!-- ```{r} --><!-- clear_query(county_query) --><!-- ``` --><!-- To preview only a few features from the feature layer use `head()` --><!-- ```{r} --><!-- head(county_query) --><!-- ``` --><!-- ## `FeatureServers` --><!-- FeatureServers contain one or more `FeatureLayers` or `Tables`.  --><!-- ```{r} --><!-- ft_srv <- feature_server( --><!--   "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/" --><!--   ) --><!-- ft_srv --><!-- ``` --><!-- Access elements by ID with `get_layer()` --><!-- ```{r} --><!-- get_layer(ft_srv, 27) --><!-- ``` --><!-- Get a list of all elements. --><!-- ```{r} --><!-- get_all_layers(ft_srv) --><!-- ``` --><!-- ## Conversion to Esri JSON --><!-- sf objects can be converted to Esri JSON representation. These can be Geometry Objects, FeatureSets, or arrays of Features.  --><!-- `st_as_geometry()` works with objects of class `sfg` and creates a Geometry Object. `st_as_featureset()` creates a FeatureSet from an sf or sfc object. sfc objects will have 0 length attributes. `st_as_features()` works with an sf or sfc object.  --><!-- ```{r} --><!-- st_as_geometry(res[["geometry"]][[30]]) |>  --><!--   # print nicely with jsonify --><!--   jsonify::pretty_json() --><!-- ``` --><!-- ```{r} --><!-- st_as_featureset(res[30,]) |>  --><!--   jsonify::pretty_json() --><!-- ``` -->
 </div>
@@ -219,14 +160,14 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing arcgis</a></li>
+<li><a href="authors.html#citation">Citing arcgislayers</a></li>
 </ul>
 </div>
 
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Josiah Parry <br><small class="roles"> Maintainer </small>  </li>
+<li>Josiah Parry <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-9910-865X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
