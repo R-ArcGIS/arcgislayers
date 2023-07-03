@@ -13,8 +13,6 @@ test_that("Feature Layer can be written from an sf object ", {
 
 test_that("Table can be written from an sf object ", {
   skip("Must be ran interactively")
-
-
   tkn <- auth_code()
   set_auth_token(tkn)
   res <- publish_layer(iris, "Iris Test")
