@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# arcgis
+# arcgislayers
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `{arcgis}` is to provide an R interface to the ArcGIS REST
-API
+The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS
+REST API
 
 ## Installation
 
@@ -30,6 +30,9 @@ Create a `FeatureLayer` object.
 
 ``` r
 library(arcgis)
+#> Attaching core arcgis packages:
+#>   - {arcgisutils} v0.1.0
+#>   - {arcgislayers} v0.1.0
 
 # define the feature layer url
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
@@ -98,14 +101,22 @@ img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageSer
 
 landsat <- arc_open(img_url)
 
-bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
-
-res <- arc_raster(landsat, bbox, 1000, 1000)
+res <- arc_raster(
+  landsat, 
+  xmin = -71, ymin = 43, 
+  xmax = -67, ymax = 47.5, 
+  bbox_crs = 4326, 
+  width = 500, 
+  height = 500
+)
 
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" /> \##
+Authorization
+
+See authorization article.
 
 ------------------------------------------------------------------------
 

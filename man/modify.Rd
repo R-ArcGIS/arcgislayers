@@ -9,6 +9,7 @@
 add_features(
   x,
   .data,
+  match_on = c("alias", "name"),
   rollback_on_fail = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN")
 )
@@ -16,6 +17,7 @@ add_features(
 update_features(
   x,
   .data,
+  match_on = c("alias", "name"),
   token = Sys.getenv("ARCGIS_TOKEN"),
   rollback_on_failure = TRUE,
   ...
@@ -37,6 +39,9 @@ delete_features(
 
 \item{.data}{an object of class \code{sf} or \code{data.frame}}
 
+\item{match_on}{whether to match on the alias or the field name. Default, the alias.
+See Details for more}
+
 \item{rollback_on_fail}{default \code{TRUE}. Specifies whether the edits should be applied only if all submitted edits succeed.}
 
 \item{token}{your authorization token. By default uses the environment variable \code{ARCGIS_TOKEN} as set by \code{set_auth_token()}.}
@@ -52,4 +57,12 @@ When the where statement evaluates to \code{TRUE}, those values will be deleted.
 }
 \description{
 Delete features from a feature layer based on object ID, a where clause, or a spatial filter.
+}
+\details{
+Regarding the \code{match_on} argument:when publishing an object to an ArcGIS Portal
+from R, the object's names are provided as the alias. The object's names are
+subject to change according to the standards of the ArcGIS REST API. For example.
+\code{"Sepal.Length"} is changed to \code{"Sepal_Width"} in the \code{name} field but the alias
+remains \code{"Sepal.Length"}. For that reason, we match on the alias name by default.
+Change this argument to match based on the field name.
 }

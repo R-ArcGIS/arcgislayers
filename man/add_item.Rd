@@ -40,6 +40,12 @@ publish_layer(
 )
 }
 \arguments{
+\item{x}{an object of class \code{data.frame}. This can be an \code{sf} object or \code{tibble} or
+any other subclass of \code{data.frame}.}
+
+\item{title}{A user-friendly string title for the layer that can be used in
+a table of contents.}
+
 \item{user}{default environment variable \code{Sys.getenv("ARCGIS_USER")}.
 The username to publish the item under.}
 

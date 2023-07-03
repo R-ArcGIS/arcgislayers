@@ -80,9 +80,14 @@ img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageSer
 
 landsat <- arc_open(img_url)
 
-bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
-
-res <- arc_raster(landsat, bbox, 1000, 1000)
+res <- arc_raster(
+  landsat, 
+  xmin = -71, ymin = 43, 
+  xmax = -67, ymax = 47.5, 
+  bbox_crs = 4326, 
+  width = 500, 
+  height = 500
+)
 
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
