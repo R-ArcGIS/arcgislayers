@@ -6,17 +6,33 @@
 #'
 #' @param x an object of class `FeatureLayer`
 #' @param .data an object of class `sf` or `data.frame`
+#' @param match_on whether to match on the alias or the field name. Default, the alias.
+#'   See Details for more
 #' @param rollback_on_fail if anything errors, roll back writes. Defaults to `TRUE`
 #' @param token your authorization token. By default checks the environment variable `ARCGIS_TOKEN`
+#'
+#' @details
+#'
+#' Regarding the `match_on` argument:when publishing an object to an ArcGIS Portal
+#' from R, the object's names are provided as the alias. The object's names are
+#' subject to change according to the standards of the ArcGIS REST API. For example.
+#' `"Sepal.Length"` is changed to `"Sepal_Width"` in the `name` field but the alias
+#' remains `"Sepal.Length"`. For that reason, we match on the alias name by default.
+#' Change this argument to match based on the field name.
 #'
 #' @export
 #' @rdname modify
 add_features <- function(
     x,
     .data,
+    match_on = c("alias", "name"),
     rollback_on_fail = TRUE,
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
+
+  stopifnot("`.data` must be a data.frame-type class" = inherits(.data, "data.frame"))
+
+  match_on <- match.arg(match_on)
 
   # DEVELOPER NOTE: date fields and others should be handled
   # in the json converters in arcgisutils as_features and as_featureset
@@ -47,10 +63,22 @@ add_features <- function(
   cnames <- colnames(.data)
 
   # find which columns are present in the layer
-  present_index <- cnames %in% feature_fields[["name"]]
+  present_index <- cnames %in% feature_fields[[match_on]]
 
   # fetch the geometry column name
   geo_col <- attr(.data, "sf_column")
+
+  if (match_on == "alias") {
+    lu <- setNames(feature_fields[["name"]], feature_fields[["alias"]])
+
+    # ensure the geo_col is present if its an sf object
+    if (inherits(.data, "sf")) {
+      cnames[length(cnames)] <- geo_col
+    } else {
+      cnames <- unname(lu[cnames])
+    }
+    colnames(.data) <- cnames
+  }
 
   # columns not in the feature layer
   nin_feature <- setdiff(cnames[!present_index], geo_col)
@@ -60,18 +88,6 @@ add_features <- function(
       "Columns in `.data` not in feature(s): ",
       ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
     )
-
-    # Prompt if we want to have it be a bit more interactive
-    # if (interactive()) {
-    #   prmpt <- readline("Do you wish to continue? (y/n): ")
-    #
-    #   while(!prmpt %in% c("y", "n")) {
-    #     message(r"{Please enter "y" or "n":}")
-    #     prmpt <- readline("Do you wish to continue? (y/n): ")
-    #
-    #     if (prmpt == "y") stop("Stopping...", call. = FALSE)
-    #   }
-    # }
   }
 
   # subset accordingly
@@ -93,8 +109,6 @@ add_features <- function(
 
   resp <- httr2::req_perform(req)
 
-
-
   RcppSimdJson::fparse(
     httr2::resp_body_string(resp)
   )
@@ -105,18 +119,21 @@ add_features <- function(
 }
 
 
-
 # Update Features ---------------------------------------------------------
 
 #' @export
+#' @inheritParams add_features
 #' @rdname modify
 update_features <- function(
     x,
     .data,
+    match_on = c("alias", "name"),
     token = Sys.getenv("ARCGIS_TOKEN"),
     rollback_on_failure = TRUE,
     ...
 ) {
+
+  match_on <- match.arg(match_on)
 
   # TODO field types from x need to be compared to that of `.data`
   # if the field types do not match either error or do the conversion for the user
@@ -124,9 +141,6 @@ update_features <- function(
   # What is the difference between `applyEdits`, and `append` both are a way to do upserting.
 
   # Update Feature Layer
-  #
-  #
-  #
   # https://developers.arcgis.com/rest/services-reference/enterprise/update-features.htm
 
   #  check CRS compaitibility between x and `.data`
@@ -138,32 +152,47 @@ update_features <- function(
   # ALTERNATIVELY let me provide a feature set so i can pass in CRS
   if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
 
-    if (is.na(sf::st_crs(.data))) {
+    if (is.na(sf::st_crs(.data)) && inherits(.data, "sf")) {
       warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
-    } else {
+    } else if (inherits(.data, "sf")){
       stop("`FeatureLayer` and `.data` have different CRS\nTranform to the same CRS:\n",
            "  `sf::st_transform(.data, sf::st_crs(x))`")
     }
+  }  # not that addFeatures does not update layer definitions so if any attributes
+  # are provided that aren't in the feature layer, they will be ignored
+  feature_fields <- list_fields(x)
+  cnames <- colnames(.data)
+
+  # find which columns are present in the layer
+  present_index <- cnames %in% feature_fields[[match_on]]
+
+  # fetch the geometry column name
+  geo_col <- attr(.data, "sf_column")
+
+  if (match_on == "alias") {
+    lu <- setNames(feature_fields[["name"]], feature_fields[["alias"]])
+
+    # ensure the geo_col is present if its an sf object
+    if (inherits(.data, "sf")) {
+      cnames[length(cnames)] <- geo_col
+    } else {
+      cnames <- unname(lu[cnames])
+    }
+    colnames(.data) <- cnames
   }
 
-  # check for field compatibility. Warn and drop fields if they aren't present.
-  # get field names from feature layer
-  cur_fields <- tolower(list_fields(x)[["name"]])
+  # columns not in the feature layer
+  nin_feature <- setdiff(cnames[!present_index], geo_col)
 
-  # check provided columns
-  data_cols <- tolower(colnames(.data))
-
-  # drop geometry columns from the vector
-  data_cols <- data_cols[which(!data_cols == attr(.data, "sf_column"))]
-
-  # identify which columns are not in `x`
-  nindex <- !(data_cols %in% cur_fields)
-
-  # stop processing
-  if (any(nindex)) {
-    stop("Fields in `.data` not present in `x`\n",
-         "\nVars: ", paste0("`", data_cols[nindex], "`", collapse = ", "))
+  if (length(nin_feature) > 0 ) {
+    message(
+      "Columns in `.data` not in feature(s): ",
+      ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
+    )
   }
+
+  # subset accordingly
+  .data <- .data[, present_index]
 
   # create base request
   req <- httr2::request(
@@ -173,7 +202,7 @@ update_features <- function(
   req <- httr2::req_body_form(
     req,
     # transform `.data`
-    features = st_as_features(.data),
+    features = as_esri_features(.data),
     rollbackOnFailure = rollback_on_failure,
     token = token,
     f = "json",
