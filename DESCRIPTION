@@ -1,4 +1,4 @@
-Package: arcgis
+Package: arcgislayers
 Type: Package
 Title: R Interface for ArcGIS REST Services
 Version: 0.1.0
