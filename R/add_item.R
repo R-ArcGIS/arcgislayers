@@ -114,6 +114,7 @@ add_item <- function(
   resp <- httr2::req_perform(req_body)
 
   parsed <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
+  detect_errors(parsed)
 
   data.frame(parsed)
 }
@@ -186,7 +187,7 @@ publish_layer <- function(
     )
   )
 
-  detect_errors(item_res)
+
   # fetch item_id
   item_id <- item_res[["id"]]
 
