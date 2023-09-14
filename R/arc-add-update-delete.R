@@ -45,7 +45,7 @@ add_features <- function(
   provided_crs <- sf::st_crs(.data)
 
   # see commentary in `update_features.R`
-  if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
+  if (!target_crs == provided_crs) {
     if (is.na(sf::st_crs(.data))) {
       warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
     } else if (is.na(sf::st_crs(x))) {
