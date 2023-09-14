@@ -1,5 +1,6 @@
-#' Cleary all query parameters
-#'
+#' Clear all query parameters
+#' @export
+#' @rdname utils
 clear_query <- function(x) {
   attr(x, "query") <- list()
   x
@@ -7,7 +8,9 @@ clear_query <- function(x) {
 
 #' List fields in a a feature layer
 #'
-#'@param x and object of class `FeatureLayer`, `Table`, or `ImageServer`.
+#' @param x and object of class `FeatureLayer`, `Table`, or `ImageServer`.
+#' @export
+#' @rdname utils
 list_fields <- function(x) {
   res <- x[["fields"]]
 
@@ -19,9 +22,12 @@ list_fields <- function(x) {
 }
 
 
-#' Refresh layer
+#' Refreshes an Item's metadata
 #'
-#' Useful to update metadata after modifying a remote
+#' Useful to update metadata after modifying a remote.
+#'
+#' @export
+#' @rdname utils
 refresh_layer <- function(x) {
   query <- attr(x, "query")
   xurl <- x[["url"]]

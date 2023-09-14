@@ -15,6 +15,4 @@
 # Consider using memoise to speed up calls to the same endpoint
 
 
-# Dates and date times? ---------------------------------------------------
 
-# how are dates handled from the API? Particularly how are timezones handled? Should all data be converted to a common time-zone?
