@@ -12,6 +12,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     arcgisutils (>= 0.1.0),
+    cli,
     httr2,
     jsonify,
     Rcpp,
@@ -29,5 +30,5 @@ Suggests:
     testthat (>= 3.0.0),
     tidyselect
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     R-ArcGIS/arcgisutils
