@@ -4,13 +4,14 @@
 #' provide easy access to the layers contained in the `FeatureServer`.
 #'
 #' @param x an object of class `FeatureServer` or `MapServer`
-#' @param id default `NULL`. A numeric vector of unique ID of the layer you want to retrieve.
-#' @param name default `NULL`. The name associated with the layer you want to retrieve. `name` is mutually exclusive with `id`.
-#'
+#' @param id default `NULL`. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in `get_layer()`.
+#' @param name default `NULL`. The name associated with the layer you want to retrieve. `name` is mutually exclusive with `id`. This is a scalar in `get_layer()`.
+#' @inheritParams arc_open
 #'
 #' @returns
 #'
 #' - `get_layer()` returns a single `FeatureLayer` or `Table` based on its ID
+#' - `get_layers()` returns a list of the items specified by the `id` or `name` argument
 #' - `get_all_layers()` returns a named `list` with an element `layers` and `tables`.
 #'     Each a list containing `FeatureLayer` and `Table`s respectively.
 #'
@@ -27,6 +28,8 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
         i = "Provide only {.arg id} or {.arg name}"
       )
     )
+  } else if (!(length(id) == 1) || !(length(name) == 1)) {
+    cli::cli_abort("{.arg id} and {.arg name} must be of length 1.")
   }
 
   if (!is.null(name)) {
