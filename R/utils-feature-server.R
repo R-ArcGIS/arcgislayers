@@ -8,6 +8,8 @@
 #' @param name default `NULL`. The name associated with the layer you want to retrieve. `name` is mutually exclusive with `id`. This is a scalar in `get_layer()`.
 #' @inheritParams arc_open
 #'
+#' The `id` and `name` arguments must match the field values of the respective names as seen in the output of `list_items()`
+#'
 #' @returns
 #'
 #' - `get_layer()` returns a single `FeatureLayer` or `Table` based on its ID

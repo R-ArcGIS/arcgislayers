@@ -1,4 +1,12 @@
-#' Clear all query parameters
+#' Utility functions
+#'
+#' @details
+#'
+#' - `list_fields()` returns a data.frame of the fields in a `FeatureLayer` or `Table`
+#' - `list_items()` returns a data.frame containing the layers or tables in a `FeatureServer` or `MapServer`
+#' - `clear_query()` removes any saved query in a `FeatureLayer` or `Table` object
+#' - `refresh_layer()` syncs a `FeatureLayer` or `Table` with the remote resource picking up any changes that may have been made upstream
+#'
 #' @export
 #' @rdname utils
 clear_query <- function(x) {
@@ -6,9 +14,6 @@ clear_query <- function(x) {
   x
 }
 
-#' List fields in a a feature layer
-#'
-#' @param x and object of class `FeatureLayer`, `Table`, or `ImageServer`.
 #' @export
 #' @rdname utils
 list_fields <- function(x) {
@@ -21,11 +26,12 @@ list_fields <- function(x) {
   res
 }
 
+#' @export
+#' @rdname utils
+list_items <- function(x) {
+  rbind(x[["layers"]], x[["tables"]])
+}
 
-#' Refreshes an Item's metadata
-#'
-#' Useful to update metadata after modifying a remote.
-#'
 #' @export
 #' @rdname utils
 refresh_layer <- function(x) {
@@ -40,3 +46,5 @@ refresh_layer <- function(x) {
   attr(x, "query") <- query
   x
 }
+
+
