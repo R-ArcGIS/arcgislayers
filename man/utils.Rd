@@ -3,18 +3,26 @@
 \name{clear_query}
 \alias{clear_query}
 \alias{list_fields}
+\alias{list_items}
 \alias{refresh_layer}
-\title{Clear all query parameters}
+\title{Utility functions}
 \usage{
 clear_query(x)
 
 list_fields(x)
 
+list_items(x)
+
 refresh_layer(x)
 }
-\arguments{
-\item{x}{and object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
-}
 \description{
-Useful to update metadata after modifying a remote.
+Utility functions
+}
+\details{
+\itemize{
+\item \code{list_fields()} returns a data.frame of the fields in a \code{FeatureLayer} or \code{Table}
+\item \code{list_items()} returns a data.frame containing the layers or tables in a \code{FeatureServer} or \code{MapServer}
+\item \code{clear_query()} removes any saved query in a \code{FeatureLayer} or \code{Table} object
+\item \code{refresh_layer()} syncs a \code{FeatureLayer} or \code{Table} with the remote resource picking up any changes that may have been made upstream
+}
 }

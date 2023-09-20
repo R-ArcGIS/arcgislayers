@@ -3,15 +3,26 @@
 \name{get_layer}
 \alias{get_layer}
 \alias{get_all_layers}
+\alias{get_layers}
 \title{Extract a layer from a FeatureServer}
 \usage{
-get_layer(x, id = 0, token = Sys.getenv("ARCGIS_TOKEN"))
+get_layer(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
 
 get_all_layers(x, token = Sys.getenv("ARCGIS_TOKEN"))
+
+get_layers(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
+}
+\arguments{
+\item{x}{an object of class \code{FeatureServer} or \code{MapServer}}
+
+\item{id}{default \code{NULL}. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in \code{get_layer()}.}
+
+\item{name}{default \code{NULL}. The name associated with the layer you want to retrieve. \code{name} is mutually exclusive with \code{id}. This is a scalar in \code{get_layer()}.}
 }
 \value{
 \itemize{
 \item \code{get_layer()} returns a single \code{FeatureLayer} or \code{Table} based on its ID
+\item \code{get_layers()} returns a list of the items specified by the \code{id} or \code{name} argument
 \item \code{get_all_layers()} returns a named \code{list} with an element \code{layers} and \code{tables}.
 Each a list containing \code{FeatureLayer} and \code{Table}s respectively.
 }
