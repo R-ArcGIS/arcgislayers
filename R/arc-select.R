@@ -107,6 +107,10 @@ apply_filter_geom <- function(x,
     filter_geom <- sf::st_as_sfc(filter_geom)
   }
 
+  if (inherits(filter_geom, "sfg")) {
+    filt_crs <- crs
+  }
+
   # if its an sfc object it must be length one
   if (inherits(filter_geom, "sfc")) {
     if (length(filter_geom) > 1) {
@@ -123,10 +127,6 @@ apply_filter_geom <- function(x,
 
     # extract the sfg object which is used to write Esri json
     filter_geom <- filter_geom[[1]]
-  }
-
-  if (inherits(filter_geom, "sfg")) {
-    filt_crs <- crs
   }
 
   # if a multi polygon stop, must be a single polygon see
@@ -155,8 +155,6 @@ apply_filter_geom <- function(x,
 
   update_params(x, rlang::splice(filter_params))
 }
-
-
 
 # This is the workhorse function that actually executes the queries
 #' @keywords internal
