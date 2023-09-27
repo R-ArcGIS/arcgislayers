@@ -12,13 +12,16 @@ arc_select(
   filter_geom,
   predicate = "intersects",
   n_max = Inf,
-  ...
+  ...,
+  error_call = rlang::caller_env()
 )
 }
 \arguments{
 \item{x}{an object of class \code{FeatureLayer} or \code{Table}.}
 
 \item{fields}{a character vector of the field names that you wish to be returned. By default all fields are returned.}
+
+\item{where}{a simple SQL where statement indicating which features should be selected.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than the \code{FeatureLayer}'s CRS, a transformation will occur server-side. Ignored for \code{Table} objects.}
 
@@ -29,6 +32,11 @@ arc_select(
 \item{n_max}{the maximum number of features to return. By default returns every feature available. Unused at the moment.}
 
 \item{...}{additional query parameters passed to the API. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
+
+\item{error_call}{The execution environment of a currently
+running function, e.g. \code{caller_env()}. The function will be
+mentioned in error messages as the source of the error. See the
+\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \description{
 Give a \code{FeatureLayer} or \code{Table} object, retrieve its data as an \code{sf} object or \code{tibble} resepctively.
