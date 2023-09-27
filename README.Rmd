@@ -69,7 +69,8 @@ arc_select(
   where = "population > 1000000"
 )
 ```
-Note you can also provide an `sfc`/`sfg` object to the `filter_geom` argument to perform a spatial filter. Note that this is limited to only one object. See documentation for more (`?arc_select`).
+
+Note you can also provide an `bbox`, `sfc`, or `sfg` object to the `filter_geom` argument to perform a spatial filter. If the `sfc` object contains more than one geometry, the object is combined with `sf::st_union()`. See documentation for more (`?arc_select`).
 
 `SpatRaster` object from the `terra` package can be extracted from an `ImageServer` by using `arc_raster()`. 
 
