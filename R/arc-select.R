@@ -6,7 +6,15 @@
 #' @param fields a character vector of the field names that you wish to be returned. By default all fields are returned.
 #' @param where a simple SQL where statement indicating which features should be selected.
 #' @param crs the spatial reference to be returned. If the CRS is different than the `FeatureLayer`'s CRS, a transformation will occur server-side. Ignored for `Table` objects.
-#' @param filter_geom an object of class `sfc` or `sfg` used to filter query results based on a predicate function. If an `sfc` object is provided it will be transformed to the layers spatial reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is assumed to be in the layers spatial reference.
+#' @param filter_geom an object of class `bbox`, `sfc` or `sfg` used to filter
+#'   query results based on a predicate function. If an `sfc` object is provided
+#'   it will be transformed to the layers spatial reference. If the `sfc` is
+#'   missing a CRS (or is an `sfg` object) it is assumed to be in the layers
+#'   spatial reference. If an `sfc` object has multiple features, the features
+#'   are unioned with [sf::st_union()]. If an `sfc` object has MULTIPOLYGON
+#'   geometry, the features are treated as polygonal coverage and unioned with
+#'   `is_coverage = TRUE` before being cast to POLYGON geometry with
+#'   [sf::st_cast()].
 #' @param predicate default `"intersects"`. Possible options are `"intersects"`,  `"contains"`,  `"crosses"`,  `"overlaps"`,  `"touches"`, and `"within"`.
 #' @param n_max the maximum number of features to return. By default returns every feature available. Unused at the moment.
 #' @param ... additional query parameters passed to the API. See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
@@ -48,7 +56,7 @@ arc_select <- function(
 
     if (any(!nindex)) {
       cli::cli_abort(
-        "Field{?s} not in {.arg x}: {.val {fields[!nindex]}}"
+        "Field{?s} not in {.arg x}: {.var {fields[!nindex]}}"
       )
     }
 
@@ -90,7 +98,7 @@ apply_filter_geom <- function(x,
     filter_geom,
     class = c("sfc", "sfg", "bbox"),
     call = error_call
-    )
+  )
 
   if (inherits(filter_geom, "bbox")) {
     filter_geom <- sf::st_as_sfc(filter_geom)
@@ -119,7 +127,7 @@ apply_filter_geom <- function(x,
   }
 
   # if a multi polygon stop, must be a single polygon see
-  # related issue: https://github.com/R-ArcGIS/api-interface/issues/4
+  # related issue: https://github.com/R-ArcGIS/arcgislayers/issues/4
   if (inherits(filter_geom, "MULTIPOLYGON")) {
     cli::cli_inform(
       c(
