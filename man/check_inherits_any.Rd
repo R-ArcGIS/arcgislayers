@@ -7,7 +7,6 @@
 check_inherits_any(
   x,
   class,
-  style = list(before = "`", after = "`", `vec-last` = " or "),
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 )
@@ -16,10 +15,6 @@ check_inherits_any(
 \item{x}{Vector that will be collapsed by cli.}
 
 \item{class}{A character vector of classes.}
-
-\item{style}{Style to apply to the vector. It is used as a theme on
-a \code{span} element that is created for the vector. You can set \code{vec-sep}
-and \code{vec-last} to modify the separator and the last separator.}
 
 \item{arg}{An argument name as a string. This argument
 will be mentioned in error messages as the input that is at the

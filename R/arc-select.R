@@ -285,12 +285,11 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
 #' Check if x is a FeatureLayer or Table class object
 #' @keywords internal
 obj_check_layer <- function(x,
-                            class = c("FeatureLayer", "Table"),
                             arg = rlang::caller_arg(x),
                             call = rlang::caller_env()) {
   check_inherits_any(
     x,
-    class = class,
+    class = c("FeatureLayer", "Table"),
     arg = arg,
     call = call
   )
@@ -303,11 +302,6 @@ obj_check_layer <- function(x,
 #' @keywords internal
 check_inherits_any <- function(x,
                                class,
-                               style = list(
-                                 "before" = "`",
-                                 "after" = "`",
-                                 "vec-last" = " or "
-                               ),
                                arg = rlang::caller_arg(x),
                                call = rlang::caller_env()) {
   if (rlang::inherits_any(x, class)) {
@@ -316,7 +310,7 @@ check_inherits_any <- function(x,
 
   class <- cli::cli_vec(
     class,
-    style = style
+    style = list("before" = "`", "after" = "`", "vec-last" = " or ")
   )
 
   cli::cli_abort(

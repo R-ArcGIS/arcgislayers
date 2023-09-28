@@ -4,12 +4,7 @@
 \alias{obj_check_layer}
 \title{Check if x is a FeatureLayer or Table class object}
 \usage{
-obj_check_layer(
-  x,
-  class = c("FeatureLayer", "Table"),
-  arg = rlang::caller_arg(x),
-  call = rlang::caller_env()
-)
+obj_check_layer(x, arg = rlang::caller_arg(x), call = rlang::caller_env())
 }
 \description{
 Check if x is a FeatureLayer or Table class object
