@@ -18,9 +18,21 @@ filter.FeatureLayer(x, ...)
 
 filter.Table(x, ...)
 
-collect.FeatureLayer(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ...)
+collect.FeatureLayer(
+  x,
+  n_max = Inf,
+  token = Sys.getenv("ARCGIS_TOKEN"),
+  ...,
+  error_call = rlang::caller_env()
+)
 
-collect.Table(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ...)
+collect.Table(
+  x,
+  n_max = Inf,
+  token = Sys.getenv("ARCGIS_TOKEN"),
+  ...,
+  error_call = rlang::caller_env()
+)
 }
 \description{
 dplyr methods

@@ -14,7 +14,7 @@ REST API
 You can install the development version of arcgis like so:
 
 ``` r
-remotes::install_github("R-ArcGIS/api-interface")
+pak::pkg_install("R-ArcGIS/arcgislayers")
 ```
 
 ## Basic functionality
@@ -84,9 +84,10 @@ arc_select(
 #> 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...
 ```
 
-Note you can also provide an `sfc`/`sfg` object to the `filter_geom`
-argument to perform a spatial filter. Note that this is limited to only
-one object. See documentation for more (`?arc_select`).
+Note you can also provide a `bbox`, `sfc`, or `sfg` object to the
+`filter_geom` argument to perform a spatial filter. If the `sfc` object
+contains more than one geometry, the object is combined with
+`sf::st_union()`. See documentation for more (`?arc_select`).
 
 `SpatRaster` object from the `terra` package can be extracted from an
 `ImageServer` by using `arc_raster()`.
@@ -113,10 +114,11 @@ res <- arc_raster(
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" /> \##
-Authorization
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
-See authorization article.
+## Authorization
+
+See [authorization article](articles/Authorization.html).
 
 ------------------------------------------------------------------------
 

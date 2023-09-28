@@ -13,7 +13,7 @@ LazyData: true
 Imports: 
     arcgisutils (>= 0.1.0),
     cli,
-    httr2,
+    httr2 (>= 0.2.3),
     jsonify,
     Rcpp,
     RcppSimdJson,

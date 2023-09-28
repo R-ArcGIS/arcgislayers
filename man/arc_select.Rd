@@ -20,9 +20,19 @@ arc_select(
 
 \item{fields}{a character vector of the field names that you wish to be returned. By default all fields are returned.}
 
+\item{where}{a simple SQL where statement indicating which features should be selected.}
+
 \item{crs}{the spatial reference to be returned. If the CRS is different than the \code{FeatureLayer}'s CRS, a transformation will occur server-side. Ignored for \code{Table} objects.}
 
-\item{filter_geom}{an object of class \code{sfc} or \code{sfg} used to filter query results based on a predicate function. If an \code{sfc} object is provided it will be transformed to the layers spatial reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is assumed to be in the layers spatial reference.}
+\item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
+query results based on a predicate function. If an \code{sfc} object is provided
+it will be transformed to the layers spatial reference. If the \code{sfc} is
+missing a CRS (or is an \code{sfg} object) it is assumed to be in the layers
+spatial reference. If an \code{sfc} object has multiple features, the features
+are unioned with \code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has MULTIPOLYGON
+geometry, the features are treated as polygonal coverage and unioned with
+\code{is_coverage = TRUE} before being cast to POLYGON geometry with
+\code{\link[sf:st_cast]{sf::st_cast()}}.}
 
 \item{predicate}{default \code{"intersects"}. Possible options are \code{"intersects"},  \code{"contains"},  \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
 
