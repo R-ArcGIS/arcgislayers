@@ -12,8 +12,7 @@ arc_select(
   filter_geom,
   predicate = "intersects",
   n_max = Inf,
-  ...,
-  error_call = rlang::caller_env()
+  ...
 )
 }
 \arguments{
@@ -32,11 +31,6 @@ arc_select(
 \item{n_max}{the maximum number of features to return. By default returns every feature available. Unused at the moment.}
 
 \item{...}{additional query parameters passed to the API. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
-
-\item{error_call}{The execution environment of a currently
-running function, e.g. \code{caller_env()}. The function will be
-mentioned in error messages as the source of the error. See the
-\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \description{
 Give a \code{FeatureLayer} or \code{Table} object, retrieve its data as an \code{sf} object or \code{tibble} resepctively.

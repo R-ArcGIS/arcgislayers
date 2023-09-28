@@ -10,7 +10,6 @@
 #' @param predicate default `"intersects"`. Possible options are `"intersects"`,  `"contains"`,  `"crosses"`,  `"overlaps"`,  `"touches"`, and `"within"`.
 #' @param n_max the maximum number of features to return. By default returns every feature available. Unused at the moment.
 #' @param ... additional query parameters passed to the API. See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
-#' @inheritParams rlang::args_error_context
 #' @export
 arc_select <- function(
     x,
@@ -20,19 +19,17 @@ arc_select <- function(
     filter_geom,
     predicate = "intersects",
     n_max = Inf,
-    ...,
-    error_call = rlang::caller_env()
+    ...
 ) {
 
-  obj_check_arcgis(x, call = error_call)
+  obj_check_layer(x)
 
   if (!missing(filter_geom)) {
     x <- apply_filter_geom(
-      x,
-      filter_geom = filter_geom,
-      predicate = predicate,
-      crs = crs,
-      error_call = error_call
+        x,
+        filter_geom = filter_geom,
+        predicate = predicate,
+        crs = crs
       )
   }
 
@@ -50,15 +47,9 @@ arc_select <- function(
     nindex <- tolower(fields) %in% tolower(x_fields)
 
     if (any(!nindex)) {
-
       cli::cli_abort(
-        paste0(
-          "Field(s) not in `x`:\n  ",
-          paste(fields[!nindex], collapse = ", ")
-          ),
-        call = error_call
+        "Field{?s} not in {.arg x}: {.val {fields[!nindex]}}"
       )
-
     }
 
     fields <- paste0(fields, collapse = ",")
@@ -76,17 +67,15 @@ arc_select <- function(
     out_sr <- jsonify::to_json(validate_crs(crs)[[1]], unbox = TRUE)
   }
 
-
   x <- update_params(
-    x,
-    outFields = fields,
-    where = where,
-    outSR = out_sr,
-    ...
-  )
+      x,
+      outFields = fields,
+      where = where,
+      outSR = out_sr,
+      ...
+    )
 
-  # return(x)
-  collect_layer(x, n_max = n_max, error_call = error_call)
+  collect_layer(x, n_max = n_max)
 }
 
 #' Apply filter_geom to x
@@ -97,7 +86,7 @@ apply_filter_geom <- function(x,
                               predicate = "intersects",
                               crs = sf::st_crs(x),
                               error_call = rlang::caller_env()) {
-  obj_check_arcgis(
+  check_inherits_any(
     filter_geom,
     class = c("sfc", "sfg", "bbox"),
     call = error_call
@@ -132,10 +121,11 @@ apply_filter_geom <- function(x,
   # if a multi polygon stop, must be a single polygon see
   # related issue: https://github.com/R-ArcGIS/api-interface/issues/4
   if (inherits(filter_geom, "MULTIPOLYGON")) {
-    cli::cli_warn(
+    cli::cli_inform(
       c(
-        "{.arg filter_geom} can't have {.val MULTIPOLYGON} geometry.",
-        "v" = "Using {.fn sf::st_cast} to covert {.arg filter_geom} geometry to {.val POLYGON}"
+        "!" = "{.arg filter_geom} can't have {.val MULTIPOLYGON} geometry.",
+        "i" = "Using {.fn sf::st_union} and {.fn sf::st_cast} to create a
+        coverage {.val POLYGON} for {.arg filter_geom}."
       ),
       call = error_call
     )
@@ -159,7 +149,7 @@ apply_filter_geom <- function(x,
 # This is the workhorse function that actually executes the queries
 #' @keywords internal
 collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..., error_call = rlang::caller_env()) {
-  obj_check_arcgis(x, call = error_call)
+  obj_check_layer(x, call = error_call)
 
   # 1. Make base request
   # 2. Identify necessary query parameters
@@ -173,9 +163,9 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   # stop if query not supported
   if (!grepl("query", x[["capabilities"]], ignore.case = TRUE)) {
     cli::cli_abort(
-      "Feature Layer ", x[['name']], " does not support querying",
+      "{class(x)} {.val {x[['name']]}} does not support querying",
       call = error_call
-      )
+    )
   }
 
   # extract existing query
@@ -220,7 +210,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   if (is.null(n_feats)) {
     cli::cli_abort(
       c("Can't determine the number of features for {.arg x}.",
-      "*" = "Check if your {.arg where} statement is invalid."),
+      "*" = "Check to make sure your {.arg where} statement is valid."),
       call = error_call
     )
   }
@@ -271,7 +261,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
     cli::cli_warn(
       "No features returned from query",
       call = error_call
-      )
+    )
     return(data.frame())
   }
 
@@ -284,22 +274,42 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
 
 # utility -----------------------------------------------------------------
 
-#' Check if x is a FeatureLayer or Table object
-#'
+#' Check if x is a FeatureLayer or Table class object
+#' @keywords internal
+obj_check_layer <- function(x,
+                            class = c("FeatureLayer", "Table"),
+                            arg = rlang::caller_arg(x),
+                            call = rlang::caller_env()) {
+  check_inherits_any(
+    x,
+    class = class,
+    arg = arg,
+    call = call
+  )
+}
+
+#' Check if x inherits any of the supplied class values and error if not
+#' @inheritParams cli::cli_vec
 #' @inheritParams rlang::inherits_any
 #' @inheritParams rlang::args_error_context
 #' @keywords internal
-obj_check_arcgis <- function(x,
-                             class = c("FeatureLayer", "Table"),
-                             arg = rlang::caller_arg(x),
-                             call = rlang::caller_env()) {
-  if (rlang::inherits_any(x, class))
+check_inherits_any <- function(x,
+                               class,
+                               style = list(
+                                 "before" = "`",
+                                 "after" = "`",
+                                 "vec-last" = " or "
+                               ),
+                               arg = rlang::caller_arg(x),
+                               call = rlang::caller_env()) {
+  if (rlang::inherits_any(x, class)) {
     return(invisible(NULL))
+  }
 
   class <- cli::cli_vec(
     class,
-    style = list("before" = "`", "after" = "`", "vec-last" = " or ")
-    )
+    style = style
+  )
 
   cli::cli_abort(
     "{.arg {arg}} must be a {class} object, not {.obj_simple_type {x}}.",
