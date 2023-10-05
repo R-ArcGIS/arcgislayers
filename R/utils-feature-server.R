@@ -30,7 +30,7 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
         i = "Provide only {.arg id} or {.arg name}"
       )
     )
-  } else if ((length(id) == 1) || (length(name) == 1)) {
+  } else if (!((length(id) == 1) || (length(name) == 1))) {
     cli::cli_abort("{.arg id} and {.arg name} must be of length 1.")
   }
 
