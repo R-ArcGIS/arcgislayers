@@ -142,11 +142,11 @@ apply_filter_geom <- function(x,
     filter_geom <- sf::st_cast(filter_geom, to = "POLYGON")
   }
 
-  esri_geometry <- st_as_json(filter_geom, filt_crs)
+  esri_geometry <- as_esri_geometry(filter_geom, crs = filt_crs)
 
   filter_params <- list(
     geometryType = determine_esri_geo_type(filter_geom),
-    geometry = st_as_json(filter_geom),
+    geometry = esri_geometry,
     spatialRel = match_spatial_rel(predicate)
     # TODO is `inSR` needed if the CRS is specified in the geometry???
   )
@@ -251,15 +251,17 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
   #
   #   if (any(has_error)) {
-  # TODO determine how to handle errors
+  # TODO: determine how to handle errors
   #   }
 
   # fetch the results
   res <- lapply(
     all_resps[!has_error],
-    function(x) parse_esri_json(
-      httr2::resp_body_string(x)
-    )
+    function(x) {
+      parse_esri_json(
+        httr2::resp_body_string(x)
+        )
+    }
   )
 
   # combine
