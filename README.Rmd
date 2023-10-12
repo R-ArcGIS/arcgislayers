@@ -16,6 +16,11 @@ knitr::opts_chunk$set(
 # arcgislayers
 
 <!-- badges: start -->
+
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 <!-- badges: end -->
 
 The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS REST API 
@@ -25,23 +30,25 @@ The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS REST API
 You can install the development version of arcgis like so:
 
 ``` r
-pak::pkg_install("R-ArcGIS/arcgislayers")
+pak::pkg_install("R-ArcGIS/arcgislayers", dependencies = TRUE)
 ```
 
-## Basic functionality 
+## Basic usage
 
-- `arc_open()` creates a reference to a dataset will return 1 of 4 types of objects:
+```{r}
+library(arcgis)
+```
+
+`arc_open()` takes a URL to create a reference to a remote resource. The function can return any of four classes (corresponding to different ArcGIS service types):
+
   - `FeatureLayer`
   - `Table`
   - `FeatureServer`
   - `ImageServer`
   
-Create a `FeatureLayer` object.
+For example, you can create a `FeatureLayer` object based on a Feature Server URL:
   
 ```{r}
-library(arcgis)
-
-# define the feature layer url
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
 county_fl <- arc_open(furl)
@@ -49,15 +56,17 @@ county_fl <- arc_open(furl)
 county_fl
 ```
 
+You can then query the feature layer object and return an `sf` object using `arc_select()`.
 
-Query the feature layer object and return an `sf` object using `arc_select()`. If no arguments are provided to `arc_select()` the entire feature layer is returned in memory as an `sf` object. 
+If no arguments are provided to `arc_select()` the entire feature layer is returned in memory as an `sf` object. 
 
-Utilize the `fields` and `where` arguments to return a subset of columns and rows respectively. 
+```{r}
+arc_select(county_fl)
+```
 
-- `fields` takes a character vector of column names
-- `where` takes a simple SQL where clause
+You can also use the `fields` argument to subset columns or `where` argument to subset rows.
 
-Return counties with population greater than 1,000,000.
+For example, using a character vector of column names for `fields` and a simple SQL where clause for  `where` you can select counties with population greater than 1,000,000:
 
 ```{r}
 arc_select(
@@ -67,11 +76,28 @@ arc_select(
 )
 ```
 
-Note you can also provide a `bbox`, `sfc`, or `sfg` object to the `filter_geom` argument to perform a spatial filter. If the `sfc` object contains more than one geometry, the object is combined with `sf::st_union()`. See documentation for more (`?arc_select`).
+The `list_fields()` function can be helpful to check available attributes and build a `where` query:
 
-`SpatRaster` object from the `terra` package can be extracted from an `ImageServer` by using `arc_raster()`. 
+```{r}
+list_fields(county_fl)
+```
 
-`arc_raster()` requires a `bbox` class object from the `sf` package to define the area to be extracted. Optionally can specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned. 
+You can also provide a `bbox`, `sfc`, or `sfg` object to the `filter_geom` argument to perform a spatial filter. If the `sfc` object contains more than one geometry, the object is combined with `sf::st_union()`. See documentation for more (`?arc_select`).
+
+```{r}
+nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
+
+# FIXME: Error from `parse_esri_json()`
+# "Error in fts_raw[["attributes"]] : subscript out of bounds"
+# arc_select(
+#   county_fl,
+#   filter_geom = sf::st_bbox(nc[1,])
+# )
+```
+
+A `SpatRaster` object from the `{terra}` package can be extracted from an `ImageServer` using `arc_raster()`.
+
+`arc_raster()` requires a `bbox` class object from the `sf` package to define the area to be extracted. You can optionally specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned.
 
 ```{r}
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
@@ -83,8 +109,7 @@ res <- arc_raster(
   xmin = -71, ymin = 43, 
   xmax = -67, ymax = 47.5, 
   bbox_crs = 4326, 
-  width = 500, 
-  height = 500
+  width = 500, height = 500
 )
 
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
@@ -93,7 +118,6 @@ terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ## Authorization
 
 See [authorization article](articles/Authorization.html).
-
 
 
 ------------------------
