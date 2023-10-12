@@ -18,6 +18,8 @@ get_layers(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
 \item{id}{default \code{NULL}. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in \code{get_layer()}.}
 
 \item{name}{default \code{NULL}. The name associated with the layer you want to retrieve. \code{name} is mutually exclusive with \code{id}. This is a scalar in \code{get_layer()}.}
+
+\item{token}{default uses the \code{ARCGIS_TOKEN}environment variable.}
 }
 \value{
 \itemize{
@@ -30,4 +32,7 @@ Each a list containing \code{FeatureLayer} and \code{Table}s respectively.
 \description{
 \code{FeatureServer}s are collections of \code{Table}s and \code{FeatureLayer}s. These helpers
 provide easy access to the layers contained in the \code{FeatureServer}.
+}
+\details{
+The \code{id} and \code{name} arguments must match the field values of the respective names as seen in the output of \code{list_items()}
 }
