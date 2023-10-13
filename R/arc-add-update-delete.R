@@ -219,49 +219,55 @@ update_features <- function(
 
 #' Delete Features from Feature Layer
 #'
-#' Delete features from a feature layer based on object ID, a where clause, or a spatial filter.
+#' Delete features from a feature layer based on object ID, a where clause, or a
+#' spatial filter.
 #'
-#' @param x a `FeatureLayer`
+#' @inheritParams obj_check_layer
 #' @param object_ids a numeric vector of object IDs to be deleted.
-#' @param where a simple SQL where statement indicating which features should be deleted.
-#'  When the where statement evaluates to `TRUE`, those values will be deleted.
-#' @param filter_geom an `sfc` or `sfg` object. If `sfc` its length must be one.
-#' @param predicate deault `"intersects"`. The spatial predicate to be used for the spatial filter. Ignored if `filter_geom` is not provided.
-#' @param rollback_on_fail default `TRUE`. Specifies whether the edits should be applied only if all submitted edits succeed.
-#' @param token your authorization token. By default uses the environment variable `ARCGIS_TOKEN` as set by `set_auth_token()`.
+#' @param where a simple SQL where statement indicating which features should be
+#'   deleted. When the where statement evaluates to `TRUE`, those values will be
+#'   deleted.
+#' @inheritParams prepare_spatial_filter
+#' @param rollback_on_fail default `TRUE`. Specifies whether the edits should be
+#'   applied only if all submitted edits succeed.
+#' @param token your authorization token. By default, token is set to the
+#'   environment variable `ARCGIS_TOKEN`. Use `set_auth_token()` to set
+#'   `ARCGIS_TOKEN`.
 #' @export
 #' @rdname modify
 delete_features <- function(x,
-                            object_ids,
-                            where,
-                            filter_geom,
+                            object_ids = NULL,
+                            where = NULL,
+                            filter_geom = NULL,
                             predicate = "intersects",
                             rollback_on_fail = TRUE,
                             token = Sys.getenv("ARCGIS_TOKEN"),
                             ...) {
 
+  obj_check_layer(x)
+
   # where, oid, or filter_geom necessary
-  if (missing(object_ids) && missing(where) && missing(filter_geom)) {
-    stop(
-      "No features to delete\n  Supply at least one of the following arguments
-    - `object_ids`, `where`, or `filter_geom`"
+  if (is.null(object_ids) && is.null(where) && is.null(filter_geom)) {
+    cli_abort(
+      c("No features to delete",
+      "i" = "Supply at least one of {.arg object_ids}, {.arg where},
+      or {.arg filter_geom}")
     )
   }
 
-  if (!missing(object_ids)) {
+  if (!is.null(object_ids)) {
     object_ids <- paste0(object_ids, collapse = ",")
-  } else {
-    object_ids <- NULL
   }
 
-  # if where is missing set to NULL so it can be easily removed via `compact()`
-  if (missing(where)) where <- NULL
+  filter_geom <- filter_geom %||% list()
 
   # convert to the proper CRS if not missing
-  if (!missing(filter_geom)) {
-    filter_geom <- prepare_spatial_filter(x, filter_geom, predicate)
-  } else {
-    filter_geom <- list()
+  if (!rlang::is_empty(filter_geom)) {
+    filter_geom <- prepare_spatial_filter(
+      filter_geom = filter_geom,
+      predicate = predicate,
+      crs = sf::crs(x)
+    )
   }
 
   # https://developers.arcgis.com/rest/services-reference/enterprise/delete-features.htm
@@ -278,8 +284,8 @@ delete_features <- function(x,
   )
 
   resp <- httr2::req_perform(req)
-  jsonify::from_json(httr2::resp_body_string(resp))
 
+  jsonify::from_json(httr2::resp_body_string(resp))
 }
 
 
