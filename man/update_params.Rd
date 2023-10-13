@@ -2,16 +2,16 @@
 % Please edit documentation in R/arc-select.R
 \name{update_params}
 \alias{update_params}
-\title{Modify Query Parameters}
+\title{Modify query parameters}
 \usage{
 update_params(x, ...)
 }
 \arguments{
-\item{x}{a \code{FeatureLayer} object}
+\item{x}{a \code{FeatureLayer} or \code{Table} object}
 
 \item{...}{key value pairs of query parameters and values.}
 }
 \description{
-Modify Query Parameters
+\code{\link[=update_params]{update_params()}} takes named arguments and updates the query.
 }
 \keyword{internal}
