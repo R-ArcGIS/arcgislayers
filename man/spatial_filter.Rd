@@ -6,9 +6,14 @@
 \title{Prepare JSON for use as a spatial filter based on feature geometry or
 bounding box input}
 \usage{
-prepare_spatial_filter(filter_geom, crs, predicate, error_call = caller_env())
+prepare_spatial_filter(
+  filter_geom,
+  crs,
+  predicate,
+  error_call = rlang::caller_env()
+)
 
-match_spatial_rel(predicate, error_call = caller_env())
+match_spatial_rel(predicate, error_call = rlang::caller_env())
 }
 \arguments{
 \item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
@@ -47,7 +52,7 @@ reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the \code{sfc}
 object has multiple features, the features are unioned with
 \code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has MULTIPOLYGON geometry, the features
-are treated as polygonal coverage and unioned with \code{is_coverage = TRUE}
-before being cast to POLYGON geometry with \code{\link[sf:st_cast]{sf::st_cast()}}.
+are unioned before being cast to POLYGON geometry with \code{\link[sf:st_cast]{sf::st_cast()}}. All
+geometries are checked for validity before conversion.
 }
 \keyword{internal}

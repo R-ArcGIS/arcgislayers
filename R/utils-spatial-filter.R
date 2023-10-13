@@ -17,8 +17,8 @@
 #'  assumed to use the same spatial reference as the FeatureLayer. If the `sfc`
 #'  object has multiple features, the features are unioned with
 #'  [sf::st_union()]. If an `sfc` object has MULTIPOLYGON geometry, the features
-#'  are treated as polygonal coverage and unioned with `is_coverage = TRUE`
-#'  before being cast to POLYGON geometry with [sf::st_cast()].
+#'  are unioned before being cast to POLYGON geometry with [sf::st_cast()]. All
+#'  geometries are checked for validity before conversion.
 #'
 #' @returns [prepare_spatial_filter()] returns a named list with the
 #'   geometryType, geometry (as ESRI JSON), and spatial relation predicate.
@@ -64,7 +64,7 @@ prepare_spatial_filter <- function(
       c(
         "!" = "{.arg filter_geom} cannot be a {.val MULTIPOLYGON} geometry.",
         "i" = "Using {.fn sf::st_union} and {.fn sf::st_cast} to create a
-        coverage {.val POLYGON} for {.arg filter_geom}."
+        {.val POLYGON} for {.arg filter_geom}."
       ),
       call = error_call
     )
