@@ -2,44 +2,49 @@
 % Please edit documentation in R/arc-select.R
 \name{arc_select}
 \alias{arc_select}
-\title{Retrieve a feature layer}
+\title{Retrieve a feature layer as simple features or a non-spatial data frame}
 \usage{
 arc_select(
   x,
-  fields,
-  where,
+  fields = NULL,
+  where = NULL,
   crs = sf::st_crs(x),
-  filter_geom,
+  filter_geom = NULL,
   predicate = "intersects",
   n_max = Inf,
+  token = Sys.getenv("ARCGIS_TOKEN"),
   ...
 )
 }
 \arguments{
-\item{x}{an object of class \code{FeatureLayer} or \code{Table}.}
+\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
 
-\item{fields}{a character vector of the field names that you wish to be returned. By default all fields are returned.}
+\item{fields}{a character vector of the field names that you wish to be
+returned. By default all fields are returned.}
 
-\item{where}{a simple SQL where statement indicating which features should be selected.}
+\item{where}{a simple SQL where statement indicating which features should be
+selected.}
 
-\item{crs}{the spatial reference to be returned. If the CRS is different than the \code{FeatureLayer}'s CRS, a transformation will occur server-side. Ignored for \code{Table} objects.}
+\item{crs}{the spatial reference to be returned. If the CRS is different than
+the the CRS for the input \code{FeatureLayer}, a transformation will occur
+server-side. Ignored if x is a \code{Table}.}
 
 \item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
-query results based on a predicate function. If an \code{sfc} object is provided
-it will be transformed to the layers spatial reference. If the \code{sfc} is
-missing a CRS (or is an \code{sfg} object) it is assumed to be in the layers
-spatial reference. If an \code{sfc} object has multiple features, the features
-are unioned with \code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has MULTIPOLYGON
-geometry, the features are treated as polygonal coverage and unioned with
-\code{is_coverage = TRUE} before being cast to POLYGON geometry with
-\code{\link[sf:st_cast]{sf::st_cast()}}.}
+query results based on a predicate function.}
 
-\item{predicate}{default \code{"intersects"}. Possible options are \code{"intersects"},  \code{"contains"},  \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
+\item{predicate}{Spatial predicate to use with \code{filter_geom}. Default
+\code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
+\code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
 
-\item{n_max}{the maximum number of features to return. By default returns every feature available. Unused at the moment.}
+\item{n_max}{the maximum number of features to return. By default returns
+every feature available. Unused at the moment.}
 
-\item{...}{additional query parameters passed to the API. See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.}
+\item{...}{additional query parameters passed to the API.}
 }
 \description{
-Give a \code{FeatureLayer} or \code{Table} object, retrieve its data as an \code{sf} object or \code{tibble} resepctively.
+\code{\link[=arc_select]{arc_select()}} takes a \code{FeatureLayer} or \code{Table} object and returns data from
+the layer as an \code{sf} object or \code{tibble} respectively.
+}
+\details{
+See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.
 }

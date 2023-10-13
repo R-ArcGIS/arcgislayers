@@ -7,6 +7,7 @@
 #' @param id default `NULL`. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in `get_layer()`.
 #' @param name default `NULL`. The name associated with the layer you want to retrieve. `name` is mutually exclusive with `id`. This is a scalar in `get_layer()`.
 #' @inheritParams arc_open
+#' @details
 #'
 #' The `id` and `name` arguments must match the field values of the respective names as seen in the output of `list_items()`
 #'

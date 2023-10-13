@@ -22,6 +22,8 @@ create_feature_server(
 )
 }
 \arguments{
+\item{service_name}{Feature Service name.}
+
 \item{user}{default \code{Sys.getenv("ARCGIS_USER")}. Your account's username.}
 
 \item{description}{default blank. The description of the feature server.}

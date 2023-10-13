@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-select.R
 \name{check_inherits_any}
 \alias{check_inherits_any}
-\title{Check if x inherits any of the supplied class values and error if not}
+\title{Check if an object inherits from a set of classes}
 \usage{
 check_inherits_any(
   x,
@@ -26,6 +26,7 @@ mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \description{
-Check if x inherits any of the supplied class values and error if not
+\code{\link[=check_inherits_any]{check_inherits_any()}} wraps \code{\link[rlang:inherits_any]{rlang::inherits_any()}} to error if an object
+does not inherit any of a set of classes.
 }
 \keyword{internal}

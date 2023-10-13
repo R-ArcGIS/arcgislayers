@@ -25,9 +25,9 @@ update_features(
 
 delete_features(
   x,
-  object_ids,
-  where,
-  filter_geom,
+  object_ids = NULL,
+  where = NULL,
+  filter_geom = NULL,
   predicate = "intersects",
   rollback_on_fail = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN"),
@@ -35,28 +35,36 @@ delete_features(
 )
 }
 \arguments{
-\item{x}{a \code{FeatureLayer}}
+\item{x}{an object of class \code{FeatureLayer}}
 
 \item{.data}{an object of class \code{sf} or \code{data.frame}}
 
 \item{match_on}{whether to match on the alias or the field name. Default, the alias.
 See Details for more}
 
-\item{rollback_on_fail}{default \code{TRUE}. Specifies whether the edits should be applied only if all submitted edits succeed.}
+\item{rollback_on_fail}{default \code{TRUE}. Specifies whether the edits should be
+applied only if all submitted edits succeed.}
 
-\item{token}{your authorization token. By default uses the environment variable \code{ARCGIS_TOKEN} as set by \code{set_auth_token()}.}
+\item{token}{your authorization token. By default, token is set to the
+environment variable \code{ARCGIS_TOKEN}. Use \code{set_auth_token()} to set
+\code{ARCGIS_TOKEN}.}
 
 \item{object_ids}{a numeric vector of object IDs to be deleted.}
 
-\item{where}{a simple SQL where statement indicating which features should be deleted.
-When the where statement evaluates to \code{TRUE}, those values will be deleted.}
+\item{where}{a simple SQL where statement indicating which features should be
+deleted. When the where statement evaluates to \code{TRUE}, those values will be
+deleted.}
 
-\item{filter_geom}{an \code{sfc} or \code{sfg} object. If \code{sfc} its length must be one.}
+\item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
+query results based on a predicate function.}
 
-\item{predicate}{deault \code{"intersects"}. The spatial predicate to be used for the spatial filter. Ignored if \code{filter_geom} is not provided.}
+\item{predicate}{Spatial predicate to use with \code{filter_geom}. Default
+\code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
+\code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
 }
 \description{
-Delete features from a feature layer based on object ID, a where clause, or a spatial filter.
+Delete features from a feature layer based on object ID, a where clause, or a
+spatial filter.
 }
 \details{
 Regarding the \code{match_on} argument:when publishing an object to an ArcGIS Portal

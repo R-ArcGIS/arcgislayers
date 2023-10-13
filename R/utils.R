@@ -46,5 +46,3 @@ refresh_layer <- function(x) {
   attr(x, "query") <- query
   x
 }
-
-

@@ -4,6 +4,12 @@
 # arcgislayers
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 <!-- badges: end -->
 
 The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS
@@ -14,27 +20,31 @@ REST API
 You can install the development version of arcgis like so:
 
 ``` r
-pak::pkg_install("R-ArcGIS/arcgislayers")
+pak::pkg_install("R-ArcGIS/arcgislayers", dependencies = TRUE)
 ```
 
-## Basic functionality
-
-- `arc_open()` creates a reference to a dataset will return 1 of 4 types
-  of objects:
-  - `FeatureLayer`
-  - `Table`
-  - `FeatureServer`
-  - `ImageServer`
-
-Create a `FeatureLayer` object.
+## Basic usage
 
 ``` r
 library(arcgis)
 #> Attaching core arcgis packages:
 #>   - {arcgisutils} v0.1.0
 #>   - {arcgislayers} v0.1.0
+```
 
-# define the feature layer url
+`arc_open()` takes a URL to create a reference to a remote resource. The
+function can return any of four classes (corresponding to different
+ArcGIS service types):
+
+- `FeatureLayer`
+- `Table`
+- `FeatureServer`
+- `ImageServer`
+
+For example, you can create a `FeatureLayer` object based on a Feature
+Server URL:
+
+``` r
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
 county_fl <- arc_open(furl)
@@ -47,17 +57,61 @@ county_fl
 #> Capabilities: Query,Extract
 ```
 
-Query the feature layer object and return an `sf` object using
-`arc_select()`. If no arguments are provided to `arc_select()` the
-entire feature layer is returned in memory as an `sf` object.
+You can then query the feature layer object and return an `sf` object
+using `arc_select()`.
 
-Utilize the `fields` and `where` arguments to return a subset of columns
-and rows respectively.
+If no arguments are provided to `arc_select()` the entire feature layer
+is returned in memory as an `sf` object.
 
-- `fields` takes a character vector of column names
-- `where` takes a simple SQL where clause
+``` r
+arc_select(county_fl)
+#> Simple feature collection with 3142 features and 12 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624
+#> Geodetic CRS:  WGS 84
+#> First 10 features:
+#>    OBJECTID            NAME STATE_NAME STATE_FIPS  FIPS    SQMI POPULATION
+#> 1         1  Autauga County    Alabama         01 01001  604.37      58805
+#> 2         2  Baldwin County    Alabama         01 01003 1633.14     231767
+#> 3         3  Barbour County    Alabama         01 01005  904.52      25223
+#> 4         4     Bibb County    Alabama         01 01007  626.17      22293
+#> 5         5   Blount County    Alabama         01 01009  650.63      59134
+#> 6         6  Bullock County    Alabama         01 01011  625.14      10357
+#> 7         7   Butler County    Alabama         01 01013  777.88      19051
+#> 8         8  Calhoun County    Alabama         01 01015  612.27     116441
+#> 9         9 Chambers County    Alabama         01 01017  603.11      34772
+#> 10       10 Cherokee County    Alabama         01 01019  599.98      24971
+#>    POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length
+#> 1      97.3         AL         001   0.1489034      1.884137
+#> 2     141.9         AL         003   0.4044891      3.678276
+#> 3      27.9         AL         005   0.2224307      2.218514
+#> 4      35.6         AL         007   0.1577359      1.852453
+#> 5      90.9         AL         009   0.1675296      2.067456
+#> 6      16.6         AL         011   0.1557273      2.006250
+#> 7      24.5         AL         013   0.1927305      1.769462
+#> 8     190.2         AL         015   0.1523369      2.149825
+#> 9      57.7         AL         017   0.1531136      1.637226
+#> 10     41.6         AL         019   0.1527217      1.794142
+#>                          geometry
+#> 1  MULTIPOLYGON (((-86.82067 3...
+#> 2  MULTIPOLYGON (((-87.97309 3...
+#> 3  MULTIPOLYGON (((-85.74337 3...
+#> 4  MULTIPOLYGON (((-87.41986 3...
+#> 5  MULTIPOLYGON (((-86.96799 3...
+#> 6  MULTIPOLYGON (((-85.4114 32...
+#> 7  MULTIPOLYGON (((-86.44912 3...
+#> 8  MULTIPOLYGON (((-85.79353 3...
+#> 9  MULTIPOLYGON (((-85.58963 3...
+#> 10 MULTIPOLYGON (((-85.41657 3...
+```
 
-Return counties with population greater than 1,000,000.
+You can also use the `fields` argument to subset columns or `where`
+argument to subset rows.
+
+For example, using a character vector of column names for `fields` and a
+simple SQL where clause for `where` you can select counties with
+population greater than 1,000,000:
 
 ``` r
 arc_select(
@@ -84,17 +138,106 @@ arc_select(
 #> 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...
 ```
 
-Note you can also provide a `bbox`, `sfc`, or `sfg` object to the
+The `list_fields()` function can be helpful to check available
+attributes and build a `where` query:
+
+``` r
+list_fields(county_fl)
+#>             name                 type                  alias       sqlType
+#> 1       OBJECTID     esriFieldTypeOID               OBJECTID  sqlTypeOther
+#> 2           NAME  esriFieldTypeString                   Name  sqlTypeOther
+#> 3     STATE_NAME  esriFieldTypeString             State Name  sqlTypeOther
+#> 4     STATE_FIPS  esriFieldTypeString             State FIPS  sqlTypeOther
+#> 5           FIPS  esriFieldTypeString                   FIPS  sqlTypeOther
+#> 6           SQMI  esriFieldTypeDouble   Area in square miles  sqlTypeOther
+#> 7     POPULATION esriFieldTypeInteger  2020 Total Population  sqlTypeOther
+#> 8       POP_SQMI  esriFieldTypeDouble People per square mile  sqlTypeOther
+#> 9     STATE_ABBR  esriFieldTypeString     State Abbreviation  sqlTypeOther
+#> 10   COUNTY_FIPS  esriFieldTypeString            County FIPS  sqlTypeOther
+#> 11   Shape__Area  esriFieldTypeDouble            Shape__Area sqlTypeDouble
+#> 12 Shape__Length  esriFieldTypeDouble          Shape__Length sqlTypeDouble
+#>    nullable editable domain defaultValue length
+#> 1     FALSE    FALSE     NA           NA     NA
+#> 2      TRUE     TRUE     NA           NA     50
+#> 3      TRUE     TRUE     NA           NA     20
+#> 4      TRUE     TRUE     NA           NA      2
+#> 5      TRUE     TRUE     NA           NA      5
+#> 6      TRUE     TRUE     NA           NA     NA
+#> 7      TRUE     TRUE     NA           NA     NA
+#> 8      TRUE     TRUE     NA           NA     NA
+#> 9      TRUE     TRUE     NA           NA      2
+#> 10     TRUE     TRUE     NA           NA      3
+#> 11     TRUE    FALSE     NA           NA     NA
+#> 12     TRUE    FALSE     NA           NA     NA
+#>                                                                                                                                                                                                                 description
+#> 1                                                                                                                                                                                                                      <NA>
+#> 2                                                                                                                                                        {"value":"The name of the county.","fieldValueType":"nameOrTitle"}
+#> 3                                                                                                                         {"value":"The name for the state in which the county is located.","fieldValueType":"nameOrTitle"}
+#> 4                                                                                                 {"value":"The code (two-digit number) for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}
+#> 5  {"value":"The combined state and county codes. County codes begin with 001 for each state; use the combined code (five-digit number) to uniquely identify a county in the country.","fieldValueType":"uniqueIdentifier"}
+#> 6                                                                             {"value":"The area of the county in square miles using the North America Albers Equal Area Conic projection.","fieldValueType":"measurement"}
+#> 7                                                                                                                                           {"value":"The 2020 population of the county.","fieldValueType":"countOrAmount"}
+#> 8                                                                                                                             {"value":"The 2020 population of the county per square mile.","fieldValueType":"measurement"}
+#> 9                                                                                                 {"value":"The two-letter abbreviation for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}
+#> 10                                                                                                                            {"value":"The code (three-digit number) for the county.","fieldValueType":"uniqueIdentifier"}
+#> 11                                                                                                                                                                                                                     <NA>
+#> 12                                                                                                                                                                                                                     <NA>
+```
+
+You can also provide a `bbox`, `sfc`, or `sfg` object to the
 `filter_geom` argument to perform a spatial filter. If the `sfc` object
 contains more than one geometry, the object is combined with
 `sf::st_union()`. See documentation for more (`?arc_select`).
 
-`SpatRaster` object from the `terra` package can be extracted from an
-`ImageServer` by using `arc_raster()`.
+``` r
+nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
+#> Reading layer `nc' from data source 
+#>   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 100 features and 14 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+#> Geodetic CRS:  NAD27
+
+arc_select(
+  county_fl,
+  filter_geom = sf::st_bbox(nc[1,])
+)
+#> Simple feature collection with 6 features and 12 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746
+#> Geodetic CRS:  WGS 84
+#>   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS   SQMI POPULATION
+#> 1     1890 Alleghany County North Carolina         37 37005 236.26      10888
+#> 2     1892      Ashe County North Carolina         37 37009 429.38      26577
+#> 3     1982   Watauga County North Carolina         37 37189 313.32      54086
+#> 4     1984    Wilkes County North Carolina         37 37193 756.33      65969
+#> 5     2471   Johnson County      Tennessee         47 47091 302.69      17948
+#> 6     2855   Grayson County       Virginia         51 51077 445.57      15333
+#>   POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length
+#> 1     46.1         NC         005  0.06140165      1.231232
+#> 2     61.9         NC         009  0.11428581      1.442112
+#> 3    172.6         NC         189  0.08142272      1.287674
+#> 4     87.2         NC         193  0.19911944      1.984232
+#> 5     59.3         TN         091  0.07960385      1.290607
+#> 6     34.4         VA         077  0.11578917      1.945424
+#>                         geometry
+#> 1 MULTIPOLYGON (((-81.2397 36...
+#> 2 MULTIPOLYGON (((-81.47258 3...
+#> 3 MULTIPOLYGON (((-81.80605 3...
+#> 4 MULTIPOLYGON (((-81.02037 3...
+#> 5 MULTIPOLYGON (((-81.74091 3...
+#> 6 MULTIPOLYGON (((-81.34512 3...
+```
+
+A `SpatRaster` object from the `{terra}` package can be extracted from
+an `ImageServer` using `arc_raster()`.
 
 `arc_raster()` requires a `bbox` class object from the `sf` package to
-define the area to be extracted. Optionally can specify the `width` and
-`height` of the resultant image. Use `format` to define what type of
+define the area to be extracted. You can optionally specify the `width`
+and `height` of the resultant image. Use `format` to define what type of
 image is returned.
 
 ``` r
@@ -107,14 +250,13 @@ res <- arc_raster(
   xmin = -71, ymin = 43, 
   xmax = -67, ymax = 47.5, 
   bbox_crs = 4326, 
-  width = 500, 
-  height = 500
+  width = 500, height = 500
 )
 
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 ## Authorization
 

@@ -1,162 +1,111 @@
-#' Retrieve a feature layer
+#' Retrieve a feature layer as simple features or a non-spatial data frame
 #'
-#' Give a `FeatureLayer` or `Table` object, retrieve its data as an `sf` object or `tibble` resepctively.
+#' [arc_select()] takes a `FeatureLayer` or `Table` object and returns data from
+#' the layer as an `sf` object or `tibble` respectively.
 #'
-#' @param x an object of class `FeatureLayer` or `Table`.
-#' @param fields a character vector of the field names that you wish to be returned. By default all fields are returned.
-#' @param where a simple SQL where statement indicating which features should be selected.
-#' @param crs the spatial reference to be returned. If the CRS is different than the `FeatureLayer`'s CRS, a transformation will occur server-side. Ignored for `Table` objects.
-#' @param filter_geom an object of class `bbox`, `sfc` or `sfg` used to filter
-#'   query results based on a predicate function. If an `sfc` object is provided
-#'   it will be transformed to the layers spatial reference. If the `sfc` is
-#'   missing a CRS (or is an `sfg` object) it is assumed to be in the layers
-#'   spatial reference. If an `sfc` object has multiple features, the features
-#'   are unioned with [sf::st_union()]. If an `sfc` object has MULTIPOLYGON
-#'   geometry, the features are treated as polygonal coverage and unioned with
-#'   `is_coverage = TRUE` before being cast to POLYGON geometry with
-#'   [sf::st_cast()].
-#' @param predicate default `"intersects"`. Possible options are `"intersects"`,  `"contains"`,  `"crosses"`,  `"overlaps"`,  `"touches"`, and `"within"`.
-#' @param n_max the maximum number of features to return. By default returns every feature available. Unused at the moment.
-#' @param ... additional query parameters passed to the API. See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
+#' @inheritParams obj_check_layer
+#' @param fields a character vector of the field names that you wish to be
+#'   returned. By default all fields are returned.
+#' @param where a simple SQL where statement indicating which features should be
+#'   selected.
+#' @param crs the spatial reference to be returned. If the CRS is different than
+#'   the the CRS for the input `FeatureLayer`, a transformation will occur
+#'   server-side. Ignored if x is a `Table`.
+#' @inheritParams prepare_spatial_filter
+#' @param n_max the maximum number of features to return. By default returns
+#'   every feature available. Unused at the moment.
+#' @param ... additional query parameters passed to the API.
+#'
+#' @details
+#'
+#' See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
+#'
 #' @export
 arc_select <- function(
     x,
-    fields,
-    where,
+    fields = NULL,
+    where = NULL,
     crs = sf::st_crs(x),
-    filter_geom,
+    filter_geom = NULL,
     predicate = "intersects",
     n_max = Inf,
+    token = Sys.getenv("ARCGIS_TOKEN"),
     ...
 ) {
+  # Developer note:
+  # For this function we extract the query object and manipulate the elements
+  # inside of the query object to modify our request. We then splice those
+  # values back into `x` and send our request
+  # note that everything that goes into our quey must be the json that will
+  # be sent directly to the API request which is why we convert it to json
+  # before we use `update_params()`
 
+  # object class checking
   obj_check_layer(x)
 
-  if (!missing(filter_geom)) {
-    x <- apply_filter_geom(
-        x,
-        filter_geom = filter_geom,
-        predicate = predicate,
-        crs = crs
-      )
-  }
-
+  # extract the query object
   query <- attr(x, "query")
 
   # handle fields and where clause if missing
-  if (missing(fields)) {
-    fields <- query[["outFields"]] %||% "*"
-  }
+  fields <- fields %||% query[["outFields"]] %||% "*"
 
   # if not missing fields collapse to scalar character
-  if (!missing(fields) && (length(fields) > 1)) {
+  if (length(fields) > 1) {
     # check if incorrect field names provided
     x_fields <- x[["fields"]][["name"]]
     nindex <- tolower(fields) %in% tolower(x_fields)
 
+    # handle the case where a field is being selected that
+    # is not one of the available fields in the feature layer
     if (any(!nindex)) {
       cli::cli_abort(
         "Field{?s} not in {.arg x}: {.var {fields[!nindex]}}"
       )
     }
-
+    # collapse together
     fields <- paste0(fields, collapse = ",")
   }
 
+  query[["outFields"]] <- fields
+
   # if where is missing set to 1=1
-  if (missing(where)) {
-    where <- query[["where"]] %||% "1=1"
-  }
+  query[["where"]] <- where %||% query[["where"]] %||% "1=1"
 
-  # handle SR
-  if (is.na(crs)) {
-    out_sr <- NULL
-  } else {
-    out_sr <- jsonify::to_json(validate_crs(crs)[[1]], unbox = TRUE)
-  }
-
-  x <- update_params(
-      x,
-      outFields = fields,
-      where = where,
-      outSR = out_sr,
-      ...
+  # handle filter geometry if not missing
+  if (!is.null(filter_geom)) {
+    spatial_filter <- prepare_spatial_filter(
+      filter_geom,
+      crs = crs,
+      predicate = predicate
     )
 
-  collect_layer(x, n_max = n_max)
+    # append spatial filter fields to the query
+    query <- c(query, spatial_filter)
+  }
+
+  # handle SR if not missing
+  if (!is.na(crs)) {
+    query[["outSR"]] <- jsonify::to_json(validate_crs(crs)[[1]], unbox = TRUE)
+  }
+
+  # update the parameters based on our query list
+  x <- update_params(x, !!!query)
+
+  # send the request
+  collect_layer(x, n_max = n_max, token = token, ...)
 }
 
-#' Apply filter_geom to x
+#' Query a FeatureLayer or Table object
+#'
+#' [collect_layer()] is the "workhorse" function that actually executes the
+#' queries for FeatureLayer or Table objects.
 #'
 #' @keywords internal
-apply_filter_geom <- function(x,
-                              filter_geom = NULL,
-                              predicate = "intersects",
-                              crs = sf::st_crs(x),
-                              error_call = rlang::caller_env()) {
-  check_inherits_any(
-    filter_geom,
-    class = c("sfc", "sfg", "bbox"),
-    call = error_call
-  )
-
-  if (inherits(filter_geom, "bbox")) {
-    filter_geom <- sf::st_as_sfc(filter_geom)
-  }
-
-  if (inherits(filter_geom, "sfg")) {
-    filt_crs <- crs
-  }
-
-  # if its an sfc object it must be length one
-  if (inherits(filter_geom, "sfc")) {
-    if (length(filter_geom) > 1) {
-      filter_geom <- sf::st_union(filter_geom)
-    }
-
-    # if the CRS is missing use the layer's CRS
-    # otherwise use the CRS of the filter_geom object
-    filt_crs <- sf::st_crs(filter_geom)
-
-    if (is.na(filt_crs)) {
-      filt_crs <- crs
-    }
-
-    # extract the sfg object which is used to write Esri json
-    filter_geom <- filter_geom[[1]]
-  }
-
-  # if a multi polygon stop, must be a single polygon see
-  # related issue: https://github.com/R-ArcGIS/arcgislayers/issues/4
-  if (inherits(filter_geom, "MULTIPOLYGON")) {
-    cli::cli_inform(
-      c(
-        "!" = "{.arg filter_geom} can't have {.val MULTIPOLYGON} geometry.",
-        "i" = "Using {.fn sf::st_union} and {.fn sf::st_cast} to create a
-        coverage {.val POLYGON} for {.arg filter_geom}."
-      ),
-      call = error_call
-    )
-
-    filter_geom <- sf::st_union(filter_geom, is_coverage = TRUE)
-    filter_geom <- sf::st_cast(filter_geom, to = "POLYGON")
-  }
-
-  esri_geometry <- st_as_json(filter_geom, filt_crs)
-
-  filter_params <- list(
-    geometryType = determine_esri_geo_type(filter_geom),
-    geometry = st_as_json(filter_geom),
-    spatialRel = match_spatial_rel(predicate)
-    # TODO is `inSR` needed if the CRS is specified in the geometry???
-  )
-
-  update_params(x, rlang::splice(filter_params))
-}
-
-# This is the workhorse function that actually executes the queries
-#' @keywords internal
-collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..., error_call = rlang::caller_env()) {
+collect_layer <- function(x,
+                          n_max = Inf,
+                          token = Sys.getenv("ARCGIS_TOKEN"),
+                          ...,
+                          error_call = rlang::caller_env()) {
   obj_check_layer(x, call = error_call)
 
   # 1. Make base request
@@ -197,23 +146,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   feats_per_page <- x[["maxRecordCount"]]
 
   # count the number of features in a query
-  n_req <-
-    httr2::req_url_query(
-      httr2::req_url_query(
-        httr2::req_url_path_append(req, "query"),
-        !!!query_params[c("where", "outFields", "f", "token")]
-      ),
-      returnCountOnly = "true"
-    )
-
-  suppressMessages(
-    n_feats <- httr2::resp_body_json(
-      httr2::req_perform(
-        httr2::req_url_query(n_req, f = "pjson"),
-        error_call = error_call
-      ), check_type = FALSE
-    )[["count"]]
-  )
+  n_feats <- count_results(req, query, token)
 
   if (is.null(n_feats)) {
     cli::cli_abort(
@@ -238,7 +171,7 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
   if (n_pages == 0) {
     offsets <- 0
   } else {
-    offsets = c(0, (feats_per_page * 1:n_pages) + 1)
+    offsets <- c(0, (feats_per_page * 1:n_pages) + 1)
   }
 
   # create a list of requests
@@ -249,27 +182,25 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
 
   # identify any errors
   has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
-  #
   #   if (any(has_error)) {
-  # TODO determine how to handle errors
+  # TODO: determine how to handle errors
   #   }
 
   # fetch the results
   res <- lapply(
     all_resps[!has_error],
-    function(x) parse_esri_json(
-      httr2::resp_body_string(x)
-    )
+    function(x) {
+      parse_esri_json(
+        httr2::resp_body_string(x)
+        )
+    }
   )
 
   # combine
   res <- do.call(rbind, res)
 
   if (is.null(res)) {
-    cli::cli_warn(
-      "No features returned from query",
-      call = error_call
-    )
+    cli::cli_alert_info("No features returned from query")
     return(data.frame())
   }
 
@@ -282,7 +213,13 @@ collect_layer <- function(x, n_max = Inf, token = Sys.getenv("ARCGIS_TOKEN"), ..
 
 # utility -----------------------------------------------------------------
 
-#' Check if x is a FeatureLayer or Table class object
+#' Check if an object is a FeatureLayer or Table object
+#'
+#' [obj_check_layer()] errors if an object does not inherit either the
+#' FeatureLayer or Table class.
+#'
+#' @param x A `FeatureLayer` or `Table` class object created with [arc_open()].
+#' @inheritParams rlang::args_error_context
 #' @keywords internal
 obj_check_layer <- function(x,
                             arg = rlang::caller_arg(x),
@@ -295,7 +232,11 @@ obj_check_layer <- function(x,
   )
 }
 
-#' Check if x inherits any of the supplied class values and error if not
+#' Check if an object inherits from a set of classes
+#'
+#' [check_inherits_any()] wraps [rlang::inherits_any()] to error if an object
+#' does not inherit any of a set of classes.
+#'
 #' @inheritParams cli::cli_vec
 #' @inheritParams rlang::inherits_any
 #' @inheritParams rlang::args_error_context
@@ -319,10 +260,11 @@ check_inherits_any <- function(x,
   )
 }
 
-# This is the function that takes named arguments and updates the query
-#' Modify Query Parameters
+#' Modify query parameters
 #'
-#' @param x a `FeatureLayer` object
+#' [update_params()] takes named arguments and updates the query.
+#'
+#' @param x a `FeatureLayer` or `Table` object
 #' @param ... key value pairs of query parameters and values.
 #' @keywords internal
 update_params <- function(x, ...) {
@@ -337,9 +279,12 @@ update_params <- function(x, ...) {
   x
 }
 
-#' This function takes a list of query parameters and creates a query request
+#' Add an offset to a query parameters
+#'
+#' [add_offset()] takes a list of query parameters and creates a query request.
 #' Importantly, this creates the paginated results that will be needed for
-#' Feature Layers with more than 2000 observations
+#' Feature Layers with more than 2000 observations.
+#'
 #' @keywords internal
 add_offset <- function(offset, request, params) {
   params[["resultOffset"]] <- offset
@@ -347,9 +292,11 @@ add_offset <- function(offset, request, params) {
   httr2::req_url_query(req, !!!params)
 }
 
-
-# This function ensures that the minimal parameters are correctly set
-
+#' Validate query parameters
+#'
+#' [validate_params()] ensures that the parameters are set to minimally
+#' acceptable values.
+#'
 #' @keywords internal
 validate_params <- function(params, token) {
   # set the token
@@ -371,4 +318,23 @@ validate_params <- function(params, token) {
   params
 }
 
+#' Given a query, determine how many features will be returned
+count_results <- function(req, query, token) {
+  n_req <- httr2::req_url_query(
+    httr2::req_body_form(
+      httr2::req_url_path_append(req, "query"),
+      !!!validate_params(query, token)
+    ),
+    returnCountOnly = "true",
+  )
+
+  resp <- httr2::resp_body_string(
+    httr2::req_perform(
+      httr2::req_url_query(n_req, f = "json"),
+      error_call = rlang::caller_env()
+    )
+  )
+
+  RcppSimdJson::fparse(resp)[["count"]]
+}
 
