@@ -46,32 +46,3 @@ refresh_layer <- function(x) {
   attr(x, "query") <- query
   x
 }
-
-
-#' Match a scalar character of predicate name to ESRI type
-#'
-#' Copied from arcgisutils:
-#' https://github.com/R-ArcGIS/arcgisutils/blob/494e17003c3fa5ca08ab2b5b9365126f01b15701/dev/spatial-filter.R#L4
-#'
-#' @noRd
-match_spatial_rel <- function(predicate) {
-  # determine the spatial relationship (predicate)
-  predicate <- tolower(predicate)
-  esri_predicates <- c(
-    "esriSpatialRelIntersects",
-    "esriSpatialRelContains",
-    "esriSpatialRelCrosses",
-    # "esriSpatialRelEnvelopeIntersects",
-    #   - don't provide this, just provide bbox and intersects
-    # "esriSpatialRelIndexIntersects", # The envelope of the query feature class
-    # intersects the index entry for the target feature class.
-    "esriSpatialRelOverlaps",
-    "esriSpatialRelTouches",
-    "esriSpatialRelWithin"
-  )
-
-  pred_arg_vals <- tolower(substr(esri_predicates, 15, nchar(esri_predicates)))
-  # ensure a correct one has been chosen
-  match.arg(predicate, pred_arg_vals)
-  esri_predicates[grepl(predicate, esri_predicates, ignore.case = TRUE)]
-}
