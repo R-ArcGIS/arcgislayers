@@ -87,12 +87,10 @@ You can also provide a `bbox`, `sfc`, or `sfg` object to the `filter_geom` argum
 ```{r}
 nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 
-# FIXME: Error from `parse_esri_json()`
-# "Error in fts_raw[["attributes"]] : subscript out of bounds"
-# arc_select(
-#   county_fl,
-#   filter_geom = sf::st_bbox(nc[1,])
-# )
+arc_select(
+  county_fl,
+  filter_geom = sf::st_bbox(nc[1,])
+)
 ```
 
 A `SpatRaster` object from the `{terra}` package can be extracted from an `ImageServer` using `arc_raster()`.

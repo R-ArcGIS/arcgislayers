@@ -200,12 +200,36 @@ nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #> Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
 #> Geodetic CRS:  NAD27
 
-# FIXME: Error from `parse_esri_json()`
-# "Error in fts_raw[["attributes"]] : subscript out of bounds"
-# arc_select(
-#   county_fl,
-#   filter_geom = sf::st_bbox(nc[1,])
-# )
+arc_select(
+  county_fl,
+  filter_geom = sf::st_bbox(nc[1,])
+)
+#> Simple feature collection with 6 features and 12 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746
+#> Geodetic CRS:  WGS 84
+#>   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS   SQMI POPULATION
+#> 1     1890 Alleghany County North Carolina         37 37005 236.26      10888
+#> 2     1892      Ashe County North Carolina         37 37009 429.38      26577
+#> 3     1982   Watauga County North Carolina         37 37189 313.32      54086
+#> 4     1984    Wilkes County North Carolina         37 37193 756.33      65969
+#> 5     2471   Johnson County      Tennessee         47 47091 302.69      17948
+#> 6     2855   Grayson County       Virginia         51 51077 445.57      15333
+#>   POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length
+#> 1     46.1         NC         005  0.06140165      1.231232
+#> 2     61.9         NC         009  0.11428581      1.442112
+#> 3    172.6         NC         189  0.08142272      1.287674
+#> 4     87.2         NC         193  0.19911944      1.984232
+#> 5     59.3         TN         091  0.07960385      1.290607
+#> 6     34.4         VA         077  0.11578917      1.945424
+#>                         geometry
+#> 1 MULTIPOLYGON (((-81.2397 36...
+#> 2 MULTIPOLYGON (((-81.47258 3...
+#> 3 MULTIPOLYGON (((-81.80605 3...
+#> 4 MULTIPOLYGON (((-81.02037 3...
+#> 5 MULTIPOLYGON (((-81.74091 3...
+#> 6 MULTIPOLYGON (((-81.34512 3...
 ```
 
 A `SpatRaster` object from the `{terra}` package can be extracted from
