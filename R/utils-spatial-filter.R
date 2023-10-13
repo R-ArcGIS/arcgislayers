@@ -30,7 +30,7 @@ prepare_spatial_filter <- function(
     filter_geom,
     crs,
     predicate,
-    error_call = caller_env()
+    error_call = rlang::caller_env()
 ) {
 
   check_inherits_any(
@@ -106,7 +106,7 @@ prepare_spatial_filter <- function(
 #'
 #' @export
 #' @rdname spatial_filter
-match_spatial_rel <- function(predicate, error_call = caller_env()) {
+match_spatial_rel <- function(predicate, error_call = rlang::caller_env()) {
   # determine the spatial relationship (predicate)
   esri_predicates <- c(
     # Part of a feature from the query feature is contained in a feature from
