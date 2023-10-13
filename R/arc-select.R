@@ -63,11 +63,13 @@ arc_select <- function(
       )
     }
     # collapse together
-    query[["outFields"]] <- paste0(fields, collapse = ",")
+    fields <- paste0(fields, collapse = ",")
   }
 
+  query[["outFields"]] <- fields
+
   # if where is missing set to 1=1
-  where <- where %||% query[["where"]] %||% "1=1"
+  query[["where"]] <- where %||% query[["where"]] %||% "1=1"
 
   # handle filter geometry if not missing
   if (!is.null(filter_geom)) {
