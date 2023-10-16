@@ -9,6 +9,7 @@
 add_features(
   x,
   .data,
+  chunk_size = 2000,
   match_on = c("alias", "name"),
   rollback_on_fail = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN")
@@ -39,8 +40,10 @@ delete_features(
 
 \item{.data}{an object of class \code{sf} or \code{data.frame}}
 
-\item{match_on}{whether to match on the alias or the field name. Default, the alias.
-See Details for more}
+\item{chunk_size}{the maximum number of features to add at a time}
+
+\item{match_on}{whether to match on the alias or the field name. Default,
+the alias. See Details for more.}
 
 \item{rollback_on_fail}{default \code{TRUE}. Specifies whether the edits should be
 applied only if all submitted edits succeed.}

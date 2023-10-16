@@ -46,3 +46,21 @@ refresh_layer <- function(x) {
   attr(x, "query") <- query
   x
 }
+
+
+
+#' Get chunk indices
+#'
+#' For a given number of items and a chunk size, determine the start and end
+#' positions of each chunk.
+#'
+#' @param n the number of rows
+#' @param m the chunk size
+#' @keywords internal
+chunk_indices <- function(n, m) {
+  n_chunks <- ceiling(n/m)
+  chunk_starts <- seq(1, n, by = m)
+  chunk_ends <- seq_len(n_chunks) * m
+  chunk_ends[n_chunks] <- n
+  list(start = chunk_starts, end = chunk_ends)
+}

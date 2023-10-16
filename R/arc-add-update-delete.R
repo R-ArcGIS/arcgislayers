@@ -6,9 +6,11 @@
 #'
 #' @param x an object of class `FeatureLayer`
 #' @param .data an object of class `sf` or `data.frame`
-#' @param match_on whether to match on the alias or the field name. Default, the alias.
-#'   See Details for more
-#' @param rollback_on_fail if anything errors, roll back writes. Defaults to `TRUE`
+#' @param chunk_size the maximum number of features to add at a time
+#' @param match_on whether to match on the alias or the field name. Default,
+#'  the alias. See Details for more.
+#' @param rollback_on_fail if anything errors, roll back writes.
+#'  Defaults to `TRUE`.
 #' @param token your authorization token. By default checks the environment variable `ARCGIS_TOKEN`
 #'
 #' @details
@@ -25,10 +27,14 @@
 add_features <- function(
     x,
     .data,
+    chunk_size = 2000,
     match_on = c("alias", "name"),
     rollback_on_fail = TRUE,
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
+
+  # initial check for type of `x`
+  obj_check_layer(x)
 
   stopifnot("`.data` must be a data.frame-type class" = inherits(.data, "data.frame"))
 
@@ -93,29 +99,51 @@ add_features <- function(
   # subset accordingly
   .data <- .data[, present_index]
 
-  # conver to esri json
-  body <- as_esri_features(.data)
+  # count the number of rows in a data frame
+  n <- nrow(.data)
 
-  req <- httr2::request(x[["url"]])
-  req <- httr2::req_url_path_append(req, "addFeatures")
-  req <- httr2::req_url_query(req, token = token)
+  # get the indices to chunk them up
+  indices <- chunk_indices(n, chunk_size)
 
-  req <- httr2::req_body_form(
-    req,
-    features = body,
-    rollbackOnFailure = rollback_on_fail,
-    f = "json"
+  # create the base request from the feature url
+  req <- httr2::req_url_path_append(httr2::request(x[["url"]]), "addFeatures")
+
+  # pre-allocate list
+  all_reqs <- vector("list", length = lengths(indices)[1])
+
+  # populate the requests veector
+  for (i in seq_along(all_reqs)) {
+    start <- indices[["start"]][i]
+    end <- indices[["end"]][i]
+
+    all_reqs[[i]] <- httr2::req_body_form(
+      req,
+      features = as_esri_features(.data[start:end,]),
+      rollbackOnFailure = rollback_on_fail,
+      token = token,
+      f = "json"
+    )
+  }
+
+  # send the requests in parallel
+  all_resps <- httr2::multi_req_perform(all_reqs)
+
+  # parse the responses into a data frame
+  do.call(
+    rbind.data.frame,
+    lapply(all_resps, function(res) {
+
+      resp <- RcppSimdJson::fparse(
+        httr2::resp_body_string(res)
+      )
+
+      # check if any errors are present in any of the requests
+      detect_errors(resp)
+
+      # return the addResults dataframe
+      resp[["addResults"]]
+    })
   )
-
-  resp <- httr2::req_perform(req)
-
-  RcppSimdJson::fparse(
-    httr2::resp_body_string(resp)
-  )
-
-  # TODO what is the behavior be after this is completed?
-  # should the x object be returned? Should the successes / results be returned?
-  # should the feature layer be refreshed?
 }
 
 
