@@ -1,13 +1,14 @@
 test_that("Adding features to a table work", {
 
   skip("Must be ran manually")
+  skip_if_not_installed("dplyr")
 
   set_auth_token(auth_code())
 
   # ensure that Iris Test exists first
-  publish_layer(iris, "Iris Test")
+  res <- publish_layer(iris, "Iris Test")
 
-  irs <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/Iris%20Test/FeatureServer/0")
+  irs <- arc_open(file.path(res$services$encodedServiceURL, "0"))
 
   test_row <- data.frame(
     Sepal.Length = 1:5,
@@ -19,7 +20,16 @@ test_that("Adding features to a table work", {
 
   expect_success(add_features(irs, test_row))
 
+  # create a massive data frame
+  test_df <- as_tibble(sample_n(iris, 4500, replace = TRUE)) |>
+    dplyr::mutate(
+      Species = sample(c("Hi", "Howdy", "Esri", "Ft"), dplyr::n(), replace = TRUE)
+    )
+
+  expect_success(add_features(irs, test_df))
+
 })
+
 
 
 test_that("Adding features to a feature layer works", {
