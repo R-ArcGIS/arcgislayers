@@ -22,6 +22,7 @@
 #' @param async default `FALSE`. Cannot be changed at this time.
 #' @param type default `"Feature Service"`. Must not be changed at this time.
 #' @inheritParams arcgisutils::refresh_token
+#' @export
 add_item <- function(
     x,
     title,
