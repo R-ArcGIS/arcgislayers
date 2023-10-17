@@ -255,7 +255,7 @@ check_inherits_any <- function(x,
   )
 
   cli::cli_abort(
-    "{.arg {arg}} must be a {class} object, not {.obj_simple_type {x}}.",
+    "{.arg {arg}} must be a {class} object, not {.obj_simple_type {.cls {class(x)}}}.",
     call = call
   )
 }
