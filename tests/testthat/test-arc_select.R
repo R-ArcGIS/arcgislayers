@@ -21,3 +21,14 @@ test_that("arc_select(): tables can be parsed", {
   # if any errors occur above here the test will fail
   expect_true(TRUE)
 })
+
+
+test_that("arc_select() works on `ImageServer`s", {
+  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+
+  landsat <- arc_open(img_url, token = "")
+
+  debugonce(parse_esri_json)
+  tmp <- arc_select(landsat, n_max = 100, where = "Month = 2")
+  expect_true(TRUE)
+})

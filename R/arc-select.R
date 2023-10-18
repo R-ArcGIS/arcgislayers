@@ -39,9 +39,7 @@ arc_select <- function(
   # note that everything that goes into our quey must be the json that will
   # be sent directly to the API request which is why we convert it to json
   # before we use `update_params()`
-
-  # object class checking
-  obj_check_layer(x)
+  check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
 
   # extract the query object
   query <- attr(x, "query")
@@ -106,7 +104,11 @@ collect_layer <- function(x,
                           token = Sys.getenv("ARCGIS_TOKEN"),
                           ...,
                           error_call = rlang::caller_env()) {
-  obj_check_layer(x, call = error_call)
+  check_inherits_any(
+    x,
+    c("FeatureLayer", "Table", "ImageServer"),
+    call = error_call
+  )
 
   # 1. Make base request
   # 2. Identify necessary query parameters
@@ -117,8 +119,17 @@ collect_layer <- function(x,
   # 7. Parse:
   req <- httr2::request(x[["url"]])
 
-  # stop if query not supported
-  if (!grepl("query", x[["capabilities"]], ignore.case = TRUE)) {
+  # determine if the layer can query
+  can_query <- switch(
+    class(x),
+    "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
+    "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
+    "ImageServer" = x[["supportsAdvancedQueries"]],
+    FALSE
+  )
+
+  # throw error if the layer cannot query
+  if (!can_query) {
     cli::cli_abort(
       "{class(x)} {.val {x[['name']]}} does not support querying",
       call = error_call
