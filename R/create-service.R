@@ -84,19 +84,22 @@ create_feature_server <- function(
 
   body_json <- jsonify::to_json(body, unbox = TRUE)
 
-  req <- request(req_url)
-  req <- req_url_query(
+  req <- httr2::request(req_url)
+  req <- httr2::req_url_query(
     req,
     outputType = "featureService",
-    f = "json",
-    token = token
+    f = "json"
   )
 
-  req <- req_body_form(req, createParameters = jsonify::to_json(body, unbox = TRUE))
+  req <- httr2::req_body_form(
+    req,
+    token = token,
+    createParameters = jsonify::to_json(body, unbox = TRUE)
+  )
 
-  resp <- req_perform(req)
+  resp <- httr2::req_perform(req)
 
-  resp_parsed <- jsonify::from_json(resp_body_string(resp))
+  resp_parsed <- jsonify::from_json(httr2::resp_body_string(resp))
 
   detect_errors(resp_parsed)
 
@@ -104,6 +107,8 @@ create_feature_server <- function(
 
 }
 
+#' @export
+#' @rdname create_feature_service
 xss_defaults <- function() {
   list(
     "xssPreventionEnabled" = TRUE,

@@ -300,7 +300,7 @@ update_params <- function(x, ...) {
 add_offset <- function(offset, request, params) {
   params[["resultOffset"]] <- offset
   req <- httr2::req_url_path_append(request, "query")
-  httr2::req_url_query(req, !!!params)
+  httr2::req_body_form(req, !!!params)
 }
 
 #' Validate query parameters
@@ -331,12 +331,10 @@ validate_params <- function(params, token) {
 
 #' Given a query, determine how many features will be returned
 count_results <- function(req, query, token) {
-  n_req <- httr2::req_url_query(
-    httr2::req_body_form(
-      httr2::req_url_path_append(req, "query"),
-      !!!validate_params(query, token)
-    ),
-    returnCountOnly = "true",
+  n_req <- httr2::req_body_form(
+    httr2::req_url_path_append(req, "query"),
+    !!!validate_params(query, token),
+    returnCountOnly = "true"
   )
 
   resp <- httr2::resp_body_string(
