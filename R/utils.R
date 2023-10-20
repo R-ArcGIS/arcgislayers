@@ -78,6 +78,9 @@ chunk_indices <- function(n, m) {
 #' coalesce_crs(x, y)
 #' @keywords internal
 coalesce_crs <- function(x, y) {
+  # DEVELOPER NOTE: there is no inheritance check for CRS class
+  # I don't know how we would provide an informative error here.
+  # dont mess up!
   x_na <- is.na(x)
   y_na <- is.na(y)
 
