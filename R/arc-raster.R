@@ -54,7 +54,7 @@ arc_raster <- function(
 
   req <- httr2::request(paste0(x[["url"]], "/exportImage"))
 
-  req <- httr2::req_url_query(
+  req <- httr2::req_body_form(
     req,
     # bbox = paste0(bbox, collapse = ","),
     bbox = paste0(c(xmin, ymin, xmax, ymax), collapse = ","),
