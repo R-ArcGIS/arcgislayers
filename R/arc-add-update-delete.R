@@ -170,13 +170,12 @@ update_features <- function(
 
   # Update Feature Layer
   # https://developers.arcgis.com/rest/services-reference/enterprise/update-features.htm
-
-  #  check CRS compaitibility between x and `.data`
+  # check CRS compaitibility between x and `.data`
   # feedback for rest api team:
   # it is possible to specify the CRS of the input data for adding features or spatial
   # filters, however it is _not_ possible for updating features. If it is, it is undocumented
-  # it would be nice to be able to utilize the the transformations server side rather than
-  # relying on GDAL client side.
+  # it would be nice to be able to utilize the the transformations server side
+  # rather than relying on GDAL client side.
   # ALTERNATIVELY let me provide a feature set so i can pass in CRS
   if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
 
@@ -287,14 +286,17 @@ delete_features <- function(x,
     object_ids <- paste0(object_ids, collapse = ",")
   }
 
-  filter_geom <- filter_geom %||% list()
-
   # convert to the proper CRS if not missing
-  if (!rlang::is_empty(filter_geom)) {
+  if (!rlang::is_na(filter_geom)) {
+    # we extract the two CRS object
+    # then if filter_geom has no crs we use x via `coalesce_crs()`
+    x_crs <- sf::st_crs(x)
+    filt_crs <- sf::st_crs(filter_geom)
+    crs <- coalesce(filt_crs, x_crs)
     filter_geom <- prepare_spatial_filter(
       filter_geom = filter_geom,
       predicate = predicate,
-      crs = sf::crs(x)
+      crs = crs
     )
   }
 
@@ -315,6 +317,5 @@ delete_features <- function(x,
 
   jsonify::from_json(httr2::resp_body_string(resp))
 }
-
 
 

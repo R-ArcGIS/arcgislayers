@@ -64,3 +64,30 @@ chunk_indices <- function(n, m) {
   chunk_ends[n_chunks] <- n
   list(start = chunk_starts, end = chunk_ends)
 }
+
+#' Pick first non-missing CRS
+#'
+#' @param x an object of class `crs`
+#' @param y an object of class `crs`
+#'
+#' @examples
+#'
+#' x <- sf::st_crs(27572)
+#' y <- sf::st_crs(NA)
+#'
+#' coalesce_crs(x, y)
+#' @keywords internal
+coalesce_crs <- function(x, y) {
+  x_na <- is.na(x)
+  y_na <- is.na(y)
+
+  if (x_na && y_na) {
+    return(x)
+  } else if (y_na) {
+    return(x)
+  } else if (x_na) {
+    return(y)
+  } else {
+    x
+  }
+}
