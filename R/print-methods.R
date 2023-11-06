@@ -191,6 +191,9 @@ print.FeatureServer <- function(x, n, ...) {
 }
 
 
+# map server is the same printing method
+#' @export
+print.MapServer <- function(x, ...) print.FeatureServer(x, ...)
 
 # Image Server ------------------------------------------------------------
 

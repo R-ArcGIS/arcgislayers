@@ -31,6 +31,8 @@ arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   if (length(layer_class) == 0) {
     if (any(grepl("pixel|band|raster", names(meta)))) {
       layer_class <- "ImageServer"
+    } else if (grepl("MapServer", meta[["url"]])) {
+      layer_class <- "MapServer"
     } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
       layer_class <- "FeatureServer"
     } else {
@@ -41,19 +43,35 @@ arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
   # construct the appropriate class based on the resultant `layer_class`
   res <- switch(
     layer_class,
-    "FeatureLayer" = structure(
-      meta, class = layer_class, n = count_features(req, token), query = list()
+    "FeatureLayer" =  structure(
+      meta,
+      class = layer_class,
+      # if the layer does not have a query capability return NA for the attr
+      n = ifelse(
+        grepl("query", meta[["capabilities"]], TRUE),
+        count_features(req, token),
+        NA
+      ),
+      query = list()
     ),
     "Table" = structure(
-      meta, class = layer_class, n = count_features(req, token), query = list()
+      meta,
+      class = layer_class,
+      # if the layer does not have a query capability return NA for the attr
+      n = ifelse(
+        grepl("query", meta[["capabilities"]], TRUE),
+        count_features(req, token),
+        NA
+      ),
+      query = list()
     ),
     "FeatureServer" = structure(
       meta, class = layer_class
     ),
-    "ImageServer" = structure(meta, class = layer_class)
+    "ImageServer" = structure(meta, class = layer_class),
+    "MapServer" = structure(meta, class = layer_class)
   )
 
   res
 }
-
 

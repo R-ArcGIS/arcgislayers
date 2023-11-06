@@ -28,7 +28,6 @@ test_that("arc_select() works on `ImageServer`s", {
 
   landsat <- arc_open(img_url, token = "")
 
-  debugonce(parse_esri_json)
-  tmp <- arc_select(landsat, n_max = 100, where = "Month = 2")
-  expect_true(TRUE)
+  tmp <- arc_select(landsat, n_max = 2, where = "Month = 2")
+  expect_snapshot(tmp)
 })

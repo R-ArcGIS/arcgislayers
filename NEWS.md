@@ -1,5 +1,8 @@
 # arcgislayers 0.1.0 (unreleased)
 
+- Add support for opening `MapServers` 
+- `arc_open()` with a layer that does not support `Query` sets the `n` attribute to `NA`
+  - Print method will show something like `<FeatureLayer <NA features, 10 fields>>`
 - `arc_select()` is now supported for `ImageServer`s #78
 - `add_features()` is now paginated and performed in parallel. It gains an argument `chunk_size` which determines the maximum number of rows to be added to a feature service.
 - adds `get_layers()` which can fetch multiple items from a `FeatureServer` or `MapServer`
