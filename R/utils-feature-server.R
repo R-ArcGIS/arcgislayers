@@ -1,7 +1,7 @@
-#' Extract a layer from a FeatureServer
+#' Extract a layer from a Feature or Map Server
 #'
-#' `FeatureServer`s are collections of `Table`s and `FeatureLayer`s. These helpers
-#' provide easy access to the layers contained in the `FeatureServer`.
+#' These helpers provide easy access to the layers contained in a
+#' `FeatureServer` or `MapServer`.
 #'
 #' @param x an object of class `FeatureServer` or `MapServer`
 #' @param id default `NULL`. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in `get_layer()`.
