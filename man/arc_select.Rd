@@ -9,6 +9,7 @@ arc_select(
   fields = NULL,
   where = NULL,
   crs = sf::st_crs(x),
+  geometry = TRUE,
   filter_geom = NULL,
   predicate = "intersects",
   n_max = Inf,
@@ -28,6 +29,9 @@ selected.}
 \item{crs}{the spatial reference to be returned. If the CRS is different than
 the the CRS for the input \code{FeatureLayer}, a transformation will occur
 server-side. Ignored if x is a \code{Table}.}
+
+\item{geometry}{default \code{TRUE}. If geometries should be returned. Ignored for
+\code{Table} objects.}
 
 \item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
 query results based on a predicate function.}
