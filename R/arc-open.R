@@ -6,6 +6,8 @@
 #' To extract data from the remote resource utilize [`arc_select()`] for objects of class
 #' `FeatureLayer` or `Table`. For `ImageServer`s, utilize [`arc_raster()`].
 #'
+#'  `r lifecycle::badge("experimental")`
+#'
 #' @param url The url of the remote resource. Must be of length one.
 #' @param token default uses the `ARCGIS_TOKEN`environment variable.
 #'

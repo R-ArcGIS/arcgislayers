@@ -21,6 +21,8 @@ The resultant object acts as a reference to the remote data source.
 \details{
 To extract data from the remote resource utilize \code{\link[=arc_select]{arc_select()}} for objects of class
 \code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, utilize \code{\link[=arc_raster]{arc_raster()}}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \seealso{
 arc_select arc_raster
