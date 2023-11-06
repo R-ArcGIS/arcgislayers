@@ -23,6 +23,7 @@ Imports:
     cli,
     httr2 (>= 0.2.3),
     jsonify,
+    lifecycle,
     Rcpp,
     RcppSimdJson,
     rlang,
