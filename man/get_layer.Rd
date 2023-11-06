@@ -4,7 +4,7 @@
 \alias{get_layer}
 \alias{get_all_layers}
 \alias{get_layers}
-\title{Extract a layer from a FeatureServer}
+\title{Extract a layer from a Feature or Map Server}
 \usage{
 get_layer(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
 
@@ -30,8 +30,8 @@ Each a list containing \code{FeatureLayer} and \code{Table}s respectively.
 }
 }
 \description{
-\code{FeatureServer}s are collections of \code{Table}s and \code{FeatureLayer}s. These helpers
-provide easy access to the layers contained in the \code{FeatureServer}.
+These helpers provide easy access to the layers contained in a
+\code{FeatureServer} or \code{MapServer}.
 }
 \details{
 The \code{id} and \code{name} arguments must match the field values of the respective names as seen in the output of \code{list_items()}

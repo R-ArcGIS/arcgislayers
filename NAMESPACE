@@ -25,5 +25,6 @@ export(publish_item)
 export(publish_layer)
 export(refresh_layer)
 export(update_features)
+export(xss_defaults)
 import(arcgisutils)
-
+importFrom(lifecycle,deprecated)
