@@ -28,7 +28,7 @@ add_features <- function(
     x,
     .data,
     chunk_size = 2000,
-    match_on = c("alias", "name"),
+    match_on = c("name", "alias"),
     rollback_on_fail = TRUE,
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
