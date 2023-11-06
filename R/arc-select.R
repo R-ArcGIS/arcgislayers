@@ -11,6 +11,8 @@
 #' @param crs the spatial reference to be returned. If the CRS is different than
 #'   the the CRS for the input `FeatureLayer`, a transformation will occur
 #'   server-side. Ignored if x is a `Table`.
+#' @param geometry default `TRUE`. If geometries should be returned. Ignored for
+#'   `Table` objects.
 #' @inheritParams prepare_spatial_filter
 #' @param n_max the maximum number of features to return. By default returns
 #'   every feature available. Unused at the moment.
@@ -28,6 +30,7 @@ arc_select <- function(
     fields = NULL,
     where = NULL,
     crs = sf::st_crs(x),
+    geometry = TRUE,
     filter_geom = NULL,
     predicate = "intersects",
     n_max = Inf,
@@ -70,6 +73,9 @@ arc_select <- function(
 
   # if where is missing set to 1=1
   query[["where"]] <- where %||% query[["where"]] %||% "1=1"
+
+  # set returnGeometry depending on on geometry arg
+  query[["returnGeometry"]] <- geometry
 
   # handle filter geometry if not missing
   if (!is.null(filter_geom)) {
@@ -140,11 +146,6 @@ collect_layer <- function(x,
 
   # extract existing query
   query <- attr(x, "query")
-
-  # set returnGeometry depending on on geometry arg and is FeatureLayer
-  if (is.null(query[["returnGeometry"]]) && inherits(x, "FeatureLayer")) {
-    query[["returnGeometry"]] <- TRUE
-  }
 
   # if the outSR isn't set, set it to be the same as x
   if (inherits(x, "FeatureLayer") && is.null(query[["outSR"]])) {
