@@ -16,7 +16,7 @@ add_item(
   categories = character(0),
   async = FALSE,
   type = "Feature Service",
-  host = "https://arcgis.com",
+  host = host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 
@@ -25,7 +25,7 @@ publish_item(
   user = Sys.getenv("ARCGIS_USER"),
   publish_params = list(maxRecordCount = 2000),
   file_type = "featureCollection",
-  host = "https://arcgis.com",
+  host = host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 
@@ -35,7 +35,7 @@ publish_layer(
   ...,
   user = Sys.getenv("ARCGIS_USER"),
   publish_params = list(maxRecordCount = 2000, name = title),
-  host = "https://arcgis.com",
+  host = host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 }

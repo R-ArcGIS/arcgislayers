@@ -17,7 +17,7 @@ create_feature_server(
   copyright = "",
   has_static_data = FALSE,
   xss_prevention = xss_defaults(),
-  host = "https://arcgis.com",
+  host = host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 }
