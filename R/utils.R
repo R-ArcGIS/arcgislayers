@@ -101,11 +101,15 @@ coalesce_crs <- function(x, y) {
 #' to `httr2::req_body_multiform()` are scalars. Multiple length
 #' values are not permitted.
 #' @keywords internal
-check_null_or_scalar <- function(x, error_call = rlang::caller_env()) {
+check_null_or_scalar <- function(
+    x,
+    arg = rlang::caller_arg(x),
+    error_call = rlang::caller_env()
+) {
   if (!is.null(x)) {
     if (length(x) > 1) {
       cli::cli_abort(
-        "{.arg {substitute(x)}} argument must be a scalar or {.val NULL}",
+        "{.arg {arg}} argument must be a scalar or {.val NULL}",
         call = error_call
       )
     }
