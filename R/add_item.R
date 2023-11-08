@@ -3,16 +3,33 @@
 #' Publishes an `sf` or `data.frame` object to an ArcGIS Portal as a
 #' FeatureCollection.
 #'
-#' - `add_item()` takes a data.frame like object and uploads it as an item in your portal.
-#' - `publish_item()` takes an ID of an item in your portal and publishes it as a feature service.
-#' - `publish_layer()` is a high-level wrapper that first adds an object as an item
-#' in your portal and subsequently publishes it for you.
+#' @details
+#'
+#'  `r lifecycle::badge("experimental")`
+#'
+#' - `add_item()` takes a data.frame like object and uploads it as an item in
+#'   your portal.
+#' - `publish_item()` takes an ID of an item in your portal and publishes it
+#'   as a feature service.
+#' - `publish_layer()` is a high-level wrapper that first adds an object as
+#'   an item in your portal and subsequently publishes it for you.
 #' - `.publish_params()` is a utility function to specify optional publish
 #'   parameters such as copyright text, and the spatial reference of the
 #'   published feature collection.
 #'
-#' Note that there is _only_ support for feature services meaning that only tables
-#' and feature layers can be made by these functions.
+#' Note that there is _only_ support for feature services meaning that only
+#' tables and feature layers can be made by these functions.
+#'
+#' ### Publish Parameters
+#'
+#' When publishing an item to a portal, a number of [publish parameters](https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303) can be provided. Most importantly is the `targetSR` which will be
+#' the CRS of the hosted feature service. By default this is `EPSG:3857`.
+#'
+#' `publish_layer()` will use the CRS of the input object, `x`, by default. If
+#' publishing content in two steps with `add_item()` and `publish_item()`, use
+#' `.publish_params()` to craft your publish parameters. Ensure that the CRS
+#' provided to `target_crs` matches that of the item you added with
+#' `add_item()`.
 #'
 #' @inheritParams arcgisutils::as_layer
 #' @param user default environment variable `Sys.getenv("ARCGIS_USER")`.
@@ -27,6 +44,18 @@
 #' @inheritParams arcgisutils::refresh_token
 #' @export
 #' @rdname publish
+#' @examples
+#' if (interactive()) {
+#'   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
+#'   x <- nc[1:5, 13]
+#'
+#'   tkn <- auth_code()
+#'   set_auth_token(tkn)
+#'
+#'   publish_res <- publish_layer(
+#'     x, "North Carolina SIDS sample"
+#'   )
+#' }
 add_item <- function(
     x,
     title,
@@ -211,6 +240,12 @@ publish_layer <- function(
 
 #' @export
 #' @rdname publish
+#' @param max_record_count the maximum number of records that can be returned
+#'  from the created Feature Service.
+#' @param target_crs the CRS of the Feature Service to be created. By default,
+#'  `EPSG:3857`.
+#' @param copyright an optional character scalar containing copyright text to
+#'  add to the published Feature Service.
 .publish_params <- function(
     name = NULL,
     description = NULL,
@@ -232,8 +267,11 @@ publish_layer <- function(
   check_null_or_scalar(description)
   check_null_or_scalar(copyright)
 
-
-  target_sr <- validate_crs(target_crs)[[1]]
+  if (is.na(target_crs)) {
+    target_sr <- NULL
+  } else {
+    target_sr <- validate_crs(target_crs)[[1]]
+  }
 
   compact(
     list(

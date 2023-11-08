@@ -1,20 +1,3 @@
-# publish an item to a feature layer
-# https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm
-
-# create a service
-# https://developers.arcgis.com/rest/users-groups-and-items/create-service.htm
-
-
-# TODO create with featureCollection which uses layers
-# https://developers.arcgis.com/documentation/common-data-types/featurecollection.htm
-# https://developers.arcgis.com/documentation/common-data-types/layer.htm
-
-# IDEALLY we can create a layer with the field names and types etc already specified
-# then we can use `add_features()` to add data in parallel. This will likely be much
-# faster than uploading a file directly
-# can theoretically publish a 0 element featureCollection with the field defs and then
-# add_features()
-
 #' Create a FeatureServer
 #'
 #' @param service_name Feature Service name.
@@ -108,7 +91,7 @@ create_feature_server <- function(
 }
 
 #' @export
-#' @rdname create_feature_service
+#' @rdname create_feature_server
 xss_defaults <- function() {
   list(
     "xssPreventionEnabled" = TRUE,
@@ -116,4 +99,9 @@ xss_defaults <- function() {
     "xssInputRule" = "rejectInvalid"
   )
 }
+
+
+# IDEALLY we can create a layer with the field names and types etc already specified
+# then we can use `add_features()` to add data in parallel. This will likely be much
+# faster than uploading a file directly
 

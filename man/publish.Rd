@@ -24,7 +24,7 @@ add_item(
 publish_item(
   item_id,
   user = Sys.getenv("ARCGIS_USER"),
-  publish_params = publish_params(),
+  publish_params = .publish_params(),
   file_type = "featureCollection",
   host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
@@ -35,7 +35,7 @@ publish_layer(
   title,
   ...,
   user = Sys.getenv("ARCGIS_USER"),
-  publish_params = publish_params(title, target_crs = sf::st_crs(x)),
+  publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
   host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
@@ -45,7 +45,7 @@ publish_layer(
   description = NULL,
   copyright = NULL,
   target_crs = 3857,
-  max_record_count = 2000
+  max_record_count = 2000L
 )
 }
 \arguments{
@@ -85,22 +85,58 @@ the values in the \href{https://developers.arcgis.com/rest/users-groups-and-item
 \item{...}{arguments passed into \code{add_item()}.}
 
 \item{name}{a scalar character of the name of the layer. Must be unique.}
+
+\item{copyright}{an optional character scalar containing copyright text to
+add to the published Feature Service.}
+
+\item{target_crs}{the CRS of the Feature Service to be created. By default,
+\code{EPSG:3857}.}
+
+\item{max_record_count}{the maximum number of records that can be returned
+from the created Feature Service.}
 }
 \description{
 Publishes an \code{sf} or \code{data.frame} object to an ArcGIS Portal as a
 FeatureCollection.
 }
 \details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
-\item \code{add_item()} takes a data.frame like object and uploads it as an item in your portal.
-\item \code{publish_item()} takes an ID of an item in your portal and publishes it as a feature service.
-\item \code{publish_layer()} is a high-level wrapper that first adds an object as an item
-in your portal and subsequently publishes it for you.
+\item \code{add_item()} takes a data.frame like object and uploads it as an item in
+your portal.
+\item \code{publish_item()} takes an ID of an item in your portal and publishes it
+as a feature service.
+\item \code{publish_layer()} is a high-level wrapper that first adds an object as
+an item in your portal and subsequently publishes it for you.
 \item \code{.publish_params()} is a utility function to specify optional publish
 parameters such as copyright text, and the spatial reference of the
 published feature collection.
 }
 
-Note that there is \emph{only} support for feature services meaning that only tables
-and feature layers can be made by these functions.
+Note that there is \emph{only} support for feature services meaning that only
+tables and feature layers can be made by these functions.
+\subsection{Publish Parameters}{
+
+When publishing an item to a portal, a number of \href{https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303}{publish parameters} can be provided. Most importantly is the \code{targetSR} which will be
+the CRS of the hosted feature service. By default this is \code{EPSG:3857}.
+
+\code{publish_layer()} will use the CRS of the input object, \code{x}, by default. If
+publishing content in two steps with \code{add_item()} and \code{publish_item()}, use
+\code{.publish_params()} to craft your publish parameters. Ensure that the CRS
+provided to \code{target_crs} matches that of the item you added with
+\code{add_item()}.
+}
+}
+\examples{
+if (interactive()) {
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
+  x <- nc[1:5, 13]
+
+  tkn <- auth_code()
+  set_auth_token(tkn)
+
+  publish_res <- publish_layer(
+    x, "North Carolina SIDS sample"
+  )
+}
 }
