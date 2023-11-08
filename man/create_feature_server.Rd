@@ -2,6 +2,7 @@
 % Please edit documentation in R/create-service.R
 \name{create_feature_server}
 \alias{create_feature_server}
+\alias{xss_defaults}
 \title{Create a FeatureServer}
 \usage{
 create_feature_server(
@@ -17,9 +18,11 @@ create_feature_server(
   copyright = "",
   has_static_data = FALSE,
   xss_prevention = xss_defaults(),
-  host = host(),
+  host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
+
+xss_defaults()
 }
 \arguments{
 \item{service_name}{Feature Service name.}
