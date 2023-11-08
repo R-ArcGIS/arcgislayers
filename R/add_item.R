@@ -1,12 +1,15 @@
-
-#' Add an object to a Portal
+#' Publish Content
 #'
-#' Publishes an `sf` or `data.frame` object to an ArcGIS Portal.
+#' Publishes an `sf` or `data.frame` object to an ArcGIS Portal as a
+#' FeatureCollection.
 #'
 #' - `add_item()` takes a data.frame like object and uploads it as an item in your portal.
 #' - `publish_item()` takes an ID of an item in your portal and publishes it as a feature service.
 #' - `publish_layer()` is a high-level wrapper that first adds an object as an item
 #' in your portal and subsequently publishes it for you.
+#' - `.publish_params()` is a utility function to specify optional publish
+#'   parameters such as copyright text, and the spatial reference of the
+#'   published feature collection.
 #'
 #' Note that there is _only_ support for feature services meaning that only tables
 #' and feature layers can be made by these functions.
@@ -23,6 +26,7 @@
 #' @param type default `"Feature Service"`. Must not be changed at this time.
 #' @inheritParams arcgisutils::refresh_token
 #' @export
+#' @rdname publish
 add_item <- function(
     x,
     title,
@@ -33,7 +37,7 @@ add_item <- function(
     categories = character(0),
     async = FALSE,
     type = "Feature Service",
-    host = host(),
+    host = arc_host(),
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
@@ -73,7 +77,6 @@ add_item <- function(
     "`description` must be length 1" = length(description) == 1
   )
 
-
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/addItem")
 
   # create the feature collection json
@@ -87,7 +90,10 @@ add_item <- function(
     spatial_reference <- NULL
   } else {
     extent <- paste0(sf::st_bbox(x), collapse = ",")
-    spatial_reference <- jsonify::to_json(validate_crs(sf::st_crs(x))[[1]], unbox = TRUE)
+    spatial_reference <- jsonify::to_json(
+      validate_crs(sf::st_crs(x))[[1]],
+      unbox = TRUE
+    )
   }
 
   req_fields <- compact(
@@ -97,7 +103,6 @@ add_item <- function(
       tags = tags,
       snippet = snippet,
       text = jsonify::to_json(feature_collection, unbox = TRUE),
-      # text = jsn,
       extent = extent,
       spatialReference = spatial_reference,
       categories = categories,
@@ -124,22 +129,22 @@ add_item <- function(
 
 #' @export
 #' @param item_id the ID of the item to be published.
-#' @param file_type default `"featureCollection"`. Must not be changed at this time.
+#' @param file_type default `"featureCollection"`. Cannot be changed.
 #' @param publish_params a list of named values of the `publishParameters`. Must match
 #'   the values in the [/publish endpoint documentation](https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303).
 #' @inheritParams add_item
-#' @rdname add_item
+#' @rdname publish
 publish_item <- function(
     item_id,
     user = Sys.getenv("ARCGIS_USER"),
-    publish_params = list(maxRecordCount = 2000),
+    publish_params = .publish_params(),
     file_type = "featureCollection",
-    host = host(),
+    host = arc_host(),
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
   # create request URL
-  # TODO check for trailing `/` in host (shoult create a `sanitize_host()`)
+  # TODO check for trailing `/` in host (should create a `sanitize_host()`)
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/publish")
 
   # create request
@@ -163,15 +168,15 @@ publish_item <- function(
 
 
 #' @export
-#' @rdname add_item
+#' @rdname publish
 #' @param ... arguments passed into `add_item()`.
 publish_layer <- function(
     x,
     title,
     ...,
     user = Sys.getenv("ARCGIS_USER"),
-    publish_params = list(maxRecordCount = 2000, name = title),
-    host = host(),
+    publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
+    host = arc_host(),
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
@@ -204,4 +209,40 @@ publish_layer <- function(
 }
 
 
+#' @export
+#' @rdname publish
+.publish_params <- function(
+    name = NULL,
+    description = NULL,
+    copyright = NULL,
+    target_crs = 3857,
+    max_record_count = 2000L
+) {
+
+  # https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303
+  # FeatureCollection publish parameters:
+  # - name
+  # - description
+  # - maxRecordCount
+  # - copyrightText
+  # - layerInfo (ignore for now. No good use case)
+  # - targetSR (derive from the object)
+
+  check_null_or_scalar(name)
+  check_null_or_scalar(description)
+  check_null_or_scalar(copyright)
+
+
+  target_sr <- validate_crs(target_crs)[[1]]
+
+  compact(
+    list(
+      name = name,
+      description = description,
+      copyright = copyright,
+      maxRecordCount = as.integer(max_record_count),
+      targetSR = target_sr
+    )
+  )
+}
 

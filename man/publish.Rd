@@ -4,7 +4,8 @@
 \alias{add_item}
 \alias{publish_item}
 \alias{publish_layer}
-\title{Add an object to a Portal}
+\alias{.publish_params}
+\title{Publish Content}
 \usage{
 add_item(
   x,
@@ -16,16 +17,16 @@ add_item(
   categories = character(0),
   async = FALSE,
   type = "Feature Service",
-  host = host(),
+  host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 
 publish_item(
   item_id,
   user = Sys.getenv("ARCGIS_USER"),
-  publish_params = list(maxRecordCount = 2000),
+  publish_params = publish_params(),
   file_type = "featureCollection",
-  host = host(),
+  host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 
@@ -34,9 +35,17 @@ publish_layer(
   title,
   ...,
   user = Sys.getenv("ARCGIS_USER"),
-  publish_params = list(maxRecordCount = 2000, name = title),
-  host = host(),
+  publish_params = publish_params(title, target_crs = sf::st_crs(x)),
+  host = arc_host(),
   token = Sys.getenv("ARCGIS_TOKEN")
+)
+
+.publish_params(
+  name = NULL,
+  description = NULL,
+  copyright = NULL,
+  target_crs = 3857,
+  max_record_count = 2000
 )
 }
 \arguments{
@@ -71,12 +80,15 @@ the item that is being added. Note that the value cannot be larger than 64kb.}
 \item{publish_params}{a list of named values of the \code{publishParameters}. Must match
 the values in the \href{https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303}{/publish endpoint documentation}.}
 
-\item{file_type}{default \code{"featureCollection"}. Must not be changed at this time.}
+\item{file_type}{default \code{"featureCollection"}. Cannot be changed.}
 
 \item{...}{arguments passed into \code{add_item()}.}
+
+\item{name}{a scalar character of the name of the layer. Must be unique.}
 }
 \description{
-Publishes an \code{sf} or \code{data.frame} object to an ArcGIS Portal.
+Publishes an \code{sf} or \code{data.frame} object to an ArcGIS Portal as a
+FeatureCollection.
 }
 \details{
 \itemize{
@@ -84,6 +96,9 @@ Publishes an \code{sf} or \code{data.frame} object to an ArcGIS Portal.
 \item \code{publish_item()} takes an ID of an item in your portal and publishes it as a feature service.
 \item \code{publish_layer()} is a high-level wrapper that first adds an object as an item
 in your portal and subsequently publishes it for you.
+\item \code{.publish_params()} is a utility function to specify optional publish
+parameters such as copyright text, and the spatial reference of the
+published feature collection.
 }
 
 Note that there is \emph{only} support for feature services meaning that only tables

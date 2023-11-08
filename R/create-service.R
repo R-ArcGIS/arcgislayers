@@ -52,7 +52,7 @@ create_feature_server <- function(
     copyright = "",
     has_static_data = FALSE,
     xss_prevention = xss_defaults(),
-    host = host(),
+    host = arc_host(),
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
