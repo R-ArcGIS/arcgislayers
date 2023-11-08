@@ -22,9 +22,6 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/add_item.html</loc>
-  </url>
-  <url>
     <loc>/reference/add_offset.html</loc>
   </url>
   <url>
@@ -41,6 +38,9 @@
   </url>
   <url>
     <loc>/reference/check_inherits_any.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_null_or_scalar.html</loc>
   </url>
   <url>
     <loc>/reference/chunk_indices.html</loc>
@@ -74,6 +74,9 @@
   </url>
   <url>
     <loc>/reference/prettify_param.html</loc>
+  </url>
+  <url>
+    <loc>/reference/publish.html</loc>
   </url>
   <url>
     <loc>/reference/spatial_filter.html</loc>
