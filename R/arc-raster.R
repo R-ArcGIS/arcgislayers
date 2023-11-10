@@ -18,12 +18,18 @@
 #' if (interactive()) {
 #' img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 #'
-#' landsat <- arc_open(img_url, token = "")
+#' landsat <- arc_open(img_url)
 #'
-#' bbox <- sf::st_bbox(c(xmin = -71, ymin = 43, xmax = -67, ymax = 47.5), crs = 4326)
-#'
-#' arc_raster(landsat, bbox, 1000, 1000)
-#'
+#' arc_raster(
+#'   landsat,
+#'   xmin = -71,
+#'   ymin = 43,
+#'   xmax = -67,
+#'   ymax = 47.5,
+#'   bbox_crs = 4326,
+#'   width = 100,
+#'   height = 100
+#' )
 #' }
 #'
 #' @returns
@@ -80,21 +86,3 @@ arc_raster <- function(
   res
 
 }
-#
-# landsat_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
-#
-# bbox <- sf::st_bbox(c(
-#   xmin = -71.087509321293,
-#   ymin = 43.091050586836,
-#   xmax = -66.969271,
-#   ymax = 47.4533344744109
-# ), crs = 4326)
-#
-# x <- image_server(landsat_url)
-
-# res <- query_imagery(x, bbox, width = 5120, height = 5120)
-#
-# terra::plotRGB(res, 4, 3, 2, scale = 10000)
-#
-#
-#
