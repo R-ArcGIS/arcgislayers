@@ -218,7 +218,9 @@ collect_layer <- function(x,
     return(data.frame())
   }
 
-  if (inherits(res, "sf")) sf::st_crs(res) <- sf::st_crs(x)
+  if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
+    sf::st_crs(res) <- sf::st_crs(x)
+  }
 
   res
 
