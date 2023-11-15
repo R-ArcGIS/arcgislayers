@@ -21,7 +21,7 @@ LazyData: true
 Imports: 
     arcgisutils (>= 0.1.0),
     cli,
-    httr2 (>= 0.2.3),
+    httr2 (>= 1.0.0),
     jsonify,
     lifecycle,
     Rcpp,

@@ -126,7 +126,7 @@ add_features <- function(
   }
 
   # send the requests in parallel
-  all_resps <- httr2::multi_req_perform(all_reqs)
+  all_resps <- httr2::req_perform_parallel(all_reqs)
 
   # parse the responses into a data frame
   do.call(
