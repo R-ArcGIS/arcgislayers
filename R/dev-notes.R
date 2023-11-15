@@ -4,7 +4,7 @@
 #| 3. number of records per page
 
 #| note that we can parallelize these requests using
-#| httr2::multi_req_perform() and curl::new_pool()
+#| httr2::req_perform_parallel() and curl::new_pool()
 #| this can make fetching data from AGOL super duper fast
 
 

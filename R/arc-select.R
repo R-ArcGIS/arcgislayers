@@ -192,7 +192,7 @@ collect_layer <- function(x,
   all_requests <- lapply(offsets, add_offset, req, query_params)
 
   # make all requests and store responses in list
-  all_resps <- httr2::multi_req_perform(all_requests)
+  all_resps <- httr2::req_perform_parallel(all_requests)
 
   # identify any errors
   has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
