@@ -60,3 +60,6 @@ based on the newly created feature server's url.
 \description{
 Create a FeatureServer
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}

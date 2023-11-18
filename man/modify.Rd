@@ -70,6 +70,8 @@ Delete features from a feature layer based on object ID, a where clause, or a
 spatial filter.
 }
 \details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Regarding the \code{match_on} argument:when publishing an object to an ArcGIS Portal
 from R, the object's names are provided as the alias. The object's names are
 subject to change according to the standards of the ArcGIS REST API. For example.

@@ -34,5 +34,7 @@ These helpers provide easy access to the layers contained in a
 \code{FeatureServer} or \code{MapServer}.
 }
 \details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 The \code{id} and \code{name} arguments must match the field values of the respective names as seen in the output of \code{list_items()}
 }

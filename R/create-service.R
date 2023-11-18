@@ -21,6 +21,10 @@
 #' If a `FeatureServer` is cerated successfully, a `FeatureServer` object is returned
 #' based on the newly created feature server's url.
 #'
+#' @details
+#'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @export
 create_feature_server <- function(
     service_name,

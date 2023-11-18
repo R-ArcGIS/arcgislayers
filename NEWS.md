@@ -9,3 +9,4 @@
   - new utility function `list_items()`
 - adds cli as an explicit import (has been implicitly imported by httr2)
 - repository made public
+- add lifecycle badges to all exported functions <https://github.com/R-ArcGIS/arcgislayers/pull/101>

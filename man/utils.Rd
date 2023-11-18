@@ -19,6 +19,7 @@ refresh_layer(x)
 Utility functions
 }
 \details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
 \item \code{list_fields()} returns a data.frame of the fields in a \code{FeatureLayer} or \code{Table}
 \item \code{list_items()} returns a data.frame containing the layers or tables in a \code{FeatureServer} or \code{MapServer}

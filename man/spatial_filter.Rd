@@ -47,6 +47,8 @@ to a type of ESRI spatial relation.
 \details{
 Using \code{sfc} objects as \code{filter_geom}
 
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 If an \code{sfc} object is provided it will be transformed to the layers spatial
 reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the \code{sfc}
