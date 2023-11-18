@@ -2,6 +2,8 @@
 #'
 #' @details
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' - `list_fields()` returns a data.frame of the fields in a `FeatureLayer` or `Table`
 #' - `list_items()` returns a data.frame containing the layers or tables in a `FeatureServer` or `MapServer`
 #' - `clear_query()` removes any saved query in a `FeatureLayer` or `Table` object

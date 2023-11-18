@@ -12,6 +12,8 @@
 #'
 #' @details Using `sfc` objects as `filter_geom`
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #'  If an `sfc` object is provided it will be transformed to the layers spatial
 #'  reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is
 #'  assumed to use the same spatial reference as the FeatureLayer. If the `sfc`

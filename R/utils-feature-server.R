@@ -9,6 +9,8 @@
 #' @inheritParams arc_open
 #' @details
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' The `id` and `name` arguments must match the field values of the respective names as seen in the output of `list_items()`
 #'
 #' @returns

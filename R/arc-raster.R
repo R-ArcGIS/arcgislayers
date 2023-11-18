@@ -14,6 +14,10 @@
 #' @param height default `NULL`. Cannot exceed `x[["maxImageHeight"]]`.
 #' @param token authorization token fetched from the environment variable `ARCGIS_TOKEN`
 #'
+#' @details
+#'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @examples
 #' if (interactive()) {
 #' img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
