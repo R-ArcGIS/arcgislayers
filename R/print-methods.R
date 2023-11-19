@@ -94,7 +94,7 @@ print.FeatureLayer <- function(x, ...) {
   invisible(x)
 }
 
-
+#' @export
 head.FeatureLayer <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN")) {
   collect_layer(x, n_max, token)
 }
