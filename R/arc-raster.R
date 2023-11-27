@@ -8,7 +8,9 @@
 #' @param xmax the maximum bounding longitude value.
 #' @param ymin that minimum bounding latitude value.
 #' @param ymax the maximum bounding latitude value.
-#' @param crs the CRS of the resultant raster image and the provided bounding box defined by `xmin`, `xmax`, `ymin`, `ymax` (passed to `bboxSR` and `outSR` query parameters).
+#' @param crs the CRS of the resultant raster image and the provided bounding box defined by `xmin`, `xmax`, `ymin`, `ymax` (passed `outSR` query parameter).
+#' @param bbox_crs the CRS of the values passed to `xmin`, `xmax`, `ymin`, and `ymax`.
+#'  If not specified, uses the the CRS of `x`.
 #' @param format default `"tiff"`. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".
 #' @param width default `NULL`. Cannot exceed `x[["maxImageWidth"]]`.
 #' @param height default `NULL`. Cannot exceed `x[["maxImageHeight"]]`.

@@ -16,6 +16,7 @@
 #' @param has_static_data default `FALSE`. Indicates if data is changing.
 #' @param xss_prevention cross-site-scripting prevention is enabled by default.
 #'   See details for more.
+#' @inheritParams add_item
 #'
 #' @returns
 #' If a `FeatureServer` is cerated successfully, a `FeatureServer` object is returned

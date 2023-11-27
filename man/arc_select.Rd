@@ -43,6 +43,9 @@ query results based on a predicate function.}
 \item{n_max}{the maximum number of features to return. By default returns
 every feature available. Unused at the moment.}
 
+\item{token}{your authorization token. By default checks the environment
+variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+
 \item{...}{additional query parameters passed to the API.}
 }
 \description{

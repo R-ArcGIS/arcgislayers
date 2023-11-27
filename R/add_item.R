@@ -99,7 +99,7 @@ add_item <- function(
   if (nchar(snippet) > 2048) warning("Snippet must be 2048 or fewer characters.")
 
   # check if description is too big or too many eles
-  descrip_kb <- as.numeric(object.size(description)) / 1000
+  descrip_kb <- as.numeric(utils::object.size(description)) / 1000
 
   stopifnot(
     "`description` must be smaller than 64kb" = descrip_kb <= 64,

@@ -29,7 +29,10 @@ arc_raster(
 
 \item{ymax}{the maximum bounding latitude value.}
 
-\item{crs}{the CRS of the resultant raster image and the provided bounding box defined by \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} (passed to \code{bboxSR} and \code{outSR} query parameters).}
+\item{bbox_crs}{the CRS of the values passed to \code{xmin}, \code{xmax}, \code{ymin}, and \code{ymax}.
+If not specified, uses the the CRS of \code{x}.}
+
+\item{crs}{the CRS of the resultant raster image and the provided bounding box defined by \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} (passed \code{outSR} query parameter).}
 
 \item{width}{default \code{NULL}. Cannot exceed \code{x[["maxImageWidth"]]}.}
 
