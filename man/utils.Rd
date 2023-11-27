@@ -15,6 +15,12 @@ list_items(x)
 
 refresh_layer(x)
 }
+\arguments{
+\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
+}
+\value{
+See Details.
+}
 \description{
 Utility functions
 }
@@ -24,6 +30,8 @@ Utility functions
 \item \code{list_fields()} returns a data.frame of the fields in a \code{FeatureLayer} or \code{Table}
 \item \code{list_items()} returns a data.frame containing the layers or tables in a \code{FeatureServer} or \code{MapServer}
 \item \code{clear_query()} removes any saved query in a \code{FeatureLayer} or \code{Table} object
-\item \code{refresh_layer()} syncs a \code{FeatureLayer} or \code{Table} with the remote resource picking up any changes that may have been made upstream
+\item \code{refresh_layer()} syncs a \code{FeatureLayer} or \code{Table} with the remote
+resource picking up any changes that may have been made upstream.
+Returns an object of class \code{x}.
 }
 }

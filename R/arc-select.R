@@ -17,6 +17,7 @@
 #' @param n_max the maximum number of features to return. By default returns
 #'   every feature available. Unused at the moment.
 #' @param ... additional query parameters passed to the API.
+#' @inheritParams arc_open
 #'
 #' @details
 #'
@@ -334,7 +335,7 @@ validate_params <- function(params, token) {
   params
 }
 
-#' Given a query, determine how many features will be returned
+# Given a query, determine how many features will be returned
 count_results <- function(req, query, token) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),

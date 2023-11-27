@@ -24,7 +24,6 @@ Imports:
     httr2 (>= 1.0.0),
     jsonify,
     lifecycle,
-    Rcpp,
     RcppSimdJson,
     rlang,
     sf,

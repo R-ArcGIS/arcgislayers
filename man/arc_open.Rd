@@ -9,7 +9,8 @@ arc_open(url, token = Sys.getenv("ARCGIS_TOKEN"))
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{token}{default uses the \code{ARCGIS_TOKEN}environment variable.}
+\item{token}{your authorization token. By default checks the environment
+variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
 \value{
 Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, or \code{ImageServer}.

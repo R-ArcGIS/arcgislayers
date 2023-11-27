@@ -90,8 +90,8 @@ get_all_layers <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   compact(
     list(
-      layers = setNames(layers, layer_ids),
-      tables = setNames(tables, table_ids)
+      layers = stats::setNames(layers, layer_ids),
+      tables = stats::setNames(tables, table_ids)
     )
   )
 }
@@ -139,7 +139,7 @@ get_layers <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOK
     }
 
     # create lookup table for fetching ids
-    lu <- setNames(x[["layers"]][["id"]], valid_names)
+    lu <- stats::setNames(x[["layers"]][["id"]], valid_names)
 
     item_urls <- file.path(
       x[["url"]],

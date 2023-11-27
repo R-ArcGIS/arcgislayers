@@ -11,7 +11,7 @@ add_features(
   .data,
   chunk_size = 2000,
   match_on = c("name", "alias"),
-  rollback_on_fail = TRUE,
+  rollback_on_failure = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN")
 )
 
@@ -30,7 +30,7 @@ delete_features(
   where = NULL,
   filter_geom = NULL,
   predicate = "intersects",
-  rollback_on_fail = TRUE,
+  rollback_on_failure = TRUE,
   token = Sys.getenv("ARCGIS_TOKEN"),
   ...
 )
@@ -45,12 +45,14 @@ delete_features(
 \item{match_on}{whether to match on the alias or the field name. Default,
 the alias. See Details for more.}
 
-\item{rollback_on_fail}{default \code{TRUE}. Specifies whether the edits should be
+\item{rollback_on_failure}{default \code{TRUE}. Specifies whether the edits should be
 applied only if all submitted edits succeed.}
 
 \item{token}{your authorization token. By default, token is set to the
 environment variable \code{ARCGIS_TOKEN}. Use \code{set_auth_token()} to set
 \code{ARCGIS_TOKEN}.}
+
+\item{...}{additional query parameters passed to the API.}
 
 \item{object_ids}{a numeric vector of object IDs to be deleted.}
 

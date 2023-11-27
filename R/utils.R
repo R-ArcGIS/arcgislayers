@@ -1,5 +1,6 @@
 #' Utility functions
 #'
+#' @inheritParams arc_select
 #' @details
 #'
 #' `r lifecycle::badge("experimental")`
@@ -7,8 +8,11 @@
 #' - `list_fields()` returns a data.frame of the fields in a `FeatureLayer` or `Table`
 #' - `list_items()` returns a data.frame containing the layers or tables in a `FeatureServer` or `MapServer`
 #' - `clear_query()` removes any saved query in a `FeatureLayer` or `Table` object
-#' - `refresh_layer()` syncs a `FeatureLayer` or `Table` with the remote resource picking up any changes that may have been made upstream
+#' - `refresh_layer()` syncs a `FeatureLayer` or `Table` with the remote
+#'    resource picking up any changes that may have been made upstream.
+#'    Returns an object of class `x`.
 #'
+#' @returns See Details.
 #' @export
 #' @rdname utils
 clear_query <- function(x) {
@@ -41,8 +45,8 @@ refresh_layer <- function(x) {
   xurl <- x[["url"]]
   x <- switch(
     class(x)[1],
-    FeatureLayer = feature_layer(xurl),
-    Table = feature_table(xurl)
+    FeatureLayer = arc_open(xurl),
+    Table = arc_open(xurl)
   )
 
   attr(x, "query") <- query
@@ -79,6 +83,7 @@ chunk_indices <- function(n, m) {
 #'
 #' coalesce_crs(x, y)
 #' @keywords internal
+#' @noRd
 coalesce_crs <- function(x, y) {
   # DEVELOPER NOTE: there is no inheritance check for CRS class
   # I don't know how we would provide an informative error here.

@@ -48,8 +48,8 @@ print.Table <- function(x, ...) {
 }
 
 #' @export
-head.Table <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN")) {
-  collect_layer(x, n_max, token)
+head.Table <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN"), ...) {
+  collect_layer(x, n, token)
 }
 
 # Feature Layer -----------------------------------------------------------
@@ -94,9 +94,10 @@ print.FeatureLayer <- function(x, ...) {
   invisible(x)
 }
 
-
-head.FeatureLayer <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN")) {
-  collect_layer(x, n_max, token)
+#' @importFrom utils head
+#' @export
+head.FeatureLayer <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN"), ...) {
+  collect_layer(x, n, token)
 }
 
 

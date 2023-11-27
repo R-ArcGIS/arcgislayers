@@ -9,10 +9,11 @@
 #' @param chunk_size the maximum number of features to add at a time
 #' @param match_on whether to match on the alias or the field name. Default,
 #'  the alias. See Details for more.
-#' @param rollback_on_fail if anything errors, roll back writes.
+#' @param rollback_on_failure if anything errors, roll back writes.
 #'  Defaults to `TRUE`.
 #' @param token your authorization token. By default checks the environment variable `ARCGIS_TOKEN`
 #'
+#' @inheritParams arc_select
 #' @details
 #'
 #' `r lifecycle::badge("experimental")`
@@ -31,7 +32,7 @@ add_features <- function(
     .data,
     chunk_size = 2000,
     match_on = c("name", "alias"),
-    rollback_on_fail = TRUE,
+    rollback_on_failure = TRUE,
     token = Sys.getenv("ARCGIS_TOKEN")
 ) {
 
@@ -77,7 +78,7 @@ add_features <- function(
   geo_col <- attr(.data, "sf_column")
 
   if (match_on == "alias") {
-    lu <- setNames(feature_fields[["name"]], feature_fields[["alias"]])
+    lu <- stats::setNames(feature_fields[["name"]], feature_fields[["alias"]])
 
     # ensure the geo_col is present if its an sf object
     if (inherits(.data, "sf")) {
@@ -121,7 +122,7 @@ add_features <- function(
     all_reqs[[i]] <- httr2::req_body_form(
       req,
       features = as_esri_features(.data[start:end,]),
-      rollbackOnFailure = rollback_on_fail,
+      rollbackOnFailure = rollback_on_failure,
       token = token,
       f = "json"
     )
@@ -199,7 +200,7 @@ update_features <- function(
   geo_col <- attr(.data, "sf_column")
 
   if (match_on == "alias") {
-    lu <- setNames(feature_fields[["name"]], feature_fields[["alias"]])
+    lu <- stats::setNames(feature_fields[["name"]], feature_fields[["alias"]])
 
     # ensure the geo_col is present if its an sf object
     if (inherits(.data, "sf")) {
@@ -257,27 +258,29 @@ update_features <- function(
 #'   deleted. When the where statement evaluates to `TRUE`, those values will be
 #'   deleted.
 #' @inheritParams prepare_spatial_filter
-#' @param rollback_on_fail default `TRUE`. Specifies whether the edits should be
+#' @param rollback_on_failure default `TRUE`. Specifies whether the edits should be
 #'   applied only if all submitted edits succeed.
 #' @param token your authorization token. By default, token is set to the
 #'   environment variable `ARCGIS_TOKEN`. Use `set_auth_token()` to set
 #'   `ARCGIS_TOKEN`.
 #' @export
 #' @rdname modify
-delete_features <- function(x,
-                            object_ids = NULL,
-                            where = NULL,
-                            filter_geom = NULL,
-                            predicate = "intersects",
-                            rollback_on_fail = TRUE,
-                            token = Sys.getenv("ARCGIS_TOKEN"),
-                            ...) {
+delete_features <- function(
+    x,
+    object_ids = NULL,
+    where = NULL,
+    filter_geom = NULL,
+    predicate = "intersects",
+    rollback_on_failure = TRUE,
+    token = Sys.getenv("ARCGIS_TOKEN"),
+    ...
+) {
 
   obj_check_layer(x)
 
   # where, oid, or filter_geom necessary
   if (is.null(object_ids) && is.null(where) && is.null(filter_geom)) {
-    cli_abort(
+    cli::cli_abort(
       c("No features to delete",
       "i" = "Supply at least one of {.arg object_ids}, {.arg where},
       or {.arg filter_geom}")
@@ -294,7 +297,7 @@ delete_features <- function(x,
     # then if filter_geom has no crs we use x via `coalesce_crs()`
     x_crs <- sf::st_crs(x)
     filt_crs <- sf::st_crs(filter_geom)
-    crs <- coalesce(filt_crs, x_crs)
+    crs <- coalesce_crs(filt_crs, x_crs)
     filter_geom <- prepare_spatial_filter(
       filter_geom = filter_geom,
       predicate = predicate,
@@ -311,7 +314,7 @@ delete_features <- function(x,
     !!!filter_geom,
     f = "json",
     token = token,
-    rollbackOnFailure = rollback_on_fail,
+    rollbackOnFailure = rollback_on_failure,
     ...
   )
 
