@@ -1,5 +1,6 @@
 # arcgislayers 0.1.0 (unreleased)
 
+- Add `truncate_layer()` to support truncate and append workflow
 - Add support for opening `MapServers` <https://github.com/R-ArcGIS/arcgislayers/pull/83>
 - `arc_open()` with a layer that does not support `Query` sets the `n` attribute to`NA` <https://github.com/R-ArcGIS/arcgislayers/pull/83>
   - Print method will show something like `<FeatureLayer <NA features, 10 fields>>`
