@@ -283,7 +283,14 @@ check_inherits_any <- function(x,
 #'
 #' @param x a `FeatureLayer` or `Table` object
 #' @param ... key value pairs of query parameters and values.
-#' @keywords internal
+#' @export
+#' @examples
+#' if (interactive()) {
+#'  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"
+#'  flayer <- arc_open(furl)
+#'  update_params(flayer, outFields = "NAME")
+#' }
+#' @returns An object of the same class as `x`
 update_params <- function(x, ...) {
   query <- attr(x, "query")
   params <- rlang::list2(...)

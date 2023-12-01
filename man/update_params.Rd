@@ -11,7 +11,16 @@ update_params(x, ...)
 
 \item{...}{key value pairs of query parameters and values.}
 }
+\value{
+An object of the same class as \code{x}
+}
 \description{
 \code{\link[=update_params]{update_params()}} takes named arguments and updates the query.
 }
-\keyword{internal}
+\examples{
+if (interactive()) {
+ furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"
+ flayer <- arc_open(furl)
+ update_params(flayer, outFields = "NAME")
+}
+}
