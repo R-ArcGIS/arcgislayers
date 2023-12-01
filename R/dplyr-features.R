@@ -5,17 +5,21 @@
 #' @keywords internal
 #' @rdname dplyr
 select.FeatureLayer <- function(x, ...) {
-  selections <- rlang::expr(c(...))
-  col_names <- x$fields$name
-  names(col_names) <- col_names
-  # return(selections)
-  select_index <- tidyselect::eval_select(
-    selections,
-    col_names,
-    allow_rename = FALSE
-  )
 
-  out_fields <- paste(unname(col_names[select_index]), collapse = ",")
+  # capture valeus passed to dots
+  select_quos <- rlang::quos(...)
+
+  col_names <- tolower(x[[c("fields", "name")]])
+
+  select_names <- vapply(select_quos, rlang::as_name, character(1))
+
+  in_index <- tolower(select_names) %in% col_names
+
+  if (any(!in_index)) {
+    cli::cli_abort("Variable{?s} {.var {select_names[!in_index]}} not found in {.arg x}")
+  }
+
+  out_fields <- paste(select_names, collapse = ",")
 
   attr(x, "query")[["outFields"]] <- out_fields
   x
@@ -37,7 +41,7 @@ filter.FeatureLayer <- function(x, ...) {
 
   filt_quos <- rlang::quos(...)
 
-  ptype_df <- remote_ptype_tbl(x[["fields"]])
+  ptype_df <- arcgisutils::remote_ptype_tbl(x[["fields"]])
 
   lapply(filt_quos, dbplyr::partial_eval, ptype_df)
 
