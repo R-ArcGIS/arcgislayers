@@ -18,7 +18,7 @@ add_features(
 update_features(
   x,
   .data,
-  match_on = c("alias", "name"),
+  match_on = c("name", "alias"),
   token = Sys.getenv("ARCGIS_TOKEN"),
   rollback_on_failure = TRUE,
   ...
