@@ -28,6 +28,7 @@
 #'   truncate_layer(flayer)
 #' }
 #' }
+#' @export
 truncate_layer <- function(
     x,
     async = FALSE,
