@@ -14,6 +14,7 @@ An R package to interface with Esri's ArcGIS REST Services.
 Other contributors:
 \itemize{
   \item Eli Pousson \email{eli.pousson@gmail.com} (\href{https://orcid.org/0000-0001-8280-1706}{ORCID}) [contributor]
+  \item Kenneth Vernon \email{kenneth.b.vernon@gmail.com} (\href{https://orcid.org/0000-0003-0098-5092}{ORCID}) [contributor]
 }
 
 }
