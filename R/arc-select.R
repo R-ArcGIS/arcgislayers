@@ -249,6 +249,13 @@ obj_check_layer <- function(x,
   )
 }
 
+#' @rdname obj_check_layer
+#' @name obj_is_layer
+#' @keywords internal
+obj_is_layer <- function(x) {
+  rlang::inherits_any(x, c("FeatureLayer", "Table"))
+}
+
 #' Check if an object inherits from a set of classes
 #'
 #' [check_inherits_any()] wraps [rlang::inherits_any()] to error if an object
