@@ -292,7 +292,7 @@ delete_features <- function(
   }
 
   # convert to the proper CRS if not missing
-  if (!rlang::is_na(filter_geom)) {
+  if (!rlang::is_null(filter_geom)) {
     # we extract the two CRS object
     # then if filter_geom has no crs we use x via `coalesce_crs()`
     x_crs <- sf::st_crs(x)
