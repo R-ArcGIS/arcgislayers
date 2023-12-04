@@ -11,6 +11,10 @@ Authors@R:
     person(
       "Eli", "Pousson", , "eli.pousson@gmail.com", role = c("ctb"),
       comment = c(ORCID = "0000-0001-8280-1706")
+    ),
+    person(
+      "Kenneth", "Vernon", , "kenneth.b.vernon@gmail.com", role = c("ctb"),
+      comment = c(ORCID = "0000-0003-0098-5092")
     )
   )
 Maintainer: Josiah Parry <jparry@esri.com>
