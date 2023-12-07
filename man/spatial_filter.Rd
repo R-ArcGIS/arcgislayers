@@ -19,13 +19,17 @@ match_spatial_rel(predicate, error_call = rlang::caller_env())
 \item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
 query results based on a predicate function.}
 
+\item{crs}{a representation of a coordinate reference system.}
+
 \item{predicate}{Spatial predicate to use with \code{filter_geom}. Default
 \code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
 \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
+
+\item{error_call}{default \code{rlang::caller_env()}.}
 }
 \value{
 \code{\link[=prepare_spatial_filter]{prepare_spatial_filter()}} returns a named list with the
-geometryType, geometry (as ESRI JSON), and spatial relation predicate.
+\code{geometryType}, \code{geometry} (as Esri JSON), and spatial relation predicate.
 
 \code{\link[=match_spatial_rel]{match_spatial_rel()}} returns one of the following spatial binary predicates:
 \itemize{
@@ -53,8 +57,10 @@ If an \code{sfc} object is provided it will be transformed to the layers spatial
 reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the \code{sfc}
 object has multiple features, the features are unioned with
-\code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has MULTIPOLYGON geometry, the features
-are unioned before being cast to POLYGON geometry with \code{\link[sf:st_cast]{sf::st_cast()}}. All
+\code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has \code{MULTIPOLYGON} geometry, the features
+are unioned before being cast to \code{POLYGON} geometry with \code{\link[sf:st_cast]{sf::st_cast()}}. All
 geometries are checked for validity before conversion.
 }
-\keyword{internal}
+\examples{
+prepare_spatial_filter(sf::st_point(c(0, 5)), 4326, "intersects")
+}

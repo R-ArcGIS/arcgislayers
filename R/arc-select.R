@@ -1,9 +1,9 @@
-#' Retrieve a feature layer as simple features or a non-spatial data frame
+#' Query a Hosted Feature Service
 #'
-#' [arc_select()] takes a `FeatureLayer` or `Table` object and returns data from
+#' [arc_select()] takes a `FeatureLayer`, `Table`, of `ImageServer` object and returns data from
 #' the layer as an `sf` object or `tibble` respectively.
 #'
-#' @inheritParams obj_check_layer
+#' @param x an object of class `FeatureLayer`, `Table`, or `ImageServer`.
 #' @param fields a character vector of the field names that you wish to be
 #'   returned. By default all fields are returned.
 #' @param where a simple SQL where statement indicating which features should be
@@ -26,6 +26,28 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @export
+#' @examples
+#' if (interactive()) {
+#'   # define the feature layer url
+#'   furl <- paste0(
+#'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
+#'     "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#'   )
+#'
+#'   flayer <- arc_open(furl)
+#'
+#'   arc_select(
+#'     flayer,
+#'     fields = c("StateAbbr", "TotalPopulation")
+#'   )
+#'
+#'   arc_select(
+#'     flayer,
+#'     fields = c("OBJECTID", "PlaceName"),
+#'     where = "TotalPopulation > 1000000"
+#'   )
+#' }
+#' @returns An sf object, or a data.frame
 arc_select <- function(
     x,
     fields = NULL,
@@ -107,7 +129,7 @@ arc_select <- function(
 #' [collect_layer()] is the "workhorse" function that actually executes the
 #' queries for FeatureLayer or Table objects.
 #'
-#' @keywords internal
+#' @noRd
 collect_layer <- function(x,
                           n_max = Inf,
                           token = Sys.getenv("ARCGIS_TOKEN"),
@@ -238,6 +260,7 @@ collect_layer <- function(x,
 #' @param x A `FeatureLayer` or `Table` class object created with [arc_open()].
 #' @inheritParams rlang::args_error_context
 #' @keywords internal
+#' @noRd
 obj_check_layer <- function(x,
                             arg = rlang::caller_arg(x),
                             call = rlang::caller_env()) {
@@ -258,6 +281,7 @@ obj_check_layer <- function(x,
 #' @inheritParams rlang::inherits_any
 #' @inheritParams rlang::args_error_context
 #' @keywords internal
+#' @noRd
 check_inherits_any <- function(x,
                                class,
                                arg = rlang::caller_arg(x),
@@ -286,7 +310,11 @@ check_inherits_any <- function(x,
 #' @export
 #' @examples
 #' if (interactive()) {
-#'  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"
+#'   furl <- paste0(
+#'     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
+#'     "USA_Major_Cities_/FeatureServer/0"
+#'   )
+#'
 #'  flayer <- arc_open(furl)
 #'  update_params(flayer, outFields = "NAME")
 #' }
@@ -310,6 +338,7 @@ update_params <- function(x, ...) {
 #' Feature Layers with more than 2000 observations.
 #'
 #' @keywords internal
+#' @noRd
 add_offset <- function(offset, request, params) {
   params[["resultOffset"]] <- offset
   req <- httr2::req_url_path_append(request, "query")
@@ -322,6 +351,7 @@ add_offset <- function(offset, request, params) {
 #' acceptable values.
 #'
 #' @keywords internal
+#' @noRd
 validate_params <- function(params, token) {
   # set the token
   params[["token"]] <- token

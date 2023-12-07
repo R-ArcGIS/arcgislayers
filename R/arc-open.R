@@ -15,7 +15,48 @@
 #' @seealso arc_select arc_raster
 #' @export
 #' @returns
-#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, or `ImageServer`.
+#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`.
+#' @examples
+#'
+#'if (interactive()) {
+#'  # FeatureLayer
+#'  furl <- paste0(
+#'    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'    "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#'  )
+#'
+#'  arc_open(furl)
+#'
+#'  # Table
+#'  furl <- paste0(
+#'    "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/",
+#'    "USA_Wetlands/FeatureServer/1"
+#'  )
+#'
+#'  arc_open(furl)
+#'
+#'  # ImageServer
+#'  arc_open(
+#'    "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+#'    )
+#'
+#'  # FeatureServer
+#'  furl <- paste0(
+#'    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'    "PLACES_LocalData_for_BetterHealth/FeatureServer"
+#'  )
+#'
+#'  arc_open(furl)
+#'
+#'  # MapServer
+#'  map_url <- paste0(
+#'    "https://services.arcgisonline.com/ArcGIS/rest/services/",
+#'    "World_Imagery/MapServer"
+#'  )
+#'
+#'  arc_open(map_url)
+#'
+#'}
 arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   stopifnot("`url` must be of length 1" = length(url) == 1)

@@ -39,3 +39,19 @@ These helpers provide easy access to the layers contained in a
 
 The \code{id} and \code{name} arguments must match the field values of the respective names as seen in the output of \code{list_items()}
 }
+\examples{
+if (interactive()) {
+  # FeatureServer
+  furl <- paste0(
+    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+    "PLACES_LocalData_for_BetterHealth/FeatureServer"
+  )
+
+  fserv <- arc_open(furl)
+
+  fserv
+  get_layer(fserv, 0)
+  get_layers(fserv, name = c("Tracts", "ZCTAs"))
+  get_all_layers(fserv)
+}
+}

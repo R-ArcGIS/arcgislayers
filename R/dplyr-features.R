@@ -1,9 +1,6 @@
 
 # Select ------------------------------------------------------------------
 
-
-#' @keywords internal
-#' @rdname dplyr
 select.FeatureLayer <- function(x, ...) {
 
   # capture valeus passed to dots
@@ -25,16 +22,10 @@ select.FeatureLayer <- function(x, ...) {
   x
 }
 
-
-#' @rdname dplyr
 select.Table <- select.FeatureLayer
-
-
 
 # Filter ------------------------------------------------------------------
 
-#' @keywords internal
-#' @rdname dplyr
 filter.FeatureLayer <- function(x, ...) {
 
   where_clause <- attr(x, "query")[["where"]]
@@ -54,34 +45,9 @@ filter.FeatureLayer <- function(x, ...) {
 }
 
 
-# Table will use same filtering as feature layer. nothing special
-#' @keywords internal
-#' @rdname dplyr
 filter.Table <- filter.FeatureLayer
-
-
 
 # Collect -----------------------------------------------------------------
 
-
-#> we want to return all fields if nothing specified
-#> so we need to check if null
-#> minimum params we need:
-#>  - where 1=1
-#>  - output = fgeojson
-#>  - token
-
-#' dplyr methods
-#'
-#' @details
-#'
-#' The Feature Layer method of `collect()` will overwrite the `returnGeometry` parameter if set with `update_params()`. Use the `geometry` argument in `collect()` to set the parameter.
-#'
-#' @aliases dplyr
-#' @rdname dplyr
-#' @keywords internal
 collect.FeatureLayer <- collect_layer
-#' @keywords internal
-#' @rdname dplyr
 collect.Table <- collect_layer
-

@@ -21,6 +21,21 @@
 #'     Each a list containing `FeatureLayer` and `Table`s respectively.
 #'
 #' @export
+#' @examples
+#' if (interactive()) {
+#'   # FeatureServer
+#'   furl <- paste0(
+#'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'     "PLACES_LocalData_for_BetterHealth/FeatureServer"
+#'   )
+#'
+#'   fserv <- arc_open(furl)
+#'
+#'   fserv
+#'   get_layer(fserv, 0)
+#'   get_layers(fserv, name = c("Tracts", "ZCTAs"))
+#'   get_all_layers(fserv)
+#' }
 get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   # check for mutual exclusivity between id and name

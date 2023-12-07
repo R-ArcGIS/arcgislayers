@@ -56,6 +56,8 @@
 #'     x, "North Carolina SIDS sample"
 #'   )
 #' }
+#' @returns
+#' A named list containing the url of the newly published service.
 add_item <- function(
     x,
     title,

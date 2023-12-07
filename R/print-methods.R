@@ -238,6 +238,7 @@ print.ImageServer <- function(x, ...) {
 #' to fit on the contents of the window.
 #'
 #' @keywords internal
+#' @noRd
 prettify_param <- function(param, query) {
   n_pad <- nchar(param) + 3
   cwidth <- options("width")[["width"]]

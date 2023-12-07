@@ -67,6 +67,13 @@ query results based on a predicate function.}
 \code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
 \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
 }
+\value{
+\itemize{
+\item \code{add_features()} returns a \code{data.frame} with columns \code{objectId}, \code{uniqueId}, \code{globalId}, \code{success}
+\item \code{update_features()} returns a list with an element named \code{updateResults} which is a \code{data.frame} with columns \code{objectId}, \code{uniqueId}, \code{globalId}, \code{success}
+\item \code{delete_features()} returns a list with an element named \code{deleteResults} which is a \code{data.frame} with columns \code{objectId}, \code{uniqueId}, \code{globalId}, \code{success}
+}
+}
 \description{
 Delete features from a feature layer based on object ID, a where clause, or a
 spatial filter.
@@ -74,10 +81,28 @@ spatial filter.
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
+For a more detailed guide to adding, updating, and deleting features, view the
+tutorial on the \href{https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html}{R-ArcGIS Bridge website}.
+
 Regarding the \code{match_on} argument:when publishing an object to an ArcGIS Portal
 from R, the object's names are provided as the alias. The object's names are
 subject to change according to the standards of the ArcGIS REST API. For example.
 \code{"Sepal.Length"} is changed to \code{"Sepal_Width"} in the \code{name} field but the alias
 remains \code{"Sepal.Length"}. For that reason, we match on the alias name by default.
 Change this argument to match based on the field name.
+}
+\examples{
+if (interactive()) {
+  # this is pseudo-code and will not work
+  flayer <- arc_open(furl)
+
+  # add sf objects to existing feature service
+  add_features(flayer, sfobj)
+
+  # delete all features
+  delete_features(flayer, where = "1 = 1")
+
+  # update features
+  update_features(flayer, dfobj)
+}
 }

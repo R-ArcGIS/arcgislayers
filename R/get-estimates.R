@@ -4,7 +4,10 @@
 #'
 #' @references [ArcGIS REST Doc](https://developers.arcgis.com/rest/services-reference/enterprise/get-estimates-feature-service-layer-.htm)
 #' @examples
-#' furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+#' furl <- paste0(
+#'   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
+#'   "USA_Counties_Generalized_Boundaries/FeatureServer/0"
+#' )
 #'
 #' county_fl <- arc_open(furl)
 #' get_layer_estimates(county_fl)

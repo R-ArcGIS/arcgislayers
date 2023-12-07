@@ -95,6 +95,9 @@ add to the published Feature Service.}
 \item{max_record_count}{the maximum number of records that can be returned
 from the created Feature Service.}
 }
+\value{
+A named list containing the url of the newly published service.
+}
 \description{
 Publishes an \code{sf} or \code{data.frame} object to an ArcGIS Portal as a
 FeatureCollection.

@@ -4,11 +4,13 @@
 #' [prepare_spatial_filter()] prepares a named list with ESRI JSON geometry for
 #' use as a spatial filter based on a a `sfc`, `sfg`, or `bbox` input object.
 #'
+#' @inheritParams arcgisutils::validate_crs
 #' @param filter_geom an object of class `bbox`, `sfc` or `sfg` used to filter
 #'   query results based on a predicate function.
 #' @param predicate Spatial predicate to use with `filter_geom`. Default
 #'   `"intersects"`. Possible options are `"intersects"`, `"contains"`,
 #'   `"crosses"`,  `"overlaps"`,  `"touches"`, and `"within"`.
+#' @param error_call default `rlang::caller_env()`.
 #'
 #' @details Using `sfc` objects as `filter_geom`
 #'
@@ -18,16 +20,17 @@
 #'  reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is
 #'  assumed to use the same spatial reference as the FeatureLayer. If the `sfc`
 #'  object has multiple features, the features are unioned with
-#'  [sf::st_union()]. If an `sfc` object has MULTIPOLYGON geometry, the features
-#'  are unioned before being cast to POLYGON geometry with [sf::st_cast()]. All
+#'  [sf::st_union()]. If an `sfc` object has `MULTIPOLYGON` geometry, the features
+#'  are unioned before being cast to `POLYGON` geometry with [sf::st_cast()]. All
 #'  geometries are checked for validity before conversion.
 #'
 #' @returns [prepare_spatial_filter()] returns a named list with the
-#'   geometryType, geometry (as ESRI JSON), and spatial relation predicate.
+#'   `geometryType`, `geometry` (as Esri JSON), and spatial relation predicate.
 #'
-#' @export
 #' @rdname spatial_filter
-#' @keywords internal
+#' @examples
+#' prepare_spatial_filter(sf::st_point(c(0, 5)), 4326, "intersects")
+#' @export
 prepare_spatial_filter <- function(
     filter_geom,
     crs,
