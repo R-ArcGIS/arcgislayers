@@ -1,5 +1,7 @@
 #' Create a FeatureServer
 #'
+#' Creates an empty FeatureServer with no additional layers.
+#'
 #' @param service_name Feature Service name.
 #' @param user default `Sys.getenv("ARCGIS_USER")`. Your account's username.
 #' @param description default blank. The description of the feature server.
@@ -19,7 +21,7 @@
 #' @inheritParams add_item
 #'
 #' @returns
-#' If a `FeatureServer` is cerated successfully, a `FeatureServer` object is returned
+#' If a `FeatureServer` is created successfully, a `FeatureServer` object is returned
 #' based on the newly created feature server's url.
 #'
 #' @details
@@ -27,6 +29,11 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @export
+#' @examples
+#' if (interactive()) {
+#'   set_auth_token(auth_code())
+#'   create_feature_server("My empty feature server")
+#' }
 create_feature_server <- function(
     service_name,
     user = Sys.getenv("ARCGIS_USER"),

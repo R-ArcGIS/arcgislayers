@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-select.R
 \name{arc_select}
 \alias{arc_select}
-\title{Retrieve a feature layer as simple features or a non-spatial data frame}
+\title{Query a Hosted Feature Service}
 \usage{
 arc_select(
   x,
@@ -18,7 +18,7 @@ arc_select(
 )
 }
 \arguments{
-\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
@@ -48,12 +48,37 @@ variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_t
 
 \item{...}{additional query parameters passed to the API.}
 }
+\value{
+An sf object, or a data.frame
+}
 \description{
-\code{\link[=arc_select]{arc_select()}} takes a \code{FeatureLayer} or \code{Table} object and returns data from
+\code{\link[=arc_select]{arc_select()}} takes a \code{FeatureLayer}, \code{Table}, of \code{ImageServer} object and returns data from
 the layer as an \code{sf} object or \code{tibble} respectively.
 }
 \details{
 See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\examples{
+if (interactive()) {
+  # define the feature layer url
+  furl <- paste0(
+    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
+    "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+  )
+
+  flayer <- arc_open(furl)
+
+  arc_select(
+    flayer,
+    fields = c("StateAbbr", "TotalPopulation")
+  )
+
+  arc_select(
+    flayer,
+    fields = c("OBJECTID", "PlaceName"),
+    where = "TotalPopulation > 1000000"
+  )
+}
 }

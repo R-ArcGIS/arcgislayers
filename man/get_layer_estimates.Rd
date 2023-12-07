@@ -7,7 +7,7 @@
 get_layer_estimates(x, token = Sys.getenv("ARCGIS_TOKEN"))
 }
 \arguments{
-\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
 \item{token}{your authorization token. By default checks the environment
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
@@ -20,7 +20,10 @@ it is available as an object of class \code{bbox}.
 Get Estimates
 }
 \examples{
-furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+furl <- paste0(
+  "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
+  "USA_Counties_Generalized_Boundaries/FeatureServer/0"
+)
 
 county_fl <- arc_open(furl)
 get_layer_estimates(county_fl)

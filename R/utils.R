@@ -15,6 +15,33 @@
 #' @returns See Details.
 #' @export
 #' @rdname utils
+#' @examples
+#' if (interactive()) {
+#'   furl <- paste0(
+#'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'     "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#'   )
+#'
+#'   flayer <- arc_open(furl)
+#'
+#'   # list fields available in a layer
+#'   list_fields(flayer)
+#'
+#'   # remove any queries stored in the query attribute
+#'   clear_query(update_params(flayer, outFields = "*"))
+#'
+#'   # refresh metadata of an object
+#'   refresh_layer(flayer)
+#'
+#'   map_url <- paste0(
+#'     "https://services.arcgisonline.com/ArcGIS/rest/services/",
+#'     "World_Imagery/MapServer"
+#'   )
+#'
+#'   # list all items in a server object
+#'   list_items(arc_open(map_url))
+#'
+#' }
 clear_query <- function(x) {
   attr(x, "query") <- list()
   x
@@ -63,6 +90,7 @@ refresh_layer <- function(x) {
 #' @param n the number of rows
 #' @param m the chunk size
 #' @keywords internal
+#' @noRd
 chunk_indices <- function(n, m) {
   n_chunks <- ceiling(n/m)
   chunk_starts <- seq(1, n, by = m)
@@ -82,7 +110,6 @@ chunk_indices <- function(n, m) {
 #' y <- sf::st_crs(NA)
 #'
 #' coalesce_crs(x, y)
-#' @keywords internal
 #' @noRd
 coalesce_crs <- function(x, y) {
   # DEVELOPER NOTE: there is no inheritance check for CRS class
@@ -108,6 +135,7 @@ coalesce_crs <- function(x, y) {
 #' to `httr2::req_body_multiform()` are scalars. Multiple length
 #' values are not permitted.
 #' @keywords internal
+#' @noRd
 check_null_or_scalar <- function(
     x,
     arg = rlang::caller_arg(x),

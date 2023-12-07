@@ -12,7 +12,7 @@ truncate_layer(
 )
 }
 \arguments{
-\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
 \item{async}{default \code{FALSE}. It is recommended to set \code{TRUE} for
 larger datasets.}

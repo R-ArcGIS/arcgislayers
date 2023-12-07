@@ -16,7 +16,7 @@ list_items(x)
 refresh_layer(x)
 }
 \arguments{
-\item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 }
 \value{
 See Details.
@@ -33,5 +33,33 @@ Utility functions
 \item \code{refresh_layer()} syncs a \code{FeatureLayer} or \code{Table} with the remote
 resource picking up any changes that may have been made upstream.
 Returns an object of class \code{x}.
+}
+}
+\examples{
+if (interactive()) {
+  furl <- paste0(
+    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+    "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+  )
+
+  flayer <- arc_open(furl)
+
+  # list fields available in a layer
+  list_fields(flayer)
+
+  # remove any queries stored in the query attribute
+  clear_query(update_params(flayer, outFields = "*"))
+
+  # refresh metadata of an object
+  refresh_layer(flayer)
+
+  map_url <- paste0(
+    "https://services.arcgisonline.com/ArcGIS/rest/services/",
+    "World_Imagery/MapServer"
+  )
+
+  # list all items in a server object
+  list_items(arc_open(map_url))
+
 }
 }
