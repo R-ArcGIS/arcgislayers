@@ -57,7 +57,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A <code>FeatureLayer</code> or <code>Table</code> class object created with <code><a href="arc_open.html">arc_open()</a></code>.</p></dd>
+<dd><p>an object of class <code>FeatureLayer</code>, <code>Table</code>, or <code>ImageServer</code>.</p></dd>
 
 
 <dt>token</dt>
@@ -79,7 +79,10 @@ it is available as an object of class <code>bbox</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"USA_Counties_Generalized_Boundaries/FeatureServer/0"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">county_fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">get_layer_estimates</span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span></span>

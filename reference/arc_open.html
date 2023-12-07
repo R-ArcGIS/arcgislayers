@@ -72,7 +72,7 @@ variable <code>ARCGIS_TOKEN</code>. Set your token using <code><a href="https://
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Depending on the provided URL returns a <code>FeatureLayer</code>, <code>Table</code>, <code>FeatureServer</code>, or <code>ImageServer</code>.</p>
+<p>Depending on the provided URL returns a <code>FeatureLayer</code>, <code>Table</code>, <code>FeatureServer</code>, <code>ImageServer</code>, or <code>MapServer</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -85,6 +85,50 @@ variable <code>ARCGIS_TOKEN</code>. Set your token using <code><a href="https://
     <div class="dont-index"><p>arc_select arc_raster</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co"># FeatureLayer</span></span></span>
+<span class="r-in"><span> <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/"</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"PLACES_LocalData_for_BetterHealth/FeatureServer/0"</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="fu">arc_open</span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Table</span></span></span>
+<span class="r-in"><span> <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/"</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"USA_Wetlands/FeatureServer/1"</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="fu">arc_open</span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># ImageServer</span></span></span>
+<span class="r-in"><span> <span class="fu">arc_open</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span></span>
+<span class="r-in"><span>   <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># FeatureServer</span></span></span>
+<span class="r-in"><span> <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/"</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"PLACES_LocalData_for_BetterHealth/FeatureServer"</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="fu">arc_open</span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># MapServer</span></span></span>
+<span class="r-in"><span> <span class="va">map_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"https://services.arcgisonline.com/ArcGIS/rest/services/"</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"World_Imagery/MapServer"</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="fu">arc_open</span><span class="op">(</span><span class="va">map_url</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

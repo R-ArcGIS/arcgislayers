@@ -80,10 +80,18 @@ to a type of ESRI spatial relation.</p>
 query results based on a predicate function.</p></dd>
 
 
+<dt>crs</dt>
+<dd><p>a representation of a coordinate reference system.</p></dd>
+
+
 <dt>predicate</dt>
 <dd><p>Spatial predicate to use with <code>filter_geom</code>. Default
 <code>"intersects"</code>. Possible options are <code>"intersects"</code>, <code>"contains"</code>,
 <code>"crosses"</code>,  <code>"overlaps"</code>,  <code>"touches"</code>, and <code>"within"</code>.</p></dd>
+
+
+<dt>error_call</dt>
+<dd><p>default <code><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">rlang::caller_env()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,7 +99,7 @@ query results based on a predicate function.</p></dd>
     
 
 <p><code>prepare_spatial_filter()</code> returns a named list with the
-geometryType, geometry (as ESRI JSON), and spatial relation predicate.</p>
+<code>geometryType</code>, <code>geometry</code> (as Esri JSON), and spatial relation predicate.</p>
 
 
 <p><code>match_spatial_rel()</code> returns one of the following spatial binary predicates:</p><ul><li><p>esriSpatialRelIntersects</p></li>
@@ -109,11 +117,27 @@ geometryType, geometry (as ESRI JSON), and spatial relation predicate.</p>
 reference. If the <code>sfc</code> is missing a CRS (or is an <code>sfg</code> object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the <code>sfc</code>
 object has multiple features, the features are unioned with
-<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. If an <code>sfc</code> object has MULTIPOLYGON geometry, the features
-are unioned before being cast to POLYGON geometry with <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html" class="external-link">sf::st_cast()</a></code>. All
+<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. If an <code>sfc</code> object has <code>MULTIPOLYGON</code> geometry, the features
+are unioned before being cast to <code>POLYGON</code> geometry with <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html" class="external-link">sf::st_cast()</a></code>. All
 geometries are checked for validity before conversion.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">prepare_spatial_filter</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, <span class="fl">4326</span>, <span class="st">"intersects"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'jsonify':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   method     from    </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   print.json jsonlite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $geometryType</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "esriGeometryPoint"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"hasZ":false,"hasM":false,"x":0.0,"y":5.0,"spatialReference":{"wkid":4326}}</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $spatialRel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "esriSpatialRelIntersects"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

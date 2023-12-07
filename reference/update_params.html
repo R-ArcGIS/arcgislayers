@@ -76,7 +76,11 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span> <span class="va">furl</span> <span class="op">&lt;-</span> <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"</span></span></span>
+<span class="r-in"><span>  <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"USA_Major_Cities_/FeatureServer/0"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">flayer</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu">update_params</span><span class="op">(</span><span class="va">flayer</span>, outFields <span class="op">=</span> <span class="st">"NAME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

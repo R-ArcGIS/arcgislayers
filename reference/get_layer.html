@@ -95,6 +95,24 @@ Each a list containing <code>FeatureLayer</code> and <code>Table</code>s respect
 <p>The <code>id</code> and <code>name</code> arguments must match the field values of the respective names as seen in the output of <code><a href="utils.html">list_items()</a></code></p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># FeatureServer</span></span></span>
+<span class="r-in"><span>  <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"PLACES_LocalData_for_BetterHealth/FeatureServer"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">fserv</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">fserv</span></span></span>
+<span class="r-in"><span>  <span class="fu">get_layer</span><span class="op">(</span><span class="va">fserv</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">get_layers</span><span class="op">(</span><span class="va">fserv</span>, name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tracts"</span>, <span class="st">"ZCTAs"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">get_all_layers</span><span class="op">(</span><span class="va">fserv</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

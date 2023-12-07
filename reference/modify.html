@@ -140,8 +140,18 @@ query results based on a predicate function.</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<ul><li><p><code>add_features()</code> returns a <code>data.frame</code> with columns <code>objectId</code>, <code>uniqueId</code>, <code>globalId</code>, <code>success</code></p></li>
+<li><p><code>update_features()</code> returns a list with an element named <code>updateResults</code> which is a <code>data.frame</code> with columns <code>objectId</code>, <code>uniqueId</code>, <code>globalId</code>, <code>success</code></p></li>
+<li><p><code>delete_features()</code> returns a list with an element named <code>deleteResults</code> which is a <code>data.frame</code> with columns <code>objectId</code>, <code>uniqueId</code>, <code>globalId</code>, <code>success</code></p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>For a more detailed guide to adding, updating, and deleting features, view the
+tutorial on the <a href="https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html" class="external-link">R-ArcGIS Bridge website</a>.</p>
 <p>Regarding the <code>match_on</code> argument:when publishing an object to an ArcGIS Portal
 from R, the object's names are provided as the alias. The object's names are
 subject to change according to the standards of the ArcGIS REST API. For example.
@@ -150,6 +160,23 @@ remains <code>"Sepal.Length"</code>. For that reason, we match on the alias name
 Change this argument to match based on the field name.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># this is pseudo-code and will not work</span></span></span>
+<span class="r-in"><span>  <span class="va">flayer</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># add sf objects to existing feature service</span></span></span>
+<span class="r-in"><span>  <span class="fu">add_features</span><span class="op">(</span><span class="va">flayer</span>, <span class="va">sfobj</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># delete all features</span></span></span>
+<span class="r-in"><span>  <span class="fu">delete_features</span><span class="op">(</span><span class="va">flayer</span>, where <span class="op">=</span> <span class="st">"1 = 1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># update features</span></span></span>
+<span class="r-in"><span>  <span class="fu">update_features</span><span class="op">(</span><span class="va">flayer</span>, <span class="va">dfobj</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

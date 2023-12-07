@@ -25,9 +25,6 @@
     <loc>/pull_request_template.html</loc>
   </url>
   <url>
-    <loc>/reference/add_offset.html</loc>
-  </url>
-  <url>
     <loc>/reference/arc_open.html</loc>
   </url>
   <url>
@@ -37,25 +34,7 @@
     <loc>/reference/arc_select.html</loc>
   </url>
   <url>
-    <loc>/reference/arcgislayers-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_inherits_any.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_null_or_scalar.html</loc>
-  </url>
-  <url>
-    <loc>/reference/chunk_indices.html</loc>
-  </url>
-  <url>
-    <loc>/reference/collect_layer.html</loc>
-  </url>
-  <url>
     <loc>/reference/create_feature_server.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dplyr.html</loc>
   </url>
   <url>
     <loc>/reference/get_layer.html</loc>
@@ -68,12 +47,6 @@
   </url>
   <url>
     <loc>/reference/modify.html</loc>
-  </url>
-  <url>
-    <loc>/reference/obj_check_layer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/prettify_param.html</loc>
   </url>
   <url>
     <loc>/reference/publish.html</loc>
@@ -89,8 +62,5 @@
   </url>
   <url>
     <loc>/reference/utils.html</loc>
-  </url>
-  <url>
-    <loc>/reference/validate_params.html</loc>
   </url>
 </urlset>

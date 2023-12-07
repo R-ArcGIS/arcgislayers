@@ -63,7 +63,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A <code>FeatureLayer</code> or <code>Table</code> class object created with <code><a href="arc_open.html">arc_open()</a></code>.</p></dd>
+<dd><p>an object of class <code>FeatureLayer</code>, <code>Table</code>, or <code>ImageServer</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -82,6 +82,36 @@ resource picking up any changes that may have been made upstream.
 Returns an object of class <code>x</code>.</p></li>
 </ul></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"PLACES_LocalData_for_BetterHealth/FeatureServer/0"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">flayer</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># list fields available in a layer</span></span></span>
+<span class="r-in"><span>  <span class="fu">list_fields</span><span class="op">(</span><span class="va">flayer</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># remove any queries stored in the query attribute</span></span></span>
+<span class="r-in"><span>  <span class="fu">clear_query</span><span class="op">(</span><span class="fu"><a href="update_params.html">update_params</a></span><span class="op">(</span><span class="va">flayer</span>, outFields <span class="op">=</span> <span class="st">"*"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># refresh metadata of an object</span></span></span>
+<span class="r-in"><span>  <span class="fu">refresh_layer</span><span class="op">(</span><span class="va">flayer</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">map_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"https://services.arcgisonline.com/ArcGIS/rest/services/"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"World_Imagery/MapServer"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># list all items in a server object</span></span></span>
+<span class="r-in"><span>  <span class="fu">list_items</span><span class="op">(</span><span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">map_url</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
