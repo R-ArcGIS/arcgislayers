@@ -30,16 +30,17 @@ alias names for the layer.}
 \item{col_select}{Columns to select. Alternate argument for specifying fields
 if fields is \code{NULL}.}
 
-\item{n_max}{the maximum number of features to return. By default returns
-every feature available. Unused at the moment.}
+\item{n_max}{Maximum number of records to return. Defaults to 10000 or an
+option set with \verb{options("arcgislayers.n_max" = <max records>)}}
 
-\item{name_repair}{See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for details.}
+\item{name_repair}{See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for details. Set \code{name_repair = NULL} to avoid using \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
 the the CRS for the input \code{FeatureLayer}, a transformation will occur
 server-side. Ignored if x is a \code{Table}.}
 
-\item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} or \code{\link[=arc_raster]{arc_raster()}}}
+\item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a
+"FeatureLayer" or "Table" or \code{\link[=arc_raster]{arc_raster()}} if URL is an "ImageLayer".}
 
 \item{fields}{Fields to return. Ignored if \code{col_select} is supplied.}
 
@@ -58,6 +59,12 @@ if (interactive()) {
   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
   arc_read(url)
+
+  arc_read(url, name_repair = tolower)
+
+  url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
+
+  arc_read(url, col_names = "alias")
 
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 

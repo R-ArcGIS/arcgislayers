@@ -16,16 +16,26 @@
 #'   `col_names` if `FALSE`, the existing sf column name is retained. If
 #'   `col_names` is the string "alias", names are set to match the available
 #'   alias names for the layer.
+#' @param n_max Maximum number of records to return. Defaults to 10000 or an
+#'   option set with `options("arcgislayers.n_max" = <max records>)`
 #' @inheritParams arc_select
 #' @inheritParams arc_raster
 #' @param fields Fields to return. Ignored if `col_select` is supplied.
-#' @param name_repair See [vctrs::vec_as_names()] for details.
-#' @param ... Additional arguments passed to [arc_select()] or [arc_raster()]
+#' @param name_repair See [vctrs::vec_as_names()] for details. Set `name_repair
+#'   = NULL` to avoid using [vctrs::vec_as_names()].
+#' @param ... Additional arguments passed to [arc_select()] if URL is a
+#'   "FeatureLayer" or "Table" or [arc_raster()] if URL is an "ImageLayer".
 #' @examples
 #' if (interactive()) {
 #'   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 #'
 #'   arc_read(url)
+#'
+#'   arc_read(url, name_repair = tolower)
+#'
+#'   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
+#'
+#'   arc_read(url, col_names = "alias")
 #'
 #'   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 #'
@@ -84,16 +94,14 @@ arc_read <- function(url,
     name_repair = name_repair,
     alias = service[["fields"]][["alias"]]
   )
-
 }
 
 #' @noRd
-#' @importFrom vctrs vec_as_names
 set_layer_names <- function(x,
                             col_names = NULL,
                             name_repair = NULL,
                             alias = NULL,
-                            ...) {
+                            call = rlang::caller_env()) {
   layer_nm <- names(x)
   nm <- layer_nm
   sf_column_nm <- attributes(x)[["sf_column"]]
@@ -122,10 +130,12 @@ set_layer_names <- function(x,
   }
 
   if (!is.null(name_repair)) {
+    rlang::check_installed("vctrs", call = call)
     nm <- vctrs::vec_as_names(
       names = nm,
       repair = name_repair,
-      repair_arg = "name_repair"
+      repair_arg = "name_repair",
+      call = call
     )
   }
 

@@ -36,7 +36,8 @@ Suggests:
     dplyr,
     rmarkdown,
     testthat (>= 3.0.0),
-    tidyselect
+    tidyselect,
+    vctrs
 Config/testthat/edition: 3
 Remotes: 
     R-ArcGIS/arcgisutils
