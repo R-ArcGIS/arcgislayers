@@ -249,9 +249,7 @@ obj_check_layer <- function(x,
   )
 }
 
-#' @rdname obj_check_layer
-#' @name obj_is_layer
-#' @keywords internal
+#' @noRd
 obj_is_layer <- function(x) {
   rlang::inherits_any(x, c("FeatureLayer", "Table"))
 }

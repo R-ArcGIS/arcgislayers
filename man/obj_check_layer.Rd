@@ -2,12 +2,9 @@
 % Please edit documentation in R/arc-select.R
 \name{obj_check_layer}
 \alias{obj_check_layer}
-\alias{obj_is_layer}
 \title{Check if an object is a FeatureLayer or Table object}
 \usage{
 obj_check_layer(x, arg = rlang::caller_arg(x), call = rlang::caller_env())
-
-obj_is_layer(x)
 }
 \arguments{
 \item{x}{A \code{FeatureLayer} or \code{Table} class object created with \code{\link[=arc_open]{arc_open()}}.}

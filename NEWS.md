@@ -1,6 +1,7 @@
 # arcgislayers 0.1.0 (unreleased)
 
 - Add `arc_read()` with support for `name_repair` argument using `{vctrs}` (#108)
+- Add `get_layer_estimates()` to retrieve estimate info such as the number of features and the extent of the layer
 - Add `truncate_layer()` to support truncate and append workflow
 - Add support for opening `MapServers` <https://github.com/R-ArcGIS/arcgislayers/pull/83>
 - `arc_open()` with a layer that does not support `Query` sets the `n` attribute to`NA` <https://github.com/R-ArcGIS/arcgislayers/pull/83>
