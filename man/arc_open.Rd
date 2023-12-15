@@ -13,7 +13,7 @@ arc_open(url, token = Sys.getenv("ARCGIS_TOKEN"))
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
 \value{
-Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, or \code{ImageServer}.
+Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}.
 }
 \description{
 Provided a URL, create an object referencing the remote resource.
@@ -24,6 +24,48 @@ To extract data from the remote resource utilize \code{\link[=arc_select]{arc_se
 \code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, utilize \code{\link[=arc_raster]{arc_raster()}}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\examples{
+
+if (interactive()) {
+ # FeatureLayer
+ furl <- paste0(
+   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+ )
+
+ arc_open(furl)
+
+ # Table
+ furl <- paste0(
+   "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/",
+   "USA_Wetlands/FeatureServer/1"
+ )
+
+ arc_open(furl)
+
+ # ImageServer
+ arc_open(
+   "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+   )
+
+ # FeatureServer
+ furl <- paste0(
+   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+   "PLACES_LocalData_for_BetterHealth/FeatureServer"
+ )
+
+ arc_open(furl)
+
+ # MapServer
+ map_url <- paste0(
+   "https://services.arcgisonline.com/ArcGIS/rest/services/",
+   "World_Imagery/MapServer"
+ )
+
+ arc_open(map_url)
+
+}
 }
 \seealso{
 arc_select arc_raster

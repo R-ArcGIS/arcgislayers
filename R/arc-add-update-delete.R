@@ -18,6 +18,9 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
+#' For a more detailed guide to adding, updating, and deleting features, view the
+#' tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
+#'
 #' Regarding the `match_on` argument:when publishing an object to an ArcGIS Portal
 #' from R, the object's names are provided as the alias. The object's names are
 #' subject to change according to the standards of the ArcGIS REST API. For example.
@@ -27,6 +30,24 @@
 #'
 #' @export
 #' @rdname modify
+#' @examples
+#' if (interactive()) {
+#'   # this is pseudo-code and will not work
+#'   flayer <- arc_open(furl)
+#'
+#'   # add sf objects to existing feature service
+#'   add_features(flayer, sfobj)
+#'
+#'   # delete all features
+#'   delete_features(flayer, where = "1 = 1")
+#'
+#'   # update features
+#'   update_features(flayer, dfobj)
+#' }
+#' @returns
+#' - `add_features()` returns a `data.frame` with columns `objectId`, `uniqueId`, `globalId`, `success`
+#' - `update_features()` returns a list with an element named `updateResults` which is a `data.frame` with columns `objectId`, `uniqueId`, `globalId`, `success`
+#' - `delete_features()` returns a list with an element named `deleteResults` which is a `data.frame` with columns `objectId`, `uniqueId`, `globalId`, `success`
 add_features <- function(
     x,
     .data,
@@ -292,7 +313,7 @@ delete_features <- function(
   }
 
   # convert to the proper CRS if not missing
-  if (!rlang::is_na(filter_geom)) {
+  if (!rlang::is_null(filter_geom)) {
     # we extract the two CRS object
     # then if filter_geom has no crs we use x via `coalesce_crs()`
     x_crs <- sf::st_crs(x)
