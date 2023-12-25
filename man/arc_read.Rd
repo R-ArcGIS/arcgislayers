@@ -19,21 +19,24 @@ arc_read(
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{col_names}{If \code{TRUE}, use the default column names for the feature. If
-\code{col_names} is a character function with the same length as the number of
-columns in the layer, the default names are replaced with the character
-vector. If \code{col_names} is one less than the length of the default or if
-\code{col_names} if \code{FALSE}, the existing sf column name is retained. If
-\code{col_names} is the string "alias", names are set to match the available
+\item{col_names}{Default \code{NULL}. If \code{TRUE}, use the default column names for
+the feature. If \code{col_names} is a character vector with the same length as
+the number of columns in the layer, the default names are replaced with the
+new names. If the length of \code{col_names} is one less than the length of the
+default column names, the existing sf column name is retained. If
+\code{col_names} is the string \code{"alias"}, names are set to match the available
 alias names for the layer.}
 
-\item{col_select}{Columns to select. Alternate argument for specifying fields
-if fields is \code{NULL}.}
+\item{col_select, fields}{Default \code{NULL}. A character vector of the field
+names to be returned. By default, all fields are returned. \code{fields} is
+ignored if \code{col_select} is supplied.}
 
-\item{n_max}{Maximum number of records to return. Defaults to 10000 or an
-option set with \verb{options("arcgislayers.n_max" = <max records>)}}
+\item{n_max}{Defaults to 10000 or an option set with
+\verb{options("arcgislayers.n_max" = <max records>)}. Maximum number of records
+to return.}
 
-\item{name_repair}{See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for details. Set \code{name_repair = NULL} to avoid using \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}.}
+\item{name_repair}{Default \code{"unique"}. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for
+details. If \code{name_repair = NULL}, names are set directly.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
 the the CRS for the input \code{FeatureLayer}, a transformation will occur
@@ -42,17 +45,15 @@ server-side. Ignored if x is a \code{Table}.}
 \item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a
 "FeatureLayer" or "Table" or \code{\link[=arc_raster]{arc_raster()}} if URL is an "ImageLayer".}
 
-\item{fields}{Fields to return. Ignored if \code{col_select} is supplied.}
-
 \item{token}{your authorization token. By default checks the environment
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
 or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS FeatureLayer, Table, or ImageServer to a
-\code{sf} object or object of class \code{SpatRaster}. \code{n_max} defaults to 10000 to
-avoid unintentionally reading an entire layer with a very large number of
-features.
+\code{sf} object or object of class \code{SpatRaster}. Optionally set, check, or modify
+names for the returned data frame or sf object using the \code{col_names} and
+\code{name_repair} parameters.
 }
 \examples{
 if (interactive()) {

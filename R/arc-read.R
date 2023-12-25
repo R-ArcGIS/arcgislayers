@@ -2,27 +2,28 @@
 #'
 #' [arc_read()] combines the functionality of [arc_open()] with [arc_select()]
 #' or [arc_raster()] to read an ArcGIS FeatureLayer, Table, or ImageServer to a
-#' `sf` object or object of class `SpatRaster`. `n_max` defaults to 10000 to
-#' avoid unintentionally reading an entire layer with a very large number of
-#' features.
+#' `sf` object or object of class `SpatRaster`. Optionally set, check, or modify
+#' names for the returned data frame or sf object using the `col_names` and
+#' `name_repair` parameters.
 #'
 #' @inheritParams arc_open
-#' @param col_select Columns to select. Alternate argument for specifying fields
-#'   if fields is `NULL`.
-#' @param col_names If `TRUE`, use the default column names for the feature. If
-#'   `col_names` is a character function with the same length as the number of
-#'   columns in the layer, the default names are replaced with the character
-#'   vector. If `col_names` is one less than the length of the default or if
-#'   `col_names` if `FALSE`, the existing sf column name is retained. If
-#'   `col_names` is the string "alias", names are set to match the available
+#' @param col_names Default `NULL`. If `TRUE`, use the default column names for
+#'   the feature. If `col_names` is a character vector with the same length as
+#'   the number of columns in the layer, the default names are replaced with the
+#'   new names. If the length of `col_names` is one less than the length of the
+#'   default column names, the existing sf column name is retained. If
+#'   `col_names` is the string `"alias"`, names are set to match the available
 #'   alias names for the layer.
-#' @param n_max Maximum number of records to return. Defaults to 10000 or an
-#'   option set with `options("arcgislayers.n_max" = <max records>)`
+#' @param col_select,fields Default `NULL`. A character vector of the field
+#'   names to be returned. By default, all fields are returned. `fields` is
+#'   ignored if `col_select` is supplied.
+#' @param n_max Defaults to 10000 or an option set with
+#'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
+#'   to return.
 #' @inheritParams arc_select
 #' @inheritParams arc_raster
-#' @param fields Fields to return. Ignored if `col_select` is supplied.
-#' @param name_repair See [vctrs::vec_as_names()] for details. Set `name_repair
-#'   = NULL` to avoid using [vctrs::vec_as_names()].
+#' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
+#'   details. If `name_repair = NULL`, names are set directly.
 #' @param ... Additional arguments passed to [arc_select()] if URL is a
 #'   "FeatureLayer" or "Table" or [arc_raster()] if URL is an "ImageLayer".
 #' @examples
@@ -48,15 +49,17 @@
 #'   )
 #' }
 #' @export
-arc_read <- function(url,
-                     col_names = TRUE,
-                     col_select = NULL,
-                     n_max = getOption("arcgislayers.n_max", default = 10000),
-                     name_repair = "unique",
-                     crs = NULL,
-                     ...,
-                     fields = NULL,
-                     token = Sys.getenv("ARCGIS_TOKEN")) {
+arc_read <- function(
+    url,
+    col_names = TRUE,
+    col_select = NULL,
+    n_max = getOption("arcgislayers.n_max", default = 10000),
+    name_repair = "unique",
+    crs = NULL,
+    ...,
+    fields = NULL,
+    token = Sys.getenv("ARCGIS_TOKEN")
+) {
   service <- arc_open(url = url, token = token)
 
   crs <- crs %||% sf::st_crs(service)
@@ -70,13 +73,6 @@ arc_read <- function(url,
     )
 
     return(layer)
-  }
-
-  if (attr(service, "n") > n_max) {
-    cli::cli_alert_warning(
-      "{.arg n_max} is set to {n_max}, less than the {attr(service, 'n')}
-      features available from this service."
-    )
   }
 
   layer <- arc_select(
@@ -96,6 +92,8 @@ arc_read <- function(url,
   )
 }
 
+#' Set names for layer or table
+#'
 #' @noRd
 set_layer_names <- function(x,
                             col_names = NULL,
@@ -103,11 +101,14 @@ set_layer_names <- function(x,
                             alias = NULL,
                             call = rlang::caller_env()) {
   layer_nm <- names(x)
+
+  # Use existing names by default
   nm <- layer_nm
-  sf_column_nm <- attributes(x)[["sf_column"]]
+  sf_column_nm <- attr(x, "sf_column")
 
   if (is.character(col_names)) {
-    if (identical(col_names, "alias") && is.character(alias)) {
+    # Assign alias values as name if col_names = "alias"
+    if (identical(col_names, "alias")) {
       col_names <- alias
     }
 
@@ -117,14 +118,19 @@ set_layer_names <- function(x,
   nm_len <- length(nm)
 
   if (rlang::is_false(col_names)) {
+    # Use X1, X2, etc. as names if col_names is FALSE
     nm <- paste0("X", seq(to = nm_len))
   }
 
+  # If x is a sf object and sf column is not in names, check to ensure names
+  # work with geometry column
   if (inherits(x, "sf") && sf_column_nm != nm[[nm_len]]) {
     layer_nm_len <- length(layer_nm)
     if (length(nm) == layer_nm_len) {
+      # If same number of names as layer columns, use last name for geometry
       x <- sf::st_set_geometry(x, nm[[length(layer_nm)]])
     } else if (length(nm) == (layer_nm_len - 1)) {
+      # If same number of names as layer columns, use existing geometry name
       nm <- c(nm, sf_column_nm)
     }
   }
