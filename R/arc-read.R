@@ -13,9 +13,9 @@
 #'   new names. If `col_names` has one fewer name than the default column names,
 #'   the existing sf column name is retained. If `col_names` is the string
 #'   `"alias"`, names are set to match the available alias names for the layer.
-#' @param col_select,fields Default `NULL`. A character vector of the field
-#'   names to be returned. By default, all fields are returned. `fields` is
-#'   ignored if `col_select` is supplied.
+#' @param col_select Default `NULL`. A character vector of the field names to be
+#'   returned. By default, all fields are returned. `fields` is ignored if
+#'   `col_select` is supplied.
 #' @param n_max Defaults to 10000 or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.

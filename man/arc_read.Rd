@@ -26,9 +26,9 @@ new names. If \code{col_names} has one fewer name than the default column names,
 the existing sf column name is retained. If \code{col_names} is the string
 \code{"alias"}, names are set to match the available alias names for the layer.}
 
-\item{col_select, fields}{Default \code{NULL}. A character vector of the field
-names to be returned. By default, all fields are returned. \code{fields} is
-ignored if \code{col_select} is supplied.}
+\item{col_select}{Default \code{NULL}. A character vector of the field names to be
+returned. By default, all fields are returned. \code{fields} is ignored if
+\code{col_select} is supplied.}
 
 \item{n_max}{Defaults to 10000 or an option set with
 \verb{options("arcgislayers.n_max" = <max records>)}. Maximum number of records
@@ -43,6 +43,9 @@ server-side. Ignored if x is a \code{Table}.}
 
 \item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a
 "FeatureLayer" or "Table" or \code{\link[=arc_raster]{arc_raster()}} if URL is an "ImageLayer".}
+
+\item{fields}{a character vector of the field names that you wish to be
+returned. By default all fields are returned.}
 
 \item{token}{your authorization token. By default checks the environment
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
