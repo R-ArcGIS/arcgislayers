@@ -22,10 +22,9 @@ arc_read(
 \item{col_names}{Default \code{TRUE}. If \code{TRUE}, use the default column names for
 the feature. If \code{col_names} is a character vector with the same length as
 the number of columns in the layer, the default names are replaced with the
-new names. If the length of \code{col_names} is one less than the length of the
-default column names, the existing sf column name is retained. If
-\code{col_names} is the string \code{"alias"}, names are set to match the available
-alias names for the layer.}
+new names. If \code{col_names} has one fewer name than the default column names,
+the existing sf column name is retained. If \code{col_names} is the string
+\code{"alias"}, names are set to match the available alias names for the layer.}
 
 \item{col_select, fields}{Default \code{NULL}. A character vector of the field
 names to be returned. By default, all fields are returned. \code{fields} is
