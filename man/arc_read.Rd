@@ -19,7 +19,7 @@ arc_read(
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{col_names}{Default \code{NULL}. If \code{TRUE}, use the default column names for
+\item{col_names}{Default \code{TRUE}. If \code{TRUE}, use the default column names for
 the feature. If \code{col_names} is a character vector with the same length as
 the number of columns in the layer, the default names are replaced with the
 new names. If the length of \code{col_names} is one less than the length of the

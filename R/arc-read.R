@@ -7,7 +7,7 @@
 #' `name_repair` parameters.
 #'
 #' @inheritParams arc_open
-#' @param col_names Default `NULL`. If `TRUE`, use the default column names for
+#' @param col_names Default `TRUE`. If `TRUE`, use the default column names for
 #'   the feature. If `col_names` is a character vector with the same length as
 #'   the number of columns in the layer, the default names are replaced with the
 #'   new names. If the length of `col_names` is one less than the length of the
