@@ -50,12 +50,18 @@ returned. By default all fields are returned.}
 \item{token}{your authorization token. By default checks the environment
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
+\value{
+A sf object, a data.frame, or an object of class \code{SpatRaster}.
+}
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
 or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS FeatureLayer, Table, or ImageServer to a
 \code{sf} object or object of class \code{SpatRaster}. Optionally set, check, or modify
 names for the returned data frame or sf object using the \code{col_names} and
 \code{name_repair} parameters.
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 if (interactive()) {

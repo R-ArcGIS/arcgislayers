@@ -6,6 +6,8 @@
 #' names for the returned data frame or sf object using the `col_names` and
 #' `name_repair` parameters.
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @inheritParams arc_open
 #' @param col_names Default `TRUE`. If `TRUE`, use the default column names for
 #'   the feature. If `col_names` is a character vector with the same length as
@@ -25,6 +27,7 @@
 #'   details. If `name_repair = NULL`, names are set directly.
 #' @param ... Additional arguments passed to [arc_select()] if URL is a
 #'   "FeatureLayer" or "Table" or [arc_raster()] if URL is an "ImageLayer".
+#' @returns A sf object, a data.frame, or an object of class `SpatRaster`.
 #' @examples
 #' if (interactive()) {
 #'   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
