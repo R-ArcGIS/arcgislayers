@@ -220,6 +220,46 @@ print.ImageServer <- function(x, ...) {
 
 }
 
+
+# GroupLayer --------------------------------------------------------------
+#' @export
+print.GroupLayer <- function(x, ...) {
+
+  n_layers <- length(x[["subLayers"]])
+
+  header <- cli::cli_fmt(
+    cli::cli_text(
+      "<{class(x)} <{n_layers} layer{?s}>>"
+    )
+  )
+
+  to_print <- compact(list(
+    "Name" = x[["name"]],
+    "Description" = {
+        desc <- substr(x[["description"]], 1, options('width')$width %||% 80 - 14)
+        if (!nzchar(desc)) {
+          NULL
+        } else {
+          desc
+        }
+      },
+    "CRS" = x[["extent"]][["spatialReference"]][["latestWkid"]],
+    "Capabilities" = x[["capabilities"]]
+  ))
+
+  # extract sub layers
+  lyrs <- x[["subLayers"]]
+
+  # format the layer body
+  body_layers <- paste0("  ", lyrs[["id"]], ": ", lyrs[["name"]])
+
+  # format the body
+  body <- paste0(names(to_print), ": ", to_print)
+
+  # cat out
+  cat(header, body, body_layers, sep = "\n")
+}
+
 # Utils -------------------------------------------------------------------
 
 #' function to make printing easier
