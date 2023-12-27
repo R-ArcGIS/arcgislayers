@@ -16,8 +16,7 @@
 #'   the existing sf column name is retained. If `col_names` is the string
 #'   `"alias"`, names are set to match the available alias names for the layer.
 #' @param col_select Default `NULL`. A character vector of the field names to be
-#'   returned. By default, all fields are returned. `fields` is ignored if
-#'   `col_select` is supplied.
+#'   returned. By default, all fields are returned.
 #' @param n_max Defaults to 10000 or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.
@@ -26,30 +25,33 @@
 #' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
 #'   details. If `name_repair = NULL`, names are set directly.
 #' @param ... Additional arguments passed to [arc_select()] if URL is a
-#'   "FeatureLayer" or "Table" or [arc_raster()] if URL is an "ImageLayer".
-#' @returns A sf object, a data.frame, or an object of class `SpatRaster`.
+#'   `FeatureLayer` or `Table` or [arc_raster()] if URL is an `ImageLayer`.
+#' @returns An sf object, a `data.frame`, or an object of class `SpatRaster`.
 #' @examples
-#' if (interactive()) {
-#'   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+#'if (interactive()) {
+#'  url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 #'
-#'   arc_read(url)
+#'  arc_read(url)
 #'
-#'   arc_read(url, name_repair = tolower)
+#'  # apply tolower() to column names
+#'  arc_read(url, name_repair = tolower)
 #'
-#'   url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
+#'  url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
 #'
-#'   arc_read(url, col_names = "alias")
+#'  # use field aliases as column names
+#'  arc_read(url, col_names = "alias")
 #'
-#'   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+#'  # read an ImageServer directly
+#'  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 #'
-#'   arc_read(
-#'     img_url,
-#'     width = 1000, height = 1000,
-#'     xmin = -71, ymin = 43,
-#'     xmax = -67, ymax = 47.5,
-#'     bbox_crs = 4326
-#'   )
-#' }
+#'  arc_read(
+#'    img_url,
+#'    width = 1000, height = 1000,
+#'    xmin = -71, ymin = 43,
+#'    xmax = -67, ymax = 47.5,
+#'    bbox_crs = 4326
+#'  )
+#'}
 #' @export
 arc_read <- function(
     url,
@@ -66,7 +68,8 @@ arc_read <- function(
 
   crs <- crs %||% sf::st_crs(service)
 
-  if (!obj_is_layer(service)) {
+  # if the server is an ImageServer we use arc_raster
+  if (inherits(service, "ImageServer")) {
     layer <- arc_raster(
       x = service,
       ...,
@@ -75,6 +78,17 @@ arc_read <- function(
     )
 
     return(layer)
+
+  } else if (!obj_is_layer(service)) {
+    # if it is not a layer we abort
+    # implicitly checks for Layer type and permits continuing
+    cli::cli_abort(
+      c(
+        "{.arg url} is not a supported type:
+      {.val FeatureLayer}, {.val Table}, or {.val ImageServer}",
+        "i" = "found {.val {class(service)}}"
+      )
+    )
   }
 
   layer <- arc_select(
@@ -97,11 +111,13 @@ arc_read <- function(
 #' Set names for layer or table
 #'
 #' @noRd
-set_layer_names <- function(x,
-                            col_names = NULL,
-                            name_repair = NULL,
-                            alias = NULL,
-                            call = rlang::caller_env()) {
+set_layer_names <- function(
+    x,
+    col_names = NULL,
+    name_repair = NULL,
+    alias = NULL,
+    call = rlang::caller_env()
+) {
   layer_nm <- names(x)
 
   # Use existing names by default

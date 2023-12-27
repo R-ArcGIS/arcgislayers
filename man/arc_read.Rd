@@ -27,8 +27,7 @@ the existing sf column name is retained. If \code{col_names} is the string
 \code{"alias"}, names are set to match the available alias names for the layer.}
 
 \item{col_select}{Default \code{NULL}. A character vector of the field names to be
-returned. By default, all fields are returned. \code{fields} is ignored if
-\code{col_select} is supplied.}
+returned. By default, all fields are returned.}
 
 \item{n_max}{Defaults to 10000 or an option set with
 \verb{options("arcgislayers.n_max" = <max records>)}. Maximum number of records
@@ -42,7 +41,7 @@ the the CRS for the input \code{FeatureLayer}, a transformation will occur
 server-side. Ignored if x is a \code{Table}.}
 
 \item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a
-"FeatureLayer" or "Table" or \code{\link[=arc_raster]{arc_raster()}} if URL is an "ImageLayer".}
+\code{FeatureLayer} or \code{Table} or \code{\link[=arc_raster]{arc_raster()}} if URL is an \code{ImageLayer}.}
 
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
@@ -51,7 +50,7 @@ returned. By default all fields are returned.}
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
 \value{
-A sf object, a data.frame, or an object of class \code{SpatRaster}.
+An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.
 }
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
@@ -65,24 +64,27 @@ names for the returned data frame or sf object using the \code{col_names} and
 }
 \examples{
 if (interactive()) {
-  url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+ url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
-  arc_read(url)
+ arc_read(url)
 
-  arc_read(url, name_repair = tolower)
+ # apply tolower() to column names
+ arc_read(url, name_repair = tolower)
 
-  url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
+ url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
 
-  arc_read(url, col_names = "alias")
+ # use field aliases as column names
+ arc_read(url, col_names = "alias")
 
-  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+ # read an ImageServer directly
+ img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
-  arc_read(
-    img_url,
-    width = 1000, height = 1000,
-    xmin = -71, ymin = 43,
-    xmax = -67, ymax = 47.5,
-    bbox_crs = 4326
-  )
+ arc_read(
+   img_url,
+   width = 1000, height = 1000,
+   xmin = -71, ymin = 43,
+   xmax = -67, ymax = 47.5,
+   bbox_crs = 4326
+ )
 }
 }
