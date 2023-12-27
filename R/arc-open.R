@@ -90,23 +90,11 @@ arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
     "FeatureLayer" =  structure(
       meta,
       class = layer_class,
-      # if the layer does not have a query capability return NA for the attr
-      n = ifelse(
-        grepl("query", meta[["capabilities"]], TRUE),
-        count_features(req, token),
-        NA
-      ),
       query = list()
     ),
     "Table" = structure(
       meta,
       class = layer_class,
-      # if the layer does not have a query capability return NA for the attr
-      n = ifelse(
-        grepl("query", meta[["capabilities"]], TRUE),
-        count_features(req, token),
-        NA
-      ),
       query = list()
     ),
     "FeatureServer" = structure(

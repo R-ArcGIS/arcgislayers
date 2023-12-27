@@ -12,10 +12,7 @@ print.Table <- function(x, ...) {
   # filter out any 0 character strings
   print_index <- vapply(to_print, nzchar, logical(1))
 
-  header <- sprintf(
-    "<%s <%i features, %i fields>>",
-    class(x), attr(x, "n"), length(x$fields$name)
-  )
+  header <- "<Table>"
 
   # print only metadata that has values
   body <- paste0(
@@ -54,8 +51,6 @@ head.Table <- function(x, n = 6, token = Sys.getenv("ARCGIS_TOKEN"), ...) {
 
 # Feature Layer -----------------------------------------------------------
 
-
-
 # Print method for feature layer objects
 #
 #' @export
@@ -65,15 +60,10 @@ print.FeatureLayer <- function(x, ...) {
     "Name" = x[["name"]],
     "Geometry Type" = x[["geometryType"]],
     "CRS" = x[["extent"]][["spatialReference"]][["latestWkid"]],
-    #"Query Formats" = x[["supportedQueryFormats"]],
     "Capabilities" = x[["capabilities"]]
   ))
 
-  header <- sprintf(
-    "<%s <%i features, %i fields>>",
-    class(x), attr(x, "n"), length(x$fields$name)
-  )
-
+  header <- "<FeatureLayer>"
   body <- paste0(names(to_print), ": ", to_print)
 
   # cat out

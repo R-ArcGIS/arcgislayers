@@ -20,5 +20,5 @@ test_that("arc_select(): ignores geometry for tables", {
   expect_false("sf" %in% class(res))
 
   res <- arc_select(flayer, n_max = 3, geometry = TRUE)
-  expect_fals("sf" %in% class(res))
+  expect_false("sf" %in% class(res))
 })
