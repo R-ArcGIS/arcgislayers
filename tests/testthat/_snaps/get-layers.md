@@ -38,6 +38,46 @@
       Capabilities: Query,Extract
       
 
+# get_layers(): MapServer ID
+
+    Code
+      get_layers(msrv, 1:2)
+    Output
+      [[1]]
+      <FeatureLayer>
+      Name: Census Block Group
+      Geometry Type: esriGeometryPolygon
+      CRS: 4269
+      Capabilities: Map,Query,Data
+      
+      [[2]]
+      <FeatureLayer>
+      Name: Detailed Counties
+      Geometry Type: esriGeometryPolygon
+      CRS: 4269
+      Capabilities: Map,Query,Data
+      
+
+# get_layers(): MapServer name
+
+    Code
+      get_layers(msrv, name = c("Census Block Points", "Census Block Group"))
+    Output
+      [[1]]
+      <FeatureLayer>
+      Name: Census Block Points
+      Geometry Type: esriGeometryPoint
+      CRS: 4269
+      Capabilities: Map,Query,Data
+      
+      [[2]]
+      <FeatureLayer>
+      Name: Census Block Group
+      Geometry Type: esriGeometryPolygon
+      CRS: 4269
+      Capabilities: Map,Query,Data
+      
+
 # get_layers(): GroupLayer ID
 
     Code

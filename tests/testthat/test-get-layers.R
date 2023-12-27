@@ -24,7 +24,7 @@ test_that("get_layers(): FeatureServer name", {
 })
 
 
-murl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+murl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer"
 msrv <- arc_open(murl)
 
 test_that("get_layers(): MapServer ID", {
