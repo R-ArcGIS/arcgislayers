@@ -37,7 +37,7 @@ to return.}
 details. If \code{name_repair = NULL}, names are set directly.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
-the the CRS for the input \code{FeatureLayer}, a transformation will occur
+the CRS for the input \code{FeatureLayer}, a transformation will occur
 server-side. Ignored if x is a \code{Table}.}
 
 \item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a

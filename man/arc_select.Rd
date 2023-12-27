@@ -27,7 +27,7 @@ returned. By default all fields are returned.}
 selected.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
-the the CRS for the input \code{FeatureLayer}, a transformation will occur
+the CRS for the input \code{FeatureLayer}, a transformation will occur
 server-side. Ignored if x is a \code{Table}.}
 
 \item{geometry}{default \code{TRUE}. If geometries should be returned. Ignored for

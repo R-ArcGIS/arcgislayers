@@ -9,7 +9,7 @@
 #' @param where a simple SQL where statement indicating which features should be
 #'   selected.
 #' @param crs the spatial reference to be returned. If the CRS is different than
-#'   the the CRS for the input `FeatureLayer`, a transformation will occur
+#'   the CRS for the input `FeatureLayer`, a transformation will occur
 #'   server-side. Ignored if x is a `Table`.
 #' @param geometry default `TRUE`. If geometries should be returned. Ignored for
 #'   `Table` objects.
