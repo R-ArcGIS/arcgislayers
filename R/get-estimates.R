@@ -37,19 +37,21 @@ get_layer_estimates <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   # token bug :[
   if (token != "") {
-    resp <-
-      httr2::req_url_query(est_req, f = "json") |>
-      httr2::req_auth_bearer_token(token) |>
-      httr2::req_perform()
+    req <-
+      httr2::req_auth_bearer_token(
+        httr2::req_url_query(est_req, f = "json"),
+        token
+      )
+      resp <-  httr2::req_perform(req)
   } else {
     resp <-
-      httr2::req_url_query(est_req, f = "json") |>
-      httr2::req_perform()
+      httr2::req_perform(
+        httr2::req_url_query(est_req, f = "json")
+      )
   }
 
   # process json string
-  res_raw <- httr2::resp_body_string(resp) |>
-    RcppSimdJson::fparse()
+  res_raw <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
   # process extent if present
   ext <- res_raw[["extent"]]
