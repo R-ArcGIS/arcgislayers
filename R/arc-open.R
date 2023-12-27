@@ -101,7 +101,9 @@ arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
       meta, class = layer_class
     ),
     "ImageServer" = structure(meta, class = layer_class),
-    "MapServer" = structure(meta, class = layer_class)
+    "MapServer" = structure(meta, class = layer_class),
+    "GroupLayer" = structure(meta, class = layer_class),
+    cli::cli_abort("Unsupported service")
   )
 
   res

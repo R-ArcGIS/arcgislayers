@@ -37,7 +37,6 @@
 #'   get_all_layers(fserv)
 #' }
 get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
-
   # check for mutual exclusivity between id and name
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
@@ -52,6 +51,12 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
     cli::cli_abort("{.arg id} and {.arg name} must be of length 1.")
   }
 
+  UseMethod("get_layer")
+}
+
+#' @export
+get_layer.default <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+
   if (!is.null(name)) {
 
     # grab both table and layer names to check agains
@@ -63,7 +68,7 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
     is_table_name <- name %in% table_names
 
     # error if not found
-    if (all(!is_layer, !is_table)) {
+    if (all(!is_layer_name, !is_table_name)) {
       cli::cli_abort("{.arg name} not available in {.code {c(layer_names, table_names)}}")
     }
 
@@ -94,10 +99,61 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
 
 }
 
+#' @export
+get_layer.GroupLayer <- function(
+    x,
+    id = NULL,
+    name = NULL,
+    token = Sys.getenv("ARCGIS_TOKEN")
+) {
+  if (!is.null(name)) {
+
+    layer_names <- x[["subLayers"]][["name"]]
+
+    # check if name is present as a table or layer
+    is_layer_name <- name %in% layer_names
+
+    # error if not found
+    if (!is_layer_name) {
+      cli::cli_abort("{.arg name} not available in {.code {layer_names}}")
+    }
+
+    # grab layer ids
+    layer_ids <- x[["subLayers"]][["id"]]
+
+    # match item id
+    item_id <- layer_ids[which(layer_names == name)]
+
+    # the new item_url
+    item_url <- sub("\\d+$", item_id, x[["url"]])
+
+  } else if (!is.null(id)) {
+    layer_ids <- x[["subLayers"]][["id"]]
+
+    # find matching index
+    is_layer <- id %in% layer_ids
+
+    if (!is_layer) {
+      cli::cli_abort(
+        paste0("{.arg id} ", id, " not in available IDs (", toString(unlist(layer_ids)), ")")
+      )
+    }
+
+    item_url <- sub("\\d+$", id, x[["url"]])
+  }
+
+  arc_open(item_url, token = token)
+}
+
 
 #' @rdname get_layer
 #' @export
 get_all_layers <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+  UseMethod("get_all_layers")
+}
+
+#' @export
+get_all_layers.default <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
   layer_ids <- x[["layers"]][["id"]]
   table_ids <- x[["tables"]][["id"]]
   layers <- lapply(file.path(x[["url"]], layer_ids), arc_open, token = token)
@@ -111,10 +167,28 @@ get_all_layers <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
   )
 }
 
+#' @export
+get_all_layers.GroupLayer <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+  all_layer_ids <- x[["subLayers"]][["id"]]
+
+  all_layer_paths <- vapply(
+    all_layer_ids,
+    function(.x) sub("\\d+$", .x, x[["url"]]),
+    character(1)
+  )
+
+  lapply(all_layer_paths, arc_open)
+}
+
 
 #' @export
 #' @rdname get_layer
-get_layers <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_layers <- function(
+    x,
+    id = NULL,
+    name = NULL,
+    token = Sys.getenv("ARCGIS_TOKEN")
+) {
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
   } else if (!is.null(id) && !is.null(name)) {
@@ -125,6 +199,12 @@ get_layers <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOK
       )
     )
   }
+
+  UseMethod("get_layers")
+}
+
+#' @export
+get_layers.default <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
 
   if (!is.null(id)) {
     # cast as integer
@@ -149,7 +229,7 @@ get_layers <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOK
     in_names <- name %in% valid_names
     baddies <- name[!in_names]
 
-    if (length(baddies > 1)) {
+    if (length(baddies) > 1) {
       cli::cli_warn("Invalid item names{?s}: {.val {baddies}}")
     }
 
@@ -160,6 +240,72 @@ get_layers <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOK
       x[["url"]],
       unname(lu[name[in_names]])
     )
+  }
+
+  if (length(item_urls) < 1) {
+    cli::cli_abort(
+      c(
+        "No valid items to return.",
+        i = "Ensure 1 or more valid {.arg id} or {.arg name} value is provided."
+      )
+    )
+  }
+
+  lapply(item_urls, arc_open)
+}
+
+
+#' @export
+get_layers.GroupLayer <- function(
+    x,
+    id = NULL,
+    name = NULL,
+    token = Sys.getenv("ARCGIS_TOKEN")
+) {
+  if (!is.null(id)) {
+    # cast as integer
+    id <- as.integer(id)
+
+    # ensure that all elements of `id` are in the layers
+    in_ids <- id %in% x[["subLayers"]][["id"]]
+
+    # if not report and remove
+    baddies <- id[!in_ids]
+
+    if (length(baddies) > 1) {
+      cli::cli_warn("Invalid ID{?s}: {.val {as.character(baddies)}}")
+    }
+
+    all_layer_ids <- id[in_ids]
+
+    item_urls <- vapply(
+      all_layer_ids,
+      function(.x) sub("\\d+$", .x, x[["url"]]),
+      character(1)
+    )
+
+  } else if (!is.null(name)) {
+    valid_names <- x[["subLayers"]][["name"]]
+
+    # validate names
+    in_names <- name %in% valid_names
+    baddies <- name[!in_names]
+
+    if (length(baddies) > 1) {
+      cli::cli_warn("Invalid item names{?s}: {.val {baddies}}")
+    }
+
+    # create lookup table for fetching ids
+    lu <- stats::setNames(x[["subLayers"]][["id"]], valid_names)
+
+    all_layer_ids <- unname(lu[name[in_names]])
+
+    item_urls <- vapply(
+      all_layer_ids,
+      function(.x) sub("\\d+$", .x, x[["url"]]),
+      character(1)
+    )
+
   }
 
   if (length(item_urls) < 1) {

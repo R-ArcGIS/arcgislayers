@@ -1,6 +1,6 @@
 test_that("Adding features to a table work", {
 
-  skip("Must be ran manually")
+  skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
 
   set_auth_token(auth_code())
@@ -29,8 +29,6 @@ test_that("Adding features to a table work", {
   expect_success(add_features(irs, test_df))
 
 })
-
-
 
 test_that("Adding features to a feature layer works", {
   skip("Must be ran interactively")

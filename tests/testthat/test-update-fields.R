@@ -1,7 +1,7 @@
 test_that("Table fields can be updated", {
 
 
-  skip("Must be ran manually")
+  skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
   # set auth token
   set_auth_token(auth_code())

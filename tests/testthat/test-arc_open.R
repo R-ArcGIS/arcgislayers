@@ -38,8 +38,10 @@ test_that("arc_open(): Image Server", {
   expect_no_error(arc_open(img_url, token = "")) # hella weird behavior with token here.
 })
 
-
-
+test_that("arc_open(): GroupLayer", {
+  gurl <- "https://geodata.baltimorecity.gov/egis/rest/services/CitiMap/DOT_Layers/MapServer/0"
+  expect_no_error(arc_open(gurl))
+})
 
 
 
