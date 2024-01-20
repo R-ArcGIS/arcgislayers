@@ -14,3 +14,4 @@
 - adds cli as an explicit import (has been implicitly imported by httr2)
 - repository made public
 - add lifecycle badges to all exported functions <https://github.com/R-ArcGIS/arcgislayers/pull/101>
+- Use `arcgisutils::arc_token()` to get "ARCGIS_TOKEN" environment variable. This ensures that empty strings do not cause HTTP 498 "invalid token" error.
