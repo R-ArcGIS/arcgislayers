@@ -13,7 +13,7 @@ arc_read(
   crs = NULL,
   ...,
   fields = NULL,
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 }
 \arguments{

@@ -34,7 +34,7 @@ Imports:
     terra,
     utils
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Suggests: 
     dbplyr,
     dplyr,

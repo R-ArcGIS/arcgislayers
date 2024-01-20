@@ -18,7 +18,7 @@ add_item(
   async = FALSE,
   type = "Feature Service",
   host = arc_host(),
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 
 publish_item(
@@ -27,7 +27,7 @@ publish_item(
   publish_params = .publish_params(),
   file_type = "featureCollection",
   host = arc_host(),
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 
 publish_layer(
@@ -37,7 +37,7 @@ publish_layer(
   user = Sys.getenv("ARCGIS_USER"),
   publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
   host = arc_host(),
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 
 .publish_params(

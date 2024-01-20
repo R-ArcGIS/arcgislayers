@@ -15,7 +15,7 @@ arc_raster(
   width = NULL,
   height = NULL,
   format = "tiff",
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 }
 \arguments{

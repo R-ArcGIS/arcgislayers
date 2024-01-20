@@ -4,7 +4,7 @@
 \alias{arc_open}
 \title{Open connection to remote resource}
 \usage{
-arc_open(url, token = Sys.getenv("ARCGIS_TOKEN"))
+arc_open(url, token = arc_token())
 }
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}

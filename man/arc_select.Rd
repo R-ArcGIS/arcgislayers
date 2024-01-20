@@ -13,7 +13,7 @@ arc_select(
   filter_geom = NULL,
   predicate = "intersects",
   n_max = Inf,
-  token = Sys.getenv("ARCGIS_TOKEN"),
+  token = arc_token(),
   ...
 )
 }
