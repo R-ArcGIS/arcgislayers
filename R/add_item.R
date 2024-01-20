@@ -69,7 +69,7 @@ add_item <- function(
     async = FALSE,
     type = "Feature Service",
     host = arc_host(),
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
   # if async = TRUE stop
@@ -171,7 +171,7 @@ publish_item <- function(
     publish_params = .publish_params(),
     file_type = "featureCollection",
     host = arc_host(),
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
   # create request URL
@@ -208,7 +208,7 @@ publish_layer <- function(
     user = Sys.getenv("ARCGIS_USER"),
     publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
     host = arc_host(),
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
   adtl_args <- rlang::list2(...)

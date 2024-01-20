@@ -54,7 +54,7 @@ arc_raster <- function(
     width = NULL,
     height = NULL,
     format = "tiff",
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
 

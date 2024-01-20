@@ -15,7 +15,7 @@
 #' @returns
 #' A named list containing all estimate info. If `extent` is present,
 #' it is available as an object of class `bbox`.
-get_layer_estimates <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_layer_estimates <- function(x, token = arc_token()) {
 
   # check if its a supported layer
   obj_check_layer(x)

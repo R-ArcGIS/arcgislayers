@@ -57,7 +57,7 @@ arc_select <- function(
     filter_geom = NULL,
     predicate = "intersects",
     n_max = Inf,
-    token = Sys.getenv("ARCGIS_TOKEN"),
+    token = arc_token(),
     ...
 ) {
   # Developer note:
@@ -132,7 +132,7 @@ arc_select <- function(
 #' @noRd
 collect_layer <- function(x,
                           n_max = Inf,
-                          token = Sys.getenv("ARCGIS_TOKEN"),
+                          token = arc_token(),
                           ...,
                           error_call = rlang::caller_env()) {
   check_inherits_any(

@@ -57,7 +57,7 @@
 #'  arc_open(map_url)
 #'
 #'}
-arc_open <- function(url, token = Sys.getenv("ARCGIS_TOKEN")) {
+arc_open <- function(url, token = arc_token()) {
 
   stopifnot("`url` must be of length 1" = length(url) == 1)
 
