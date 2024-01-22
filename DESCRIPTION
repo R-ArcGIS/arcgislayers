@@ -23,7 +23,7 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    arcgisutils (>= 0.1.0),
+    arcgisutils (>= 0.1.1.9000),
     cli,
     httr2 (>= 1.0.0),
     jsonify,
