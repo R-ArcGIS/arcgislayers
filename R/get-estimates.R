@@ -35,6 +35,10 @@ get_layer_estimates <- function(x, token = arc_token()) {
     "getEstimates"
   )
 
+  resp <- httr2::req_perform(
+      httr2::req_url_query(est_req, f = "json")
+  )
+
   # process json string
   res_raw <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
