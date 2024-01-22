@@ -19,7 +19,7 @@ create_feature_server(
   has_static_data = FALSE,
   xss_prevention = xss_defaults(),
   host = arc_host(),
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 
 xss_defaults()

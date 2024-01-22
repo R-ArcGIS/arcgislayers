@@ -4,7 +4,7 @@
 \alias{get_layer_estimates}
 \title{Get Estimates}
 \usage{
-get_layer_estimates(x, token = Sys.getenv("ARCGIS_TOKEN"))
+get_layer_estimates(x, token = arc_token())
 }
 \arguments{
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}

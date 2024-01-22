@@ -48,7 +48,7 @@ create_feature_server <- function(
     has_static_data = FALSE,
     xss_prevention = xss_defaults(),
     host = arc_host(),
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
   match.arg(capabilities, several.ok = TRUE)

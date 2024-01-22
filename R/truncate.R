@@ -33,7 +33,7 @@ truncate_layer <- function(
     x,
     async = FALSE,
     attachment_only = FALSE,
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
 
   # check to see if it is a compatible class

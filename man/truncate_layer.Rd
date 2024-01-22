@@ -4,12 +4,7 @@
 \alias{truncate_layer}
 \title{Truncate a Feature Layer}
 \usage{
-truncate_layer(
-  x,
-  async = FALSE,
-  attachment_only = FALSE,
-  token = Sys.getenv("ARCGIS_TOKEN")
-)
+truncate_layer(x, async = FALSE, attachment_only = FALSE, token = arc_token())
 }
 \arguments{
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}

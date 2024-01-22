@@ -62,7 +62,7 @@ arc_read <- function(
     crs = NULL,
     ...,
     fields = NULL,
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
   service <- arc_open(url = url, token = token)
 

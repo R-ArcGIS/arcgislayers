@@ -36,7 +36,7 @@
 #'   get_layers(fserv, name = c("Tracts", "ZCTAs"))
 #'   get_all_layers(fserv)
 #' }
-get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_layer <- function(x, id = NULL, name = NULL, token = arc_token()) {
   # check for mutual exclusivity between id and name
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
@@ -55,7 +55,7 @@ get_layer <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKE
 }
 
 #' @export
-get_layer.default <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_layer.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
   if (!is.null(name)) {
 
@@ -104,7 +104,7 @@ get_layer.GroupLayer <- function(
     x,
     id = NULL,
     name = NULL,
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
   if (!is.null(name)) {
 
@@ -148,12 +148,12 @@ get_layer.GroupLayer <- function(
 
 #' @rdname get_layer
 #' @export
-get_all_layers <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_all_layers <- function(x, token = arc_token()) {
   UseMethod("get_all_layers")
 }
 
 #' @export
-get_all_layers.default <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_all_layers.default <- function(x, token = arc_token()) {
   layer_ids <- x[["layers"]][["id"]]
   table_ids <- x[["tables"]][["id"]]
   layers <- lapply(file.path(x[["url"]], layer_ids), arc_open, token = token)
@@ -168,7 +168,7 @@ get_all_layers.default <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
 }
 
 #' @export
-get_all_layers.GroupLayer <- function(x, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_all_layers.GroupLayer <- function(x, token = arc_token()) {
   all_layer_ids <- x[["subLayers"]][["id"]]
 
   all_layer_paths <- vapply(
@@ -187,7 +187,7 @@ get_layers <- function(
     x,
     id = NULL,
     name = NULL,
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
@@ -204,7 +204,7 @@ get_layers <- function(
 }
 
 #' @export
-get_layers.default <- function(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN")) {
+get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
   if (!is.null(id)) {
     # cast as integer
@@ -260,7 +260,7 @@ get_layers.GroupLayer <- function(
     x,
     id = NULL,
     name = NULL,
-    token = Sys.getenv("ARCGIS_TOKEN")
+    token = arc_token()
 ) {
   if (!is.null(id)) {
     # cast as integer

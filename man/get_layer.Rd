@@ -6,11 +6,11 @@
 \alias{get_layers}
 \title{Extract a layer from a Feature or Map Server}
 \usage{
-get_layer(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
+get_layer(x, id = NULL, name = NULL, token = arc_token())
 
-get_all_layers(x, token = Sys.getenv("ARCGIS_TOKEN"))
+get_all_layers(x, token = arc_token())
 
-get_layers(x, id = NULL, name = NULL, token = Sys.getenv("ARCGIS_TOKEN"))
+get_layers(x, id = NULL, name = NULL, token = arc_token())
 }
 \arguments{
 \item{x}{an object of class \code{FeatureServer} or \code{MapServer}}

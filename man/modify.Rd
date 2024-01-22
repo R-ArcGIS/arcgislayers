@@ -12,14 +12,14 @@ add_features(
   chunk_size = 2000,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
-  token = Sys.getenv("ARCGIS_TOKEN")
+  token = arc_token()
 )
 
 update_features(
   x,
   .data,
   match_on = c("name", "alias"),
-  token = Sys.getenv("ARCGIS_TOKEN"),
+  token = arc_token(),
   rollback_on_failure = TRUE,
   ...
 )
@@ -31,7 +31,7 @@ delete_features(
   filter_geom = NULL,
   predicate = "intersects",
   rollback_on_failure = TRUE,
-  token = Sys.getenv("ARCGIS_TOKEN"),
+  token = arc_token(),
   ...
 )
 }
