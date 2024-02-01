@@ -68,9 +68,9 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of arcgis like so:</p>
+<p>arcgislayers requires arcgisutils for authorization. It is recommend you install and use the metapackage <code>{arcgis}</code>. You can install the development version of arcgis like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"R-ArcGIS/arcgislayers"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-arcgis/arcgis"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="basic-usage">Basic usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
@@ -78,7 +78,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt;   - {arcgisutils} v0.1.0</span></span>
+<span><span class="co">#&gt;   - {arcgisutils} v0.1.1.9001</span></span>
 <span><span class="co">#&gt;   - {arcgislayers} v0.1.0</span></span></code></pre></div>
 <p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote resource. The function can return any of four classes (corresponding to different ArcGIS service types):</p>
 <ul>
@@ -94,7 +94,7 @@
 <span><span class="va">county_fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">county_fl</span></span>
-<span><span class="co">#&gt; &lt;FeatureLayer &lt;3143 features, 12 fields&gt;&gt;</span></span>
+<span><span class="co">#&gt; &lt;FeatureLayer&gt;</span></span>
 <span><span class="co">#&gt; Name: USA Counties - Generalized</span></span>
 <span><span class="co">#&gt; Geometry Type: esriGeometryPolygon</span></span>
 <span><span class="co">#&gt; CRS: 4326</span></span>
