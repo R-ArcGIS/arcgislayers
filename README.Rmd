@@ -26,10 +26,10 @@ The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS REST API
 
 ## Installation
 
-You can install the development version of arcgis like so:
+arcgislayers requires arcgisutils for authorization. It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
 
 ``` r
-pak::pkg_install("R-ArcGIS/arcgislayers", dependencies = TRUE)
+remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 ```
 
 ## Basic usage

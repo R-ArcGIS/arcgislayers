@@ -16,10 +16,12 @@ REST API
 
 ## Installation
 
-You can install the development version of arcgis like so:
+arcgislayers requires arcgisutils for authorization. It is recommend you
+install and use the metapackage `{arcgis}`. You can install the
+development version of arcgis like so:
 
 ``` r
-pak::pkg_install("R-ArcGIS/arcgislayers", dependencies = TRUE)
+remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 ```
 
 ## Basic usage
@@ -27,7 +29,7 @@ pak::pkg_install("R-ArcGIS/arcgislayers", dependencies = TRUE)
 ``` r
 library(arcgis)
 #> Attaching core arcgis packages:
-#>   - {arcgisutils} v0.1.0
+#>   - {arcgisutils} v0.1.1.9001
 #>   - {arcgislayers} v0.1.0
 ```
 
@@ -49,7 +51,7 @@ furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_C
 county_fl <- arc_open(furl)
 
 county_fl
-#> <FeatureLayer <3143 features, 12 fields>>
+#> <FeatureLayer>
 #> Name: USA Counties - Generalized
 #> Geometry Type: esriGeometryPolygon
 #> CRS: 4326
