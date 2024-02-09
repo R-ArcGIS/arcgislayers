@@ -10,7 +10,6 @@
 add_item(
   x,
   title,
-  user = Sys.getenv("ARCGIS_USER"),
   description = "",
   tags = character(0),
   snippet = "",
@@ -22,7 +21,6 @@ add_item(
 
 publish_item(
   item_id,
-  user = Sys.getenv("ARCGIS_USER"),
   publish_params = .publish_params(),
   file_type = "featureCollection",
   token = arc_token()
@@ -32,7 +30,6 @@ publish_layer(
   x,
   title,
   ...,
-  user = Sys.getenv("ARCGIS_USER"),
   publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
   token = arc_token()
 )
@@ -51,9 +48,6 @@ any other subclass of \code{data.frame}.}
 
 \item{title}{A user-friendly string title for the layer that can be used in
 a table of contents.}
-
-\item{user}{default environment variable \code{Sys.getenv("ARCGIS_USER")}.
-The username to publish the item under.}
 
 \item{description}{a length 1 character vector containing the description of
 the item that is being added. Note that the value cannot be larger than 64kb.}

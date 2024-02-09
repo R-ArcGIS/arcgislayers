@@ -3,6 +3,7 @@
 - **Breaking**: 
   - `token` arguments are required to be a valid `httr2_token` object (strings are not supported).
   - all `host` arguments are removed. Instead, the host is fetched from the `token`.
+  - all `user` arguments are removed. Instead, the username is fetched from the `token`. If it is not found, an error is thrown.
 - Add support for `GroupLayer`s
 - Add `arc_read()` with support for `name_repair` argument using `{vctrs}` (#108)
 - Add `get_layer_estimates()` to retrieve estimate info such as the number of features and the extent of the layer
