@@ -103,7 +103,7 @@ create_feature_server <- function(
 
   resp <- httr2::req_perform(req)
 
-  resp_parsed <- jsonify::from_json(httr2::resp_body_string(resp))
+  resp_parsed <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
   detect_errors(resp_parsed)
 
