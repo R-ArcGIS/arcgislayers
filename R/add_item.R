@@ -61,7 +61,6 @@
 add_item <- function(
     x,
     title,
-    user = Sys.getenv("ARCGIS_USER"),
     description = "",
     tags = character(0),
     snippet = "",
@@ -74,6 +73,12 @@ add_item <- function(
 
   # validate the token
   obj_check_token(token)
+
+  # check that there is a user associated with the token
+  check_token_has_user(token)
+
+  # extract username
+  user <- token[["username"]]
 
   # fetch the host from the token
   host <- token[["arcgis_host"]]
@@ -175,7 +180,6 @@ add_item <- function(
 #' @rdname publish
 publish_item <- function(
     item_id,
-    user = Sys.getenv("ARCGIS_USER"),
     publish_params = .publish_params(),
     file_type = "featureCollection",
     token = arc_token()
@@ -183,6 +187,12 @@ publish_item <- function(
 
   # validate the token
   obj_check_token(token)
+
+  # check that there is a user associated with the token
+  check_token_has_user(token)
+
+  # extract username
+  user <- token[["username"]]
 
   # fetch the host
   host <- token[["arcgis_host"]]
@@ -221,7 +231,6 @@ publish_layer <- function(
     x,
     title,
     ...,
-    user = Sys.getenv("ARCGIS_USER"),
     publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
     token = arc_token()
 ) {
@@ -232,7 +241,6 @@ publish_layer <- function(
     add_item(
       x,
       title,
-      user = user,
       token = token,
       !!!adtl_args
     )
@@ -244,7 +252,6 @@ publish_layer <- function(
 
   published_item <- publish_item(
     item_id,
-    user = user,
     publish_params = publish_params,
     token = token
   )

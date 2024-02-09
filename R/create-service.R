@@ -30,13 +30,12 @@
 #'
 #' @export
 #' @examples
-#' if (interactive()) {
+#' \donttest{
 #'   set_arc_token(auth_code())
 #'   create_feature_server("My empty feature server")
 #' }
 create_feature_server <- function(
     service_name,
-    user = Sys.getenv("ARCGIS_USER"),
     description = "",
     crs = 3857,
     capabilities = c("create", "delete", "query", "update", "editing"),
@@ -56,6 +55,12 @@ create_feature_server <- function(
 
   # validate the token
   obj_check_token(token)
+
+  # check that there is a user associated with the token
+  check_token_has_user(token)
+
+  # extract username
+  user <- token[["username"]]
 
   # fetch the host
   host <- token[["arcgis_host"]]
