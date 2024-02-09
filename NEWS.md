@@ -1,5 +1,8 @@
 # arcgislayers 0.1.0 (unreleased)
 
+- **Breaking**: 
+  - `token` arguments are required to be a valid `httr2_token` object (strings are not supported).
+  - all `host` arguments are removed. Instead, the host is fetched from the `token`.
 - Add support for `GroupLayer`s
 - Add `arc_read()` with support for `name_repair` argument using `{vctrs}` (#108)
 - Add `get_layer_estimates()` to retrieve estimate info such as the number of features and the extent of the layer
@@ -14,4 +17,3 @@
 - adds cli as an explicit import (has been implicitly imported by httr2)
 - repository made public
 - add lifecycle badges to all exported functions <https://github.com/R-ArcGIS/arcgislayers/pull/101>
-- Use `arcgisutils::arc_token()` to get "ARCGIS_TOKEN" environment variable. This ensures that empty strings do not cause HTTP 498 "invalid token" error.
