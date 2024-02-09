@@ -63,7 +63,9 @@ Creates an empty FeatureServer with no additional layers.
 }
 \examples{
 \donttest{
+if (interactive()) {
   set_arc_token(auth_code())
   create_feature_server("My empty feature server")
+}
 }
 }
