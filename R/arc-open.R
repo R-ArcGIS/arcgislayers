@@ -61,12 +61,11 @@ arc_open <- function(url, token = arc_token()) {
 
   stopifnot("`url` must be of length 1" = length(url) == 1)
 
-  # generate base request
-  req <- httr2::request(url)
-
   # extract layer metadata
-  meta <- compact(fetch_layer_metadata(req, token))
-  meta[["url"]] <- url # set url for later use
+  meta <- compact(fetch_layer_metadata(url, token))
+
+  # set url for later use
+  meta[["url"]] <- url
 
   # layer class
   layer_class <- gsub("\\s", "", meta[["type"]])
