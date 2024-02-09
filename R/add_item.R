@@ -49,8 +49,8 @@
 #'   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 #'   x <- nc[1:5, 13]
 #'
-#'   tkn <- auth_code()
-#'   set_auth_token(tkn)
+#'   token <- auth_code()
+#'   set_arc_token(tkn)
 #'
 #'   publish_res <- publish_layer(
 #'     x, "North Carolina SIDS sample"
@@ -156,7 +156,6 @@ add_item <- function(
     )
   )
 
-  # req <- httr2::request(req_url)
   req <- arc_base_req(req_url, token)
   req_body <- httr2::req_body_form(req, !!!req_fields)
   resp <- httr2::req_perform(req_body)

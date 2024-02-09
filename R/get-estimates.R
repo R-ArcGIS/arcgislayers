@@ -27,8 +27,7 @@ get_layer_estimates <- function(x, token = arc_token()) {
     )
   }
 
-  b_req <- httr2::request(x[["url"]])
-
+  b_req <- arc_base_req(x[["url"]], token)
 
   est_req <- httr2::req_url_path_append(
     b_req,

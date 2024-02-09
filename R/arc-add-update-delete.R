@@ -246,22 +246,19 @@ update_features <- function(
   .data <- .data[, present_index]
 
   # create base request
-  req <- httr2::request(
-    paste0(x[["url"]], "/updateFeatures")
-  )
+  req <- arc_base_req(paste0(x[["url"]], "/updateFeatures"), token)
 
   req <- httr2::req_body_form(
     req,
     # transform `.data`
     features = as_esri_features(.data),
     rollbackOnFailure = rollback_on_failure,
-    token = token,
     f = "json",
     ...
   )
 
   resp <- httr2::req_perform(req)
-  jsonify::from_json(httr2::resp_body_string(resp))
+  RcppSimdJson::fparse(httr2::resp_body_string(resp))
 }
 
 
@@ -281,9 +278,7 @@ update_features <- function(
 #' @inheritParams prepare_spatial_filter
 #' @param rollback_on_failure default `TRUE`. Specifies whether the edits should be
 #'   applied only if all submitted edits succeed.
-#' @param token your authorization token. By default, token is set to the
-#'   environment variable `ARCGIS_TOKEN`. Use `set_auth_token()` to set
-#'   `ARCGIS_TOKEN`.
+#' @param token default `arc_token()`. An `httr2_token`.
 #' @export
 #' @rdname modify
 delete_features <- function(
@@ -327,21 +322,20 @@ delete_features <- function(
   }
 
   # https://developers.arcgis.com/rest/services-reference/enterprise/delete-features.htm
-  req <- httr2::request(paste0(x[["url"]], "/deleteFeatures"))
+  req <- arc_base_req(paste0(x[["url"]], "/deleteFeatures"), token)
 
   req <- httr2::req_body_form(
     req,
     !!!(compact(list(where = where, objectIds = object_ids))),
     !!!filter_geom,
     f = "json",
-    token = token,
     rollbackOnFailure = rollback_on_failure,
     ...
   )
 
   resp <- httr2::req_perform(req)
 
-  jsonify::from_json(httr2::resp_body_string(resp))
+  RcppSimdJson::fparse(httr2::resp_body_string(resp))
 }
 
 
