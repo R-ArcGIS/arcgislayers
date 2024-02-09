@@ -50,8 +50,6 @@ retrieved from a layer in one request.}
 See details for more.}
 
 \item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
-
-\item{user}{default \code{Sys.getenv("ARCGIS_USER")}. Your account's username.}
 }
 \value{
 If a \code{FeatureServer} is created successfully, a \code{FeatureServer} object is returned

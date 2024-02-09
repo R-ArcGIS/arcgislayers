@@ -32,8 +32,6 @@
 #' `add_item()`.
 #'
 #' @inheritParams arcgisutils::as_layer
-#' @param user default environment variable `Sys.getenv("ARCGIS_USER")`.
-#'   The username to publish the item under.
 #' @param description a length 1 character vector containing the description of
 #'   the item that is being added. Note that the value cannot be larger than 64kb.
 #' @param tags a character vector of tags to add to the item.

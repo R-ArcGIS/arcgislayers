@@ -83,9 +83,6 @@ add to the published Feature Service.}
 
 \item{max_record_count}{the maximum number of records that can be returned
 from the created Feature Service.}
-
-\item{user}{default environment variable \code{Sys.getenv("ARCGIS_USER")}.
-The username to publish the item under.}
 }
 \value{
 A named list containing the url of the newly published service.

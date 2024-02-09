@@ -3,7 +3,6 @@
 #' Creates an empty FeatureServer with no additional layers.
 #'
 #' @param service_name Feature Service name.
-#' @param user default `Sys.getenv("ARCGIS_USER")`. Your account's username.
 #' @param description default blank. The description of the feature server.
 #' @param crs default `3857`. A coordinate reference system to set for the feature server.
 #'  Must be compatible with `sf::st_crs()`.
