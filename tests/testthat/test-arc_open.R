@@ -35,7 +35,7 @@ test_that("arc_open(): Map Server", {
 test_that("arc_open(): Image Server", {
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
-  expect_no_error(arc_open(img_url, token = "")) # hella weird behavior with token here.
+  expect_no_error(arc_open(img_url))
 })
 
 test_that("arc_open(): GroupLayer", {
