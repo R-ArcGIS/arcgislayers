@@ -98,7 +98,6 @@ create_feature_server <- function(
 
   req <- httr2::req_body_form(
     req,
-    token = token,
     createParameters = jsonify::to_json(body, unbox = TRUE)
   )
 
