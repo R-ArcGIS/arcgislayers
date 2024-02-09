@@ -45,6 +45,7 @@
 <ul><li>
 <code>token</code> arguments are required to be a valid <code>httr2_token</code> object (strings are not supported).</li>
 <li>all <code>host</code> arguments are removed. Instead, the host is fetched from the <code>token</code>.</li>
+<li>all <code>user</code> arguments are removed. Instead, the username is fetched from the <code>token</code>. If it is not found, an error is thrown.</li>
 </ul></li>
 <li>Add support for <code>GroupLayer</code>s</li>
 <li>Add <code><a href="../reference/arc_read.html">arc_read()</a></code> with support for <code>name_repair</code> argument using <a href="https://vctrs.r-lib.org/" class="external-link">vctrs</a> (#108)</li>

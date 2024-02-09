@@ -51,7 +51,6 @@ FeatureCollection.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_item</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">title</span>,</span>
-<span>  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ARCGIS_USER"</span><span class="op">)</span>,</span>
 <span>  description <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  tags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  snippet <span class="op">=</span> <span class="st">""</span>,</span>
@@ -63,7 +62,6 @@ FeatureCollection.</p>
 <span></span>
 <span><span class="fu">publish_item</span><span class="op">(</span></span>
 <span>  <span class="va">item_id</span>,</span>
-<span>  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ARCGIS_USER"</span><span class="op">)</span>,</span>
 <span>  publish_params <span class="op">=</span> <span class="fu">.publish_params</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  file_type <span class="op">=</span> <span class="st">"featureCollection"</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span></span>
@@ -73,7 +71,6 @@ FeatureCollection.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">title</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ARCGIS_USER"</span><span class="op">)</span>,</span>
 <span>  publish_params <span class="op">=</span> <span class="fu">.publish_params</span><span class="op">(</span><span class="va">title</span>, target_crs <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -97,11 +94,6 @@ any other subclass of <code>data.frame</code>.</p></dd>
 <dt>title</dt>
 <dd><p>A user-friendly string title for the layer that can be used in
 a table of contents.</p></dd>
-
-
-<dt>user</dt>
-<dd><p>default environment variable <code>Sys.getenv("ARCGIS_USER")</code>.
-The username to publish the item under.</p></dd>
 
 
 <dt>description</dt>
