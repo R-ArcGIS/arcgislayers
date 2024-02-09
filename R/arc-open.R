@@ -102,7 +102,12 @@ arc_open <- function(url, token = arc_token()) {
     "ImageServer" = structure(meta, class = layer_class),
     "MapServer" = structure(meta, class = layer_class),
     "GroupLayer" = structure(meta, class = layer_class),
-    cli::cli_abort("Unsupported service")
+    cli::cli_abort(
+      c(
+        "Unsupported service type",
+        "i"=  "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
+      )
+    )
   )
 
   res
