@@ -1,7 +1,7 @@
 test_that("arc_raster() works", {
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
-  landsat <- arc_open(img_url, token = "")
+  landsat <- arc_open(img_url)
 
   res <- arc_raster(
     landsat,

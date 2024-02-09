@@ -64,23 +64,26 @@ arc_raster <- function(
   # if bbox_crs is missing set to `crs`
   bbox_sr <- validate_crs(bbox_crs %||% crs)[[c("spatialReference", "wkid")]]
 
-  req <- httr2::request(paste0(x[["url"]], "/exportImage"))
+  # create the base req
+  burl <- paste0(x[["url"]], "/exportImage")
+
+  # pass that into arc_base_req() to set agent and token
+  req <- arc_base_req(burl, token)
 
   req <- httr2::req_body_form(
     req,
-    # bbox = paste0(bbox, collapse = ","),
     bbox = paste0(c(xmin, ymin, xmax, ymax), collapse = ","),
     bboxSR = bbox_sr,
     format = format,
     size = paste0(c(width, height), collapse = ","),
-    token = token,
     outSR = out_sr,
     f = "json"
   )
 
+  # fetch the response
   resp <- httr2::req_perform(req)
 
-  resp_meta <- jsonify::from_json(httr2::resp_body_string(resp))
+  resp_meta <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
   detect_errors(resp_meta)
 
