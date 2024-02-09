@@ -4,7 +4,7 @@ test_that("Table fields can be updated", {
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
   # set auth token
-  set_auth_token(auth_code())
+  set_arc_token(auth_code())
 
   # ensure that Iris Test exists first
   # publish_layer(iris, "Iris Test")
@@ -12,7 +12,6 @@ test_that("Table fields can be updated", {
   irs <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/Iris%20Test/FeatureServer/0")
 
   .df <- arc_select(irs)
-
 
   y <- dplyr::filter(.df, Species == "versicolor") |>
     dplyr::mutate(Sepal_Length = 999)
@@ -34,9 +33,9 @@ test_that("Feature Layer fields can be updated", {
   set_auth_token(auth_code())
 
   # ensure the layer exists
-  # publish_layer(nc, "NC test")
+  res <- publish_layer(nc, "NC test")
 
-  nc_layer <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/NC%20test/FeatureServer/0")
+  nc_layer <- arc_open(paste0(res$services$encodedServiceURL, "/0"))
 
   ncsf <- arc_select(nc_layer)
 

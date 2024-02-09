@@ -32,7 +32,7 @@ or indexes).
 if (interactive()) {
 
   # authorize using code flow
-  set_auth_token(auth_code())
+  set_arc_token(auth_code())
 
   # create a FeatureLayer object
   flayer <- arc_open("your-feature-layer-url")

@@ -19,7 +19,7 @@
 #' if (interactive()) {
 #'
 #'   # authorize using code flow
-#'   set_auth_token(auth_code())
+#'   set_arc_token(auth_code())
 #'
 #'   # create a FeatureLayer object
 #'   flayer <- arc_open("your-feature-layer-url")
@@ -59,7 +59,7 @@ truncate_layer <- function(
 
   # create the base request
   b_req <- httr2::req_url_path_append(
-    httr2::request(burl),
+    arc_base_req(burl, token),
     "truncate"
   )
 
@@ -72,10 +72,7 @@ truncate_layer <- function(
   )
 
   # perform request
-  resp <- httr2::req_perform(
-    # add the token
-    httr2::req_auth_bearer_token(req, token)
-    )
+  resp <- httr2::req_perform(req)
 
   res_string <- httr2::resp_body_string(resp)
 

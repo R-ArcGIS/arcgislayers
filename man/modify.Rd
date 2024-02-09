@@ -48,9 +48,7 @@ the alias. See Details for more.}
 \item{rollback_on_failure}{default \code{TRUE}. Specifies whether the edits should be
 applied only if all submitted edits succeed.}
 
-\item{token}{your authorization token. By default, token is set to the
-environment variable \code{ARCGIS_TOKEN}. Use \code{set_auth_token()} to set
-\code{ARCGIS_TOKEN}.}
+\item{token}{default \code{arc_token()}. An \code{httr2_token}.}
 
 \item{...}{additional query parameters passed to the API.}
 

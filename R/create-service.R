@@ -31,7 +31,7 @@
 #' @export
 #' @examples
 #' if (interactive()) {
-#'   set_auth_token(auth_code())
+#'   set_arc_token(auth_code())
 #'   create_feature_server("My empty feature server")
 #' }
 create_feature_server <- function(
@@ -47,7 +47,6 @@ create_feature_server <- function(
     copyright = "",
     has_static_data = FALSE,
     xss_prevention = xss_defaults(),
-    host = arc_host(),
     token = arc_token()
 ) {
 
@@ -55,11 +54,19 @@ create_feature_server <- function(
   # TODO add common parameters (such as tag and description)
   # https://developers.arcgis.com/rest/users-groups-and-items/common-parameters.htm
 
+  # validate the token
+  obj_check_token(token)
+
+  # fetch the host
+  host <- token[["arcgis_host"]]
+
   # create the request url
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/createService")
 
+  # ensure the CRS is valid
   valid_crs <- validate_crs(crs)
 
+  # create the body of the request
   body <- compact(
     list(
       "name" = service_name,
@@ -77,9 +84,12 @@ create_feature_server <- function(
     )
   )
 
+  # convert to json string
   body_json <- jsonify::to_json(body, unbox = TRUE)
 
-  req <- httr2::request(req_url)
+  # add agent and token
+  req <- arc_base_req(req_url, token)
+
   req <- httr2::req_url_query(
     req,
     outputType = "featureService",
@@ -88,13 +98,12 @@ create_feature_server <- function(
 
   req <- httr2::req_body_form(
     req,
-    token = token,
     createParameters = jsonify::to_json(body, unbox = TRUE)
   )
 
   resp <- httr2::req_perform(req)
 
-  resp_parsed <- jsonify::from_json(httr2::resp_body_string(resp))
+  resp_parsed <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
   detect_errors(resp_parsed)
 

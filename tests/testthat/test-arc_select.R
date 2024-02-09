@@ -20,7 +20,7 @@ test_that("arc_select(): tables can be parsed", {
 test_that("arc_select() works on `ImageServer`s", {
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
-  landsat <- arc_open(img_url, token = "")
+  landsat <- arc_open(img_url)
 
   tmp <- arc_select(landsat, n_max = 2, where = "Month = 2")
   expect_snapshot(tmp)

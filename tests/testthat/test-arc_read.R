@@ -2,7 +2,7 @@ test_that("arc_read(): FeatureServer can be read", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
-  layer <- arc_read(furl)
+  layer <- arc_read(furl, n_max = 100)
 
   # if any errors occur above here the test will fail
   expect_true(TRUE)
