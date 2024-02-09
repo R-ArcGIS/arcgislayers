@@ -130,7 +130,8 @@ add_features <- function(
   indices <- chunk_indices(n, chunk_size)
 
   # create the base request from the feature url
-  req <- httr2::req_url_path_append(httr2::request(x[["url"]]), "addFeatures")
+  base_req <- arc_base_req(x[["url"]], token)
+  req <- httr2::req_url_path_append(base_req, "addFeatures")
 
   # pre-allocate list
   all_reqs <- vector("list", length = lengths(indices)[1])
@@ -144,7 +145,6 @@ add_features <- function(
       req,
       features = as_esri_features(.data[start:end,]),
       rollbackOnFailure = rollback_on_failure,
-      token = token,
       f = "json"
     )
   }

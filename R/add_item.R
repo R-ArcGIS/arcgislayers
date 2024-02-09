@@ -68,12 +68,19 @@ add_item <- function(
     categories = character(0),
     async = FALSE,
     type = "Feature Service",
-    host = arc_host(),
     token = arc_token()
 ) {
 
+
+  # validate the token
+  obj_check_token(token)
+
+  # fetch the host from the token
+  host <- token[["arcgis_host"]]
+
   # if async = TRUE stop
   # type must be feature service right now
+  # TODO make this cli_abort()
   stopifnot(
     "`async` must be `FALSE`" = !async,
     "`type` must be `\"Feature Service\"`" = identical(type, "Feature Service")
@@ -87,22 +94,27 @@ add_item <- function(
     )
 
     if (choice == 2L) {
+      # TODO cli_abort
       stop("Aborting. CRS is missing.")
     } else {
+      # TODO cli_warn
       warning("Set the CRS to prevent this interruption.\n  - use `sf::st_set_crs()`")
     }
   } else if (!interactive() && is.na(sf::st_crs(x))) {
+    # TODO cli_warn
     warning(
       "CRS is missing from `x`\nAssuming EPSG:3857."
     )
   }
 
   # check if snippet is too long
+  # TODO cli_warn
   if (nchar(snippet) > 2048) warning("Snippet must be 2048 or fewer characters.")
 
   # check if description is too big or too many eles
   descrip_kb <- as.numeric(utils::object.size(description)) / 1000
 
+  # TODO cli_abort
   stopifnot(
     "`description` must be smaller than 64kb" = descrip_kb <= 64,
     "`description` must be length 1" = length(description) == 1
@@ -139,20 +151,17 @@ add_item <- function(
       categories = categories,
       type = "Feature Collection",
       async = async,
-      token = token,
       url = host,
       f = "json"
     )
   )
 
-
-  req <- httr2::request(req_url)
+  # req <- httr2::request(req_url)
+  req <- arc_base_req(req_url, token)
   req_body <- httr2::req_body_form(req, !!!req_fields)
   resp <- httr2::req_perform(req_body)
-
   parsed <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
   detect_errors(parsed)
-
   data.frame(parsed)
 }
 
@@ -170,22 +179,30 @@ publish_item <- function(
     user = Sys.getenv("ARCGIS_USER"),
     publish_params = .publish_params(),
     file_type = "featureCollection",
-    host = arc_host(),
     token = arc_token()
 ) {
+
+  # validate the token
+  obj_check_token(token)
+
+  # fetch the host
+  host <- token[["arcgis_host"]]
 
   # create request URL
   # TODO check for trailing `/` in host (should create a `sanitize_host()`)
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/publish")
 
+  # add token and agent
+  base_req <- arc_base_req(req_url, token)
+
+
   # create request
   req <- httr2::req_body_form(
-    httr2::request(req_url),
+    base_req,
     itemID = item_id,
     fileType = file_type,
     publishParameters = jsonify::to_json(publish_params, unbox = TRUE),
     f = "json",
-    token = token
   )
 
   resp <- httr2::req_perform(req)
@@ -207,7 +224,6 @@ publish_layer <- function(
     ...,
     user = Sys.getenv("ARCGIS_USER"),
     publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
-    host = arc_host(),
     token = arc_token()
 ) {
 
@@ -218,7 +234,6 @@ publish_layer <- function(
       x,
       title,
       user = user,
-      host = host,
       token = token,
       !!!adtl_args
     )
@@ -232,7 +247,6 @@ publish_layer <- function(
     item_id,
     user = user,
     publish_params = publish_params,
-    host = host,
     token = token
   )
 

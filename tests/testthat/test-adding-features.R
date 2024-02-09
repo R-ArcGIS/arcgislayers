@@ -3,7 +3,7 @@ test_that("Adding features to a table work", {
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
 
-  set_auth_token(auth_code())
+  set_arc_token(auth_code())
 
   # ensure that Iris Test exists first
   res <- publish_layer(iris, "Iris Test")
@@ -18,7 +18,7 @@ test_that("Adding features to a table work", {
     Species = "ArcGIS Iris"
   )
 
-  expect_success(add_features(irs, test_row))
+  expect_success(add_features(irs, test_row, match_on = "alias"))
 
   # create a massive data frame
   test_df <- as_tibble(sample_n(iris, 4500, replace = TRUE)) |>
@@ -26,7 +26,7 @@ test_that("Adding features to a table work", {
       Species = sample(c("Hi", "Howdy", "Esri", "Ft"), dplyr::n(), replace = TRUE)
     )
 
-  expect_success(add_features(irs, test_df))
+  expect_success(add_features(irs, test_df, match_on = "alias"))
 
 })
 
@@ -37,15 +37,12 @@ test_that("Adding features to a feature layer works", {
   # ensure that NC test is published first
   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
   tkn <- auth_code()
-  set_auth_token(tkn)
+  set_arc_token(tkn)
   res <- publish_layer(nc, "NC test")
 
-  nc_layer <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/NC%20test/FeatureServer/0")
+  nc_layer <- get_layer(arc_open(res$services$encodedServiceURL), 0)
 
   nc$geometry <- sf::st_convex_hull(nc$geometry)
-  nc <- sf::st_transform(nc, 3857)
 
   res <- add_features(nc_layer, nc)
-
-
 })
