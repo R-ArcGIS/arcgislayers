@@ -23,12 +23,6 @@ spatial filter."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Authorization.html">Authorization</a>
-  </div>
-</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -109,9 +103,7 @@ applied only if all submitted edits succeed.</p></dd>
 
 
 <dt>token</dt>
-<dd><p>your authorization token. By default, token is set to the
-environment variable <code>ARCGIS_TOKEN</code>. Use <code>set_auth_token()</code> to set
-<code>ARCGIS_TOKEN</code>.</p></dd>
+<dd><p>default <code>arc_token()</code>. An <code>httr2_token</code>.</p></dd>
 
 
 <dt>...</dt>
