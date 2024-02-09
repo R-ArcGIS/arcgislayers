@@ -46,3 +46,10 @@ test_that("Adding features to a feature layer works", {
 
   res <- add_features(nc_layer, nc)
 })
+
+
+test_that("truncate_layer() works:", {
+  skip("Must be ran interactively")
+
+  truncate_layer(nc_layer)
+})
