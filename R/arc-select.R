@@ -60,6 +60,7 @@ arc_select <- function(
     token = arc_token(),
     ...
 ) {
+
   # Developer note:
   # For this function we extract the query object and manipulate the elements
   # inside of the query object to modify our request. We then splice those
@@ -135,12 +136,6 @@ collect_layer <- function(x,
                           token = arc_token(),
                           ...,
                           error_call = rlang::caller_env()) {
-  check_inherits_any(
-    x,
-    c("FeatureLayer", "Table", "ImageServer"),
-    call = error_call
-  )
-
   # 1. Make base request
   # 2. Identify necessary query parameters
   # 3. Figure out offsets and update query parameters
@@ -148,7 +143,9 @@ collect_layer <- function(x,
   # 5. Make requests
   # 6. Identify errors (if any) -- skip for now
   # 7. Parse:
-  req <- httr2::request(x[["url"]])
+
+  # sets token and agent
+  req <- arc_base_req(x[["url"]], token)
 
   # determine if the layer can query
   can_query <- switch(
@@ -177,13 +174,14 @@ collect_layer <- function(x,
 
   # parameter validation ----------------------------------------------------
   # get existing parameters
-  query_params <- validate_params(query, token = token)
+  query_params <- validate_params(query)
 
   # Offsets -----------------------------------------------------------------
+  # TODO make adjustable
   feats_per_page <- x[["maxRecordCount"]]
 
   # count the number of features in a query
-  n_feats <- count_results(req, query, token)
+  n_feats <- count_results(req, query)
 
   if (is.null(n_feats)) {
     cli::cli_abort(
@@ -215,13 +213,11 @@ collect_layer <- function(x,
   all_requests <- lapply(offsets, add_offset, req, query_params)
 
   # make all requests and store responses in list
-  all_resps <- httr2::req_perform_parallel(all_requests)
+  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
 
   # identify any errors
-  has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
-  #   if (any(has_error)) {
   # TODO: determine how to handle errors
-  #   }
+  has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
 
   # fetch the results
   res <- lapply(
@@ -357,9 +353,7 @@ add_offset <- function(offset, request, params) {
 #'
 #' @keywords internal
 #' @noRd
-validate_params <- function(params, token) {
-  # set the token
-  params[["token"]] <- token
+validate_params <- function(params) {
 
   # if output fields are missing set to "*"
   if (is.null(params[["outFields"]])) params[["outFields"]] <- "*"
@@ -378,10 +372,10 @@ validate_params <- function(params, token) {
 }
 
 # Given a query, determine how many features will be returned
-count_results <- function(req, query, token) {
+count_results <- function(req, query) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
-    !!!validate_params(query, token),
+    !!!validate_params(query),
     returnCountOnly = "true"
   )
 
