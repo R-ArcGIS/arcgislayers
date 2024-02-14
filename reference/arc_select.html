@@ -57,6 +57,7 @@ the layer as an <code>sf</code> object or <code>tibble</code> respectively.</p>
 <span>  filter_geom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  predicate <span class="op">=</span> <span class="st">"intersects"</span>,</span>
 <span>  n_max <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  page_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -105,6 +106,10 @@ query results based on a predicate function.</p></dd>
 every feature available. Unused at the moment.</p></dd>
 
 
+<dt>page_size</dt>
+<dd><p>the maximum number of features to return per request. See Details.</p></dd>
+
+
 <dt>token</dt>
 <dd><p>your authorization token. By default checks the environment
 variable <code>ARCGIS_TOKEN</code>. Set your token using <code>arcgisutils::set_auth_token()</code>.</p></dd>
@@ -123,6 +128,17 @@ variable <code>ARCGIS_TOKEN</code>. Set your token using <code>arcgisutils::set_
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>See <a href="https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614" class="external-link">reference documentation</a> for possible arguments.</p>
+<p><code>FeatureLayers</code> can contain very dense geometries with a lot of coordinates.
+In those cases, the feature service may time out before all geometries can
+be returned. To address this issue, we can reduce the number of features
+returned per each request by reducing the value of the <code>page_size</code> parameter.</p>
+<p><code>arc_select()</code> works by sending a single request that counts the number of
+features that will be returned by the current query. That number is then used
+to calculate how many "pages" of responses are needed to fetch all the results.
+The number of features returned (page size) is set to the <code>maxRecordCount</code>
+property of the layer by default. However, by setting <code>page_size</code> to be
+smaller than the <code>maxRecordCount</code> we can return fewer geometries per page and
+avoid time outs.</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
     </div>
 
