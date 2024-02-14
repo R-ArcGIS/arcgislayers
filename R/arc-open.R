@@ -15,7 +15,7 @@
 #' @seealso arc_select arc_raster
 #' @export
 #' @returns
-#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`.
+#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `GroupLayer`, `FeatureServer`, `ImageServer`, or `MapServer`.
 #' @examples
 #'
 #'if (interactive()) {

@@ -13,7 +13,7 @@ arc_open(url, token = arc_token())
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 }
 \value{
-Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}.
+Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{GroupLayer}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}.
 }
 \description{
 Provided a URL, create an object referencing the remote resource.
