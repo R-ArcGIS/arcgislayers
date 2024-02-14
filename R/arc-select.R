@@ -16,12 +16,26 @@
 #' @inheritParams prepare_spatial_filter
 #' @param n_max the maximum number of features to return. By default returns
 #'   every feature available. Unused at the moment.
+#' @param page_size the maximum number of features to return per request. See Details.
 #' @param ... additional query parameters passed to the API.
 #' @inheritParams arc_open
 #'
 #' @details
 #'
 #' See [reference documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614) for possible arguments.
+#'
+#' `FeatureLayers` can contain very dense geometries with a lot of coordinates.
+#' In those cases, the feature service may time out before all geometries can
+#' be returned. To address this issue, we can reduce the number of features
+#' returned per each request by reducing the value of the `page_size` parameter.
+#'
+#' `arc_select()` works by sending a single request that counts the number of
+#' features that will be returned by the current query. That number is then used
+#' to calculate how many "pages" of responses are needed to fetch all the results.
+#' The number of features returned (page size) is set to the `maxRecordCount`
+#' property of the layer by default. However, by setting `page_size` to be
+#' smaller than the `maxRecordCount` we can return fewer geometries per page and
+#' avoid time outs.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -57,6 +71,7 @@ arc_select <- function(
     filter_geom = NULL,
     predicate = "intersects",
     n_max = Inf,
+    page_size = NULL,
     token = arc_token(),
     ...
 ) {
@@ -122,7 +137,7 @@ arc_select <- function(
   x <- update_params(x, !!!query)
 
   # send the request
-  collect_layer(x, n_max = n_max, token = token, ...)
+  collect_layer(x, n_max = n_max, token = token, page_size = page_size, ...)
 }
 
 #' Query a FeatureLayer or Table object
@@ -131,11 +146,21 @@ arc_select <- function(
 #' queries for FeatureLayer or Table objects.
 #'
 #' @noRd
-collect_layer <- function(x,
-                          n_max = Inf,
-                          token = arc_token(),
-                          ...,
-                          error_call = rlang::caller_env()) {
+collect_layer <- function(
+    x,
+    n_max = Inf,
+    token = arc_token(),
+    page_size = NULL,
+    ...,
+    error_call = rlang::caller_env()
+) {
+
+  if (length(page_size) > 1) {
+    cli::cli_abort("{.arg page_size} must be length 1 not {length(page_size)}")
+  } else if (!is.null(page_size) && page_size < 1) {
+    cli::cli_abort("{.arg page_size} must be a positive integer.")
+  }
+
   # 1. Make base request
   # 2. Identify necessary query parameters
   # 3. Figure out offsets and update query parameters
@@ -177,11 +202,29 @@ collect_layer <- function(x,
   query_params <- validate_params(query)
 
   # Offsets -----------------------------------------------------------------
-  # TODO make adjustable
-  feats_per_page <- x[["maxRecordCount"]]
+
+  # get the maximum allowed to be returned
+  max_records <- x[["maxRecordCount"]]
+
+  # if its null, just use max records (default)
+  if (is.null(page_size)) {
+    feats_per_page <- max_records
+  } else if (page_size > max_records) {
+    cli::cli_abort("{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})")
+  } else {
+    # ensure its an integer.
+    page_size <- as.integer(page_size)
+    feats_per_page <- page_size
+  }
 
   # count the number of features in a query
-  n_feats <- count_results(req, query)
+  n_feats <- count_results(req, query_params)
+
+  # identify the number of pages needed to return all features
+  # if n_max is provided need to reduce the number of pages
+  if (n_feats > n_max) {
+    n_feats <- n_max
+  }
 
   if (is.null(n_feats)) {
     cli::cli_abort(
@@ -191,37 +234,36 @@ collect_layer <- function(x,
     )
   }
 
-  # identify the number of pages needed to return all features
-  # if n_max is provided need to reduce the number of pages
-  if (n_feats > n_max) {
-    n_feats <- n_max
-    # set `resultRecordCount` to `n_max`
-    query_params[["resultRecordCount"]] <- n_max
-  }
+  # calculate the total number of requests to be made
+  n_pages <- ceiling(n_feats / feats_per_page)
+  # these values get passed to `resultOffset`
+  offsets <- (1:n_pages - 1) * feats_per_page
+  # create vector of page sizes to be passed to `resultRecordCount`
+  record_counts <- rep(feats_per_page, n_pages)
+  # modify the last offset to have `resultRecordCount` of the remainder
+  # this lets us get an exact value
+  record_counts[n_pages] <- n_feats - offsets[n_pages]
 
-  n_pages <- floor(n_feats / feats_per_page)
-
-  # identify the offsets needed to get all pages
-  # if n_pages is 0 we set offsets to 0 straight away
-  if (n_pages == 0) {
-    offsets <- 0
-  } else {
-    offsets <- c(0, (feats_per_page * 1:n_pages) + 1)
-  }
-
-  # create a list of requests
-  all_requests <- lapply(offsets, add_offset, req, query_params)
+  # create a list of requests from the offset and page sizes
+  all_requests <- mapply(
+    add_offset,
+    .offset = offsets,
+    .page_size = record_counts,
+    MoreArgs = list(.req = req, .params = query_params),
+    SIMPLIFY = FALSE
+  )
 
   # make all requests and store responses in list
   all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
 
   # identify any errors
   # TODO: determine how to handle errors
-  has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
+  # has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
 
   # fetch the results
   res <- lapply(
-    all_resps[!has_error],
+    all_resps,
+    # all_resps[!has_error],
     function(x) {
       parse_esri_json(
         httr2::resp_body_string(x)
@@ -230,6 +272,7 @@ collect_layer <- function(x,
   )
 
   # combine
+  # TODO enhance this with suggested packages similar to arcpbf
   res <- do.call(rbind, res)
 
   if (is.null(res)) {
@@ -340,10 +383,14 @@ update_params <- function(x, ...) {
 #'
 #' @keywords internal
 #' @noRd
-add_offset <- function(offset, request, params) {
-  params[["resultOffset"]] <- offset
-  req <- httr2::req_url_path_append(request, "query")
-  httr2::req_body_form(req, !!!params)
+add_offset <- function(.req, .offset, .page_size, .params) {
+  .req <- httr2::req_url_path_append(.req, "query")
+  httr2::req_body_form(
+    .req,
+    !!!.params,
+    resultOffset = .offset,
+    resultRecordCount = .page_size
+  )
 }
 
 #' Validate query parameters
