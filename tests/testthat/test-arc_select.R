@@ -25,3 +25,24 @@ test_that("arc_select() works on `ImageServer`s", {
   tmp <- arc_select(landsat, n_max = 2, where = "Month = 2")
   expect_snapshot(tmp)
 })
+
+
+test_that("arc_select(): respects `n_max`", {
+  furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  res <- arc_select(flayer, n_max = 999)
+
+  expect_identical(nrow(res), 999L)
+})
+
+test_that("arc_select(): respects `n_max` & `page_size`", {
+  furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  res <- arc_select(flayer, n_max = 999, page_size = 111)
+
+  expect_identical(nrow(res), 999L)
+})

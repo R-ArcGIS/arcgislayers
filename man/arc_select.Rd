@@ -13,6 +13,7 @@ arc_select(
   filter_geom = NULL,
   predicate = "intersects",
   n_max = Inf,
+  page_size = NULL,
   token = arc_token(),
   ...
 )
@@ -43,6 +44,8 @@ query results based on a predicate function.}
 \item{n_max}{the maximum number of features to return. By default returns
 every feature available. Unused at the moment.}
 
+\item{page_size}{the maximum number of features to return per request. See Details.}
+
 \item{token}{your authorization token. By default checks the environment
 variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
 
@@ -57,6 +60,19 @@ the layer as an \code{sf} object or \code{tibble} respectively.
 }
 \details{
 See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.
+
+\code{FeatureLayers} can contain very dense geometries with a lot of coordinates.
+In those cases, the feature service may time out before all geometries can
+be returned. To address this issue, we can reduce the number of features
+returned per each request by reducing the value of the \code{page_size} parameter.
+
+\code{arc_select()} works by sending a single request that counts the number of
+features that will be returned by the current query. That number is then used
+to calculate how many "pages" of responses are needed to fetch all the results.
+The number of features returned (page size) is set to the \code{maxRecordCount}
+property of the layer by default. However, by setting \code{page_size} to be
+smaller than the \code{maxRecordCount} we can return fewer geometries per page and
+avoid time outs.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
