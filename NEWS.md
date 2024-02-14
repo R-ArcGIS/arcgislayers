@@ -1,9 +1,6 @@
 # arcgislayers 0.1.0 (unreleased)
 
-- **Breaking**: 
-  - `token` arguments are required to be a valid `httr2_token` object (strings are not supported).
-  - all `host` arguments are removed. Instead, the host is fetched from the `token`.
-  - all `user` arguments are removed. Instead, the username is fetched from the `token`. If it is not found, an error is thrown.
+- includes `page_size` argument to `arc_select()` allowing users to return smaller page sizes and avoid timeouts for dense geometries
 - Add support for `GroupLayer`s
 - Add `arc_read()` with support for `name_repair` argument using `{vctrs}` (#108)
 - Add `get_layer_estimates()` to retrieve estimate info such as the number of features and the extent of the layer
@@ -18,3 +15,8 @@
 - adds cli as an explicit import (has been implicitly imported by httr2)
 - repository made public
 - add lifecycle badges to all exported functions <https://github.com/R-ArcGIS/arcgislayers/pull/101>
+
+- **Breaking**: 
+  - `token` arguments are required to be a valid `httr2_token` object (strings are not supported).
+  - all `host` arguments are removed. Instead, the host is fetched from the `token`.
+  - all `user` arguments are removed. Instead, the username is fetched from the `token`. If it is not found, an error is thrown.
