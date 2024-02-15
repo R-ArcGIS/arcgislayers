@@ -211,7 +211,7 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     id <- as.integer(id)
 
     # ensure that all elements of `id` are in the layers
-    in_ids <- id %in% x[["layers"]][["id"]]
+    in_ids <- id %in% c(x[["layers"]][["id"]], x[["tables"]][["id"]])
 
     # if not report and remove
     baddies <- id[!in_ids]
@@ -223,7 +223,7 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     id <- id[in_ids]
     item_urls <- file.path(x[["url"]], id)
   } else if (!is.null(name)) {
-    valid_names <- x[["layers"]][["name"]]
+    valid_names <- c(x[["layers"]][["name"]], x[["tables"]][["name"]])
 
     # validate names
     in_names <- name %in% valid_names
@@ -234,7 +234,7 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     }
 
     # create lookup table for fetching ids
-    lu <- stats::setNames(x[["layers"]][["id"]], valid_names)
+    lu <- stats::setNames(c(x[["layers"]][["id"]], x[["tables"]][["id"]]), valid_names)
 
     item_urls <- file.path(
       x[["url"]],
