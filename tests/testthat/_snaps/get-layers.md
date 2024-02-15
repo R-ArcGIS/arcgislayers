@@ -118,3 +118,14 @@
       Capabilities: Map,Query,Data
       
 
+# get_layers(): can fetch Table
+
+    Code
+      get_layers(fsrv, 1)
+    Output
+      [[1]]
+      <Table>
+      Name: Pop_Up_Table
+      Capabilities: Query,Extract,Sync
+      
+

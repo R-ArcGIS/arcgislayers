@@ -53,3 +53,11 @@ test_that("get_layers(): GroupLayer name", {
     get_layers(glyr, name = c("Bus Stops", "Bus Routes"))
   )
 })
+
+
+test_that("get_layers(): can fetch Table", {
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Wetlands/FeatureServer"
+  fsrv <- arc_open(furl)
+
+  expect_snapshot(get_layers(fsrv, 1))
+})
