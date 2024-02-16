@@ -15,8 +15,7 @@ larger datasets.}
 \item{attachment_only}{default \code{FALSE}. Deletes all the attachments for this
 layer. None of the layer features will be deleted when \code{TRUE}.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 }
 \value{
 a named list with the name "success" and a value of \code{TRUE} or \code{FALSE}

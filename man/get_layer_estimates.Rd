@@ -9,8 +9,7 @@ get_layer_estimates(x, token = arc_token())
 \arguments{
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 }
 \value{
 A named list containing all estimate info. If \code{extent} is present,

@@ -11,7 +11,7 @@
 #'  the alias. See Details for more.
 #' @param rollback_on_failure if anything errors, roll back writes.
 #'  Defaults to `TRUE`.
-#' @param token your authorization token. By default checks the environment variable `ARCGIS_TOKEN`
+#' @param token your authorization token.
 #'
 #' @inheritParams arc_select
 #' @details

@@ -19,8 +19,7 @@ get_layers(x, id = NULL, name = NULL, token = arc_token())
 
 \item{name}{default \code{NULL}. The name associated with the layer you want to retrieve. \code{name} is mutually exclusive with \code{id}. This is a scalar in \code{get_layer()}.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 }
 \value{
 \itemize{

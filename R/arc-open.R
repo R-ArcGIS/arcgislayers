@@ -9,8 +9,7 @@
 #'  `r lifecycle::badge("experimental")`
 #'
 #' @param url The url of the remote resource. Must be of length one.
-#' @param token your authorization token. By default checks the environment
-#' variable `ARCGIS_TOKEN`. Set your token using `arcgisutils::set_auth_token()`.
+#' @param token your authorization token.
 #'
 #' @seealso arc_select arc_raster
 #' @export

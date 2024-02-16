@@ -46,8 +46,7 @@ every feature available. Unused at the moment.}
 
 \item{page_size}{the maximum number of features to return per request. Useful when requests return a 500 error code. See Details.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 
 \item{...}{additional query parameters passed to the API.}
 }

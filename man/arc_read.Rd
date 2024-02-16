@@ -46,8 +46,7 @@ server-side. Ignored if x is a \code{Table}.}
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 }
 \value{
 An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.
