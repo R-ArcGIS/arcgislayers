@@ -2,22 +2,16 @@ Package: arcgislayers
 Type: Package
 Title: An R Interface for ArcGIS REST Services
 Version: 0.1.0
-Authors@R: 
-  c(
-    person(
-      "Josiah", "Parry", ,"josiah.parry@gmail.com", role = c("aut", "cre"),
-      comment = c(ORCID = "0000-0001-9910-865X")
-    ), 
-    person(
-      "Eli", "Pousson", , "eli.pousson@gmail.com", role = c("ctb"),
-      comment = c(ORCID = "0000-0001-8280-1706")
-    ),
-    person(
-      "Kenneth", "Vernon", , "kenneth.b.vernon@gmail.com", role = c("ctb"),
-      comment = c(ORCID = "0000-0003-0098-5092")
-    )
+Authors@R: c(
+    person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9910-865X")),
+    person("Eli", "Pousson", , "eli.pousson@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0001-8280-1706")),
+    person("Kenneth", "Vernon", , "kenneth.b.vernon@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-0098-5092")),
+    person("Martha", "Bass", role = "ctb",
+           comment = c(ORCID = "0009-0004-0268-5426"))
   )
-Maintainer: Josiah Parry <jparry@esri.com>
 Description: An R package to interface with Esri's ArcGIS REST Services.
 License: Apache License (>= 2)
 Encoding: UTF-8
