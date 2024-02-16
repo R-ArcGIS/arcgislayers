@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-raster.R
 \name{arc_raster}
 \alias{arc_raster}
-\title{Retrieve Imagery}
+\title{Read from an Image Server}
 \usage{
 arc_raster(
   x,
@@ -19,7 +19,7 @@ arc_raster(
 )
 }
 \arguments{
-\item{x}{an \code{ImageServer} as created with \code{image_server()}.}
+\item{x}{an \code{ImageServer} as created with \code{arc_open()}.}
 
 \item{xmin}{the minimum bounding longitude value.}
 
@@ -40,13 +40,13 @@ If not specified, uses the CRS of \code{x}.}
 
 \item{format}{default \code{"tiff"}. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".}
 
-\item{token}{authorization token fetched from the environment variable \code{ARCGIS_TOKEN}}
+\item{token}{default \code{arc_token()} authorization token.}
 }
 \value{
 An object of class \code{SpatRaster}.
 }
 \description{
-Given an \code{ImageServer} export an image as a \code{SpatRaster} from the terra package.
+Given an \code{ImageServer} export an image as a terra \code{SpatRaster} object.
 See \code{\link[terra:rast]{terra::rast}}.
 }
 \details{

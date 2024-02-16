@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-select.R
 \name{arc_select}
 \alias{arc_select}
-\title{Query a Hosted Feature Service}
+\title{Query a Feature Service}
 \usage{
 arc_select(
   x,
@@ -44,10 +44,9 @@ query results based on a predicate function.}
 \item{n_max}{the maximum number of features to return. By default returns
 every feature available. Unused at the moment.}
 
-\item{page_size}{the maximum number of features to return per request. See Details.}
+\item{page_size}{the maximum number of features to return per request. Useful when requests return a 500 error code. See Details.}
 
-\item{token}{your authorization token. By default checks the environment
-variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_token()}.}
+\item{token}{your authorization token.}
 
 \item{...}{additional query parameters passed to the API.}
 }
@@ -55,8 +54,8 @@ variable \code{ARCGIS_TOKEN}. Set your token using \code{arcgisutils::set_auth_t
 An sf object, or a data.frame
 }
 \description{
-\code{\link[=arc_select]{arc_select()}} takes a \code{FeatureLayer}, \code{Table}, of \code{ImageServer} object and returns data from
-the layer as an \code{sf} object or \code{tibble} respectively.
+\code{\link[=arc_select]{arc_select()}} takes a \code{FeatureLayer}, \code{Table}, of \code{ImageServer} object and
+returns data from the layer as an \code{sf} object or \code{data.frame} respectively.
 }
 \details{
 See \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm#GUID-BC2AD141-3386-49FB-AA09-FF341145F614}{reference documentation} for possible arguments.

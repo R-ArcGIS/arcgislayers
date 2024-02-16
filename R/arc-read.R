@@ -1,8 +1,8 @@
-#' Read a ArcGIS FeatureLayer, Table, or ImageServer
+#' Read an ArcGIS FeatureLayer, Table, or ImageServer
 #'
 #' [arc_read()] combines the functionality of [arc_open()] with [arc_select()]
-#' or [arc_raster()] to read an ArcGIS FeatureLayer, Table, or ImageServer to a
-#' `sf` object or object of class `SpatRaster`. Optionally set, check, or modify
+#' or [arc_raster()] to read an ArcGIS `FeatureLayer`, `Table`, or `ImageServer` to an
+#' `sf` or `SpatRaster` object. Optionally, set, check, or modify
 #' names for the returned data frame or sf object using the `col_names` and
 #' `name_repair` parameters.
 #'
@@ -14,7 +14,7 @@
 #'   the number of columns in the layer, the default names are replaced with the
 #'   new names. If `col_names` has one fewer name than the default column names,
 #'   the existing sf column name is retained. If `col_names` is the string
-#'   `"alias"`, names are set to match the available alias names for the layer.
+#'   `"alias"`, names are set to match the alias names for the layer, if available.
 #' @param col_select Default `NULL`. A character vector of the field names to be
 #'   returned. By default, all fields are returned.
 #' @param n_max Defaults to 10000 or an option set with
