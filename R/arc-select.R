@@ -1,7 +1,7 @@
-#' Query a Hosted Feature Service
+#' Query a Feature Service
 #'
-#' [arc_select()] takes a `FeatureLayer`, `Table`, of `ImageServer` object and returns data from
-#' the layer as an `sf` object or `tibble` respectively.
+#' [arc_select()] takes a `FeatureLayer`, `Table`, of `ImageServer` object and
+#' returns data from the layer as an `sf` object or `data.frame` respectively.
 #'
 #' @param x an object of class `FeatureLayer`, `Table`, or `ImageServer`.
 #' @param fields a character vector of the field names that you wish to be
@@ -16,7 +16,7 @@
 #' @inheritParams prepare_spatial_filter
 #' @param n_max the maximum number of features to return. By default returns
 #'   every feature available. Unused at the moment.
-#' @param page_size the maximum number of features to return per request. See Details.
+#' @param page_size the maximum number of features to return per request. Useful when requests return a 500 error code. See Details.
 #' @param ... additional query parameters passed to the API.
 #' @inheritParams arc_open
 #'

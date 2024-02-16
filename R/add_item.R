@@ -148,7 +148,7 @@ add_item <- function(
       description = description,
       tags = tags,
       snippet = snippet,
-      text = jsonify::to_json(feature_collection, unbox = TRUE),
+      text = unclass(jsonify::to_json(feature_collection, unbox = TRUE)),
       extent = extent,
       spatialReference = spatial_reference,
       categories = categories,

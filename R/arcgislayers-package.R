@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @import arcgisutils
 #' @noRd
 "_PACKAGE"
 

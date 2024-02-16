@@ -1,9 +1,9 @@
-#' Retrieve Imagery
+#' Read from an Image Server
 #'
-#' Given an `ImageServer` export an image as a `SpatRaster` from the terra package.
+#' Given an `ImageServer` export an image as a terra `SpatRaster` object.
 #' See [`terra::rast`].
 #'
-#' @param x an `ImageServer` as created with `image_server()`.
+#' @param x an `ImageServer` as created with `arc_open()`.
 #' @param xmin the minimum bounding longitude value.
 #' @param xmax the maximum bounding longitude value.
 #' @param ymin that minimum bounding latitude value.
@@ -14,7 +14,7 @@
 #' @param format default `"tiff"`. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".
 #' @param width default `NULL`. Cannot exceed `x[["maxImageWidth"]]`.
 #' @param height default `NULL`. Cannot exceed `x[["maxImageHeight"]]`.
-#' @param token authorization token fetched from the environment variable `ARCGIS_TOKEN`
+#' @param token default `arc_token()` authorization token.
 #'
 #' @details
 #'

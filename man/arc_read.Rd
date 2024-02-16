@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-read.R
 \name{arc_read}
 \alias{arc_read}
-\title{Read a ArcGIS FeatureLayer, Table, or ImageServer}
+\title{Read an ArcGIS FeatureLayer, Table, or ImageServer}
 \usage{
 arc_read(
   url,
@@ -24,7 +24,7 @@ the feature. If \code{col_names} is a character vector with the same length as
 the number of columns in the layer, the default names are replaced with the
 new names. If \code{col_names} has one fewer name than the default column names,
 the existing sf column name is retained. If \code{col_names} is the string
-\code{"alias"}, names are set to match the available alias names for the layer.}
+\code{"alias"}, names are set to match the alias names for the layer, if available.}
 
 \item{col_select}{Default \code{NULL}. A character vector of the field names to be
 returned. By default, all fields are returned.}
@@ -54,8 +54,8 @@ An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.
 }
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
-or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS FeatureLayer, Table, or ImageServer to a
-\code{sf} object or object of class \code{SpatRaster}. Optionally set, check, or modify
+or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS \code{FeatureLayer}, \code{Table}, or \code{ImageServer} to an
+\code{sf} or \code{SpatRaster} object. Optionally, set, check, or modify
 names for the returned data frame or sf object using the \code{col_names} and
 \code{name_repair} parameters.
 }
