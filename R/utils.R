@@ -129,6 +129,138 @@ coalesce_crs <- function(x, y) {
   }
 }
 
+#' Check if x is a data frame
+#' @noRd
+check_dataframe <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = rlang::caller_arg(url),
+    call = rlang::caller_env()) {
+  if (allow_null && is.null(x)) {
+    return(invisible(NULL))
+  }
+
+  if (is.data.frame(x)) {
+    return(invisible(NULL))
+  }
+
+  cli::cli_abort(
+    "{.arg {arg}} must be a data frame, not {.obj_type_friendly {x}}.",
+    call = call
+  )
+}
+
+#' Does x match the pattern of a URL?
+#' @noRd
+is_url <- function(
+    x,
+    pattern = NULL,
+    ...) {
+  if (!rlang::is_vector(x) || rlang::is_empty(x)) {
+    return(FALSE)
+  }
+
+  url_pattern <-
+    "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+
+  if (is.null(pattern)) {
+    return(grepl(url_pattern, x, ...))
+  }
+
+  grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
+}
+
+#' Check if x is a valid URL
+#' @noRd
+check_url <- function(
+    x,
+    pattern = NULL,
+    ...,
+    allow_null = FALSE,
+    arg = rlang::caller_arg(url),
+    call = rlang::caller_env()) {
+  if (allow_null && is_null(x)) {
+    return(invisible(NULL))
+  }
+
+  if (is_url(x, pattern = pattern)) {
+    return(invisible(NULL))
+  }
+
+  check_string(
+    x,
+    allow_empty = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+
+  cli::cli_abort(
+    "{.arg {arg}} must be a valid url, not {.obj_type_friendly {x}}.",
+    call = call
+  )
+}
+
+#' Check if x is a string
+#' @noRd
+check_string <- function(
+    x,
+    allow_empty = TRUE,
+    allow_null = FALSE,
+    arg = rlang::caller_arg(x),
+    call = rlang::caller_env()) {
+  if (allow_null && is.null(x)) {
+    return(invisible(NULL))
+  }
+
+  message <- "{.arg {arg}} must be a string, not {.obj_type_friendly {x}}."
+  if (rlang::is_string(x)) {
+    if (allow_empty || x != "") {
+      return(invisible(NULL))
+    }
+
+    message <- '{.arg {arg}} must be a non-empty string, not {.str {""}}.'
+  }
+
+  cli::cli_abort(
+    message,
+    call = call
+  )
+}
+
+#' Check if x and y share the same coordiante reference system
+check_crs_match <- function(
+    x,
+    y,
+    x_arg = rlang::caller_arg(x),
+    y_arg = rlang::caller_arg(y),
+    call = rlang::caller_env()) {
+  x_crs <- sf::st_crs(x)
+  y_crs <- sf::st_crs(y)
+
+  if (x_crs == y_crs) {
+    return(invisible(NULL))
+  }
+
+  if (!is.na(x_crs) && !is.na(y_crs)) {
+    cli::cli_abort(
+      c("{.arg {x_arg}} and {.arg {y_arg}} must share the same CRS.",
+        "*" = "Tranform {.arg {y_arg}} to the same CRS as {.arg {x_arg}} with
+          {.fn sf::st_transform}"
+      ),
+      call = call
+    )
+  }
+
+  if (is.na(y_crs)) {
+    cli::cli_warn("{.arg {y_arg}} CRS is missing.")
+  }
+
+  if (is.na(x_crs)) {
+    cli::cli_warn("{.arg {x_arg}} CRS is missing.")
+  }
+}
 
 #' Useful for when an argument must either be NULL or a scalar
 #' value. This is most useful when ensuring that values passed
@@ -144,7 +276,8 @@ check_null_or_scalar <- function(
   if (!is.null(x)) {
     if (length(x) > 1) {
       cli::cli_abort(
-        "{.arg {arg}} argument must be a scalar or {.val NULL}",
+        "{.arg {arg}} argument must be a scalar or {.val NULL},
+        not {.obj_type_friendly {x}}.",
         call = error_call
       )
     }

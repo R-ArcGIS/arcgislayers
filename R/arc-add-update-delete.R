@@ -60,7 +60,7 @@ add_features <- function(
   # initial check for type of `x`
   obj_check_layer(x)
 
-  stopifnot("`.data` must be a data.frame-type class" = inherits(.data, "data.frame"))
+  check_dataframe(.data)
 
   match_on <- match.arg(match_on)
 
@@ -71,21 +71,7 @@ add_features <- function(
   # TODO address data.frame objects / table layers
   # TODO error on list columns
 
-  target_crs <- sf::st_crs(x)
-  provided_crs <- sf::st_crs(.data)
-
-  # see commentary in `update_features.R`
-  if (!target_crs == provided_crs) {
-    if (is.na(sf::st_crs(.data))) {
-      warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
-    } else if (is.na(sf::st_crs(x))) {
-      warning("CRS missing from `x` cannot verify matching CRS.")
-    } else {
-      stop("`FeatureLayer` and `.data` have different CRS\nTranform to the same CRS:\n",
-           "  `sf::st_transform(.data, sf::st_crs(x))`")
-    }
-  }
-
+  check_crs_match(x, .data)
 
   # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
@@ -110,15 +96,10 @@ add_features <- function(
     colnames(.data) <- cnames
   }
 
-  # columns not in the feature layer
-  nin_feature <- setdiff(cnames[!present_index], geo_col)
-
-  if (length(nin_feature) > 0 ) {
-    message(
-      "Columns in `.data` not in feature(s): ",
-      ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
-    )
-  }
+  inform_nin_feature(
+    # columns not in the feature layer
+    setdiff(cnames[!present_index], geo_col)
+  )
 
   # subset accordingly
   .data <- .data[, present_index]
@@ -204,10 +185,17 @@ update_features <- function(
   if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
 
     if (is.na(sf::st_crs(.data)) && inherits(.data, "sf")) {
-      warning("CRS missing from `.data` assuming ", sf::st_crs(x)$srid)
-    } else if (inherits(.data, "sf")){
-      stop("`FeatureLayer` and `.data` have different CRS\nTranform to the same CRS:\n",
-           "  `sf::st_transform(.data, sf::st_crs(x))`")
+      cli::cli_warn(
+        c("{.arg data} is missing a CRS",
+          "i" = paste0("Setting CRS to ", sf::st_crs(x)$srid)
+        ))
+    } else if (inherits(.data, "sf")) {
+      cli::cli_abort(
+        c("{.arg x} and {.arg .data} must share the same CRS",
+          "*" = "Tranform {.arg .data} to the same CRS as {.arg x} with
+          {.fn sf::st_transform}"
+        )
+      )
     }
   }  # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
@@ -232,15 +220,10 @@ update_features <- function(
     colnames(.data) <- cnames
   }
 
-  # columns not in the feature layer
-  nin_feature <- setdiff(cnames[!present_index], geo_col)
-
-  if (length(nin_feature) > 0 ) {
-    message(
-      "Columns in `.data` not in feature(s): ",
-      ifelse(length(nin_feature) > 1, paste0(nin_feature, collapse = ", "), nin_feature)
-    )
-  }
+  inform_nin_feature(
+    # columns not in the feature layer
+    setdiff(cnames[!present_index], geo_col)
+  )
 
   # subset accordingly
   .data <- .data[, present_index]
@@ -259,6 +242,24 @@ update_features <- function(
 
   resp <- httr2::req_perform(req)
   RcppSimdJson::fparse(httr2::resp_body_string(resp))
+}
+
+#' @noRd
+inform_nin_feature <- function(nin_feature) {
+  if (length(nin_feature) == 0) {
+    return(invisible(NULL))
+  }
+
+  cli::cli_inform(
+    paste0(
+      "Columns in `.data` not in feature(s): ",
+      ifelse(
+        length(nin_feature) > 1,
+        paste0(nin_feature, collapse = ", "),
+        nin_feature
+      )
+    )
+  )
 }
 
 
