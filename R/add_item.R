@@ -90,13 +90,9 @@ add_item <- function(
 
   # if CRS is missing require user input if interactive
   if (interactive() && is.na(sf::st_crs(x)) && inherits(x, "sf")) {
-    cli::cli_bullets(
-      c("!" = "{.arg x} has no CRS",
-        "*" = "Do you want to continue?"
-      )
-    )
+    cli::cli_bullets(c("!" = "{.arg x} has no CRS"))
 
-    choice <- readline(paste0("? (Y/n) "))
+    choice <- readline(paste0("?\u00a0Continue?\u00a0(Y/n)\u00a0"))
 
     if (choice %in% c("n", "N", "no", "0")) {
       cli::cli_abort("Aborting.")

@@ -180,7 +180,7 @@ check_url <- function(
     allow_null = FALSE,
     arg = rlang::caller_arg(url),
     call = rlang::caller_env()) {
-  if (allow_null && is_null(x)) {
+  if (allow_null && is.null(x)) {
     return(invisible(NULL))
   }
 
