@@ -230,6 +230,7 @@ check_string <- function(
 }
 
 #' Check if x and y share the same coordiante reference system
+#' @noRd
 check_crs_match <- function(
     x,
     y,
