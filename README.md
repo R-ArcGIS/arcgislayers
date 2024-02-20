@@ -113,7 +113,7 @@ arc_select(county_fl)
 
 ### Filtering using `where` or `filter_geom` arguments
 
-You can also use the `fields` argument to subset columns or `where`
+You can also use the `fields` argument to select columns or `where`
 argument to subset rows.
 
 For example, using a character vector of column names for `fields` and a
