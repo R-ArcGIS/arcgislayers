@@ -317,9 +317,9 @@ publish_layer <- function(
   # - layerInfo (ignore for now. No good use case)
   # - targetSR (derive from the object)
 
-  check_null_or_scalar(name)
-  check_null_or_scalar(description)
-  check_null_or_scalar(copyright)
+  check_string(name, allow_null = TRUE)
+  check_string(description, allow_null = TRUE)
+  check_string(copyright, allow_null = TRUE)
 
   if (is.na(target_crs)) {
     target_sr <- NULL

@@ -209,18 +209,21 @@ check_string <- function(
     allow_empty = TRUE,
     allow_null = FALSE,
     arg = rlang::caller_arg(x),
-    call = rlang::caller_env()) {
+    call = rlang::caller_env()
+) {
+
   if (allow_null && is.null(x)) {
     return(invisible(NULL))
   }
 
-  message <- "{.arg {arg}} must be a string, not {.obj_type_friendly {x}}."
-  if (rlang::is_string(x)) {
+  message <- "{.arg {arg}} must be a scalar character vector."
+
+  if (rlang::is_scalar_character(x)) {
     if (allow_empty || x != "") {
       return(invisible(NULL))
     }
 
-    message <- '{.arg {arg}} must be a non-empty string, not {.str {""}}.'
+    message <- '{.arg {arg}} must be a non-empty string.'
   }
 
   cli::cli_abort(
@@ -231,12 +234,7 @@ check_string <- function(
 
 #' Check if x and y share the same coordiante reference system
 #' @noRd
-check_crs_match <- function(
-    x,
-    y,
-    x_arg = rlang::caller_arg(x),
-    y_arg = rlang::caller_arg(y),
-    call = rlang::caller_env()) {
+check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::caller_arg(y), call = rlang::caller_env()) {
   x_crs <- sf::st_crs(x)
   y_crs <- sf::st_crs(y)
 
@@ -262,27 +260,4 @@ check_crs_match <- function(
     cli::cli_warn("{.arg {x_arg}} CRS is missing.")
   }
 }
-
-#' Useful for when an argument must either be NULL or a scalar
-#' value. This is most useful when ensuring that values passed
-#' to `httr2::req_body_multiform()` are scalars. Multiple length
-#' values are not permitted.
-#' @keywords internal
-#' @noRd
-check_null_or_scalar <- function(
-    x,
-    arg = rlang::caller_arg(x),
-    error_call = rlang::caller_env()
-) {
-  if (!is.null(x)) {
-    if (length(x) > 1) {
-      cli::cli_abort(
-        "{.arg {arg}} argument must be a scalar or {.val NULL},
-        not {.obj_type_friendly {x}}.",
-        call = error_call
-      )
-    }
-  }
-}
-
 
