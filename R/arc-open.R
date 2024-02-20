@@ -58,7 +58,7 @@
 #'}
 arc_open <- function(url, token = arc_token()) {
 
-  stopifnot("`url` must be of length 1" = length(url) == 1)
+  check_url(url)
 
   # extract layer metadata
   meta <- compact(fetch_layer_metadata(url, token))
@@ -78,7 +78,9 @@ arc_open <- function(url, token = arc_token()) {
     } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
       layer_class <- "FeatureServer"
     } else {
-      stop("Cannot determine layer type")
+      cli::cli_abort(
+        "Can't determine layer type from {.arg url}: {.url {url}}"
+      )
     }
   }
 
@@ -103,7 +105,7 @@ arc_open <- function(url, token = arc_token()) {
     "GroupLayer" = structure(meta, class = layer_class),
     cli::cli_abort(
       c(
-        "Unsupported service type",
+        "Service type {.val {layer_class}} is not supported.",
         "i"=  "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
       )
     )

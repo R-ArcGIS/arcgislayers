@@ -22,28 +22,32 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS REST API 
+The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/) .
 
 ## Installation
 
-arcgislayers requires arcgisutils for authorization. It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
+arcgislayers requires `{arcgisutils}` for authorization. It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
 
 ``` r
 remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 ```
 
-## Basic usage
+## Usage
+
+### Creating a simple feature object from an ArcGIS FeatureLayer
 
 ```{r}
 library(arcgis)
 ```
 
-`arc_open()` takes a URL to create a reference to a remote resource. The function can return any of four classes (corresponding to different ArcGIS service types):
+`arc_open()` takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):
 
   - `FeatureLayer`
   - `Table`
   - `FeatureServer`
   - `ImageServer`
+  - `MapServer`
+  - `GroupLayer`
   
 For example, you can create a `FeatureLayer` object based on a Feature Server URL:
   
@@ -55,15 +59,16 @@ county_fl <- arc_open(furl)
 county_fl
 ```
 
-You can then query the feature layer object and return an `sf` object using `arc_select()`.
+You can then use `arc_select()` to query the feature layer object and return an `sf` object.
 
 If no arguments are provided to `arc_select()` the entire feature layer is returned in memory as an `sf` object. 
 
 ```{r}
 arc_select(county_fl)
 ```
+### Filtering using `where` or `filter_geom` arguments 
 
-You can also use the `fields` argument to subset columns or `where` argument to subset rows.
+You can also use the `fields` argument to select columns or the `where` argument to subset rows.
 
 For example, using a character vector of column names for `fields` and a simple SQL where clause for  `where` you can select counties with population greater than 1,000,000:
 
@@ -75,7 +80,7 @@ arc_select(
 )
 ```
 
-The `list_fields()` function can be helpful to check available attributes and build a `where` query:
+For `FeatureLayer` and `Table` objects, and sometimes `ImageServer`s, the `list_fields()` function can be helpful to check available attributes and build a `where` query:
 
 ```{r}
 list_fields(county_fl)
@@ -92,9 +97,11 @@ arc_select(
 )
 ```
 
+### Creating a `SpatRaster` from an ArcGIS ImageServer
+
 A `SpatRaster` object from the `{terra}` package can be extracted from an `ImageServer` using `arc_raster()`.
 
-`arc_raster()` requires a `bbox` class object from the `sf` package to define the area to be extracted. You can optionally specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned.
+`arc_raster()` will extract the area defined by `xmin`, `ymin`, `xmax`, and `ymax`. You can optionally specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned.
 
 ```{r}
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
@@ -112,12 +119,22 @@ res <- arc_raster(
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-## Authorization
+## Authorization and publication
 
-See [authorization article](articles/Authorization.html).
+### Authorization for non-public data access
 
+Authorization is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL.
 
-------------------------
+For more information on code based authorization using the `auth_code()` function or client authorization using `auth_client()` see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
+### Publishing data from R
+
+The package includes functions to publish data to an ArcGIS Portal:
+
+- `add_item()`: Creates a new FeatureCollection from a `sf` or `data.frame` object
+- `publish_item()`: Publishes an existing FeatureLayer
+- `publish_layer()`: is a higher level wrapper around both `add_item()` and `publish_item()`
+
+There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
 
 <!-- # DEPRECATED FROM HERE DOWN  -->
 

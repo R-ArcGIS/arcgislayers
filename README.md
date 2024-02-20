@@ -11,20 +11,22 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the ArcGIS
-REST API
+The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS
+REST API](https://developers.arcgis.com/rest/) .
 
 ## Installation
 
-arcgislayers requires arcgisutils for authorization. It is recommend you
-install and use the metapackage `{arcgis}`. You can install the
+arcgislayers requires `{arcgisutils}` for authorization. It is recommend
+you install and use the metapackage `{arcgis}`. You can install the
 development version of arcgis like so:
 
 ``` r
 remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 ```
 
-## Basic usage
+## Usage
+
+### Creating a simple feature object from an ArcGIS FeatureLayer
 
 ``` r
 library(arcgis)
@@ -33,14 +35,16 @@ library(arcgis)
 #>   - {arcgislayers} v0.1.0
 ```
 
-`arc_open()` takes a URL to create a reference to a remote resource. The
-function can return any of four classes (corresponding to different
-ArcGIS service types):
+`arc_open()` takes a URL to create a reference to a remote ArcGIS layer,
+server, or table. The function can return any of the following classes
+(corresponding to different ArcGIS service types):
 
 - `FeatureLayer`
 - `Table`
 - `FeatureServer`
 - `ImageServer`
+- `MapServer`
+- `GroupLayer`
 
 For example, you can create a `FeatureLayer` object based on a Feature
 Server URL:
@@ -58,15 +62,15 @@ county_fl
 #> Capabilities: Query,Extract
 ```
 
-You can then query the feature layer object and return an `sf` object
-using `arc_select()`.
+You can then use `arc_select()` to query the feature layer object and
+return an `sf` object.
 
 If no arguments are provided to `arc_select()` the entire feature layer
 is returned in memory as an `sf` object.
 
 ``` r
 arc_select(county_fl)
-#> Simple feature collection with 3142 features and 12 fields
+#> Simple feature collection with 3143 features and 12 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624
@@ -107,7 +111,9 @@ arc_select(county_fl)
 #> 10 MULTIPOLYGON (((-85.41657 3...
 ```
 
-You can also use the `fields` argument to subset columns or `where`
+### Filtering using `where` or `filter_geom` arguments
+
+You can also use the `fields` argument to select columns or `where`
 argument to subset rows.
 
 For example, using a character vector of column names for `fields` and a
@@ -139,8 +145,8 @@ arc_select(
 #> 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...
 ```
 
-The `list_fields()` function can be helpful to check available
-attributes and build a `where` query:
+For `FeatureLayer` and `Table` objects, the `list_fields()` function can
+be helpful to check available attributes and build a `where` query:
 
 ``` r
 list_fields(county_fl)
@@ -193,7 +199,7 @@ contains more than one geometry, the object is combined with
 ``` r
 nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #> Reading layer `nc' from data source 
-#>   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' 
+#>   `/Users/elipousson/Library/R/arm64/4.3/library/sf/shape/nc.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 100 features and 14 fields
 #> Geometry type: MULTIPOLYGON
@@ -233,6 +239,8 @@ arc_select(
 #> 6 MULTIPOLYGON (((-81.34512 3...
 ```
 
+### Creating a `SpatRaster` from an ArcGIS ImageServer
+
 A `SpatRaster` object from the `{terra}` package can be extracted from
 an `ImageServer` using `arc_raster()`.
 
@@ -259,11 +267,31 @@ terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 
 <img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
-## Authorization
+## Authorization and publication
 
-See [authorization article](articles/Authorization.html).
+### Authorization for non-public data access
 
-------------------------------------------------------------------------
+Authorization is required for users who wish to access data that is in a
+non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise
+portal, or wish to upload data to or modify data in AGOL.
+
+For more information on code based authorization using the `auth_code()`
+function or client authorization using `auth_client()` see the
+`{arcgislayers}` [authorization article](articles/Authorization.html).
+
+### Publishing data from R
+
+The package includes functions to publish data to an ArcGIS Portal:
+
+- `add_item()`: Creates a new FeatureCollection from a `sf` or
+  `data.frame` object
+- `publish_item()`: Publishes an existing FeatureLayer
+
+There are also functions to add or modify data including
+`add_features()`, `update_features()`, and `delete_features()`. For a
+more detailed guide to adding, updating, and deleting features, view the
+tutorial on the [R-ArcGIS Bridge
+website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
 
 <!-- # DEPRECATED FROM HERE DOWN  -->
 <!-- TODO update and rewrite -->

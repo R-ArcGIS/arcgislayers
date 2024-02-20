@@ -81,47 +81,37 @@ add_item <- function(
   # fetch the host from the token
   host <- token[["arcgis_host"]]
 
-  # if async = TRUE stop
-  # type must be feature service right now
-  # TODO make this cli_abort()
-  stopifnot(
-    "`async` must be `FALSE`" = !async,
-    "`type` must be `\"Feature Service\"`" = identical(type, "Feature Service")
+  check_add_item_args(
+    description = description,
+    snippet = snippet,
+    async = async,
+    type = type
   )
 
   # if CRS is missing require user input if interactive
   if (interactive() && is.na(sf::st_crs(x)) && inherits(x, "sf")) {
+    cli::cli_bullets(c("!" = "{.arg x} has no CRS"))
+
     choice <- utils::menu(
       c("Yes", "No"),
       title = "CRS is missing from `x`. Continue?"
     )
 
     if (choice == 2L) {
-      # TODO cli_abort
-      stop("Aborting. CRS is missing.")
+      cli::cli_abort("Aborting.")
     } else {
-      # TODO cli_warn
-      warning("Set the CRS to prevent this interruption.\n  - use `sf::st_set_crs()`")
+      cli::cli_warn(
+        c("{.arg x} has no CRS.",
+          "*" = "Set CRS with {.fn sf::st_set_crs}")
+      )
     }
+
   } else if (!interactive() && is.na(sf::st_crs(x))) {
-    # TODO cli_warn
-    warning(
-      "CRS is missing from `x`\nAssuming EPSG:3857."
+    cli::cli_warn(
+      c("CRS is missing from {.arg x}",
+        "i" = "Using {.val EPSG:3857}")
     )
   }
-
-  # check if snippet is too long
-  # TODO cli_warn
-  if (nchar(snippet) > 2048) warning("Snippet must be 2048 or fewer characters.")
-
-  # check if description is too big or too many eles
-  descrip_kb <- as.numeric(utils::object.size(description)) / 1000
-
-  # TODO cli_abort
-  stopifnot(
-    "`description` must be smaller than 64kb" = descrip_kb <= 64,
-    "`description` must be length 1" = length(description) == 1
-  )
 
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/addItem")
 
@@ -167,6 +157,50 @@ add_item <- function(
   data.frame(parsed)
 }
 
+#' @noRd
+check_add_item_args <- function(
+    description = "",
+    snippet = "",
+    async = FALSE,
+    type = "Feature Service",
+    call = rlang::caller_env()) {
+
+  # if async = TRUE stop
+  if (async) {
+    cli::cli_abort(
+      "{.arg async} must be {.val FALSE}",
+      call = call
+    )
+  }
+
+  # type must be feature service right now
+  if (!identical(type, "Feature Service")) {
+    check_string(type, call = call)
+    cli::cli_abort(
+      "{.arg type} must be {.str Feature Service}",
+      call = call
+    )
+  }
+
+  # TODO Check if snippet is allowed as a NULL input
+  check_string(snippet, call = call)
+
+  # check if snippet is too long
+  if (nchar(snippet) > 2048) {
+    # TODO If snippet *must* be 2048 or fewer characters this should be an error
+    cli::cli_warn("{.arg snippet} must be 2048 or fewer characters.")
+  }
+
+  check_string(description, call = call)
+  # check if description is too big or too many eles
+  descrip_kb <- as.numeric(utils::object.size(description)) / 1000
+
+  if (descrip_kb > 64) {
+    cli::cli_abort(
+      "{.arg description} must be smaller than 64kb"
+    )
+  }
+}
 
 
 #' @export
@@ -283,9 +317,9 @@ publish_layer <- function(
   # - layerInfo (ignore for now. No good use case)
   # - targetSR (derive from the object)
 
-  check_null_or_scalar(name)
-  check_null_or_scalar(description)
-  check_null_or_scalar(copyright)
+  check_string(name, allow_null = TRUE)
+  check_string(description, allow_null = TRUE)
+  check_string(copyright, allow_null = TRUE)
 
   if (is.na(target_crs)) {
     target_sr <- NULL
