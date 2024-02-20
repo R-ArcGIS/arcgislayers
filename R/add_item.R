@@ -92,16 +92,19 @@ add_item <- function(
   if (interactive() && is.na(sf::st_crs(x)) && inherits(x, "sf")) {
     cli::cli_bullets(c("!" = "{.arg x} has no CRS"))
 
-    choice <- readline(paste0("?\u00a0Continue?\u00a0(Y/n)\u00a0"))
-
-    if (choice %in% c("n", "N", "no", "0")) {
-      cli::cli_abort("Aborting.")
-    }
-
-    cli::cli_warn(
-      c("{.arg x} has no CRS.",
-        "*" = "Set CRS with {.fn sf::st_set_crs}")
+    choice <- utils::menu(
+      c("Yes", "No"),
+      title = "CRS is missing from `x`. Continue?"
     )
+
+    if (choice == 2L) {
+      cli::cli_abort("Aborting.")
+    } else {
+      cli::cli_warn(
+        c("{.arg x} has no CRS.",
+          "*" = "Set CRS with {.fn sf::st_set_crs}")
+      )
+    }
 
   } else if (!interactive() && is.na(sf::st_crs(x))) {
     cli::cli_warn(
