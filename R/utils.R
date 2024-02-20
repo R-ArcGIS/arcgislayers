@@ -129,28 +129,6 @@ coalesce_crs <- function(x, y) {
   }
 }
 
-#' Check if x is a data frame
-#' @noRd
-check_dataframe <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = rlang::caller_arg(url),
-    call = rlang::caller_env()) {
-  if (allow_null && is.null(x)) {
-    return(invisible(NULL))
-  }
-
-  if (is.data.frame(x)) {
-    return(invisible(NULL))
-  }
-
-  cli::cli_abort(
-    "{.arg {arg}} must be a data frame, not {.obj_type_friendly {x}}.",
-    call = call
-  )
-}
-
 #' Does x match the pattern of a URL?
 #' @noRd
 is_url <- function(

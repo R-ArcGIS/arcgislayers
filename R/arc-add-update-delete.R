@@ -60,7 +60,12 @@ add_features <- function(
   # initial check for type of `x`
   obj_check_layer(x)
 
-  check_dataframe(.data)
+  if (!rlang::inherits_any(.data, "data.frame")) {
+    data_name <- deparse(substitute(.data))
+    cli::cli_abort(
+      "{.arg {data_name}} must be a {.cls data.frame}."
+    )
+  }
 
   match_on <- match.arg(match_on)
 
