@@ -131,11 +131,9 @@ coalesce_crs <- function(x, y) {
 
 #' Does x match the pattern of a URL?
 #' @noRd
-is_url <- function(
-    x,
-    pattern = NULL,
-    ...) {
-  if (!rlang::is_vector(x) || rlang::is_empty(x)) {
+is_url <- function(x, pattern = NULL, ...) {
+
+  if (!rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)) {
     return(FALSE)
   }
 
