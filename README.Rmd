@@ -133,6 +133,7 @@ The package includes functions to publish data to an ArcGIS Portal:
 
 - `add_item()`: Creates a new FeatureCollection from a `sf` or `data.frame` object
 - `publish_item()`: Publishes an existing FeatureLayer
+- `publish_layer()`: is a higher level wrapper around both `add_item()` and `publish_item()`
 
 There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
 
