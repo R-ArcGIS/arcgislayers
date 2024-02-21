@@ -40,7 +40,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="arcgislayers-010-unreleased">arcgislayers 0.1.0 (unreleased)<a class="anchor" aria-label="anchor" href="#arcgislayers-010-unreleased"></a></h2>
-<ul><li><p>includes <code>page_size</code> argument to <code><a href="../reference/arc_select.html">arc_select()</a></code> allowing users to return smaller page sizes and avoid timeouts for dense geometries</p></li>
+<ul><li><p><code><a href="../reference/arc_open.html">arc_open()</a></code> no longer removes <code>NULL</code> properties h/t <a href="https://github.com/elipousson" class="external-link">@elipousson</a></p></li>
+<li><p>includes <code>page_size</code> argument to <code><a href="../reference/arc_select.html">arc_select()</a></code> allowing users to return smaller page sizes and avoid timeouts for dense geometries</p></li>
 <li><p>Add support for <code>GroupLayer</code>s</p></li>
 <li><p>Add <code><a href="../reference/arc_read.html">arc_read()</a></code> with support for <code>name_repair</code> argument using <a href="https://vctrs.r-lib.org/" class="external-link">vctrs</a> (#108)</p></li>
 <li><p>Add <code><a href="../reference/get_layer_estimates.html">get_layer_estimates()</a></code> to retrieve estimate info such as the number of features and the extent of the layer</p></li>
