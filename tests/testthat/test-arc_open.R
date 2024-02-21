@@ -43,7 +43,11 @@ test_that("arc_open(): GroupLayer", {
   expect_no_error(arc_open(gurl))
 })
 
+test_that("arc_open(): doesn't filter NULL properties", {
 
+  furl <- "https://geodata.md.gov/imap/rest/services/Transportation/MD_Transit/FeatureServer/8"
 
+  flayer <- arc_open(furl)
 
-
+  expect_identical(length(flayer), 56L)
+})
