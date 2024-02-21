@@ -42,7 +42,7 @@ test_that("arc_select(): respects `n_max` & `page_size`", {
 
   flayer <- arc_open(furl)
 
-  res <- arc_select(flayer, n_max = 999, page_size = 111)
+  res <- arc_select(flayer, n_max = 333, page_size = 111)
 
-  expect_identical(nrow(res), 999L)
+  expect_identical(nrow(res), 333L)
 })

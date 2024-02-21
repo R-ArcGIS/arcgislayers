@@ -86,3 +86,11 @@ test_that("arc_read(): correct error with unsupported type", {
   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer"
   expect_error(arc_read(furl), "is not a supported type")
 })
+
+
+test_that("arc_read(): no error on tricky polylines", {
+  skip_on_cran()
+  url <- "https://gisportalp.itd.idaho.gov/xserver/rest/services/RH_GeneralService/MapServer/1"
+
+  expect_no_error(arc_read(url, where = "OBJECTID = 440013"))
+})
