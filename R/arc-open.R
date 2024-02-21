@@ -61,7 +61,7 @@ arc_open <- function(url, token = arc_token()) {
   check_url(url)
 
   # extract layer metadata
-  meta <- compact(fetch_layer_metadata(url, token))
+  meta <- fetch_layer_metadata(url, token)
 
   # set url for later use
   meta[["url"]] <- url
