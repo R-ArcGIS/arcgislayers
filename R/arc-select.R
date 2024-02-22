@@ -88,6 +88,24 @@ arc_select <- function(
   # extract the query object
   query <- attr(x, "query")
 
+  # if dots provided we check that all elements are named
+  dots <- rlang::list2(...)
+  check_dots_named(dots)
+
+  # extract dots names
+  dots_names <- names(dots)
+
+  # insert into query
+  for (i in seq_along(dots)) {
+    key <- dots_names[i]
+    val <- dots[[i]]
+    # check that the value is a scalar and non-empty
+    check_string(val, allow_empty = FALSE)
+
+    # insert into query
+    query[[key]] <- val
+  }
+
   # handle fields and where clause if missing
   fields <- fields %||% query[["outFields"]] %||% "*"
 
