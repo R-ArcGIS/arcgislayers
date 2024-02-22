@@ -46,3 +46,20 @@ test_that("arc_select(): respects `n_max` & `page_size`", {
 
   expect_identical(nrow(res), 333L)
 })
+
+
+test_that("arc_select(): respects `...`", {
+
+  furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+  # we expect an error when returnCountOnly is true
+  expect_error(
+    arc_select(
+      flayer,
+      where =  "TotalPopulation > 25000",
+      fields = c("StateAbbr", "StateName"),
+      returnCountOnly = "true"
+    )
+  )
+})
