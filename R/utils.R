@@ -50,8 +50,8 @@ clear_query <- function(x) {
 #' @export
 #' @rdname utils
 list_fields <- function(x) {
+  check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
   res <- x[["fields"]]
-
   if (is.null(res)) {
     res <- infer_esri_type(data.frame())
   }
@@ -62,20 +62,17 @@ list_fields <- function(x) {
 #' @export
 #' @rdname utils
 list_items <- function(x) {
+  check_inherits_any(x, c("FeatureServer", "ImageServer", "MapServer"))
   rbind(x[["layers"]], x[["tables"]])
 }
 
 #' @export
 #' @rdname utils
 refresh_layer <- function(x) {
+  check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
   query <- attr(x, "query")
   xurl <- x[["url"]]
-  x <- switch(
-    class(x)[1],
-    FeatureLayer = arc_open(xurl),
-    Table = arc_open(xurl)
-  )
-
+  x <- arc_open(xurl)
   attr(x, "query") <- query
   x
 }

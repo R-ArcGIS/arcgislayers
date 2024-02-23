@@ -63,27 +63,33 @@ names for the returned data frame or sf object using the \code{col_names} and
 }
 \examples{
 if (interactive()) {
- url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
 
- arc_read(url)
+  # read entire service
+  arc_read(furl)
 
- # apply tolower() to column names
- arc_read(url, name_repair = tolower)
+  # apply tolower() to column names
+  arc_read(url, name_repair = tolower)
 
- url <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/EmergencyFacilities/FeatureServer/0"
+  # use paste0 to prevent CRAN check NOTE
+  furl <- paste0(
+    "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
+    "EmergencyFacilities/FeatureServer/0"
+  )
 
  # use field aliases as column names
- arc_read(url, col_names = "alias")
+ arc_read(furl, col_names = "alias")
 
  # read an ImageServer directly
  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
  arc_read(
    img_url,
-   width = 1000, height = 1000,
+   width = 100, height = 100,
    xmin = -71, ymin = 43,
    xmax = -67, ymax = 47.5,
    bbox_crs = 4326
  )
+
 }
 }

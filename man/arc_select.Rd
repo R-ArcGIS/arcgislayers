@@ -6,6 +6,7 @@
 \usage{
 arc_select(
   x,
+  ...,
   fields = NULL,
   where = NULL,
   crs = sf::st_crs(x),
@@ -14,12 +15,13 @@ arc_select(
   predicate = "intersects",
   n_max = Inf,
   page_size = NULL,
-  token = arc_token(),
-  ...
+  token = arc_token()
 )
 }
 \arguments{
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
+
+\item{...}{additional query parameters passed to the API.}
 
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
@@ -47,8 +49,6 @@ every feature available. Unused at the moment.}
 \item{page_size}{the maximum number of features to return per request. Useful when requests return a 500 error code. See Details.}
 
 \item{token}{your authorization token.}
-
-\item{...}{additional query parameters passed to the API.}
 }
 \value{
 An sf object, or a data.frame
