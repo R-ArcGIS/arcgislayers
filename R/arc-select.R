@@ -64,6 +64,7 @@
 #' @returns An sf object, or a data.frame
 arc_select <- function(
     x,
+    ...,
     fields = NULL,
     where = NULL,
     crs = sf::st_crs(x),
@@ -72,8 +73,7 @@ arc_select <- function(
     predicate = "intersects",
     n_max = Inf,
     page_size = NULL,
-    token = arc_token(),
-    ...
+    token = arc_token()
 ) {
 
   # Developer note:
@@ -237,6 +237,13 @@ collect_layer <- function(
 
   # count the number of features in a query
   n_feats <- count_results(req, query_params)
+
+  if (is.null(n_feats)) {
+    cli::cli_abort(c(
+      "Cannot determine the number of features in request.",
+      "i" = "did you set custom parameters via {.arg ...}?"
+    ), call = error_call)
+  }
 
   # identify the number of pages needed to return all features
   # if n_max is provided need to reduce the number of pages
