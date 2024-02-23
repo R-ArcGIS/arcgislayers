@@ -31,7 +31,7 @@ remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 ``` r
 library(arcgis)
 #> Attaching core arcgis packages:
-#>   - {arcgisutils} v0.1.1.9001
+#>   - {arcgisutils} v0.2.0
 #>   - {arcgislayers} v0.1.0
 ```
 
@@ -70,6 +70,7 @@ is returned in memory as an `sf` object.
 
 ``` r
 arc_select(county_fl)
+#> Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s
 #> Simple feature collection with 3143 features and 12 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
@@ -113,7 +114,7 @@ arc_select(county_fl)
 
 ### Filtering using `where` or `filter_geom` arguments
 
-You can also use the `fields` argument to select columns or `where`
+You can also use the `fields` argument to select columns or the `where`
 argument to subset rows.
 
 For example, using a character vector of column names for `fields` and a
@@ -145,8 +146,9 @@ arc_select(
 #> 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...
 ```
 
-For `FeatureLayer` and `Table` objects, the `list_fields()` function can
-be helpful to check available attributes and build a `where` query:
+For `FeatureLayer` and `Table` objects, and sometimes `ImageServer`s,
+the `list_fields()` function can be helpful to check available
+attributes and build a `where` query:
 
 ``` r
 list_fields(county_fl)
@@ -199,7 +201,7 @@ contains more than one geometry, the object is combined with
 ``` r
 nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #> Reading layer `nc' from data source 
-#>   `/Users/elipousson/Library/R/arm64/4.3/library/sf/shape/nc.shp' 
+#>   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 100 features and 14 fields
 #> Geometry type: MULTIPOLYGON
@@ -244,10 +246,9 @@ arc_select(
 A `SpatRaster` object from the `{terra}` package can be extracted from
 an `ImageServer` using `arc_raster()`.
 
-`arc_raster()` requires a `bbox` class object from the `sf` package to
-define the area to be extracted. You can optionally specify the `width`
-and `height` of the resultant image. Use `format` to define what type of
-image is returned.
+`arc_raster()` will extract the area defined by `xmin`, `ymin`, `xmax`,
+and `ymax`. You can optionally specify the `width` and `height` of the
+resultant image. Use `format` to define what type of image is returned.
 
 ``` r
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
@@ -277,15 +278,17 @@ portal, or wish to upload data to or modify data in AGOL.
 
 For more information on code based authorization using the `auth_code()`
 function or client authorization using `auth_client()` see the
-`{arcgislayers}` [authorization article](articles/Authorization.html).
-
-### Publishing data from R
+[authorization
+article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
+\### Publishing data from R
 
 The package includes functions to publish data to an ArcGIS Portal:
 
 - `add_item()`: Creates a new FeatureCollection from a `sf` or
   `data.frame` object
 - `publish_item()`: Publishes an existing FeatureLayer
+- `publish_layer()`: is a higher level wrapper around both `add_item()`
+  and `publish_item()`
 
 There are also functions to add or modify data including
 `add_features()`, `update_features()`, and `delete_features()`. For a
