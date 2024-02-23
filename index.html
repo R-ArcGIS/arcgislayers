@@ -75,7 +75,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt;   - {arcgisutils} v0.1.1.9001</span></span>
+<span><span class="co">#&gt;   - {arcgisutils} v0.2.0</span></span>
 <span><span class="co">#&gt;   - {arcgislayers} v0.1.0</span></span></code></pre></div>
 <p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):</p>
 <ul>
@@ -102,6 +102,7 @@
 <p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3143 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -145,7 +146,7 @@
 <div class="section level3">
 <h3 id="filtering-using-where-or-filter_geom-arguments">Filtering using <code>where</code> or <code>filter_geom</code> arguments<a class="anchor" aria-label="anchor" href="#filtering-using-where-or-filter_geom-arguments"></a>
 </h3>
-<p>You can also use the <code>fields</code> argument to select columns or <code>where</code> argument to subset rows.</p>
+<p>You can also use the <code>fields</code> argument to select columns or the <code>where</code> argument to subset rows.</p>
 <p>For example, using a character vector of column names for <code>fields</code> and a simple SQL where clause for <code>where</code> you can select counties with population greater than 1,000,000:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
@@ -170,7 +171,7 @@
 <span><span class="co">#&gt; 8          CA    2418185 MULTIPOLYGON (((-116.0824 3...</span></span>
 <span><span class="co">#&gt; 9          CA    1585055 MULTIPOLYGON (((-121.6652 3...</span></span>
 <span><span class="co">#&gt; 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
-<p>For <code>FeatureLayer</code> and <code>Table</code> objects, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
+<p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             name                 type                  alias       sqlType</span></span>
@@ -216,7 +217,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `nc' from data source </span></span>
-<span><span class="co">#&gt;   `/Users/elipousson/Library/R/arm64/4.3/library/sf/shape/nc.shp' </span></span>
+<span><span class="co">#&gt;   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 100 features and 14 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
@@ -259,7 +260,7 @@
 <h3 id="creating-a-spatraster-from-an-arcgis-imageserver">Creating a <code>SpatRaster</code> from an ArcGIS ImageServer<a class="anchor" aria-label="anchor" href="#creating-a-spatraster-from-an-arcgis-imageserver"></a>
 </h3>
 <p>A <code>SpatRaster</code> object from the <a href="https://rspatial.org/" class="external-link">terra</a> package can be extracted from an <code>ImageServer</code> using <code><a href="reference/arc_raster.html">arc_raster()</a></code>.</p>
-<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> requires a <code>bbox</code> class object from the <code>sf</code> package to define the area to be extracted. You can optionally specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned.</p>
+<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> will extract the area defined by <code>xmin</code>, <code>ymin</code>, <code>xmax</code>, and <code>ymax</code>. You can optionally specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">img_url</span> <span class="op">&lt;-</span> <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span>
 <span></span>
@@ -284,17 +285,16 @@
 <h3 id="authorization-for-non-public-data-access">Authorization for non-public data access<a class="anchor" aria-label="anchor" href="#authorization-for-non-public-data-access"></a>
 </h3>
 <p>Authorization is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL.</p>
-<p>For more information on code based authorization using the <code>auth_code()</code> function or client authorization using <code>auth_client()</code> see the <code>{arcgislayers}</code> <a href="articles/Authorization.html">authorization article</a>.</p>
-</div>
-<div class="section level3">
-<h3 id="publishing-data-from-r">Publishing data from R<a class="anchor" aria-label="anchor" href="#publishing-data-from-r"></a>
-</h3>
+<p>For more information on code based authorization using the <code>auth_code()</code> function or client authorization using <code>auth_client()</code> see the <a href="https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html" class="external-link">authorization article</a>. ### Publishing data from R</p>
 <p>The package includes functions to publish data to an ArcGIS Portal:</p>
 <ul>
 <li>
 <code><a href="reference/publish.html">add_item()</a></code>: Creates a new FeatureCollection from a <code>sf</code> or <code>data.frame</code> object</li>
 <li>
 <code><a href="reference/publish.html">publish_item()</a></code>: Publishes an existing FeatureLayer</li>
+<li>
+<code><a href="reference/publish.html">publish_layer()</a></code>: is a higher level wrapper around both <code><a href="reference/publish.html">add_item()</a></code> and <code><a href="reference/publish.html">publish_item()</a></code>
+</li>
 </ul>
 <p>There are also functions to add or modify data including <code><a href="reference/modify.html">add_features()</a></code>, <code><a href="reference/modify.html">update_features()</a></code>, and <code><a href="reference/modify.html">delete_features()</a></code>. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the <a href="https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html" class="external-link">R-ArcGIS Bridge website</a>.</p>
 <!-- # DEPRECATED FROM HERE DOWN  -->
