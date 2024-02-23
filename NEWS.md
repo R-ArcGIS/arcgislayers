@@ -1,4 +1,8 @@
-# arcgislayers 0.1.0 (unreleased)
+# arcgislayers 0.2.0
+
+- initial CRAN release
+
+# arcgislayers 0.1.0 
 
 - `arc_open()` no longer removes `NULL` properties h/t [@elipousson](https://github.com/elipousson)
 - includes `page_size` argument to `arc_select()` allowing users to return smaller page sizes and avoid timeouts for dense geometries
