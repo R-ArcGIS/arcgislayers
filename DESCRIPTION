@@ -1,6 +1,6 @@
 Package: arcgislayers
 Type: Package
-Title: An R Interface for ArcGIS REST Services
+Title: An R Interface for ArcGIS Data Services
 Version: 0.2.0
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
@@ -12,7 +12,9 @@ Authors@R: c(
     person("Martha", "Bass", role = "ctb",
            comment = c(ORCID = "0009-0004-0268-5426"))
   )
-Description: An R package to interface with Esri's ArcGIS REST Services.
+Description: Enables users of 'ArcGIS Enterprise', 'ArcGIS Online', or
+    'ArcGIS Platform' to read, write, publish, or manage vector and raster
+    data via ArcGIS location services REST API endpoints.
 License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
