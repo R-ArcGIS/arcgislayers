@@ -29,7 +29,7 @@
 #'
 #' @export
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #'   set_arc_token(auth_code())
 #'   create_feature_server("My empty feature server")
 #' }

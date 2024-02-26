@@ -26,7 +26,7 @@ To extract data from the remote resource utilize \code{\link[=arc_select]{arc_se
 }
 \examples{
 
-\dontrun {
+\dontrun{
  # FeatureLayer
  furl <- paste0(
    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",

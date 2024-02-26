@@ -16,7 +16,7 @@
 #' @export
 #' @rdname utils
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #'   furl <- paste0(
 #'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
 #'     "PLACES_LocalData_for_BetterHealth/FeatureServer/0"

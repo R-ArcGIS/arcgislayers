@@ -27,7 +27,7 @@ counter. Truncating a Feature Layer does not change the schema of the data
 or indexes).
 }
 \examples{
-\dontrun {
+\dontrun{
 
   # authorize using code flow
   set_arc_token(auth_code())

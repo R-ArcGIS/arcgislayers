@@ -41,7 +41,7 @@
 #'
 #' @export
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #'   # define the feature layer url
 #'   furl <- paste0(
 #'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
@@ -378,7 +378,7 @@ check_inherits_any <- function(x,
 #' @param ... key value pairs of query parameters and values.
 #' @export
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #'   furl <- paste0(
 #'     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
 #'     "USA_Major_Cities_/FeatureServer/0"

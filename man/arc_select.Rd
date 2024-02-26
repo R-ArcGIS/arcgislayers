@@ -76,7 +76,7 @@ avoid time outs.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
-\dontrun {
+\dontrun{
   # define the feature layer url
   furl <- paste0(
     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",

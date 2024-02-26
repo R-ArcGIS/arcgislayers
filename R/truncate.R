@@ -15,7 +15,7 @@
 #' @returns a named list with the name "success" and a value of `TRUE` or `FALSE`
 #'
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #'
 #'   # authorize using code flow
 #'   set_arc_token(auth_code())

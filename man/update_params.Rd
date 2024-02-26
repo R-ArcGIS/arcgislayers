@@ -18,7 +18,7 @@ An object of the same class as \code{x}
 \code{\link[=update_params]{update_params()}} takes named arguments and updates the query.
 }
 \examples{
-\dontrun {
+\dontrun{
   furl <- paste0(
     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
     "USA_Major_Cities_/FeatureServer/0"
