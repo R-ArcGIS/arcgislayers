@@ -62,10 +62,8 @@ Creates an empty FeatureServer with no additional layers.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
-\donttest{
-if (interactive()) {
+\dontrun {
   set_arc_token(auth_code())
   create_feature_server("My empty feature server")
-}
 }
 }

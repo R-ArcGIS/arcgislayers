@@ -15,8 +15,7 @@
 #' @returns a named list with the name "success" and a value of `TRUE` or `FALSE`
 #'
 #' @examples
-#' \donttest{
-#' if (interactive()) {
+#' \dontrun {
 #'
 #'   # authorize using code flow
 #'   set_arc_token(auth_code())
@@ -26,7 +25,6 @@
 #'
 #'   # truncate it
 #'   truncate_layer(flayer)
-#' }
 #' }
 #' @export
 truncate_layer <- function(

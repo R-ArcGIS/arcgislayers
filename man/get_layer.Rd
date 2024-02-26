@@ -39,7 +39,7 @@ These helpers provide easy access to the layers contained in a
 The \code{id} and \code{name} arguments must match the field values of the respective names as seen in the output of \code{list_items()}
 }
 \examples{
-if (interactive()) {
+\dontrun {
   # FeatureServer
   furl <- paste0(
     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",

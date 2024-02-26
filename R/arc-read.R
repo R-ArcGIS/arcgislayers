@@ -28,7 +28,7 @@
 #'   `FeatureLayer` or `Table` or [arc_raster()] if URL is an `ImageLayer`.
 #' @returns An sf object, a `data.frame`, or an object of class `SpatRaster`.
 #' @examples
-#' if (interactive()) {
+#' \dontrun {
 #'   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
 #'
 #'   # read entire service

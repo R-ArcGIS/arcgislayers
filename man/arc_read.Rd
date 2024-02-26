@@ -62,7 +62,7 @@ names for the returned data frame or sf object using the \code{col_names} and
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
-if (interactive()) {
+\dontrun {
   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
 
   # read entire service

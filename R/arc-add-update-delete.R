@@ -31,7 +31,7 @@
 #' @export
 #' @rdname modify
 #' @examples
-#' if (interactive()) {
+#' \dontrun {
 #'   # this is pseudo-code and will not work
 #'   flayer <- arc_open(furl)
 #'

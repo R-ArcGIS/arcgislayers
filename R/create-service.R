@@ -29,11 +29,9 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
-#' if (interactive()) {
+#' \dontrun {
 #'   set_arc_token(auth_code())
 #'   create_feature_server("My empty feature server")
-#' }
 #' }
 create_feature_server <- function(
     service_name,

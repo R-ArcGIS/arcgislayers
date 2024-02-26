@@ -90,7 +90,7 @@ remains \code{"Sepal.Length"}. For that reason, we match on the alias name by de
 Change this argument to match based on the field name.
 }
 \examples{
-if (interactive()) {
+\dontrun {
   # this is pseudo-code and will not work
   flayer <- arc_open(furl)
 

@@ -43,17 +43,17 @@
 #' @export
 #' @rdname publish
 #' @examples
-#' if (interactive()) {
+#' \dontrun{
 #'   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 #'   x <- nc[1:5, 13]
 #'
 #'   token <- auth_code()
-#'   set_arc_token(tkn)
+#'   set_arc_token(token)
 #'
 #'   publish_res <- publish_layer(
 #'     x, "North Carolina SIDS sample"
 #'   )
-#' }
+#'}
 #' @returns
 #' A named list containing the url of the newly published service.
 add_item <- function(

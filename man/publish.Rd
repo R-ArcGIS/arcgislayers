@@ -120,12 +120,12 @@ provided to \code{target_crs} matches that of the item you added with
 }
 }
 \examples{
-if (interactive()) {
+\dontrun{
   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
   x <- nc[1:5, 13]
 
   token <- auth_code()
-  set_arc_token(tkn)
+  set_arc_token(token)
 
   publish_res <- publish_layer(
     x, "North Carolina SIDS sample"

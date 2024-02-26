@@ -22,7 +22,7 @@
 #'
 #' @export
 #' @examples
-#' if (interactive()) {
+#' \dontrun {
 #'   # FeatureServer
 #'   furl <- paste0(
 #'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
