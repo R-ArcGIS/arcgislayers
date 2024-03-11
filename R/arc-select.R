@@ -208,19 +208,13 @@ collect_layer <- function(
   # extract existing query
   query <- attr(x, "query")
 
-  # crs is required if outSR is missing or results have a missing CRS
-  crs <- NULL
-
   # if the outSR isn't set, set it to be the same as x
-  if (inherits(x, "FeatureLayer")) {
+  if (inherits(x, "FeatureLayer") && is.null(query[["outSR"]])) {
     crs <- sf::st_crs(x)
-
-    if (is.null(query[["outSR"]])) {
-      query[["outSR"]] <- jsonify::to_json(
-        validate_crs(crs, call = error_call)[[1]],
-        unbox = TRUE
-      )
-    }
+    query[["outSR"]] <- jsonify::to_json(
+      validate_crs(crs, call = error_call)[[1]],
+      unbox = TRUE
+    )
   }
 
   # parameter validation ----------------------------------------------------
@@ -240,29 +234,8 @@ collect_layer <- function(
   # count the number of features in a query
   n_feats <- count_results(req, query_params, error_call = error_call)
 
-  if (is.null(n_feats)) {
-    cli::cli_abort(
-      c(
-        "Can't determine the number of features for {obj_class}",
-        "*" = "Check to make sure any query parameters are valid."
-      ),
-      call = error_call
-    )
-  }
-
   # identify the number of pages needed to return all features
-  # if n_max is provided need to reduce the number of pages
-  if (n_feats > n_max) {
-    n_feats <- n_max
-  }
-
-  if (is.null(n_feats)) {
-    cli::cli_abort(
-      c("Can't determine the number of features for {.arg x}.",
-      "*" = "Check to make sure your {.arg where} statement is valid."),
-      call = error_call
-    )
-  }
+  n_feats <- validate_n_feats(n_feats, n_max, error_call = error_call)
 
   # calculate the total number of requests to be made
   n_pages <- ceiling(n_feats / feats_per_page)
@@ -306,7 +279,7 @@ collect_layer <- function(
     }
   )
 
-  rbind_results(res, crs = crs, error_call = error_call)
+  rbind_results(res, x = x, error_call = error_call)
 }
 
 
@@ -498,12 +471,35 @@ set_page_size <- function(
   page_size
 }
 
+#' Set and validate n_feats based on n_max
+#' @noRd
+validate_n_feats <- function(
+    n_feats = NULL,
+    n_max = Inf,
+    error_call = rlang::caller_env()
+    ) {
+  # if n_max is provided need to reduce the number of pages
+  if (n_feats > n_max) {
+    n_feats <- n_max
+  }
 
+  if (!is.null(n_feats)) {
+    return(n_feats)
+  }
+
+  cli::cli_abort(
+    c(
+      "Can't determine the number of features for request.",
+      "*" = "Check to make sure {.arg where} and any query parameters are valid."
+    ),
+    call = error_call
+  )
+}
 
 #' Bind list with parsed ESRI geometry into sf object
 #'
 #' @noRd
-rbind_results <- function(res, crs = NULL, error_call = rlang::caller_env()) {
+rbind_results <- function(res, x, error_call = rlang::caller_env()) {
   empty_res <- vapply(res, rlang::is_empty, FALSE)
 
   if (all(empty_res)) {
@@ -519,7 +515,7 @@ rbind_results <- function(res, crs = NULL, error_call = rlang::caller_env()) {
   res <- rbind_res_list(res, error_call = error_call)
 
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
-    sf::st_crs(res) <- crs
+    sf::st_crs(res) <- sf::st_crs(x)
   }
 
   res
@@ -529,12 +525,12 @@ rbind_results <- function(res, crs = NULL, error_call = rlang::caller_env()) {
 #'
 #' Inspired by arcpbf https://github.com/R-ArcGIS/arcpbf/blob/main/R/post-process.R
 #' @noRd
-rbind_res_list <- function(x, error_call = rlang::caller_env()) {
+rbind_res_list <- function(.list, error_call = rlang::caller_env()) {
   # TODO: enhance this with additional suggested packages
   if (rlang::is_installed("vctrs")) {
-    x <- vctrs::vec_rbind(!!!x, error_call = error_call)
+    x <- vctrs::vec_rbind(!!!.list, .error_call = error_call)
   } else {
-    x <- do.call(rbind.data.frame, x)
+    x <- do.call(rbind.data.frame, .list)
   }
   x
 }
