@@ -170,14 +170,10 @@ collect_layer <- function(
     token = arc_token(),
     page_size = NULL,
     ...,
+    on_error = "continue",
+    progress = getOption("arcgislayers.progress", TRUE),
     error_call = rlang::caller_env()
 ) {
-
-  if (length(page_size) > 1) {
-    cli::cli_abort("{.arg page_size} must be length 1 not {length(page_size)}")
-  } else if (!is.null(page_size) && page_size < 1) {
-    cli::cli_abort("{.arg page_size} must be a positive integer.")
-  }
 
   # 1. Make base request
   # 2. Identify necessary query parameters
@@ -190,9 +186,11 @@ collect_layer <- function(
   # sets token and agent
   req <- arc_base_req(x[["url"]], token)
 
+  obj_class <- class(x)
+
   # determine if the layer can query
   can_query <- switch(
-    class(x),
+    obj_class,
     "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "ImageServer" = x[["supportsAdvancedQueries"]],
@@ -202,7 +200,7 @@ collect_layer <- function(
   # throw error if the layer cannot query
   if (!can_query) {
     cli::cli_abort(
-      "{class(x)} {.val {x[['name']]}} does not support querying",
+      "{obj_class} {.val {x[['name']]}} does not support querying",
       call = error_call
     )
   }
@@ -210,9 +208,19 @@ collect_layer <- function(
   # extract existing query
   query <- attr(x, "query")
 
+  # crs is required if outSR is missing or results have a missing CRS
+  crs <- NULL
+
   # if the outSR isn't set, set it to be the same as x
-  if (inherits(x, "FeatureLayer") && is.null(query[["outSR"]])) {
-    query[["outSR"]] <- jsonify::to_json(validate_crs(sf::st_crs(x))[[1]], unbox = TRUE)
+  if (inherits(x, "FeatureLayer")) {
+    crs <- sf::st_crs(x)
+
+    if (is.null(query[["outSR"]])) {
+      query[["outSR"]] <- jsonify::to_json(
+        validate_crs(crs, call = error_call)[[1]],
+        unbox = TRUE
+      )
+    }
   }
 
   # parameter validation ----------------------------------------------------
@@ -224,25 +232,22 @@ collect_layer <- function(
   # get the maximum allowed to be returned
   max_records <- x[["maxRecordCount"]]
 
-  # if its null, just use max records (default)
-  if (is.null(page_size)) {
-    feats_per_page <- max_records
-  } else if (page_size > max_records) {
-    cli::cli_abort("{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})")
-  } else {
-    # ensure its an integer.
-    page_size <- as.integer(page_size)
-    feats_per_page <- page_size
-  }
+  # set page size
+  page_size <- set_page_size(page_size, max_records, error_call = error_call)
+
+  feats_per_page <- page_size
 
   # count the number of features in a query
-  n_feats <- count_results(req, query_params)
+  n_feats <- count_results(req, query_params, error_call = error_call)
 
   if (is.null(n_feats)) {
-    cli::cli_abort(c(
-      "Cannot determine the number of features in request.",
-      "i" = "did you set custom parameters via {.arg ...}?"
-    ), call = error_call)
+    cli::cli_abort(
+      c(
+        "Can't determine the number of features for {obj_class}",
+        "*" = "Check to make sure any query parameters are valid."
+      ),
+      call = error_call
+    )
   }
 
   # identify the number of pages needed to return all features
@@ -279,7 +284,11 @@ collect_layer <- function(
   )
 
   # make all requests and store responses in list
-  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
+  all_resps <- httr2::req_perform_parallel(
+    all_requests,
+    on_error = on_error,
+    progress = progress
+  )
 
   # identify any errors
   # TODO: determine how to handle errors
@@ -291,26 +300,13 @@ collect_layer <- function(
     # all_resps[!has_error],
     function(x) {
       parse_esri_json(
-        httr2::resp_body_string(x)
-        )
+        httr2::resp_body_string(x),
+        call = error_call
+      )
     }
   )
 
-  # combine
-  # TODO enhance this with suggested packages similar to arcpbf
-  res <- do.call(rbind, res)
-
-  if (is.null(res)) {
-    cli::cli_alert_info("No features returned from query")
-    return(data.frame())
-  }
-
-  if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
-    sf::st_crs(res) <- sf::st_crs(x)
-  }
-
-  res
-
+  rbind_results(res, crs = crs, error_call = error_call)
 }
 
 
@@ -444,7 +440,7 @@ validate_params <- function(params) {
 }
 
 # Given a query, determine how many features will be returned
-count_results <- function(req, query) {
+count_results <- function(req, query, error_call = rlang::caller_env()) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
     !!!validate_params(query),
@@ -454,10 +450,91 @@ count_results <- function(req, query) {
   resp <- httr2::resp_body_string(
     httr2::req_perform(
       httr2::req_url_query(n_req, f = "json"),
-      error_call = rlang::caller_env()
+      error_call = error_call
     )
   )
 
   RcppSimdJson::fparse(resp)[["count"]]
 }
 
+#' Set page size and check page size validity
+#'
+#' @noRd
+set_page_size <- function(
+    page_size = NULL,
+    max_records = 25000L,
+    error_call = rlang::caller_env()
+    ) {
+  # if its null, just use max records (default)
+  if (is.null(page_size)) {
+    return(max_records)
+  }
+
+  # ensure its an integer.
+  page_size <- as.integer(page_size)
+  page_size_len <- length(page_size)
+
+  if (page_size_len > 1) {
+    cli::cli_abort(
+      "{.arg page_size} must be length 1 not {page_size_len}",
+      call = error_call
+    )
+  }
+
+  if (page_size < 1) {
+    cli::cli_abort(
+      "{.arg page_size} must be a positive integer.",
+      call = error_call
+    )
+  }
+
+  if (page_size > max_records) {
+    cli::cli_abort(
+      "{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})",
+      call = error_call
+    )
+  }
+
+  page_size
+}
+
+
+
+#' Bind list with parsed ESRI geometry into sf object
+#'
+#' @noRd
+rbind_results <- function(res, crs = NULL, error_call = rlang::caller_env()) {
+  empty_res <- vapply(res, rlang::is_empty, FALSE)
+
+  if (all(empty_res)) {
+    cli::cli_alert_info("No features returned from query")
+    return(data.frame())
+  }
+
+  # Drop empty results from sf list
+  if (any(empty_res)) {
+    res <- res[!empty_res]
+  }
+
+  res <- rbind_res_list(res, error_call = error_call)
+
+  if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
+    sf::st_crs(res) <- crs
+  }
+
+  res
+}
+
+#' Combine data frame list
+#'
+#' Inspired by arcpbf https://github.com/R-ArcGIS/arcpbf/blob/main/R/post-process.R
+#' @noRd
+rbind_res_list <- function(x, error_call = rlang::caller_env()) {
+  # TODO: enhance this with additional suggested packages
+  if (rlang::is_installed("vctrs")) {
+    x <- vctrs::vec_rbind(!!!x, error_call = error_call)
+  } else {
+    x <- do.call(rbind.data.frame, x)
+  }
+  x
+}
