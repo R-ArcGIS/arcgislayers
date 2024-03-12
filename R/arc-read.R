@@ -97,9 +97,11 @@ arc_read <- function(
     )
   }
 
+  col_select <- col_select %||% fields
+
   layer <- arc_select(
     x = service,
-    fields = col_select %||% fields,
+    fields = col_select,
     crs = crs,
     n_max = n_max,
     token = token,
@@ -108,6 +110,7 @@ arc_read <- function(
 
   set_layer_names(
     layer,
+    col_select = col_select,
     col_names = col_names,
     name_repair = name_repair,
     alias = service[["fields"]][["alias"]]
@@ -119,14 +122,21 @@ arc_read <- function(
 #' @noRd
 set_layer_names <- function(
     x,
+    col_select = NULL,
     col_names = NULL,
     name_repair = NULL,
     alias = NULL,
     call = rlang::caller_env()
 ) {
-  layer_nm <- names(x)
+  if (identical(col_select, "*")) {
+    col_select <- names(x)
+  }
+
+  # Drop OBJECTID column
+  x <- x[, col_select, drop = FALSE]
 
   # Use existing names by default
+  layer_nm <- names(x)
   nm <- layer_nm
   sf_column_nm <- attr(x, "sf_column")
 
@@ -153,7 +163,7 @@ set_layer_names <- function(
     if (length(nm) == layer_nm_len) {
       # If same number of names as layer columns, use last name for geometry
       x <- sf::st_set_geometry(x, nm[[length(layer_nm)]])
-    } else if (length(nm) == (layer_nm_len - 1)) {
+    } else if (nm_len == (layer_nm_len - 1)) {
       # If same number of names as layer columns, use existing geometry name
       nm <- c(nm, sf_column_nm)
     }
