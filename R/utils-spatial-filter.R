@@ -123,6 +123,8 @@ prepare_spatial_filter <- function(
 #' @export
 #' @rdname spatial_filter
 match_spatial_rel <- function(predicate, error_call = rlang::caller_env()) {
+  check_string(predicate, allow_empty = FALSE, call = error_call)
+
   # determine the spatial relationship (predicate)
   esri_predicates <- c(
     # Part of a feature from the query feature is contained in a feature from
