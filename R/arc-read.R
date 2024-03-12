@@ -97,7 +97,8 @@ arc_read <- function(
     )
   }
 
-  col_select <- col_select %||% fields
+  # FIXME: If arc_open had a default query parameter, that could be used here
+  col_select <- col_select %||% fields %||% "*"
 
   layer <- arc_select(
     x = service,
@@ -128,12 +129,16 @@ set_layer_names <- function(
     alias = NULL,
     call = rlang::caller_env()
 ) {
-  if (identical(col_select, "*")) {
-    col_select <- names(x)
-  }
 
-  # Drop OBJECTID column
-  x <- x[, col_select, drop = FALSE]
+  # NOTE: col_select can't be NULL w/ present use but that may change
+  if (!is.null(col_select)) {
+    if (identical(col_select, "*")) {
+      col_select <- names(x)
+    }
+
+    # Drop OBJECTID if not specified
+    x <- x[, col_select, drop = FALSE]
+  }
 
   # Use existing names by default
   layer_nm <- names(x)
@@ -142,6 +147,7 @@ set_layer_names <- function(
 
   if (is.character(col_names)) {
     # Assign alias values as name if col_names = "alias"
+    # FIXME: What if the data has a column named alias?
     if (identical(col_names, "alias")) {
       col_names <- alias
     }
