@@ -1,3 +1,8 @@
+# arcgislayers (development)
+
+- Improve handling of `filter_geom` argument for `arc_select()` (#166) by creating concave hull for MULTIPOLYGON inputs
+- Fix issue with `collect_layer()` handling of API responses that mix geometry and empty elements
+
 # arcgislayers 0.2.0
 
 - initial CRAN release
