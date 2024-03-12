@@ -227,7 +227,11 @@ collect_layer <- function(
   max_records <- x[["maxRecordCount"]]
 
   # set page size
-  page_size <- set_page_size(page_size, max_records, error_call = error_call)
+  page_size <- set_page_size(
+    page_size,
+    max_records = max_records,
+    error_call = error_call
+  )
 
   feats_per_page <- page_size
 
@@ -435,21 +439,27 @@ count_results <- function(req, query, error_call = rlang::caller_env()) {
 #' @noRd
 set_page_size <- function(
     page_size = NULL,
-    max_records = 25000L,
+    max_records,
     error_call = rlang::caller_env()
     ) {
-  # if its null, just use max records (default)
-  if (is.null(page_size)) {
-    return(max_records)
+  # if page_size is null, use max records (default)
+  page_size <- page_size %||% max_records
+
+  if (!is.numeric(page_size)) {
+    cli::cli_abort(
+      "{.arg page_size} must be a numeric scalar,
+      not {.obj_type_friendly {page_size}}",
+      call = error_call
+    )
   }
 
-  # ensure its an integer.
+  # coerce to integer
   page_size <- as.integer(page_size)
   page_size_len <- length(page_size)
 
-  if (page_size_len > 1) {
+  if (!rlang::has_length(page_size, 1)) {
     cli::cli_abort(
-      "{.arg page_size} must be length 1 not {page_size_len}",
+      "{.arg page_size} must be length 1, not {page_size_len}",
       call = error_call
     )
   }
@@ -461,9 +471,10 @@ set_page_size <- function(
     )
   }
 
-  if (page_size > max_records) {
+  if (is.numeric(max_records) && (page_size > max_records)) {
     cli::cli_abort(
-      "{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})",
+      "{.arg page_size} ({page_size}) can't be more than than the layer
+      {.field maxRecordCount} property ({max_records}).",
       call = error_call
     )
   }
@@ -479,7 +490,7 @@ validate_n_feats <- function(
     error_call = rlang::caller_env()
     ) {
   # if n_max is provided need to reduce the number of pages
-  if (n_feats > n_max) {
+  if (is.null(n_feats) || (n_feats > n_max)) {
     n_feats <- n_max
   }
 
