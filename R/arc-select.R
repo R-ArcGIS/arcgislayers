@@ -107,29 +107,14 @@ arc_select <- function(
   }
 
   # handle fields and where clause if missing
-  fields <- fields %||% query[["outFields"]] %||% "*"
-
-  # if not missing fields collapse to scalar character
-  if (length(fields) > 1) {
-    # check if incorrect field names provided
-    x_fields <- x[["fields"]][["name"]]
-    nindex <- tolower(fields) %in% tolower(x_fields)
-
-    # handle the case where a field is being selected that
-    # is not one of the available fields in the feature layer
-    if (any(!nindex)) {
-      cli::cli_abort(
-        "Field{?s} not in {.arg x}: {.var {fields[!nindex]}}"
-      )
-    }
-    # collapse together
-    fields <- paste0(fields, collapse = ",")
-  }
+  fields <- match_fields(
+    fields = fields %||% query[["outFields"]],
+    values = x[["fields"]][["name"]]
+  )
 
   query[["outFields"]] <- fields
 
-  # if where is missing set to 1=1
-  query[["where"]] <- where %||% query[["where"]] %||% "1=1"
+  query[["where"]] <- where %||% query[["where"]]
 
   # set returnGeometry depending on on geometry arg
   query[["returnGeometry"]] <- geometry
@@ -223,13 +208,10 @@ collect_layer <- function(
 
   # Offsets -----------------------------------------------------------------
 
-  # get the maximum allowed to be returned
-  max_records <- x[["maxRecordCount"]]
-
-  # set page size
+  # set page size based on the maximum allowed to be returned
   page_size <- set_page_size(
     page_size,
-    max_records = max_records,
+    max_records = x[["maxRecordCount"]],
     error_call = error_call
   )
 
@@ -272,6 +254,8 @@ collect_layer <- function(
   # has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
 
   # fetch the results
+  # TODO Considering httr2::resps_data but it uses `vctrs::list_unchop` which drops
+  # the sf class
   res <- lapply(
     all_resps,
     # all_resps[!has_error],
@@ -283,7 +267,20 @@ collect_layer <- function(
     }
   )
 
-  rbind_results(res, x = x, error_call = error_call)
+  res <- rbind_results(res, x = x, error_call = error_call)
+
+  out_fields <- query[["outFields"]]
+
+  if (!is.null(out_fields) && !identical(out_fields, "*")) {
+    keep_fields <- c(
+      tolower(names(res)) %in% tolower(c(out_fields, attr(x, "sf_column")))
+    )
+
+    # Drop fields that aren't selected
+    res <- res[ , keep_fields, drop = FALSE]
+  }
+
+  res
 }
 
 
@@ -334,11 +331,12 @@ check_inherits_any <- function(x,
 
   class <- cli::cli_vec(
     class,
-    style = list("before" = "`", "after" = "`", "vec-last" = " or ")
+    style = list("before" = "`", "after" = "`")
   )
 
   cli::cli_abort(
-    "{.arg {arg}} must be a {class} object, not {.obj_simple_type {.cls {class(x)}}}.",
+    "{.arg {arg}} must be a {.or {class}} object,
+    not {.obj_simple_type {.cls {class(x)}}}.",
     call = call
   )
 }
@@ -364,12 +362,7 @@ check_inherits_any <- function(x,
 update_params <- function(x, ...) {
   query <- attr(x, "query")
   params <- rlang::list2(...)
-
-  for (name in names(params)) {
-    query[[name]] <- params[[name]]
-  }
-
-  attr(x, "query") <- query
+  attr(x, "query") <- c(params, query[!(names(query) %in% names(params))])
   x
 }
 
@@ -399,12 +392,15 @@ add_offset <- function(.req, .offset, .page_size, .params) {
 #' @keywords internal
 #' @noRd
 validate_params <- function(params) {
-
-  # if output fields are missing set to "*"
-  if (is.null(params[["outFields"]])) params[["outFields"]] <- "*"
+  if (!is.null(query[["outFields"]])) {
+    query[["outFields"]] <- paste0(query[["outFields"]], collapse = ",")
+  } else {
+    # if output fields are missing set to "*"
+    params[["outFields"]] <- "*"
+  }
 
   # if where is missing set it to 1=1
-  if (is.null(params[["where"]])) params[["where"]] <- "1=1"
+  params[["where"]] <- params[["where"]] %||% "1=1"
 
   # set output type to geojson if we return geometry, json if not
   if (is.null(params[["returnGeometry"]]) || isTRUE(params[["returnGeometry"]])) {
@@ -414,6 +410,30 @@ validate_params <- function(params) {
   }
 
   params
+}
+
+#' Validate fields
+#'
+#' [validate_fields()] ensures that fields passed to [arc_select()] match
+#' permissible values.
+#'
+#' @keywords internal
+#' @noRd
+match_fields <- function(fields, values = NULL, multiple = TRUE, error_call = rlang::caller_env()) {
+  if (is.null(fields) || identical(fields, "*")) {
+    return(fields)
+  }
+
+  if (all(tolower(fields) %in% tolower(values))) {
+    return(fields)
+  }
+
+  rlang::arg_match(
+    fields,
+    values = values,
+    multiple = multiple,
+    error_call = error_call
+  )
 }
 
 # Given a query, determine how many features will be returned
@@ -508,7 +528,6 @@ validate_n_feats <- function(
 }
 
 #' Bind list with parsed ESRI geometry into sf object
-#'
 #' @noRd
 rbind_results <- function(res, x, error_call = rlang::caller_env()) {
   empty_res <- vapply(res, rlang::is_empty, FALSE)
@@ -525,6 +544,11 @@ rbind_results <- function(res, x, error_call = rlang::caller_env()) {
 
   res <- rbind_res_list(res, error_call = error_call)
 
+  # Restore sf class for FeatureLayer objects
+  if (!inherits(res, "sf") && inherits(x, "FeatureLayer")) {
+    res <- sf::st_as_sf(res)
+  }
+
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
     sf::st_crs(res) <- sf::st_crs(x)
   }
@@ -539,6 +563,7 @@ rbind_results <- function(res, x, error_call = rlang::caller_env()) {
 rbind_res_list <- function(.list, error_call = rlang::caller_env()) {
   # TODO: enhance this with additional suggested packages
   if (rlang::is_installed("vctrs")) {
+    # FIXME: This drops the sf class which has to be restored with sf::st_as_sf
     x <- vctrs::vec_rbind(!!!.list, .error_call = error_call)
   } else {
     x <- do.call(rbind.data.frame, .list)
