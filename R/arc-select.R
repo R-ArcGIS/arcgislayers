@@ -271,7 +271,7 @@ collect_layer <- function(
 
   out_fields <- query[["outFields"]]
 
-  if (!is.null(out_fields) && !identical(out_fields, "*")) {
+  if (rlang::is_named(res) && !is.null(out_fields) && !identical(out_fields, "*")) {
     keep_fields <- c(
       tolower(names(res)) %in% tolower(c(out_fields, attr(x, "sf_column")))
     )
@@ -542,8 +542,7 @@ rbind_results <- function(res, x, error_call = rlang::caller_env()) {
     res <- res[!empty_res]
   }
 
-  res <- do.call(rbind.data.frame, res)
-  # res <- rbind_res_list(res, error_call = error_call)
+  res <- rbind_res_list(res, error_call = error_call)
 
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
     sf::st_crs(res) <- sf::st_crs(x)
@@ -561,6 +560,13 @@ rbind_res_list <- function(.list, error_call = rlang::caller_env()) {
   if (rlang::is_installed("vctrs")) {
     # FIXME: This drops the sf class which has to be restored with sf::st_as_sf
     x <- vctrs::vec_rbind(!!!.list, .error_call = error_call)
+
+    is_sf_list <- all(vapply(.list, \(x) {inherits(x, "sf")}, TRUE))
+
+    if (is_sf_list) {
+      x <- sf::st_as_sf(x)
+    }
+
   } else {
     x <- do.call(rbind.data.frame, .list)
   }
