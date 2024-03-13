@@ -392,8 +392,8 @@ add_offset <- function(.req, .offset, .page_size, .params) {
 #' @keywords internal
 #' @noRd
 validate_params <- function(params) {
-  if (!is.null(query[["outFields"]])) {
-    query[["outFields"]] <- paste0(query[["outFields"]], collapse = ",")
+  if (!is.null(params[["outFields"]])) {
+    params[["outFields"]] <- paste0(params[["outFields"]], collapse = ",")
   } else {
     # if output fields are missing set to "*"
     params[["outFields"]] <- "*"
@@ -437,10 +437,10 @@ match_fields <- function(fields, values = NULL, multiple = TRUE, error_call = rl
 }
 
 # Given a query, determine how many features will be returned
-count_results <- function(req, query, error_call = rlang::caller_env()) {
+count_results <- function(req, query_params, error_call = rlang::caller_env()) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
-    !!!validate_params(query),
+    !!!query_params,
     returnCountOnly = "true"
   )
 
@@ -542,12 +542,8 @@ rbind_results <- function(res, x, error_call = rlang::caller_env()) {
     res <- res[!empty_res]
   }
 
-  res <- rbind_res_list(res, error_call = error_call)
-
-  # Restore sf class for FeatureLayer objects
-  if (!inherits(res, "sf") && inherits(x, "FeatureLayer")) {
-    res <- sf::st_as_sf(res)
-  }
+  res <- do.call(rbind.data.frame, res)
+  # res <- rbind_res_list(res, error_call = error_call)
 
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
     sf::st_crs(res) <- sf::st_crs(x)
