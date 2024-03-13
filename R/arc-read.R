@@ -97,9 +97,6 @@ arc_read <- function(
     )
   }
 
-  # FIXME: If arc_open had a default query parameter, that could be used here
-  col_select <- col_select %||% fields %||% "*"
-
   layer <- arc_select(
     x = service,
     fields = col_select,
@@ -111,7 +108,6 @@ arc_read <- function(
 
   set_layer_names(
     layer,
-    col_select = col_select,
     col_names = col_names,
     name_repair = name_repair,
     alias = service[["fields"]][["alias"]]
@@ -123,22 +119,11 @@ arc_read <- function(
 #' @noRd
 set_layer_names <- function(
     x,
-    col_select = NULL,
     col_names = NULL,
     name_repair = NULL,
     alias = NULL,
     call = rlang::caller_env()
 ) {
-
-  # NOTE: col_select can't be NULL w/ present use but that may change
-  if (!is.null(col_select)) {
-    if (identical(col_select, "*")) {
-      col_select <- names(x)
-    }
-
-    # Drop OBJECTID if not specified
-    x <- x[, col_select, drop = FALSE]
-  }
 
   # Use existing names by default
   layer_nm <- names(x)
