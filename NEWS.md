@@ -2,6 +2,7 @@
 
 - Improve handling of `filter_geom` argument for `arc_select()` (#166) by creating concave hull for MULTIPOLYGON inputs
 - Fix issue with `collect_layer()` handling of API responses that mix geometry and empty elements
+- Add new `alias` parameter to `arc_read()` (#169) to support labelling fields or renaming fields based on field alias values
 
 # arcgislayers 0.2.0
 
