@@ -190,7 +190,7 @@ set_layer_col_names <- function(
 
   if (!is.null(name_repair)) {
     rlang::check_installed("vctrs", call = call)
-    nm <- vctrs::vec_as_names(
+    replace_nm <- vctrs::vec_as_names(
       names = replace_nm,
       repair = name_repair,
       repair_arg = "name_repair",
