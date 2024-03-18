@@ -510,7 +510,8 @@ validate_n_feats <- function(
     error_call = rlang::caller_env()
     ) {
   # if n_max is provided need to reduce the number of pages
-  if (is.null(n_feats) || (n_feats > n_max)) {
+  if (is.null(n_feats) || (!is.infinite(n_max) && (n_feats > n_max))) {
+    # FIXME: Consider adding a warning if n_max is used
     n_feats <- n_max
   }
 
