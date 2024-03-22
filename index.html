@@ -71,11 +71,11 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of <a href="https://r.esri.com/arcgislayers/" class="external-link">arcgislayers</a> is to provide an R interface to the <a href="https://developers.arcgis.com/rest/" class="external-link">ArcGIS REST API</a> .</p>
+<p>The goal of <a href="https://r.esri.com/arcgislayers/" class="external-link">arcgislayers</a> is to provide an R interface to the <a href="https://developers.arcgis.com/rest/" class="external-link">ArcGIS REST API</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>arcgislayers requires <a href="https://github.com/R-ArcGIS/arcgisutils" class="external-link">arcgisutils</a> for authorization. It is recommend you install and use the metapackage <code>{arcgis}</code>. You can install the development version of arcgis like so:</p>
+<p>It is recommend you install and use the metapackage <a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a>. You can install the development version of arcgis like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-arcgis/arcgis"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -86,10 +86,10 @@
 <h3 id="creating-a-simple-feature-object-from-an-arcgis-featurelayer">Creating a simple feature object from an ArcGIS FeatureLayer<a class="anchor" aria-label="anchor" href="#creating-a-simple-feature-object-from-an-arcgis-featurelayer"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt;   - {arcgisutils} v0.2.0</span></span>
-<span><span class="co">#&gt;   - {arcgislayers} v0.1.0</span></span></code></pre></div>
+<span><span class="co">#&gt; → arcgisutils v0.2.0</span></span>
+<span><span class="co">#&gt; → arcgislayers v0.2.0</span></span></code></pre></div>
 <p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):</p>
 <ul>
 <li><code>FeatureLayer</code></li>
@@ -115,6 +115,7 @@
 <p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3143 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -166,23 +167,23 @@
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state_abbr"</span>, <span class="st">"population"</span><span class="op">)</span>, </span>
 <span>  where <span class="op">=</span> <span class="st">"population &gt; 1000000"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Simple feature collection with 49 features and 2 fields</span></span>
+<span><span class="co">#&gt; Simple feature collection with 49 features and 3 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -158.2674 ymin: 21.24986 xmax: -71.02671 ymax: 47.77552</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    STATE_ABBR POPULATION                       geometry</span></span>
-<span><span class="co">#&gt; 1          AZ    4420568 MULTIPOLYGON (((-111.0425 3...</span></span>
-<span><span class="co">#&gt; 2          AZ    1043433 MULTIPOLYGON (((-110.4522 3...</span></span>
-<span><span class="co">#&gt; 3          CA    1682353 MULTIPOLYGON (((-121.4721 3...</span></span>
-<span><span class="co">#&gt; 4          CA    1165927 MULTIPOLYGON (((-122.3076 3...</span></span>
-<span><span class="co">#&gt; 5          CA    1008654 MULTIPOLYGON (((-120.6636 3...</span></span>
-<span><span class="co">#&gt; 6          CA   10014009 MULTIPOLYGON (((-118.1067 3...</span></span>
-<span><span class="co">#&gt; 7          CA    3186989 MULTIPOLYGON (((-117.509 33...</span></span>
-<span><span class="co">#&gt; 8          CA    2418185 MULTIPOLYGON (((-116.0824 3...</span></span>
-<span><span class="co">#&gt; 9          CA    1585055 MULTIPOLYGON (((-121.6652 3...</span></span>
-<span><span class="co">#&gt; 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
+<span><span class="co">#&gt;    STATE_ABBR POPULATION OBJECTID                       geometry</span></span>
+<span><span class="co">#&gt; 1          AZ    4420568      101 MULTIPOLYGON (((-111.0425 3...</span></span>
+<span><span class="co">#&gt; 2          AZ    1043433      104 MULTIPOLYGON (((-110.4522 3...</span></span>
+<span><span class="co">#&gt; 3          CA    1682353      184 MULTIPOLYGON (((-121.4721 3...</span></span>
+<span><span class="co">#&gt; 4          CA    1165927      190 MULTIPOLYGON (((-122.3076 3...</span></span>
+<span><span class="co">#&gt; 5          CA    1008654      193 MULTIPOLYGON (((-120.6636 3...</span></span>
+<span><span class="co">#&gt; 6          CA   10014009      202 MULTIPOLYGON (((-118.1067 3...</span></span>
+<span><span class="co">#&gt; 7          CA    3186989      213 MULTIPOLYGON (((-117.509 33...</span></span>
+<span><span class="co">#&gt; 8          CA    2418185      216 MULTIPOLYGON (((-116.0824 3...</span></span>
+<span><span class="co">#&gt; 9          CA    1585055      217 MULTIPOLYGON (((-121.6652 3...</span></span>
+<span><span class="co">#&gt; 10         CA    2181654      219 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
 <p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
@@ -229,7 +230,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `nc' from data source </span></span>
-<span><span class="co">#&gt;   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' </span></span>
+<span><span class="co">#&gt;   `C:\Users\mar10556\AppData\Local\R\win-library\4.3\sf\shape\nc.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 100 features and 14 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
@@ -293,11 +294,21 @@
 <div class="section level2">
 <h2 id="authorization-and-publication">Authorization and publication<a class="anchor" aria-label="anchor" href="#authorization-and-publication"></a>
 </h2>
+<p>Authorization is not required for reading any public data sources.</p>
+<p>Workflows that require authorization include:</p>
+<ul>
+<li>interacting with <a href="https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm" class="external-link">non-public</a> services,</li>
+<li>publishing a new service (the authorized user must also have <a href="https://doc.arcgis.com/en/arcgis-online/administer/roles.htm" class="external-link">publishing privileges</a>), and</li>
+<li>modifying or deleting any existing service (the authorized user must also have <a href="https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm" class="external-link">edit access</a> to the service).</li>
+</ul>
 <div class="section level3">
-<h3 id="authorization-for-non-public-data-access">Authorization for non-public data access<a class="anchor" aria-label="anchor" href="#authorization-for-non-public-data-access"></a>
+<h3 id="accessing-non-public-data">Accessing non-public data<a class="anchor" aria-label="anchor" href="#accessing-non-public-data"></a>
 </h3>
-<p>Authorization is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL.</p>
-<p>For more information on code based authorization using the <code>auth_code()</code> function or client authorization using <code>auth_client()</code> see the <a href="https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html" class="external-link">authorization article</a>. ### Publishing data from R</p>
+<p>The same functions for reading public ArcGIS Online and Enterprise services (such as <code><a href="reference/arc_open.html">arc_open()</a></code>,<code><a href="reference/arc_read.html">arc_read()</a></code>,<code><a href="reference/arc_select.html">arc_select()</a></code>,<code><a href="reference/arc_raster.html">arc_raster()</a></code>, etc.) can be used to read data from non-public services by using the <code>token</code> argument. For more information on tokens and authorization functions, see the <a href="https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html" class="external-link">authorization article</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="publishing-and-modifying-services-from-r">Publishing and modifying services from R<a class="anchor" aria-label="anchor" href="#publishing-and-modifying-services-from-r"></a>
+</h3>
 <p>The package includes functions to publish data to an ArcGIS Portal:</p>
 <ul>
 <li>
@@ -309,6 +320,7 @@
 </li>
 </ul>
 <p>There are also functions to add or modify data including <code><a href="reference/modify.html">add_features()</a></code>, <code><a href="reference/modify.html">update_features()</a></code>, and <code><a href="reference/modify.html">delete_features()</a></code>. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the <a href="https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html" class="external-link">R-ArcGIS Bridge website</a>.</p>
+<p>These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.</p>
 </div>
 </div>
 </div>
