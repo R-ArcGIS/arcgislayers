@@ -22,11 +22,11 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/) .
+The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/).
 
 ## Installation
 
-arcgislayers requires `{arcgisutils}` for authorization. It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
+It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
 
 ``` r
 remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
@@ -121,12 +121,20 @@ terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 
 ## Authorization and publication
 
-### Authorization for non-public data access
+Authorization is not required for reading any public data sources. 
 
-Authorization is required for users who wish to access data that is in a non-public ArGIS Online (AGOL) organization, in an ArcGIS Enterprise portal, or wish to upload data to or modify data in AGOL.
+Workflows that require authorization include:
 
-For more information on code based authorization using the `auth_code()` function or client authorization using `auth_client()` see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
-### Publishing data from R
+ - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services,
+ - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)), and
+ - modifying or deleting any existing service (the authorized user must also have [edit access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm) to the service).
+
+### Accessing non-public data
+
+The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
+For more information on tokens and authorization functions, see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
+
+### Publishing and modifying services from R
 
 The package includes functions to publish data to an ArcGIS Portal:
 
@@ -136,3 +144,4 @@ The package includes functions to publish data to an ArcGIS Portal:
 
 There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
 
+These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
