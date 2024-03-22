@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/) .
+The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/).
 
 ## Installation
 
@@ -121,16 +121,17 @@ terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 
 ## Authorization and publication
 
-Authorization is not required for reading data from any public ArcGIS Online or ArcGIS Enterprise service. 
+Authorization is not required for reading any public data sources. 
 
-Workflows that require authorization using an ArcGIS Online or ArcGIS Enterprise account include:
- - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services
- - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm))
- - modifying or deleting any existing service (the authorized user must also have [edit access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm) to the service)
+Workflows that require authorization include:
+
+ - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services,
+ - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)), and
+ - modifying or deleting any existing service (the authorized user must also have [edit access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm) to the service).
 
 ### Accessing non-public data
 
-The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster`, etc.) can be used to read data from non-public services by using the `token` argument.
+The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
 For more information on tokens and authorization functions, see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
 
 ### Publishing and modifying services from R
