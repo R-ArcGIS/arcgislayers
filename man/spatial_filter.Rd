@@ -58,8 +58,8 @@ reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the \code{sfc}
 object has multiple features, the features are unioned with
 \code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has \code{MULTIPOLYGON} geometry, the features
-are unioned before being cast to \code{POLYGON} geometry with \code{\link[sf:st_cast]{sf::st_cast()}}. All
-geometries are checked for validity before conversion.
+cast to \code{MULTIPOINT} geometry with \code{\link[sf:st_cast]{sf::st_cast()}} and then converted to a
+\code{POLYGON} with \code{\link[sf:geos_unary]{sf::st_concave_hull()}} (using \code{ratio = 1} and \code{allow_holes = FALSE}). All geometries are checked for validity before conversion.
 }
 \examples{
 prepare_spatial_filter(sf::st_point(c(0, 5)), 4326, "intersects")

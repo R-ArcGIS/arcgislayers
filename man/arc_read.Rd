@@ -13,6 +13,7 @@ arc_read(
   crs = NULL,
   ...,
   fields = NULL,
+  alias = c("drop", "label", "replace"),
   token = arc_token()
 )
 }
@@ -23,8 +24,7 @@ arc_read(
 the feature. If \code{col_names} is a character vector with the same length as
 the number of columns in the layer, the default names are replaced with the
 new names. If \code{col_names} has one fewer name than the default column names,
-the existing sf column name is retained. If \code{col_names} is the string
-\code{"alias"}, names are set to match the alias names for the layer, if available.}
+the existing sf column name is retained.}
 
 \item{col_select}{Default \code{NULL}. A character vector of the field names to be
 returned. By default, all fields are returned.}
@@ -45,6 +45,10 @@ server-side. Ignored if x is a \code{Table}.}
 
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
+
+\item{alias}{Default "drop". Supported options: \code{c("drop", "label", "replace")}. If "drop", field alias values are ignored. If "label", field
+alias values are assigned as a label attribute for each field. If replace,
+field alias values are used as the column names.}
 
 \item{token}{your authorization token.}
 }
@@ -78,7 +82,7 @@ names for the returned data frame or sf object using the \code{col_names} and
   )
 
  # use field aliases as column names
- arc_read(furl, col_names = "alias")
+ arc_read(furl, alias = "replace")
 
  # read an ImageServer directly
  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
