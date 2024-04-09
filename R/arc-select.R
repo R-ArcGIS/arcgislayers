@@ -107,7 +107,7 @@ arc_select <- function(
   }
 
   # handle fields and where clause if missing
-  fields <- fields %||% query[["outFields"]] %||% "*"
+  fields <- fields %||% query[["outFields"]]
 
   # if not missing fields collapse to scalar character
   if (length(fields) > 1) {
@@ -122,14 +122,17 @@ arc_select <- function(
         "Field{?s} not in {.arg x}: {.var {fields[!nindex]}}"
       )
     }
-    # collapse together
-    fields <- paste0(fields, collapse = ",")
   }
+
+  # handle fields and where clause if missing
+  fields <- match_fields(
+    fields = fields %||% query[["outFields"]],
+    values = x[["fields"]][["name"]]
+  )
 
   query[["outFields"]] <- fields
 
-  # if where is missing set to 1=1
-  query[["where"]] <- where %||% query[["where"]] %||% "1=1"
+  query[["where"]] <- where %||% query[["where"]]
 
   # set returnGeometry depending on on geometry arg
   query[["returnGeometry"]] <- geometry
@@ -214,6 +217,10 @@ collect_layer <- function(
   if (inherits(x, "FeatureLayer") && is.null(query[["outSR"]])) {
     query[["outSR"]] <- jsonify::to_json(validate_crs(sf::st_crs(x))[[1]], unbox = TRUE)
   }
+
+  # retain outFields vector and create flag
+  out_fields <- query[["outFields"]]
+  has_out_fields <- !is.null(out_fields) && !identical(out_fields, "*")
 
   # parameter validation ----------------------------------------------------
   # get existing parameters
@@ -300,10 +307,9 @@ collect_layer <- function(
   # combine results
   res <- rbind_results(res, call = error_call)
 
-  out_fields <- query[["outFields"]]
-
-  # Drop fields that aren't selected to avoid returning objectID
-  if (rlang::is_named(res) && !is.null(out_fields) && !identical(out_fields, "*")) {
+  # Drop fields that aren't selected to avoid returning OBJECTID when not
+  # selected
+  if (rlang::is_named(res) && has_out_fields) {
     out_fields <- c(out_fields, attr(res, "sf_column"))
     res_nm <- names(res)
     res <- res[ , tolower(res_nm) %in% tolower(out_fields), drop = FALSE]
@@ -435,12 +441,15 @@ add_offset <- function(.req, .offset, .page_size, .params) {
 #' @keywords internal
 #' @noRd
 validate_params <- function(params) {
-
-  # if output fields are missing set to "*"
-  if (is.null(params[["outFields"]])) params[["outFields"]] <- "*"
+  if (!is.null(params[["outFields"]])) {
+    params[["outFields"]] <- paste0(params[["outFields"]], collapse = ",")
+  } else {
+    # if output fields are missing set to "*"
+    params[["outFields"]] <- "*"
+  }
 
   # if where is missing set it to 1=1
-  if (is.null(params[["where"]])) params[["where"]] <- "1=1"
+  params[["where"]] <- params[["where"]] %||% "1=1"
 
   # set output type to geojson if we return geometry, json if not
   if (is.null(params[["returnGeometry"]]) || isTRUE(params[["returnGeometry"]])) {
@@ -470,3 +479,26 @@ count_results <- function(req, query) {
   RcppSimdJson::fparse(resp)[["count"]]
 }
 
+#' Validate fields
+#'
+#' [validate_fields()] ensures that fields passed to [arc_select()] match
+#' permissible values.
+#'
+#' @keywords internal
+#' @noRd
+match_fields <- function(fields, values = NULL, multiple = TRUE, error_call = rlang::caller_env()) {
+  if (is.null(fields) || identical(fields, "*")) {
+    return(fields)
+  }
+
+  if (all(tolower(fields) %in% tolower(values))) {
+    return(fields)
+  }
+
+  rlang::arg_match(
+    fields,
+    values = values,
+    multiple = multiple,
+    error_call = error_call
+  )
+}
