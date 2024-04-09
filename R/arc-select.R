@@ -479,9 +479,9 @@ count_results <- function(req, query) {
   RcppSimdJson::fparse(resp)[["count"]]
 }
 
-#' Validate fields
+#' Match fields
 #'
-#' [validate_fields()] ensures that fields passed to [arc_select()] match
+#' [match_fields()] ensures that fields passed to [arc_select()] match
 #' permissible values.
 #'
 #' @keywords internal
