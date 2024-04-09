@@ -109,24 +109,8 @@ arc_select <- function(
   # handle fields and where clause if missing
   fields <- fields %||% query[["outFields"]]
 
-  # if not missing fields collapse to scalar character
-  if (length(fields) > 1) {
-    # check if incorrect field names provided
-    x_fields <- x[["fields"]][["name"]]
-    nindex <- tolower(fields) %in% tolower(x_fields)
-
-    # handle the case where a field is being selected that
-    # is not one of the available fields in the feature layer
-    if (any(!nindex)) {
-      cli::cli_abort(
-        "Field{?s} not in {.arg x}: {.var {fields[!nindex]}}"
-      )
-    }
-  }
-
-  # handle fields and where clause if missing
   fields <- match_fields(
-    fields = fields %||% query[["outFields"]],
+    fields = fields,
     values = x[["fields"]][["name"]]
   )
 
@@ -486,7 +470,11 @@ count_results <- function(req, query) {
 #'
 #' @keywords internal
 #' @noRd
-match_fields <- function(fields, values = NULL, multiple = TRUE, error_call = rlang::caller_env()) {
+match_fields <- function(fields,
+                         values = NULL,
+                         multiple = TRUE,
+                         error_arg = rlang::caller_arg(fields),
+                         error_call = rlang::caller_env()) {
   if (is.null(fields) || identical(fields, "*")) {
     return(fields)
   }
@@ -499,6 +487,7 @@ match_fields <- function(fields, values = NULL, multiple = TRUE, error_call = rl
     fields,
     values = values,
     multiple = multiple,
+    error_arg = error_arg,
     error_call = error_call
   )
 }
