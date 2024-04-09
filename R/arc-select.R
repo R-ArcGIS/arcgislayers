@@ -291,18 +291,27 @@ collect_layer <- function(
     # all_resps[!has_error],
     function(x) {
       parse_esri_json(
-        httr2::resp_body_string(x)
-        )
+        httr2::resp_body_string(x),
+        call = error_call
+      )
     }
   )
 
-  # combine
-  # TODO enhance this with suggested packages similar to arcpbf
-  res <- do.call(rbind, res)
+  # combine results
+  res <- rbind_results(res, call = error_call)
 
-  if (is.null(res)) {
+  out_fields <- query[["outFields"]]
+
+  # Drop fields that aren't selected to avoid returning objectID
+  if (rlang::is_named(res) && !is.null(out_fields) && !identical(out_fields, "*")) {
+    out_fields <- c(out_fields, attr(res, "sf_column"))
+    res_nm <- names(res)
+    res <- res[ , tolower(res_nm) %in% tolower(out_fields), drop = FALSE]
+  }
+
+  if (rlang::is_empty(res)) {
     cli::cli_alert_info("No features returned from query")
-    return(data.frame())
+    return(res)
   }
 
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
