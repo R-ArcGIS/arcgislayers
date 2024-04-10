@@ -42,24 +42,24 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   # define the feature layer url
-#'   furl <- paste0(
-#'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
-#'     "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
-#'   )
+#' # define the feature layer url
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
+#'   "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#' )
 #'
-#'   flayer <- arc_open(furl)
+#' flayer <- arc_open(furl)
 #'
-#'   arc_select(
-#'     flayer,
-#'     fields = c("StateAbbr", "TotalPopulation")
-#'   )
+#' arc_select(
+#'   flayer,
+#'   fields = c("StateAbbr", "TotalPopulation")
+#' )
 #'
-#'   arc_select(
-#'     flayer,
-#'     fields = c("OBJECTID", "PlaceName"),
-#'     where = "TotalPopulation > 1000000"
-#'   )
+#' arc_select(
+#'   flayer,
+#'   fields = c("OBJECTID", "PlaceName"),
+#'   where = "TotalPopulation > 1000000"
+#' )
 #' }
 #' @returns An sf object, or a data.frame
 arc_select <- function(
@@ -73,9 +73,7 @@ arc_select <- function(
     predicate = "intersects",
     n_max = Inf,
     page_size = NULL,
-    token = arc_token()
-) {
-
+    token = arc_token()) {
   # Developer note:
   # For this function we extract the query object and manipulate the elements
   # inside of the query object to modify our request. We then splice those
@@ -111,7 +109,7 @@ arc_select <- function(
 
   fields <- match_fields(
     fields = fields,
-    values = x[["fields"]][["name"]]
+    values = c(x[["fields"]][["name"]], "")
   )
 
   query[["outFields"]] <- fields
@@ -157,9 +155,7 @@ collect_layer <- function(
     token = arc_token(),
     page_size = NULL,
     ...,
-    error_call = rlang::caller_env()
-) {
-
+    error_call = rlang::caller_env()) {
   if (length(page_size) > 1) {
     cli::cli_abort("{.arg page_size} must be length 1 not {length(page_size)}")
   } else if (!is.null(page_size) && page_size < 1) {
@@ -178,8 +174,7 @@ collect_layer <- function(
   req <- arc_base_req(x[["url"]], token)
 
   # determine if the layer can query
-  can_query <- switch(
-    class(x),
+  can_query <- switch(class(x),
     "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "ImageServer" = x[["supportsAdvancedQueries"]],
@@ -245,7 +240,8 @@ collect_layer <- function(
   if (is.null(n_feats)) {
     cli::cli_abort(
       c("Can't determine the number of features for {.arg x}.",
-      "*" = "Check to make sure your {.arg where} statement is valid."),
+        "*" = "Check to make sure your {.arg where} statement is valid."
+      ),
       call = error_call
     )
   }
@@ -296,7 +292,7 @@ collect_layer <- function(
   if (rlang::is_named(res) && has_out_fields) {
     out_fields <- c(out_fields, attr(res, "sf_column"))
     res_nm <- names(res)
-    res <- res[ , tolower(res_nm) %in% tolower(out_fields), drop = FALSE]
+    res <- res[, tolower(res_nm) %in% tolower(out_fields), drop = FALSE]
   }
 
   if (rlang::is_empty(res)) {
@@ -309,7 +305,6 @@ collect_layer <- function(
   }
 
   res
-
 }
 
 
@@ -378,13 +373,13 @@ check_inherits_any <- function(x,
 #' @export
 #' @examples
 #' \dontrun{
-#'   furl <- paste0(
-#'     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
-#'     "USA_Major_Cities_/FeatureServer/0"
-#'   )
+#' furl <- paste0(
+#'   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
+#'   "USA_Major_Cities_/FeatureServer/0"
+#' )
 #'
-#'  flayer <- arc_open(furl)
-#'  update_params(flayer, outFields = "NAME")
+#' flayer <- arc_open(furl)
+#' update_params(flayer, outFields = "NAME")
 #' }
 #' @returns An object of the same class as `x`
 update_params <- function(x, ...) {
