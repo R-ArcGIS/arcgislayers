@@ -13,6 +13,7 @@ arc_read(
   crs = NULL,
   ...,
   fields = NULL,
+  alias = c("drop", "label", "replace"),
   token = arc_token()
 )
 }
@@ -23,8 +24,7 @@ arc_read(
 the feature. If \code{col_names} is a character vector with the same length as
 the number of columns in the layer, the default names are replaced with the
 new names. If \code{col_names} has one fewer name than the default column names,
-the existing sf column name is retained. If \code{col_names} is the string
-\code{"alias"}, names are set to match the alias names for the layer, if available.}
+the existing sf column name is retained.}
 
 \item{col_select}{Default \code{NULL}. A character vector of the field names to be
 returned. By default, all fields are returned.}
@@ -46,6 +46,10 @@ server-side. Ignored if x is a \code{Table}.}
 \item{fields}{a character vector of the field names that you wish to be
 returned. By default all fields are returned.}
 
+\item{alias}{Default "drop". Supported options: \code{c("drop", "label", "replace")}. If "drop", field alias values are ignored. If "label", field
+alias values are assigned as a label attribute for each field. If "replace",
+field alias values are used as the column names.}
+
 \item{token}{your authorization token.}
 }
 \value{
@@ -53,10 +57,14 @@ An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.
 }
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
-or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS \code{FeatureLayer}, \code{Table}, or \code{ImageServer} to an
-\code{sf} or \code{SpatRaster} object. Optionally, set, check, or modify
-names for the returned data frame or sf object using the \code{col_names} and
-\code{name_repair} parameters.
+or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS \code{FeatureLayer}, \code{Table}, or \code{ImageServer}
+to an \code{sf} or \code{SpatRaster} object. Optionally, set, check, or modify names
+for the returned data frame or sf object using the \code{col_names} and
+\code{name_repair} parameters. For ease of use and convenience, \code{\link[=arc_read]{arc_read()}}
+allows users to access and query a FeatureLayer, Table, or ImageServer with a
+single function call instead of combining \code{\link[=arc_open]{arc_open()}} and \code{\link[=arc_select]{arc_select()}}.
+The conventions of \code{col_select} are based on functions for reading tabular
+data in the \code{{readr}} package.
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

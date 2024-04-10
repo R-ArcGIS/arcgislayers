@@ -3,6 +3,7 @@
 \name{clear_query}
 \alias{clear_query}
 \alias{list_fields}
+\alias{pull_field_aliases}
 \alias{list_items}
 \alias{refresh_layer}
 \title{Utility functions}
@@ -10,6 +11,8 @@
 clear_query(x)
 
 list_fields(x)
+
+pull_field_aliases(x)
 
 list_items(x)
 
@@ -33,6 +36,7 @@ Utility functions
 \item \code{refresh_layer()} syncs a \code{FeatureLayer} or \code{Table} with the remote
 resource picking up any changes that may have been made upstream.
 Returns an object of class \code{x}.
+\item \code{pull_field_aliases()} returns a named list of the field aliases from a \code{FeatureLayer} or \code{Table}
 }
 }
 \examples{

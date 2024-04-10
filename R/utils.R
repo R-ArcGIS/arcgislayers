@@ -11,7 +11,8 @@
 #' - `refresh_layer()` syncs a `FeatureLayer` or `Table` with the remote
 #'    resource picking up any changes that may have been made upstream.
 #'    Returns an object of class `x`.
-#'
+#' - `pull_field_aliases()` returns a named list of the field aliases from a `FeatureLayer` or `Table`
+
 #' @returns See Details.
 #' @export
 #' @rdname utils
@@ -57,6 +58,15 @@ list_fields <- function(x) {
   }
 
   res
+}
+
+#' @export
+#' @rdname utils
+pull_field_aliases <- function(x) {
+  fields <- list_fields(x)
+
+  # get alias values
+  rlang::set_names(fields[["alias"]], fields[["name"]])
 }
 
 #' @export
