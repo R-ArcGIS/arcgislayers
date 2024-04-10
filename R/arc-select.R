@@ -157,9 +157,15 @@ collect_layer <- function(
     ...,
     error_call = rlang::caller_env()) {
   if (length(page_size) > 1) {
-    cli::cli_abort("{.arg page_size} must be length 1 not {length(page_size)}")
+    cli::cli_abort(
+      "{.arg page_size} must be length 1 not {length(page_size)}",
+      call = error_call
+    )
   } else if (!is.null(page_size) && page_size < 1) {
-    cli::cli_abort("{.arg page_size} must be a positive integer.")
+    cli::cli_abort(
+      "{.arg page_size} must be a positive integer.",
+      call = error_call
+    )
   }
 
   # 1. Make base request
@@ -214,7 +220,10 @@ collect_layer <- function(
   if (is.null(page_size)) {
     feats_per_page <- max_records
   } else if (page_size > max_records) {
-    cli::cli_abort("{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})")
+    cli::cli_abort(
+      "{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})",
+      call = error_call
+    )
   } else {
     # ensure its an integer.
     page_size <- as.integer(page_size)
@@ -224,26 +233,27 @@ collect_layer <- function(
   # count the number of features in a query
   n_feats <- count_results(req, query_params)
 
-  if (is.null(n_feats)) {
-    cli::cli_abort(c(
-      "Cannot determine the number of features in request.",
-      "i" = "did you set custom parameters via {.arg ...}?"
-    ), call = error_call)
+  if (is.null(n_feats) && is.null(n_max)) {
+    cli::cli_abort(
+      c("Can't determine the number of features for {.arg x}.",
+        "*" = "Check to make sure your {.arg where} statement is valid or
+        set a value for {.arg n_max}."
+      ),
+      call = error_call
+    )
   }
 
   # identify the number of pages needed to return all features
   # if n_max is provided need to reduce the number of pages
   if (n_feats > n_max) {
-    n_feats <- n_max
-  }
-
-  if (is.null(n_feats)) {
-    cli::cli_abort(
-      c("Can't determine the number of features for {.arg x}.",
-        "*" = "Check to make sure your {.arg where} statement is valid."
-      ),
-      call = error_call
+    cli::cli_bullets(
+      c(
+        "i" = "Query results limited to {n_max} out of {n_feats} available feature{?s}.",
+        "!" = "Increase {.arg n_max} value to return all selected features."
+        )
     )
+
+    n_feats <- n_max
   }
 
   # calculate the total number of requests to be made
@@ -441,7 +451,7 @@ validate_params <- function(params) {
 }
 
 # Given a query, determine how many features will be returned
-count_results <- function(req, query) {
+count_results <- function(req, query, error_call = rlang::caller_env()) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
     !!!validate_params(query),
@@ -451,7 +461,7 @@ count_results <- function(req, query) {
   resp <- httr2::resp_body_string(
     httr2::req_perform(
       httr2::req_url_query(n_req, f = "json"),
-      error_call = rlang::caller_env()
+      error_call = error_call
     )
   )
 
