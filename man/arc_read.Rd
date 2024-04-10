@@ -71,7 +71,7 @@ data in the \code{{readr}} package.
 }
 \examples{
 \dontrun{
-  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
   # read entire service
   arc_read(furl)

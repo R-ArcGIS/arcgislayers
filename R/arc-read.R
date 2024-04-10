@@ -36,7 +36,7 @@
 #' @returns An sf object, a `data.frame`, or an object of class `SpatRaster`.
 #' @examples
 #' \dontrun{
-#'   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
+#'   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 #'
 #'   # read entire service
 #'   arc_read(furl)
@@ -137,12 +137,18 @@ set_layer_col_names <- function(
   alias <- rlang::arg_match(alias, error_call = call)
   has_name_repair <- !is.null(name_repair)
 
+  if (!rlang::is_logical(col_names, 1) && !is.character(col_names)) {
+    cli::cli_abort(
+      "{.arg col_names} must be `TRUE`, `FALSE`, or a character vector",
+      call = call
+    )
+  }
+
   if (rlang::is_true(col_names) && alias == "drop" && !has_name_repair) {
     return(layer)
   }
 
   # Use existing names by default
-  # TODO: Allow a fields parameter to support partial renaming or alias assignment
   existing_nm <- names(layer)
   replace_nm <- existing_nm
   sf_column_nm <- attr(layer, "sf_column")
@@ -219,14 +225,12 @@ set_layer_col_names <- function(
   label_layer_fields(layer, values = alias_val)
 }
 
+#' Apply a label attribute value to each column of layer
 #' @noRd
 label_layer_fields <- function(
     layer,
-    values,
-    safe = TRUE) {
-  if (safe) {
-    nm <- intersect(names(values), names(layer))
-  }
+    values) {
+  nm <- intersect(names(values), names(layer))
 
   for (v in nm) {
     label_attr(layer[[v]]) <- values[[v]]
