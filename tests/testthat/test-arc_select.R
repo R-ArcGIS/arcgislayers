@@ -63,3 +63,49 @@ test_that("arc_select(): respects `...`", {
     )
   )
 })
+
+test_that("arc_select(): filter_geom works", {
+  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_State_Boundaries/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  bbox_res <- arc_select(
+    flayer,
+    filter_geom = sf::st_bbox(nc),
+    fields = "STATE_NAME"
+  )
+
+  expect_identical(
+    bbox_res[["STATE_NAME"]],
+    c("Georgia", "Kentucky", "North Carolina", "South Carolina",
+      "Tennessee", "Virginia")
+  )
+
+  sfc_res <- arc_select(
+    flayer,
+    filter_geom = nc$geometry,
+    fields = "STATE_NAME"
+  )
+
+  expect_identical(
+    sfc_res[["STATE_NAME"]],
+    c("Georgia", "North Carolina", "South Carolina", "Tennessee", "Virginia")
+  )
+
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  sfg_res <- arc_select(
+    flayer,
+    filter_geom = nc$geometry[1],
+    fields = "STATE_NAME"
+  )
+
+  expect_identical(
+    unique(sfg_res[["STATE_NAME"]]),
+    c("North Carolina", "Tennessee", "Virginia")
+  )
+})
