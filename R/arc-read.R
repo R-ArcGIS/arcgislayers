@@ -20,7 +20,7 @@
 #'   the existing sf column name is retained.
 #' @param col_select Default `NULL`. A character vector of the field names to be
 #'   returned. By default, all fields are returned.
-#' @param alias Default "drop". Supported options: `c("drop", "label",
+#' @param alias Default `"drop"`. Supported options: `c("drop", "label",
 #'   "replace")`. If "drop", field alias values are ignored. If "label", field
 #'   alias values are assigned as a label attribute for each field. If "replace"
 #'   and col_names is `TRUE`, field alias values are used as the column names.
