@@ -44,6 +44,14 @@ prepare_spatial_filter <- function(
     call = error_call
   )
 
+  if (inherits(filter_geom, "sfc") && rlang::is_empty(filter_geom)) {
+    cli::cli_warn(
+      "{.arg filter_geom} contains no features and can't be applied to query."
+    )
+
+    return(NULL)
+  }
+
   # NOTE: CRS cannot be missing
   if (inherits(filter_geom, "bbox")) {
     filter_geom <- sf::st_as_sfc(filter_geom)
