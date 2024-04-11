@@ -47,8 +47,8 @@ server-side. Ignored if x is a \code{Table}.}
 returned. By default all fields are returned.}
 
 \item{alias}{Default "drop". Supported options: \code{c("drop", "label", "replace")}. If "drop", field alias values are ignored. If "label", field
-alias values are assigned as a label attribute for each field. If "replace",
-field alias values are used as the column names.}
+alias values are assigned as a label attribute for each field. If "replace"
+and col_names is \code{TRUE}, field alias values are used as the column names.}
 
 \item{token}{your authorization token.}
 }

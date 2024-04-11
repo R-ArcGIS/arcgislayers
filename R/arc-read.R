@@ -22,8 +22,8 @@
 #'   returned. By default, all fields are returned.
 #' @param alias Default "drop". Supported options: `c("drop", "label",
 #'   "replace")`. If "drop", field alias values are ignored. If "label", field
-#'   alias values are assigned as a label attribute for each field. If "replace",
-#'   field alias values are used as the column names.
+#'   alias values are assigned as a label attribute for each field. If "replace"
+#'   and col_names is `TRUE`, field alias values are used as the column names.
 #' @param n_max Defaults to 10000 or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.
@@ -139,7 +139,7 @@ set_layer_col_names <- function(
 
   if (!rlang::is_logical(col_names, 1) && !is.character(col_names)) {
     cli::cli_abort(
-      "{.arg col_names} must be `TRUE`, `FALSE`, or a character vector",
+      "{.arg col_names} must be `TRUE`, `FALSE`, or a character vector.",
       call = call
     )
   }
@@ -153,10 +153,15 @@ set_layer_col_names <- function(
   replace_nm <- existing_nm
   sf_column_nm <- attr(layer, "sf_column")
 
-  if (alias == "label" || identical(col_names, "alias")) {
+  if (alias != "drop" || identical(col_names, "alias")) {
     # get alias values and drop names
-    alias_val <- pull_field_aliases(x)[[existing_nm]]
+    alias_val <- pull_field_aliases(x)[setdiff(existing_nm, sf_column_nm)]
     alias_val <- as.character(alias_val)
+
+    if (alias == "replace") {
+      # NOTE: alias values may not be valid names
+      replace_nm <- alias_val
+    }
   }
 
   if (is.character(col_names)) {
@@ -168,11 +173,6 @@ set_layer_col_names <- function(
         what = "arc_read(..., field = 'alias')",
         with = "arc_read(..., alias = 'replace')",
       )
-    }
-
-    if (alias == "replace") {
-      # NOTE: alias values may not be valid names
-      col_names <- alias_val
     }
 
     replace_nm <- col_names
