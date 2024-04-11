@@ -149,7 +149,7 @@ set_layer_col_names <- function(
   }
 
   # Use existing names by default
-  existing_nm <- names(layer)
+  existing_nm <- colnames(layer)
   replace_nm <- existing_nm
   sf_column_nm <- attr(layer, "sf_column")
 
