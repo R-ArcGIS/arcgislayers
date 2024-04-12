@@ -113,7 +113,7 @@ test_that("arc_read(): work with col_names vector", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
-  expect_named(arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"), c("name", "X2"))
+  expect_named(arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"), c("name", "X2", "geometry"))
   expect_named(arc_read(furl, fields = "", col_names = "geom"), "geom")
 })
 
