@@ -77,23 +77,23 @@ avoid time outs.
 }
 \examples{
 \dontrun{
-  # define the feature layer url
-  furl <- paste0(
-    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
-    "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
-  )
+# define the feature layer url
+furl <- paste0(
+  "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
+  "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+)
 
-  flayer <- arc_open(furl)
+flayer <- arc_open(furl)
 
-  arc_select(
-    flayer,
-    fields = c("StateAbbr", "TotalPopulation")
-  )
+arc_select(
+  flayer,
+  fields = c("StateAbbr", "TotalPopulation")
+)
 
-  arc_select(
-    flayer,
-    fields = c("OBJECTID", "PlaceName"),
-    where = "TotalPopulation > 1000000"
-  )
+arc_select(
+  flayer,
+  fields = c("OBJECTID", "PlaceName"),
+  where = "TotalPopulation > 1000000"
+)
 }
 }

@@ -19,12 +19,12 @@ An object of the same class as \code{x}
 }
 \examples{
 \dontrun{
-  furl <- paste0(
-    "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
-    "USA_Major_Cities_/FeatureServer/0"
-  )
+furl <- paste0(
+  "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
+  "USA_Major_Cities_/FeatureServer/0"
+)
 
- flayer <- arc_open(furl)
- update_params(flayer, outFields = "NAME")
+flayer <- arc_open(furl)
+update_params(flayer, outFields = "NAME")
 }
 }

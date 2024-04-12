@@ -58,7 +58,6 @@ test_that("arc_read(): n_max is correct", {
 
 })
 
-
 test_that("arc_read(): n_max option is respected", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
@@ -93,4 +92,48 @@ test_that("arc_read(): no error on tricky polylines", {
   url <- "https://gisportalp.itd.idaho.gov/xserver/rest/services/RH_GeneralService/MapServer/1"
 
   expect_no_error(arc_read(url, where = "OBJECTID = 440013"))
+})
+
+
+test_that("arc_read(): error with invalid col_names", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+  expect_error(arc_read(furl, n_max = 1, col_names = 1), "or a character vector")
+  expect_error(arc_read(furl, n_max = 1, col_names = character(0)), "must be length 13 or shorter, not 0")
+})
+
+test_that("arc_read(): work with col_names = FALSE", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+
+  expect_named(arc_read(furl, fields = "", col_names = FALSE), "X1")
+})
+
+test_that("arc_read(): work with col_names vector", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+
+  expect_named(arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"), c("name", "X2", "geometry"))
+  expect_named(arc_read(furl, fields = "", col_names = "geom"), "geom")
+})
+
+
+test_that("arc_read(): error with invalid alias", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+  expect_error(arc_read(furl, n_max = 1, alias = "droop"), 'Did you mean "drop"?')
+})
+
+test_that("arc_read(): work with alias replace", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+  expect_named(arc_read(furl, n_max = 1, fields = "STATE_ABBR", alias = "replace"), c("State Abbreviation", "geometry"))
+})
+
+test_that("arc_read(): work with alias label", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+
+  layer <- arc_read(furl, n_max = 1, fields = "STATE_ABBR", alias = "label")
+  expect_identical(attr(layer[[1]], "label"), "State Abbreviation")
 })

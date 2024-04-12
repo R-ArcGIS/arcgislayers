@@ -1,3 +1,9 @@
+# arcgislayers (development)
+
+- Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
+- Add `pull_field_aliases()` utility function
+- `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
+
 # arcgislayers 0.2.0
 
 - initial CRAN release

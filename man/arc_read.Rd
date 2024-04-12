@@ -8,28 +8,33 @@ arc_read(
   url,
   col_names = TRUE,
   col_select = NULL,
-  n_max = getOption("arcgislayers.n_max", default = 10000),
+  n_max = Inf,
   name_repair = "unique",
   crs = NULL,
   ...,
   fields = NULL,
+  alias = c("drop", "label", "replace"),
   token = arc_token()
 )
 }
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{col_names}{Default \code{TRUE}. If \code{TRUE}, use the default column names for
-the feature. If \code{col_names} is a character vector with the same length as
-the number of columns in the layer, the default names are replaced with the
-new names. If \code{col_names} has one fewer name than the default column names,
-the existing sf column name is retained. If \code{col_names} is the string
-\code{"alias"}, names are set to match the alias names for the layer, if available.}
+\item{col_names}{Default \code{TRUE}. Column names or name handling rule.
+\code{col_names} can be \code{TRUE}, \code{FALSE}, \code{NULL}, or a character vector:
+\itemize{
+\item If \code{TRUE}, use existing default column names for the layer or table.
+If \code{FALSE} or \code{NULL}, column names will be generated automatically: X1, X2,
+X3 etc.
+\item If \code{col_names} is a character vector, values replace the existing column
+names. \code{col_names} can't be length 0 or longer than the number of fields in
+the returned layer.
+}}
 
 \item{col_select}{Default \code{NULL}. A character vector of the field names to be
 returned. By default, all fields are returned.}
 
-\item{n_max}{Defaults to 10000 or an option set with
+\item{n_max}{Defaults to \code{Inf} or an option set with
 \verb{options("arcgislayers.n_max" = <max records>)}. Maximum number of records
 to return.}
 
@@ -43,8 +48,17 @@ server-side. Ignored if x is a \code{Table}.}
 \item{...}{Additional arguments passed to \code{\link[=arc_select]{arc_select()}} if URL is a
 \code{FeatureLayer} or \code{Table} or \code{\link[=arc_raster]{arc_raster()}} if URL is an \code{ImageLayer}.}
 
-\item{fields}{a character vector of the field names that you wish to be
-returned. By default all fields are returned.}
+\item{fields}{Default \code{NULL}. a character vector of the field names to
+returned. By default all fields are returned. Ignored if \code{col_names} is
+supplied.}
+
+\item{alias}{Use of field alias values. Default \verb{c("drop", "label", "replace"),}. There are three options:
+\itemize{
+\item \code{"drop"}, field alias values are ignored.
+\item \code{"label"}: field alias values are assigned as a label attribute for each field.
+\item \code{"replace"}: field alias values replace existing column names. \code{col_names}
+must \code{TRUE} for this option to be applied.
+}}
 
 \item{token}{your authorization token.}
 }
@@ -53,17 +67,21 @@ An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.
 }
 \description{
 \code{\link[=arc_read]{arc_read()}} combines the functionality of \code{\link[=arc_open]{arc_open()}} with \code{\link[=arc_select]{arc_select()}}
-or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS \code{FeatureLayer}, \code{Table}, or \code{ImageServer} to an
-\code{sf} or \code{SpatRaster} object. Optionally, set, check, or modify
-names for the returned data frame or sf object using the \code{col_names} and
-\code{name_repair} parameters.
+or \code{\link[=arc_raster]{arc_raster()}} to read an ArcGIS \code{FeatureLayer}, \code{Table}, or \code{ImageServer}
+to an \code{sf} or \code{SpatRaster} object. Optionally, set, check, or modify names
+for the returned data frame or sf object using the \code{col_names} and
+\code{name_repair} parameters. For ease of use and convenience, \code{\link[=arc_read]{arc_read()}}
+allows users to access and query a FeatureLayer, Table, or ImageServer with a
+single function call instead of combining \code{\link[=arc_open]{arc_open()}} and \code{\link[=arc_select]{arc_select()}}.
+The conventions of \code{col_select} are based on functions for reading tabular
+data in the \code{{readr}} package.
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{
-  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census#' /MapServer/3"
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
   # read entire service
   arc_read(furl)
@@ -92,4 +110,7 @@ names for the returned data frame or sf object using the \code{col_names} and
  )
 
 }
+}
+\seealso{
+\code{\link[=arc_select]{arc_select()}}; \code{\link[=arc_raster]{arc_raster()}}
 }
