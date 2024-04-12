@@ -13,20 +13,30 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams arc_open
-#' @param col_names Default `TRUE`. If `TRUE`, use the default column names for
-#'   the feature. If `col_names` is a character vector with the same length as
-#'   the number of columns in the layer, the default names are replaced with the
-#'   new names. If `col_names` has one fewer name than the default column names,
-#'   the existing sf column name is retained.
+#' @param col_names Default `TRUE`. Column names or name handling rule.
+#'   `col_names` can be `TRUE`, `FALSE`, `NULL`, or a character vector:
+#'
+#'  - If `TRUE`, use existing default column names for the layer or table.
+#'  If `FALSE` or `NULL`, column names will be generated automatically: X1, X2,
+#'  X3 etc.
+#'  - If `col_names` is a character vector, values replace the existing column
+#'  names. `col_names` can't be length 0 or longer than the number of fields in
+#'  the returned layer.
 #' @param col_select Default `NULL`. A character vector of the field names to be
 #'   returned. By default, all fields are returned.
-#' @param alias Default `"drop"`. Supported options: `c("drop", "label",
-#'   "replace")`. If "drop", field alias values are ignored. If "label", field
-#'   alias values are assigned as a label attribute for each field. If "replace"
-#'   and col_names is `TRUE`, field alias values are used as the column names.
-#' @param n_max Defaults to 10000 or an option set with
+#' @param n_max Defaults to `Inf` or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.
+#' @param alias Use of field alias values. Default `c("drop", "label",
+#'   "replace"),`. There are three options:
+#'
+#'  - `"drop"`, field alias values are ignored.
+#'  - `"label"`: field alias values are assigned as a label attribute for each field.
+#'  - `"replace"`: field alias values replace existing column names. `col_names`
+#'  must `TRUE` for this option to be applied.
+#' @param fields Default `NULL`. a character vector of the field names to
+#'   returned. By default all fields are returned. Ignored if `col_names` is
+#'   supplied.
 #' @inheritParams arc_select
 #' @inheritParams arc_raster
 #' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
@@ -34,6 +44,7 @@
 #' @param ... Additional arguments passed to [arc_select()] if URL is a
 #'   `FeatureLayer` or `Table` or [arc_raster()] if URL is an `ImageLayer`.
 #' @returns An sf object, a `data.frame`, or an object of class `SpatRaster`.
+#' @seealso [arc_select()]; [arc_raster()]
 #' @examples
 #' \dontrun{
 #'   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
@@ -70,14 +81,13 @@ arc_read <- function(
     url,
     col_names = TRUE,
     col_select = NULL,
-    n_max = getOption("arcgislayers.n_max", default = 10000),
+    n_max = Inf,
     name_repair = "unique",
     crs = NULL,
     ...,
     fields = NULL,
     alias = c("drop", "label", "replace"),
-    token = arc_token()
-) {
+    token = arc_token()) {
   x <- arc_open(url = url, token = token)
 
   # Default crs must be NULL since crs can't be taken from x at execution
@@ -93,7 +103,6 @@ arc_read <- function(
     )
 
     return(layer)
-
   } else if (!obj_is_layer(x)) {
     # if it is not a layer we abort
     # implicitly checks for Layer type and permits continuing
@@ -101,9 +110,14 @@ arc_read <- function(
       c(
         "{.arg url} is not a supported type:
       {.val FeatureLayer}, {.val Table}, or {.val ImageServer}",
-      "i" = "found {.val {class(x)}}"
+        "i" = "found {.val {class(x)}}"
       )
     )
+  }
+
+  # TODO: Should this pattern be implemented for arc_select?
+  if (is.infinite(n_max) && is.numeric(getOption("arcgislayers.n_max"))) {
+    n_max <- getOption("arcgislayers.n_max")
   }
 
   layer <- arc_select(
@@ -132,30 +146,32 @@ set_layer_col_names <- function(
     name_repair = NULL,
     alias = c("drop", "label", "replace"),
     x = NULL,
-    call = rlang::caller_env()
-) {
-  alias <- rlang::arg_match(alias, error_call = call)
-  has_name_repair <- !is.null(name_repair)
-
-  if (!rlang::is_logical(col_names, 1) && !is.character(col_names)) {
+    call = rlang::caller_env()) {
+  # check col_names input
+  if (!is.null(col_names) && !rlang::is_logical(col_names) && !is.character(col_names)) {
     cli::cli_abort(
-      "{.arg col_names} must be `TRUE`, `FALSE`, or a character vector.",
+      "{.arg col_names} must be `TRUE`, `FALSE`, `NULL`, or a character vector.",
       call = call
     )
   }
 
-  if (rlang::is_true(col_names) && alias == "drop" && !has_name_repair) {
-    return(layer)
+  alias <- rlang::arg_match(alias, error_call = call)
+
+  # skip col_names and alias handling if possible
+  if (rlang::is_true(col_names) && alias == "drop") {
+    return(repair_layer_names(layer, name_repair = name_repair, call = call))
   }
 
+  existing_nm <- names(layer)
+  n_col <- ncol(layer)
+  sf_column <- attr(layer, "sf_column")
+
   # Use existing names by default
-  existing_nm <- colnames(layer)
   replace_nm <- existing_nm
-  sf_column_nm <- attr(layer, "sf_column")
 
   if (alias != "drop" || identical(col_names, "alias")) {
     # get alias values and drop names
-    alias_val <- pull_field_aliases(x)[setdiff(existing_nm, sf_column_nm)]
+    alias_val <- pull_field_aliases(x)[setdiff(existing_nm, sf_column)]
     alias_val <- as.character(alias_val)
 
     if (alias == "replace") {
@@ -165,52 +181,52 @@ set_layer_col_names <- function(
   }
 
   if (is.character(col_names)) {
+    col_names_len <- length(col_names)
+
+    # Check col_names length
+    if ((col_names_len > n_col) || col_names_len == 0) {
+      cli::cli_abort(
+        "{.arg col_names} must be length {n_col}{? or shorter}, not {col_names_len}.",
+        call = call
+      )
+    }
+
     if (identical(col_names, "alias")) {
       # Assign alias values as name if col_names = "alias"
       col_names <- alias_val
       lifecycle::signal_stage(
         "superseded",
-        what = "arc_read(..., field = 'alias')",
-        with = "arc_read(..., alias = 'replace')",
+        what = "arc_read(col_names = \"can't be alias\")",
+        with = "arc_read(alias = \"replace\")",
       )
     }
 
     replace_nm <- col_names
   }
 
-  replace_nm_len <- length(replace_nm)
-
-  if (rlang::is_false(col_names)) {
+  if (rlang::is_false(col_names) || is.null(col_names)) {
     # Use X1, X2, etc. as names if col_names is FALSE
-    replace_nm <- paste0("X", seq(to = replace_nm_len))
+    replace_nm <- paste0("X", seq_along(existing_nm))
   }
 
-  # If x is a sf object and sf column is not in names, check to ensure names
-  # work with geometry column
-  if (inherits(layer, "sf") && sf_column_nm != replace_nm[[replace_nm_len]]) {
+  replace_nm_len <- length(replace_nm)
 
-    existing_nm_len <- length(existing_nm)
+  if (replace_nm_len < n_col) {
+    # fill missing field names using pattern, X1, X2, etc.
+    replace_nm <- c(replace_nm, paste0("X", replace_nm_len:n_col))
 
-    if (length(replace_nm) == existing_nm_len) {
-      # If same number of names as layer columns, use last name for geometry
-      layer <- sf::st_set_geometry(layer, replace_nm[[existing_nm_len]])
-    } else if (replace_nm_len == (existing_nm_len - 1)) {
-      # If same number of names as layer columns, use existing geometry name
-      replace_nm <- c(replace_nm, sf_column_nm)
+    # But keep the default sf column name
+    if (inherits(layer, "sf")) {
+      replace_nm[[n_col]] <- sf_column
     }
   }
 
-  if (has_name_repair) {
-    rlang::check_installed("vctrs", call = call)
-    replace_nm <- vctrs::vec_as_names(
-      names = replace_nm,
-      repair = name_repair,
-      repair_arg = "name_repair",
-      call = call
-    )
-  }
-
-  layer <- rlang::set_names(layer, nm = replace_nm)
+  layer <- repair_layer_names(
+    layer,
+    names = replace_nm,
+    name_repair = name_repair,
+    call = call
+  )
 
   if (alias != "label") {
     return(layer)
@@ -225,12 +241,35 @@ set_layer_col_names <- function(
   label_layer_fields(layer, values = alias_val)
 }
 
+#' Repair layer names using `vctrs::vec_as_names` and `rlang::set_names`
+#' @noRd
+repair_layer_names <- function(
+    layer,
+    names = NULL,
+    name_repair = "unique",
+    call = rlang::caller_env()) {
+  names <- names %||% colnames(layer)
+
+  if (!is.null(name_repair)) {
+    rlang::check_installed("vctrs", call = call)
+
+    names <- vctrs::vec_as_names(
+      names = names,
+      repair = name_repair,
+      repair_arg = "name_repair",
+      call = call
+    )
+  }
+
+  rlang::set_names(layer, nm = names)
+}
+
 #' Apply a label attribute value to each column of layer
 #' @noRd
 label_layer_fields <- function(
     layer,
     values) {
-  nm <- intersect(names(values), names(layer))
+  nm <- intersect(names(values), colnames(layer))
 
   for (v in nm) {
     label_attr(layer[[v]]) <- values[[v]]
