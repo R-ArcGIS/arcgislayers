@@ -99,6 +99,7 @@ test_that("arc_read(): error with invalid col_names", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
   expect_error(arc_read(furl, n_max = 1, col_names = 1), "or a character vector")
+  expect_error(arc_read(furl, n_max = 1, col_names = character(0)), "must be length 13 or shorter, not 0")
 })
 
 test_that("arc_read(): work with col_names = FALSE", {
@@ -112,6 +113,7 @@ test_that("arc_read(): work with col_names vector", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
+  expect_named(arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"), c("name", "X2"))
   expect_named(arc_read(furl, fields = "", col_names = "geom"), "geom")
 })
 
