@@ -213,7 +213,7 @@ set_layer_col_names <- function(
 
   if (replace_nm_len < n_col) {
     # fill missing field names using pattern, X1, X2, etc.
-    replace_nm <- c(replace_nm, paste0("X", replace_nm_len:n_col))
+    replace_nm <- c(replace_nm, paste0("X", seq(replace_nm_len + 1, n_col)))
 
     # But keep the default sf column name
     if (inherits(layer, "sf")) {
@@ -235,7 +235,7 @@ set_layer_col_names <- function(
   # Name alias values with layer names
   alias_val <- rlang::set_names(
     alias_val,
-    nm = setdiff(replace_nm, attr(layer, "sf_column"))
+    nm = setdiff(replace_nm, sf_column)
   )
 
   label_layer_fields(layer, values = alias_val)
