@@ -246,12 +246,14 @@ collect_layer <- function(
   # identify the number of pages needed to return all features
   # if n_max is provided need to reduce the number of pages
   if (n_feats > n_max) {
-    cli::cli_bullets(
-      c(
-        "i" = "Query results limited to {n_max} out of {n_feats} available feature{?s}.",
-        "!" = "Increase {.arg n_max} value to return all selected features."
-        )
-    )
+    # TODO: Implement a verbose parameter that can enable this message
+    # See https://github.com/R-ArcGIS/arcgislayers/pull/180#issuecomment-2049631271
+    # cli::cli_bullets(
+    #   c(
+    #     "i" = "Query results limited to {n_max} out of {n_feats} available feature{?s}.",
+    #     "!" = "Increase {.arg n_max} value to return all selected features."
+    #     )
+    # )
 
     n_feats <- n_max
   }
