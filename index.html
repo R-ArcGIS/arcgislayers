@@ -88,8 +88,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt; → arcgisutils v0.2.0</span></span>
-<span><span class="co">#&gt; → arcgislayers v0.2.0</span></span></code></pre></div>
+<span><span class="co">#&gt; → arcgisutils v0.2.0.9000</span></span></code></pre></div>
 <p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):</p>
 <ul>
 <li><code>FeatureLayer</code></li>
@@ -113,48 +112,49 @@
 <span><span class="co">#&gt; Capabilities: Query,Extract</span></span></code></pre></div>
 <p>You can then use <code><a href="reference/arc_select.html">arc_select()</a></code> to query the feature layer object and return an <code>sf</code> object.</p>
 <p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s</span></span>
-<span><span class="co">#&gt; Simple feature collection with 3143 features and 12 fields</span></span>
-<span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    OBJECTID            NAME STATE_NAME STATE_FIPS  FIPS    SQMI POPULATION</span></span>
-<span><span class="co">#&gt; 1         1  Autauga County    Alabama         01 01001  604.37      58805</span></span>
-<span><span class="co">#&gt; 2         2  Baldwin County    Alabama         01 01003 1633.14     231767</span></span>
-<span><span class="co">#&gt; 3         3  Barbour County    Alabama         01 01005  904.52      25223</span></span>
-<span><span class="co">#&gt; 4         4     Bibb County    Alabama         01 01007  626.17      22293</span></span>
-<span><span class="co">#&gt; 5         5   Blount County    Alabama         01 01009  650.63      59134</span></span>
-<span><span class="co">#&gt; 6         6  Bullock County    Alabama         01 01011  625.14      10357</span></span>
-<span><span class="co">#&gt; 7         7   Butler County    Alabama         01 01013  777.88      19051</span></span>
-<span><span class="co">#&gt; 8         8  Calhoun County    Alabama         01 01015  612.27     116441</span></span>
-<span><span class="co">#&gt; 9         9 Chambers County    Alabama         01 01017  603.11      34772</span></span>
-<span><span class="co">#&gt; 10       10 Cherokee County    Alabama         01 01019  599.98      24971</span></span>
-<span><span class="co">#&gt;    POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
-<span><span class="co">#&gt; 1      97.3         AL         001   0.1489034      1.884137</span></span>
-<span><span class="co">#&gt; 2     141.9         AL         003   0.4044891      3.678276</span></span>
-<span><span class="co">#&gt; 3      27.9         AL         005   0.2224307      2.218514</span></span>
-<span><span class="co">#&gt; 4      35.6         AL         007   0.1577359      1.852453</span></span>
-<span><span class="co">#&gt; 5      90.9         AL         009   0.1675296      2.067456</span></span>
-<span><span class="co">#&gt; 6      16.6         AL         011   0.1557273      2.006250</span></span>
-<span><span class="co">#&gt; 7      24.5         AL         013   0.1927305      1.769462</span></span>
-<span><span class="co">#&gt; 8     190.2         AL         015   0.1523369      2.149825</span></span>
-<span><span class="co">#&gt; 9      57.7         AL         017   0.1531136      1.637226</span></span>
-<span><span class="co">#&gt; 10     41.6         AL         019   0.1527217      1.794142</span></span>
-<span><span class="co">#&gt;                          geometry</span></span>
-<span><span class="co">#&gt; 1  MULTIPOLYGON (((-86.82067 3...</span></span>
-<span><span class="co">#&gt; 2  MULTIPOLYGON (((-87.97309 3...</span></span>
-<span><span class="co">#&gt; 3  MULTIPOLYGON (((-85.74337 3...</span></span>
-<span><span class="co">#&gt; 4  MULTIPOLYGON (((-87.41986 3...</span></span>
-<span><span class="co">#&gt; 5  MULTIPOLYGON (((-86.96799 3...</span></span>
-<span><span class="co">#&gt; 6  MULTIPOLYGON (((-85.4114 32...</span></span>
-<span><span class="co">#&gt; 7  MULTIPOLYGON (((-86.44912 3...</span></span>
-<span><span class="co">#&gt; 8  MULTIPOLYGON (((-85.79353 3...</span></span>
-<span><span class="co">#&gt; 9  MULTIPOLYGON (((-85.58963 3...</span></span>
-<span><span class="co">#&gt; 10 MULTIPOLYGON (((-85.41657 3...</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">arc_select</span>(county_fl)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>Iterating ■■■■■■■■■■■■■■■■ <span class="dv">50</span>% <span class="sc">|</span> ETA<span class="sc">:</span> <span class="dv">2</span>s</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 3143 features and 12 fields</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; First 10 features:</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;    OBJECTID            NAME STATE_NAME STATE_FIPS  FIPS    SQMI POPULATION</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 1         1  Autauga County    Alabama         01 01001  604.37      58805</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 2         2  Baldwin County    Alabama         01 01003 1633.14     231767</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 3         3  Barbour County    Alabama         01 01005  904.52      25223</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 4         4     Bibb County    Alabama         01 01007  626.17      22293</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 5         5   Blount County    Alabama         01 01009  650.63      59134</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 6         6  Bullock County    Alabama         01 01011  625.14      10357</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 7         7   Butler County    Alabama         01 01013  777.88      19051</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 8         8  Calhoun County    Alabama         01 01015  612.27     116441</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 9         9 Chambers County    Alabama         01 01017  603.11      34772</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 10       10 Cherokee County    Alabama         01 01019  599.98      24971</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;    POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 1      97.3         AL         001   0.1489034      1.884137</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 2     141.9         AL         003   0.4044891      3.678276</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 3      27.9         AL         005   0.2224307      2.218514</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 4      35.6         AL         007   0.1577359      1.852453</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 5      90.9         AL         009   0.1675296      2.067456</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 6      16.6         AL         011   0.1557273      2.006250</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 7      24.5         AL         013   0.1927305      1.769462</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; 8     190.2         AL         015   0.1523369      2.149825</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; 9      57.7         AL         017   0.1531136      1.637226</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; 10     41.6         AL         019   0.1527217      1.794142</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt;                          geometry</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; 1  MULTIPOLYGON (((-86.82067 3...</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; 2  MULTIPOLYGON (((-87.97309 3...</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; 3  MULTIPOLYGON (((-85.74337 3...</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; 4  MULTIPOLYGON (((-87.41986 3...</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; 5  MULTIPOLYGON (((-86.96799 3...</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; 6  MULTIPOLYGON (((-85.4114 32...</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; 7  MULTIPOLYGON (((-86.44912 3...</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; 8  MULTIPOLYGON (((-85.79353 3...</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt; 9  MULTIPOLYGON (((-85.58963 3...</span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt; 10 MULTIPOLYGON (((-85.41657 3...</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtering-using-where-or-filter_geom-arguments">Filtering using <code>where</code> or <code>filter_geom</code> arguments<a class="anchor" aria-label="anchor" href="#filtering-using-where-or-filter_geom-arguments"></a>
@@ -167,23 +167,23 @@
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state_abbr"</span>, <span class="st">"population"</span><span class="op">)</span>, </span>
 <span>  where <span class="op">=</span> <span class="st">"population &gt; 1000000"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Simple feature collection with 49 features and 3 fields</span></span>
+<span><span class="co">#&gt; Simple feature collection with 49 features and 2 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -158.2674 ymin: 21.24986 xmax: -71.02671 ymax: 47.77552</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    STATE_ABBR POPULATION OBJECTID                       geometry</span></span>
-<span><span class="co">#&gt; 1          AZ    4420568      101 MULTIPOLYGON (((-111.0425 3...</span></span>
-<span><span class="co">#&gt; 2          AZ    1043433      104 MULTIPOLYGON (((-110.4522 3...</span></span>
-<span><span class="co">#&gt; 3          CA    1682353      184 MULTIPOLYGON (((-121.4721 3...</span></span>
-<span><span class="co">#&gt; 4          CA    1165927      190 MULTIPOLYGON (((-122.3076 3...</span></span>
-<span><span class="co">#&gt; 5          CA    1008654      193 MULTIPOLYGON (((-120.6636 3...</span></span>
-<span><span class="co">#&gt; 6          CA   10014009      202 MULTIPOLYGON (((-118.1067 3...</span></span>
-<span><span class="co">#&gt; 7          CA    3186989      213 MULTIPOLYGON (((-117.509 33...</span></span>
-<span><span class="co">#&gt; 8          CA    2418185      216 MULTIPOLYGON (((-116.0824 3...</span></span>
-<span><span class="co">#&gt; 9          CA    1585055      217 MULTIPOLYGON (((-121.6652 3...</span></span>
-<span><span class="co">#&gt; 10         CA    2181654      219 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
+<span><span class="co">#&gt;    STATE_ABBR POPULATION                       geometry</span></span>
+<span><span class="co">#&gt; 1          AZ    4420568 MULTIPOLYGON (((-111.0425 3...</span></span>
+<span><span class="co">#&gt; 2          AZ    1043433 MULTIPOLYGON (((-110.4522 3...</span></span>
+<span><span class="co">#&gt; 3          CA    1682353 MULTIPOLYGON (((-121.4721 3...</span></span>
+<span><span class="co">#&gt; 4          CA    1165927 MULTIPOLYGON (((-122.3076 3...</span></span>
+<span><span class="co">#&gt; 5          CA    1008654 MULTIPOLYGON (((-120.6636 3...</span></span>
+<span><span class="co">#&gt; 6          CA   10014009 MULTIPOLYGON (((-118.1067 3...</span></span>
+<span><span class="co">#&gt; 7          CA    3186989 MULTIPOLYGON (((-117.509 33...</span></span>
+<span><span class="co">#&gt; 8          CA    2418185 MULTIPOLYGON (((-116.0824 3...</span></span>
+<span><span class="co">#&gt; 9          CA    1585055 MULTIPOLYGON (((-121.6652 3...</span></span>
+<span><span class="co">#&gt; 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...</span></span></code></pre></div>
 <p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
@@ -230,7 +230,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `nc' from data source </span></span>
-<span><span class="co">#&gt;   `C:\Users\mar10556\AppData\Local\R\win-library\4.3\sf\shape\nc.shp' </span></span>
+<span><span class="co">#&gt;   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 100 features and 14 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
@@ -288,7 +288,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plotRGB.html" class="external-link">plotRGB</a></span><span class="op">(</span><span class="va">res</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">landsat</span><span class="op">[[</span><span class="st">"maxValues"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" width="100%"></p>
 </div>
 </div>
 <div class="section level2">
@@ -363,6 +363,7 @@
 <li><a href="https://opensource.org/license/apache-2-0" class="external-link"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a></li>
 <li><a href="https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://cran.r-project.org/package=arcgislayers" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/arcgislayers"></a></li>
 </ul>
 </div>
 
