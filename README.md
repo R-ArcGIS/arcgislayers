@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
@@ -69,7 +65,9 @@ If no arguments are provided to `arc_select()` the entire feature layer is retur
 
 ```r
 arc_select(county_fl)
-#> Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 2s
+#> 
+Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 2s
+
 #> Simple feature collection with 3143 features and 12 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
