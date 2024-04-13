@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 [![R-CMD-check](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![](https://cranlogs.r-pkg.org/badges/arcgislayers)](https://cran.r-project.org/package=arcgislayers)
 <!-- badges: end -->
 
 The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/).
