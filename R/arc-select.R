@@ -156,17 +156,6 @@ collect_layer <- function(
     page_size = NULL,
     ...,
     error_call = rlang::caller_env()) {
-  if (length(page_size) > 1) {
-    cli::cli_abort(
-      "{.arg page_size} must be length 1 not {length(page_size)}",
-      call = error_call
-    )
-  } else if (!is.null(page_size) && page_size < 1) {
-    cli::cli_abort(
-      "{.arg page_size} must be a positive integer.",
-      call = error_call
-    )
-  }
 
   # 1. Make base request
   # 2. Identify necessary query parameters
@@ -213,64 +202,22 @@ collect_layer <- function(
 
   # Offsets -----------------------------------------------------------------
 
-  # get the maximum allowed to be returned
-  max_records <- x[["maxRecordCount"]]
-
-  # if its null, just use max records (default)
-  if (is.null(page_size)) {
-    feats_per_page <- max_records
-  } else if (page_size > max_records) {
-    cli::cli_abort(
-      "{.arg page_size} ({page_size}) cannot excede layer's {.field maxRecordCount} property ({max_records})",
-      call = error_call
-    )
-  } else {
-    # ensure its an integer.
-    page_size <- as.integer(page_size)
-    feats_per_page <- page_size
-  }
-
   # count the number of features in a query
-  n_feats <- count_results(req, query_params)
+  n_feats <- count_results(req, query_params, n_max = n_max, error_call = error_call)
 
-  if (is.null(n_feats) && is.null(n_max)) {
-    cli::cli_abort(
-      c("Can't determine the number of features for {.arg x}.",
-        "*" = "Check to make sure your {.arg where} statement is valid or
-        set a value for {.arg n_max}."
-      ),
-      call = error_call
-    )
-  }
-
-  # identify the number of pages needed to return all features
-  # if n_max is provided need to reduce the number of pages
-  if (n_feats > n_max) {
-    cli::cli_bullets(
-      c(
-        "i" = "Query results limited to {n_max} out of {n_feats} available feature{?s}.",
-        "!" = "Increase {.arg n_max} value to return all selected features."
-        )
-    )
-
-    n_feats <- n_max
-  }
-
-  # calculate the total number of requests to be made
-  n_pages <- ceiling(n_feats / feats_per_page)
-  # these values get passed to `resultOffset`
-  offsets <- (1:n_pages - 1) * feats_per_page
-  # create vector of page sizes to be passed to `resultRecordCount`
-  record_counts <- rep(feats_per_page, n_pages)
-  # modify the last offset to have `resultRecordCount` of the remainder
-  # this lets us get an exact value
-  record_counts[n_pages] <- n_feats - offsets[n_pages]
+  # create a list of record counts based on number of features, page size and max records
+  record_offsets <- set_record_offsets(
+    n_feats = n_feats,
+    page_size = page_size,
+    max_records = x[["maxRecordCount"]],
+    error_call = error_call
+  )
 
   # create a list of requests from the offset and page sizes
   all_requests <- mapply(
     add_offset,
-    .offset = offsets,
-    .page_size = record_counts,
+    .offset = record_offsets[["offsets"]],
+    .page_size = record_offsets[["counts"]],
     MoreArgs = list(.req = req, .params = query_params),
     SIMPLIFY = FALSE
   )
@@ -451,7 +398,8 @@ validate_params <- function(params) {
 }
 
 # Given a query, determine how many features will be returned
-count_results <- function(req, query, error_call = rlang::caller_env()) {
+#' @noRd
+count_results <- function(req, query, n_max = Inf, error_call = rlang::caller_env()) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
     !!!validate_params(query),
@@ -465,7 +413,53 @@ count_results <- function(req, query, error_call = rlang::caller_env()) {
     )
   )
 
-  RcppSimdJson::fparse(resp)[["count"]]
+  n_results <- RcppSimdJson::fparse(resp)[["count"]]
+
+  # identify the number of pages needed to return all features
+  validate_results_count(n_results, n_max = n_max, error_call = error_call)
+}
+
+
+#' Set and validate n_feats based on n_max
+#' @noRd
+validate_results_count <- function(
+    n_results = NULL,
+    n_max = Inf,
+    error_call = rlang::caller_env()
+) {
+  if (is.null(n_results)) {
+    cli::cli_abort(
+      c(
+        "Can't determine the number of requested features.",
+        "i" = "Did you set custom parameters via {.arg ...} or
+        use an invalid {.arg where} argument?"
+      ),
+      call = error_call
+    )
+  } else if (!is.infinite(n_max) && (n_results > n_max)) {
+    # TODO: Implement a verbose parameter that can enable this message
+    # See https://github.com/R-ArcGIS/arcgislayers/pull/180#issuecomment-2049631271
+    # cli::cli_bullets(
+    #   c(
+    #     "i" = "Query results limited to {n_max} out of {n_feats} available feature{?s}.",
+    #     "!" = "Increase {.arg n_max} value to return all selected features."
+    #     )
+    # )
+
+    n_results <- n_max
+  }
+
+  if (is.numeric(n_results)) {
+    return(n_results)
+  }
+
+  cli::cli_abort(
+    c(
+      "Can't determine the number of requested features.",
+      "*" = "Set {.arg n_max} or check to make sure query parameters are valid."
+    ),
+    call = error_call
+  )
 }
 
 #' Match fields
@@ -495,4 +489,81 @@ match_fields <- function(fields,
     error_arg = error_arg,
     error_call = error_call
   )
+}
+
+#' Set record counts to retrieve based on page size and number of pages
+#' @noRd
+set_record_offsets <- function(n_feats = NULL,
+                               page_size = NULL,
+                               max_records = NULL,
+                               error_call = rlang::caller_env()) {
+  # set page size based on the maximum allowed to be returned
+  page_size <- validate_page_size(
+    page_size,
+    max_records = max_records,
+    error_call = error_call
+  )
+
+  # calculate the total number of requests to be made
+  n_pages <- ceiling(n_feats / page_size)
+  # these values get passed to `resultOffset`
+  offsets <- (1:n_pages - 1) * page_size
+  # create vector of page sizes to be passed to `resultRecordCount`
+  counts <- rep(page_size, n_pages)
+  # modify the last offset to have `resultRecordCount` of the remainder
+  # this lets us get an exact value
+  counts[n_pages] <- n_feats - offsets[n_pages]
+
+  list(
+    "offsets" = offsets,
+    "counts" = counts
+  )
+}
+
+#' Set page size and check page size validity
+#'
+#' @noRd
+validate_page_size <- function(
+    page_size = NULL,
+    max_records = NULL,
+    error_call = rlang::caller_env()) {
+  # if page_size is null, use max records (default)
+  page_size <- page_size %||% max_records
+
+  # coerce to integer
+  page_size <- as.integer(page_size)
+
+  if (!is.numeric(page_size) && !length(page_size) == 0) {
+    cli::cli_abort(
+      "{.arg page_size} must be a numeric scalar,
+      not {.obj_type_friendly {page_size}}",
+      call = error_call
+    )
+  }
+
+  page_size_len <- length(page_size)
+
+  if (!rlang::has_length(page_size, 1)) {
+    cli::cli_abort(
+      "{.arg page_size} must be length 1, not {page_size_len}",
+      call = error_call
+    )
+  }
+
+  if (page_size < 1) {
+    cli::cli_abort(
+      "{.arg page_size} must be a positive integer.",
+      call = error_call
+    )
+  }
+
+  if (is.numeric(max_records) && (page_size > max_records)) {
+    cli::cli_abort(
+      "{.arg page_size} ({page_size}) can't be more than than the layer
+      {.field maxRecordCount} property ({max_records}).",
+      call = error_call
+    )
+  }
+
+  page_size
 }

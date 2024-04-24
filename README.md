@@ -1,5 +1,6 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
 
 # arcgislayers
 
@@ -7,17 +8,15 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 [![R-CMD-check](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/R-ArcGIS/arcgislayers/actions/workflows/R-CMD-check.yaml)
-[![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![](https://cranlogs.r-pkg.org/badges/arcgislayers)](https://cran.r-project.org/package=arcgislayers)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS
-REST API](https://developers.arcgis.com/rest/).
+The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/).
 
 ## Installation
 
-It is recommend you install and use the metapackage `{arcgis}`. You can
-install the development version of arcgis like so:
+It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
 
 ``` r
 remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
@@ -27,28 +26,26 @@ remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
 
 ### Creating a simple feature object from an ArcGIS FeatureLayer
 
-``` r
+
+```r
 library(arcgis)
 #> Attaching core arcgis packages:
-#> → arcgisutils v0.2.0
-#> → arcgislayers v0.2.0
+#> → arcgisutils v0.2.0.9000
 ```
 
-`arc_open()` takes a URL to create a reference to a remote ArcGIS layer,
-server, or table. The function can return any of the following classes
-(corresponding to different ArcGIS service types):
+`arc_open()` takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):
 
-- `FeatureLayer`
-- `Table`
-- `FeatureServer`
-- `ImageServer`
-- `MapServer`
-- `GroupLayer`
+  - `FeatureLayer`
+  - `Table`
+  - `FeatureServer`
+  - `ImageServer`
+  - `MapServer`
+  - `GroupLayer`
+  
+For example, you can create a `FeatureLayer` object based on a Feature Server URL:
+  
 
-For example, you can create a `FeatureLayer` object based on a Feature
-Server URL:
-
-``` r
+```r
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
 county_fl <- arc_open(furl)
@@ -61,15 +58,16 @@ county_fl
 #> Capabilities: Query,Extract
 ```
 
-You can then use `arc_select()` to query the feature layer object and
-return an `sf` object.
+You can then use `arc_select()` to query the feature layer object and return an `sf` object.
 
-If no arguments are provided to `arc_select()` the entire feature layer
-is returned in memory as an `sf` object.
+If no arguments are provided to `arc_select()` the entire feature layer is returned in memory as an `sf` object. 
 
-``` r
+
+```r
 arc_select(county_fl)
-#> Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s
+#> 
+Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 2s
+
 #> Simple feature collection with 3143 features and 12 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
@@ -110,46 +108,42 @@ arc_select(county_fl)
 #> 9  MULTIPOLYGON (((-85.58963 3...
 #> 10 MULTIPOLYGON (((-85.41657 3...
 ```
+### Filtering using `where` or `filter_geom` arguments 
 
-### Filtering using `where` or `filter_geom` arguments
+You can also use the `fields` argument to select columns or the `where` argument to subset rows.
 
-You can also use the `fields` argument to select columns or the `where`
-argument to subset rows.
+For example, using a character vector of column names for `fields` and a simple SQL where clause for  `where` you can select counties with population greater than 1,000,000:
 
-For example, using a character vector of column names for `fields` and a
-simple SQL where clause for `where` you can select counties with
-population greater than 1,000,000:
 
-``` r
+```r
 arc_select(
   county_fl, 
   fields = c("state_abbr", "population"), 
   where = "population > 1000000"
 )
-#> Simple feature collection with 49 features and 3 fields
+#> Simple feature collection with 49 features and 2 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -158.2674 ymin: 21.24986 xmax: -71.02671 ymax: 47.77552
 #> Geodetic CRS:  WGS 84
 #> First 10 features:
-#>    STATE_ABBR POPULATION OBJECTID                       geometry
-#> 1          AZ    4420568      101 MULTIPOLYGON (((-111.0425 3...
-#> 2          AZ    1043433      104 MULTIPOLYGON (((-110.4522 3...
-#> 3          CA    1682353      184 MULTIPOLYGON (((-121.4721 3...
-#> 4          CA    1165927      190 MULTIPOLYGON (((-122.3076 3...
-#> 5          CA    1008654      193 MULTIPOLYGON (((-120.6636 3...
-#> 6          CA   10014009      202 MULTIPOLYGON (((-118.1067 3...
-#> 7          CA    3186989      213 MULTIPOLYGON (((-117.509 33...
-#> 8          CA    2418185      216 MULTIPOLYGON (((-116.0824 3...
-#> 9          CA    1585055      217 MULTIPOLYGON (((-121.6652 3...
-#> 10         CA    2181654      219 MULTIPOLYGON (((-117.7832 3...
+#>    STATE_ABBR POPULATION                       geometry
+#> 1          AZ    4420568 MULTIPOLYGON (((-111.0425 3...
+#> 2          AZ    1043433 MULTIPOLYGON (((-110.4522 3...
+#> 3          CA    1682353 MULTIPOLYGON (((-121.4721 3...
+#> 4          CA    1165927 MULTIPOLYGON (((-122.3076 3...
+#> 5          CA    1008654 MULTIPOLYGON (((-120.6636 3...
+#> 6          CA   10014009 MULTIPOLYGON (((-118.1067 3...
+#> 7          CA    3186989 MULTIPOLYGON (((-117.509 33...
+#> 8          CA    2418185 MULTIPOLYGON (((-116.0824 3...
+#> 9          CA    1585055 MULTIPOLYGON (((-121.6652 3...
+#> 10         CA    2181654 MULTIPOLYGON (((-117.7832 3...
 ```
 
-For `FeatureLayer` and `Table` objects, and sometimes `ImageServer`s,
-the `list_fields()` function can be helpful to check available
-attributes and build a `where` query:
+For `FeatureLayer` and `Table` objects, and sometimes `ImageServer`s, the `list_fields()` function can be helpful to check available attributes and build a `where` query:
 
-``` r
+
+```r
 list_fields(county_fl)
 #>             name                 type                  alias       sqlType
 #> 1       OBJECTID     esriFieldTypeOID               OBJECTID  sqlTypeOther
@@ -192,15 +186,13 @@ list_fields(county_fl)
 #> 12                                                                                                                                                                                                                     <NA>
 ```
 
-You can also provide a `bbox`, `sfc`, or `sfg` object to the
-`filter_geom` argument to perform a spatial filter. If the `sfc` object
-contains more than one geometry, the object is combined with
-`sf::st_union()`. See documentation for more (`?arc_select`).
+You can also provide a `bbox`, `sfc`, or `sfg` object to the `filter_geom` argument to perform a spatial filter. If the `sfc` object contains more than one geometry, the object is combined with `sf::st_union()`. See documentation for more (`?arc_select`).
 
-``` r
+
+```r
 nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #> Reading layer `nc' from data source 
-#>   `C:\Users\mar10556\AppData\Local\R\win-library\4.3\sf\shape\nc.shp' 
+#>   `/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sf/shape/nc.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 100 features and 14 fields
 #> Geometry type: MULTIPOLYGON
@@ -242,14 +234,12 @@ arc_select(
 
 ### Creating a `SpatRaster` from an ArcGIS ImageServer
 
-A `SpatRaster` object from the `{terra}` package can be extracted from
-an `ImageServer` using `arc_raster()`.
+A `SpatRaster` object from the `{terra}` package can be extracted from an `ImageServer` using `arc_raster()`.
 
-`arc_raster()` will extract the area defined by `xmin`, `ymin`, `xmax`,
-and `ymax`. You can optionally specify the `width` and `height` of the
-resultant image. Use `format` to define what type of image is returned.
+`arc_raster()` will extract the area defined by `xmin`, `ymin`, `xmax`, and `ymax`. You can optionally specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned.
 
-``` r
+
+```r
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
 landsat <- arc_open(img_url)
@@ -265,51 +255,31 @@ res <- arc_raster(
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" width="100%" />
 
 ## Authorization and publication
 
-Authorization is not required for reading any public data sources.
+Authorization is not required for reading any public data sources. 
 
 Workflows that require authorization include:
 
-- interacting with
-  [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm)
-  services,
-- publishing a new service (the authorized user must also have
-  [publishing
-  privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)),
-  and
-- modifying or deleting any existing service (the authorized user must
-  also have [edit
-  access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm)
-  to the service).
+ - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services,
+ - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)), and
+ - modifying or deleting any existing service (the authorized user must also have [edit access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm) to the service).
 
 ### Accessing non-public data
 
-The same functions for reading public ArcGIS Online and Enterprise
-services (such as
-`arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be
-used to read data from non-public services by using the `token`
-argument. For more information on tokens and authorization functions,
-see the [authorization
-article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
+The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
+For more information on tokens and authorization functions, see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
 
 ### Publishing and modifying services from R
 
 The package includes functions to publish data to an ArcGIS Portal:
 
-- `add_item()`: Creates a new FeatureCollection from a `sf` or
-  `data.frame` object
+- `add_item()`: Creates a new FeatureCollection from a `sf` or `data.frame` object
 - `publish_item()`: Publishes an existing FeatureLayer
-- `publish_layer()`: is a higher level wrapper around both `add_item()`
-  and `publish_item()`
+- `publish_layer()`: is a higher level wrapper around both `add_item()` and `publish_item()`
 
-There are also functions to add or modify data including
-`add_features()`, `update_features()`, and `delete_features()`. For a
-more detailed guide to adding, updating, and deleting features, view the
-tutorial on the [R-ArcGIS Bridge
-website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
+There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
 
-These functions all require authorization since data cannot be published
-or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
+These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.

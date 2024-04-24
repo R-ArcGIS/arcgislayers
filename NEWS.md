@@ -1,6 +1,7 @@
 # arcgislayers (development)
 
-- Add `alias` argument to `arc_read()` allowing replacement or labeling of field names with alias values (#169)
+- `arc_raster()` now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed. 
+- Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
 - Add `pull_field_aliases()` utility function
 - `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
 - Improve handling of `filter_geom` by `arc_select()` by using `sf::st_concave_hull()` to process input geometry (in cases when applying `sf::st_union()` does not generate a single POLYGON) and warn if the input geometry is empty or longer than length 1. (@elipousson, #166)
