@@ -108,4 +108,16 @@ test_that("arc_select(): filter_geom works", {
     unique(sfg_res[["STATE_NAME"]]),
     c("North Carolina", "Tennessee", "Virginia")
   )
+
+  points_res <- arc_select(
+    flayer,
+    filter_geom = sf::st_sample(nc, size = 10),
+    fields = "STATE_NAME"
+  )
+
+  expect_identical(
+    unique(points_res[["STATE_NAME"]]),
+    "North Carolina"
+  )
+
 })
