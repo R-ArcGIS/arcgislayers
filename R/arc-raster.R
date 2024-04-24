@@ -54,10 +54,7 @@ arc_raster <- function(
     width = NULL,
     height = NULL,
     format = "tiff",
-    token = arc_token()
-) {
-
-
+    token = arc_token()) {
   # validate and extract CRS object
   out_sr <- validate_crs(crs)[["spatialReference"]][["wkid"]]
 
@@ -82,16 +79,18 @@ arc_raster <- function(
 
   # fetch the response
   resp <- httr2::req_perform(req)
-
   resp_meta <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
 
   detect_errors(resp_meta)
 
+  tmp <- tempfile(fileext = paste0(".", format))
+  exported_image_path <- resp_meta[["href"]]
+  utils::download.file(exported_image_path, tmp, quiet = TRUE)
+
   res <- terra::rast(
-    resp_meta$href
+    tmp
   )
 
   names(res) <- x[["bandNames"]]
   res
-
 }
