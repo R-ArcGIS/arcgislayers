@@ -248,8 +248,8 @@ collect_layer <- function(
   # selected
   if (rlang::is_named(res) && has_out_fields) {
     out_fields <- c(out_fields, attr(res, "sf_column"))
-    res_nm <- names(res)
-    res <- res[, tolower(res_nm) %in% tolower(out_fields), drop = FALSE]
+    match_nm <- match(tolower(out_fields), tolower(names(res)))
+    res <- res[, match_nm[!is.na(match_nm)], drop = FALSE]
   }
 
   if (rlang::is_empty(res)) {
