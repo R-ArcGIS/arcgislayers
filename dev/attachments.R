@@ -37,7 +37,7 @@ query_layer_attachments <- function(
     keywords <- paste(keywords, collapse = ",")
   }
 
-  httr2::req_body_form(
+  req <- httr2::req_body_form(
     b_req,
     objectIds = object_ids,
     globalIds = global_ids,
@@ -47,6 +47,10 @@ query_layer_attachments <- function(
     returnUrl = TRUE,
     f = "json"
   )
+
+  resp <- httr2::req_perform(req)
+
+  RcppSimdJson::fparse(httr2::resp_body_string(resp))
 }
 
 
