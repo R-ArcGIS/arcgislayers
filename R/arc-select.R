@@ -203,27 +203,21 @@ collect_layer <- function(
   # Offsets -----------------------------------------------------------------
 
   # count the number of features in a query
-  n_feats <- count_results(req, query_params, n_max = n_max, error_call = error_call)
-
-  # create a list of record counts based on number of features, page size and max records
-  record_offsets <- set_record_offsets(
-    n_feats = n_feats,
-    page_size = page_size,
-    max_records = x[["maxRecordCount"]],
+  n_feats <- count_results(
+    req = req,
+    query = query_params,
+    n_max = n_max,
     error_call = error_call
   )
 
-  # create a list of requests from the offset and page sizes
-  all_requests <- mapply(
-    add_offset,
-    .offset = record_offsets[["offsets"]],
-    .page_size = record_offsets[["counts"]],
-    MoreArgs = list(.req = req, .params = query_params),
-    SIMPLIFY = FALSE
+  all_resps <- get_query_resps(
+    x = x,
+    req = req,
+    n_feats = n_feats,
+    page_size = page_size,
+    query_params = query_params,
+    error_call = error_call
   )
-
-  # make all requests and store responses in list
-  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
 
   # identify any errors
   # TODO: determine how to handle errors
@@ -262,6 +256,67 @@ collect_layer <- function(
   }
 
   res
+}
+
+#' Get query responses with handling for layers that don't support pagination
+#' @noRd
+get_query_resps <- function(req,
+                            x,
+                            n_feats,
+                            page_size = NULL,
+                            query_params = list(),
+                            error_call = caller_env()) {
+  if (isFALSE(x[["advancedQueryCapabilities"]][["supportsPagination"]])) {
+    if (n_feats > x[["maxRecordCount"]]) {
+      cli::cli_abort(
+        "query can't be completed if {class(x)} does not support pagination and
+        the number of selected features exceeds the maximum record count.",
+        call = error_call
+      )
+    }
+
+    req <- httr2::req_url_path_append(req, "query")
+
+    req_query <- rlang::exec(
+      httr2::req_url_query,
+      .req = req,
+      !!!query_params
+    )
+
+    # If url is more than 2048 characters long, add the query to the
+    # body of the request
+    if (nchar(req_query[["url"]]) > 2048) {
+      req_query <- rlang::exec(
+        httr2::req_body_form,
+        .req = req,
+        !!!query_params
+      )
+    }
+
+    resp <- httr2::req_perform(req = req_query, error_call = error_call)
+
+    return(list(resp))
+  }
+
+  # create a list of record counts based on number of features, page size and max records
+  record_offsets <- set_record_offsets(
+    n_feats = n_feats,
+    page_size = page_size,
+    max_records = x[["maxRecordCount"]],
+    error_call = error_call
+  )
+
+  # create a list of requests from the offset and page sizes
+  all_requests <- mapply(
+    add_offset,
+    .offset = record_offsets[["offsets"]],
+    .page_size = record_offsets[["counts"]],
+    MoreArgs = list(.req = req, .params = query_params),
+    SIMPLIFY = FALSE
+  )
+
+  # make all requests and store responses in list
+  httr2::req_perform_parallel(all_requests, on_error = "continue")
 }
 
 
