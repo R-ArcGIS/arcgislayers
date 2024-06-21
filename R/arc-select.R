@@ -269,8 +269,12 @@ get_query_resps <- function(req,
   if (isFALSE(x[["advancedQueryCapabilities"]][["supportsPagination"]])) {
     if (n_feats > x[["maxRecordCount"]]) {
       cli::cli_warn(
-        "query can't return complete results if {class(x)} does not support pagination
-        and the number of selected features exceeds the maximum record count."
+        c(
+          "{class(x)} {.val {x[['name']]}} does not support pagination and
+          complete results can't be returned.",
+          "i" = "{n_feats} features are selected by the query and the maximum
+          is {x[['maxRecordCount']]} records."
+        )
       )
     }
 
