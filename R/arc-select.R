@@ -265,35 +265,21 @@ get_query_resps <- function(req,
                             n_feats,
                             page_size = NULL,
                             query_params = list(),
-                            error_call = caller_env()) {
+                            error_call = rlang::caller_env()) {
   if (isFALSE(x[["advancedQueryCapabilities"]][["supportsPagination"]])) {
     if (n_feats > x[["maxRecordCount"]]) {
-      cli::cli_abort(
-        "query can't be completed if {class(x)} does not support pagination and
-        the number of selected features exceeds the maximum record count.",
-        call = error_call
+      cli::cli_warn(
+        "query can't return complete results if {class(x)} does not support pagination
+        and the number of selected features exceeds the maximum record count."
       )
     }
 
-    req <- httr2::req_url_path_append(req, "query")
-
-    req_query <- rlang::exec(
-      httr2::req_url_query,
-      .req = req,
+    req <- httr2::req_body_form(
+      httr2::req_url_path_append(req, "query"),
       !!!query_params
     )
 
-    # If url is more than 2048 characters long, add the query to the
-    # body of the request
-    if (nchar(req_query[["url"]]) > 2048) {
-      req_query <- rlang::exec(
-        httr2::req_body_form,
-        .req = req,
-        !!!query_params
-      )
-    }
-
-    resp <- httr2::req_perform(req = req_query, error_call = error_call)
+    resp <- httr2::req_perform(req, error_call = error_call)
 
     return(list(resp))
   }
