@@ -156,7 +156,6 @@ collect_layer <- function(
     page_size = NULL,
     ...,
     error_call = rlang::caller_env()) {
-
   # 1. Make base request
   # 2. Identify necessary query parameters
   # 3. Figure out offsets and update query parameters
@@ -203,27 +202,21 @@ collect_layer <- function(
   # Offsets -----------------------------------------------------------------
 
   # count the number of features in a query
-  n_feats <- count_results(req, query_params, n_max = n_max, error_call = error_call)
-
-  # create a list of record counts based on number of features, page size and max records
-  record_offsets <- set_record_offsets(
-    n_feats = n_feats,
-    page_size = page_size,
-    max_records = x[["maxRecordCount"]],
+  n_feats <- count_results(
+    req = req,
+    query = query_params,
+    n_max = n_max,
     error_call = error_call
   )
 
-  # create a list of requests from the offset and page sizes
-  all_requests <- mapply(
-    add_offset,
-    .offset = record_offsets[["offsets"]],
-    .page_size = record_offsets[["counts"]],
-    MoreArgs = list(.req = req, .params = query_params),
-    SIMPLIFY = FALSE
+  all_resps <- get_query_resps(
+    x = x,
+    req = req,
+    n_feats = n_feats,
+    page_size = page_size,
+    query_params = query_params,
+    error_call = error_call
   )
-
-  # make all requests and store responses in list
-  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
 
   # identify any errors
   # TODO: determine how to handle errors
@@ -262,6 +255,62 @@ collect_layer <- function(
   }
 
   res
+}
+
+#' Get query responses with handling for layers that don't support pagination
+#' @noRd
+get_query_resps <- function(
+    req,
+    x,
+    n_feats,
+    page_size = NULL,
+    query_params = list(),
+    error_call = rlang::caller_env()) {
+  # If pagination is not supported, we create one query and return the results
+  # in a list with a warning. This way the maximum number of results is returned
+  # but the user is also informed that they will not get tha maximum number of
+  # records. Otherwise, we continue and utilize the pagination
+  if (isFALSE(x[["advancedQueryCapabilities"]][["supportsPagination"]])) {
+    if (n_feats > x[["maxRecordCount"]]) {
+      cli::cli_warn(
+        c(
+          "{class(x)} {.val {x[['name']]}} does not support pagination and
+          complete results can't be returned.",
+          "i" = "{n_feats} features are selected by the query and the maximum
+          is {x[['maxRecordCount']]} records."
+        )
+      )
+    }
+
+    req <- httr2::req_body_form(
+      httr2::req_url_path_append(req, "query"),
+      !!!query_params
+    )
+
+    resp <- httr2::req_perform(req, error_call = error_call)
+
+    return(list(resp))
+  }
+
+  # create a list of record counts based on number of features, page size and max records
+  record_offsets <- set_record_offsets(
+    n_feats = n_feats,
+    page_size = page_size,
+    max_records = x[["maxRecordCount"]],
+    error_call = error_call
+  )
+
+  # create a list of requests from the offset and page sizes
+  all_requests <- mapply(
+    add_offset,
+    .offset = record_offsets[["offsets"]],
+    .page_size = record_offsets[["counts"]],
+    MoreArgs = list(.req = req, .params = query_params),
+    SIMPLIFY = FALSE
+  )
+
+  # make all requests and store responses in list
+  httr2::req_perform_parallel(all_requests, on_error = "continue")
 }
 
 
@@ -425,8 +474,7 @@ count_results <- function(req, query, n_max = Inf, error_call = rlang::caller_en
 validate_results_count <- function(
     n_results = NULL,
     n_max = Inf,
-    error_call = rlang::caller_env()
-) {
+    error_call = rlang::caller_env()) {
   if (is.null(n_results)) {
     cli::cli_abort(
       c(
