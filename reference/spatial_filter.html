@@ -128,14 +128,11 @@ geometries are checked for validity before conversion.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">prepare_spatial_filter</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, <span class="fl">4326</span>, <span class="st">"intersects"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'jsonify':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   method     from    </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   print.json jsonlite</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $geometryType</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "esriGeometryPoint"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\"hasZ\":false,\"hasM\":false,\"x\":0.0,\"y\":5.0,\"spatialReference\":{\"wkid\":4326}}"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\"x\":0.0,\"y\":5.0,\"spatialReference\":{\"wkid\":4326}}"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $spatialRel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "esriSpatialRelIntersects"</span>
