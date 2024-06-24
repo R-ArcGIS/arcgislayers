@@ -156,7 +156,6 @@ collect_layer <- function(
     page_size = NULL,
     ...,
     error_call = rlang::caller_env()) {
-
   # 1. Make base request
   # 2. Identify necessary query parameters
   # 3. Figure out offsets and update query parameters
@@ -260,12 +259,17 @@ collect_layer <- function(
 
 #' Get query responses with handling for layers that don't support pagination
 #' @noRd
-get_query_resps <- function(req,
-                            x,
-                            n_feats,
-                            page_size = NULL,
-                            query_params = list(),
-                            error_call = rlang::caller_env()) {
+get_query_resps <- function(
+    req,
+    x,
+    n_feats,
+    page_size = NULL,
+    query_params = list(),
+    error_call = rlang::caller_env()) {
+  # If pagination is not supported, we create one query and return the results
+  # in a list with a warning. This way the maximum number of results is returned
+  # but the user is also informed that they will not get tha maximum number of
+  # records. Otherwise, we continue and utilize the pagination
   if (isFALSE(x[["advancedQueryCapabilities"]][["supportsPagination"]])) {
     if (n_feats > x[["maxRecordCount"]]) {
       cli::cli_warn(
@@ -470,8 +474,7 @@ count_results <- function(req, query, n_max = Inf, error_call = rlang::caller_en
 validate_results_count <- function(
     n_results = NULL,
     n_max = Inf,
-    error_call = rlang::caller_env()
-) {
+    error_call = rlang::caller_env()) {
   if (is.null(n_results)) {
     cli::cli_abort(
       c(
