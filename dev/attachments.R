@@ -4,7 +4,9 @@ set_arc_token(auth_user())
 
 flayer <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/survey123_b32978c284d74e1c9dd4a6f5fde28155/FeatureServer/0")
 
-flayer
+layer <- arc_open("https://services3.arcgis.com/6j1KwZfY2fZrfNMR/arcgis/rest/services/Traffic_Snapshot_Images_from_CCTV_in_Hong_Kong/FeatureServer/0")
+
+layer <- flayer
 
 
 query_layer_attachments <- function(
