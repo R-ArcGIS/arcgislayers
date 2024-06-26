@@ -9,10 +9,12 @@
 #' @param async Default `FALSE`. If `TRUE`, support asynchronous processing for
 #'   the request.
 #' @export
-update_layer <- function(x,
-                         update = NULL,
-                         async = FALSE,
-                         token = arc_token()) {
+update_definition <- function(
+    x,
+    update = NULL,
+    async = FALSE,
+    token = arc_token()) {
+  check_inherits_any(x, c("FeatureServer", "FeatureLayer"))
 
   req <- arc_base_req(
     url = x[["url"]],
@@ -34,13 +36,13 @@ update_layer <- function(x,
   resp
 }
 
-#' @rdname update_layer
+#' @rdname update_definition
 #' @export
-.update_layer_name <- function(...) {
+.update_definition_name <- function(...) {
   rlang::list2(...)
 }
 
-#' @rdname update_layer
+#' @rdname update_definition
 #' @export
 .update_layer_properties <- function(
     description = NULL,
@@ -113,5 +115,3 @@ update_layer <- function(x,
   # }
   #
 }
-
-
