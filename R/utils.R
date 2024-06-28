@@ -152,19 +152,6 @@ is_url <- function(x, pattern = NULL, ...) {
   grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
 }
 
-#' Does x match the pattern of URLs?
-#' @noRd
-are_urls <- function(x, pattern = NULL, ...) {
-  url_pattern <-
-    "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-
-  if (is.null(pattern)) {
-    return(grepl(url_pattern, x, ...))
-  }
-
-  grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
-}
-
 #' Check if x is a valid URL
 #' @noRd
 check_url <- function(
