@@ -39,7 +39,7 @@
 #' download_attachments(att, "layer_attachments")
 #' }
 query_layer_attachments <- function(
-    layer,
+    x,
     definition_expression = "1=1",
     object_ids = NULL,
     global_ids = NULL,
@@ -51,11 +51,11 @@ query_layer_attachments <- function(
     # returnMetadata, size,
     ) {
   # ensure that attachments are available.
-  if (!layer[["hasAttachments"]]) {
+  if (!x[["hasAttachments"]]) {
     cli::cli_abort("{.arg layer} does not support attachments.")
   }
 
-  b_req <- arc_base_req(layer[["url"]], token = token, path = "queryAttachments")
+  b_req <- arc_base_req(x[["url"]], token = token, path = "queryAttachments")
 
   # check that only one of definition_expression, object_ids, and global_ids is provided
   rlang::check_exclusive(definition_expression, object_ids, global_ids, .require = FALSE)

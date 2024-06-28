@@ -6,7 +6,7 @@
 \title{Query and download attachments}
 \usage{
 query_layer_attachments(
-  layer,
+  x,
   definition_expression = "1=1",
   object_ids = NULL,
   global_ids = NULL,
@@ -25,6 +25,8 @@ download_attachments(
 )
 }
 \arguments{
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
+
 \item{definition_expression}{default \code{1 = 1}. A SQL where clause that is applied to the layer. Only those records that conform to this expression will be returned. This parameter is required if neither \code{object_ids} or \code{global_ids} have been defined.}
 
 \item{object_ids}{mutually exclusive with \code{definition_expression} and \code{global_ids}. The object IDs of the features to query attachments of.}
@@ -55,6 +57,27 @@ Otherwise the path to the file that was downloaded is returned.
 Get metadata about attachments associated with features in a layer.
 Query attachment information using \code{query_layer_attachments()} and
 download attachments using \code{download_attachments()}.
+}
+\examples{
+\dontrun{
+# create a url path that isn't too wide for CRAN
+furl <- paste(
+  c(
+    "https://services1.arcgis.com/hLJbHVT9ZrDIzK0I",
+    "arcgis/rest/services/v8_Wide_Area_Search_Form_Feature_Layer___a2fe9c",
+    "FeatureServer/0"
+  ),
+  collapse = "/"
+)
+# connect to the layer
+layer <- arc_open(furl)
+
+# get the attachment info
+att <- query_layer_attachments(layer)
+
+# download them to a path
+download_attachments(att, "layer_attachments")
+}
 }
 \references{
 \href{https://developers.arcgis.com/rest/services-reference/enterprise/query-attachments-feature-service-layer/}{ArcGIS REST API Documentation}
