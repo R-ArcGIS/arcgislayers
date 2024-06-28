@@ -18,30 +18,29 @@
 #' @rdname utils
 #' @examples
 #' \dontrun{
-#'   furl <- paste0(
-#'     "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
-#'     "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
-#'   )
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#' )
 #'
-#'   flayer <- arc_open(furl)
+#' flayer <- arc_open(furl)
 #'
-#'   # list fields available in a layer
-#'   list_fields(flayer)
+#' # list fields available in a layer
+#' list_fields(flayer)
 #'
-#'   # remove any queries stored in the query attribute
-#'   clear_query(update_params(flayer, outFields = "*"))
+#' # remove any queries stored in the query attribute
+#' clear_query(update_params(flayer, outFields = "*"))
 #'
-#'   # refresh metadata of an object
-#'   refresh_layer(flayer)
+#' # refresh metadata of an object
+#' refresh_layer(flayer)
 #'
-#'   map_url <- paste0(
-#'     "https://services.arcgisonline.com/ArcGIS/rest/services/",
-#'     "World_Imagery/MapServer"
-#'   )
+#' map_url <- paste0(
+#'   "https://services.arcgisonline.com/ArcGIS/rest/services/",
+#'   "World_Imagery/MapServer"
+#' )
 #'
-#'   # list all items in a server object
-#'   list_items(arc_open(map_url))
-#'
+#' # list all items in a server object
+#' list_items(arc_open(map_url))
 #' }
 clear_query <- function(x) {
   attr(x, "query") <- list()
@@ -99,7 +98,7 @@ refresh_layer <- function(x) {
 #' @keywords internal
 #' @noRd
 chunk_indices <- function(n, m) {
-  n_chunks <- ceiling(n/m)
+  n_chunks <- ceiling(n / m)
   chunk_starts <- seq(1, n, by = m)
   chunk_ends <- seq_len(n_chunks) * m
   chunk_ends[n_chunks] <- n
@@ -139,11 +138,23 @@ coalesce_crs <- function(x, y) {
 #' Does x match the pattern of a URL?
 #' @noRd
 is_url <- function(x, pattern = NULL, ...) {
-
   if (!rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)) {
     return(FALSE)
   }
 
+  url_pattern <-
+    "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+
+  if (is.null(pattern)) {
+    return(grepl(url_pattern, x, ...))
+  }
+
+  grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
+}
+
+#' Does x match the pattern of URLs?
+#' @noRd
+are_urls <- function(x, pattern = NULL, ...) {
   url_pattern <-
     "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 
@@ -185,36 +196,6 @@ check_url <- function(
   )
 }
 
-#' Check if x is a string
-#' @noRd
-check_string <- function(
-    x,
-    allow_empty = TRUE,
-    allow_null = FALSE,
-    arg = rlang::caller_arg(x),
-    call = rlang::caller_env()
-) {
-
-  if (allow_null && is.null(x)) {
-    return(invisible(NULL))
-  }
-
-  message <- "{.arg {arg}} must be a scalar character vector."
-
-  if (rlang::is_scalar_character(x)) {
-    if (allow_empty || x != "") {
-      return(invisible(NULL))
-    }
-
-    message <- '{.arg {arg}} must be a non-empty string.'
-  }
-
-  cli::cli_abort(
-    message,
-    call = call
-  )
-}
-
 #' Check if x and y share the same coordiante reference system
 #' @noRd
 check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::caller_arg(y), call = rlang::caller_env()) {
@@ -244,3 +225,7 @@ check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::c
   }
 }
 
+data_frame <- function(x, call = rlang::caller_env()) {
+  check_data_frame(x, call = call)
+  structure(x, class = c("tbl", "data.frame"))
+}
