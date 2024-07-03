@@ -41,6 +41,7 @@
 query_layer_attachments <- function(
     x,
     definition_expression = "1=1",
+    attachments_definition_expression = NULL,
     object_ids = NULL,
     global_ids = NULL,
     attachment_types = NULL,
@@ -50,6 +51,11 @@ query_layer_attachments <- function(
     # Ignored arguments for now:
     # returnMetadata, size,
     ) {
+  check_string(definition_expression, allow_null = TRUE)
+  check_string(attachments_definition_expression, allow_null = TRUE)
+  check_character(global_ids, allow_null = TRUE)
+  # TODO validate that object_ids is a vector
+
   # ensure that attachments are available.
   if (!x[["hasAttachments"]]) {
     cli::cli_abort("{.arg layer} does not support attachments.")
@@ -75,12 +81,21 @@ query_layer_attachments <- function(
 
   req <- httr2::req_body_form(
     b_req,
-    objectIds = object_ids,
-    globalIds = global_ids,
+    # TODO test these why aren't these working?!!
+    objectIds = paste(object_ids, collapse = ","),
+    # TODO create a test for this
+    globalIds = paste(global_ids, collapse = ","),
     attachmentTypes = attachment_types,
+    # TODO document common examples:
+    # filter based on
+    # - date
+    # - common prefix
+    # - numeric value
     definitionExpression = definition_expression,
+    attachmentsDefinitionExpression = attachments_definition_expression,
     keywords = keywords,
     returnUrl = TRUE,
+    returnMetadata = TRUE,
     f = "json"
   )
 
@@ -96,6 +111,11 @@ query_layer_attachments <- function(
 #' @param x the attachmentGroups column from the query results
 #' @noRd
 unnest_attachment_groups <- function(x) {
+  if (is.null(x[["attachmentInfos"]])) {
+    cli::cli_alert_info("No attachments found.")
+    return(NULL)
+  }
+
   n_elem <- vapply(x[["attachmentInfos"]], nrow, integer(1))
   res <- cbind(
     x[rep.int(1:nrow(x), n_elem), c("parentGlobalId", "parentObjectId")],
@@ -128,6 +148,7 @@ download_attachments <- function(
     attachments,
     out_dir,
     ...,
+    overwrite = FALSE,
     .progress = TRUE,
     token = arc_token()) {
   # check that the input is a data frame with the appropriate types
@@ -195,9 +216,32 @@ download_attachments <- function(
 
   # create the output path names
   out_fps <- file.path(out_dir, attachments[["name"]])
+  already_exist <- file.exists(out_fps)
+
+  # required fields
+  urls <- attachments[["url"]]
+  content_types <- attachments[["contentType"]]
+
+  if (!overwrite && any(already_exist)) {
+    # Files with the same name found.
+    cli::cli_inform(
+      c(
+        "Files with the same name found in {.path {out_dir}}",
+        "i" = "Existing files: {.file {out_fps[already_exist]}}",
+        ">" = "set {.arg overwrite = TRUE} to overwrite these files"
+      )
+    )
+    # subset to the files that dont already exist
+    out_fps <- out_fps[!already_exist]
+    urls <- urls[!already_exist]
+    content_types <- content_types[!already_exist]
+  }
+  # TODO check if files exist, if they do provide a message
+  # saying we're skipping downloading.
+  # To download use `overwrite = TRUE`
 
   # create the requests
-  attachment_reqs <- lapply(attachments[["url"]], arc_base_req, token = token)
+  attachment_reqs <- lapply(urls, arc_base_req, token = token)
 
   # perform the requests
   resps <- httr2::req_perform_parallel(
@@ -207,7 +251,7 @@ download_attachments <- function(
   )
 
 
-  Map(.download_attachment, resps, attachments[["contentType"]], out_fps)
+  Map(.download_attachment, resps, content_types, out_fps)
 }
 
 .download_attachment <- function(.resp, .content_type, .fp) {
