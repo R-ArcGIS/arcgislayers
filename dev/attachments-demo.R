@@ -36,13 +36,26 @@ query_layer_attachments(
   layer, "followup_status = 'needs_followup'"
 )
 
-# To find all of the attachmetns from after a point in time
+# To find all of the attachments from after a point in time
 query_layer_attachments(
   layer, "start_time >= '2023-01-01'"
 )
 
-# to download the attachments:
-res <- download_attachments(
-  att,
-  "dev/field_images"
+# To find attachments with a name that starts with `image0`
+query_layer_attachments(
+  layer,
+  attachments_definition_expression = "att_name like 'image0%'"
 )
+
+# Find attachments that contain "20221005"
+query_layer_attachments(
+  layer,
+  attachments_definition_expression = "att_name like '%20221005%'"
+)
+
+
+# to download the attachments:
+# res <- download_attachments(
+#   att,
+#   "dev/field_images"
+# )

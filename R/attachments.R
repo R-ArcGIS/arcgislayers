@@ -41,6 +41,7 @@
 query_layer_attachments <- function(
     x,
     definition_expression = "1=1",
+    attachments_definition_expression = NULL,
     object_ids = NULL,
     global_ids = NULL,
     attachment_types = NULL,
@@ -50,6 +51,11 @@ query_layer_attachments <- function(
     # Ignored arguments for now:
     # returnMetadata, size,
     ) {
+  check_string(definition_expression, allow_null = TRUE)
+  check_string(attachments_definition_expression, allow_null = TRUE)
+  check_character(global_ids, allow_null = TRUE)
+  # TODO validate that object_ids is a vector
+
   # ensure that attachments are available.
   if (!x[["hasAttachments"]]) {
     cli::cli_abort("{.arg layer} does not support attachments.")
@@ -86,8 +92,10 @@ query_layer_attachments <- function(
     # - common prefix
     # - numeric value
     definitionExpression = definition_expression,
+    attachmentsDefinitionExpression = attachments_definition_expression,
     keywords = keywords,
     returnUrl = TRUE,
+    returnMetadata = TRUE,
     f = "json"
   )
 
