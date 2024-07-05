@@ -42,5 +42,3 @@ Suggests:
 Config/testthat/edition: 3
 URL: https://r.esri.com/arcgislayers/, https://github.com/R-ArcGIS/arcgislayers
 BugReports: https://github.com/R-ArcGIS/arcgislayers/issues
-Config/rextendr/version: 0.3.1.9000
-SystemRequirements: Cargo (Rust's package manager), rustc
