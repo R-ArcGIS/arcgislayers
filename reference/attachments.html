@@ -14,7 +14,7 @@ download attachments using download_attachments()."><!-- mathjax --><script src=
     
     <a class="navbar-brand me-2" href="../index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,7 @@ download attachments using <code>download_attachments()</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">query_layer_attachments</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  definition_expression <span class="op">=</span> <span class="st">"1=1"</span>,</span>
+<span>  attachments_definition_expression <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  object_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  global_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  attachment_types <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -78,6 +79,7 @@ download attachments using <code>download_attachments()</code>.</p>
 <span>  <span class="va">attachments</span>,</span>
 <span>  <span class="va">out_dir</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -91,6 +93,11 @@ download attachments using <code>download_attachments()</code>.</p>
 
 <dt>definition_expression</dt>
 <dd><p>default <code>1 = 1</code>. A SQL where clause that is applied to the layer. Only those records that conform to this expression will be returned. This parameter is required if neither <code>object_ids</code> or <code>global_ids</code> have been defined.</p></dd>
+
+
+<dt>attachments_definition_expression</dt>
+<dd><p>default <code>NULL</code>. A SQL where calsue that is applied to the attachment metadata.
+only attachments that conform to this expression will be returned.</p></dd>
 
 
 <dt>object_ids</dt>
@@ -123,6 +130,10 @@ download attachments using <code>download_attachments()</code>.</p>
 
 <dt>out_dir</dt>
 <dd><p>the path to the folder to download the file</p></dd>
+
+
+<dt>overwrite</dt>
+<dd><p>default <code>FALSE</code>. A</p></dd>
 
 
 <dt>.progress</dt>

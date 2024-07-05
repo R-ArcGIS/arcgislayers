@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,19 @@
       <small>Source: <a href="https://github.com/R-ArcGIS/arcgislayers/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="arcgislayers-030">arcgislayers 0.3.0<a class="anchor" aria-label="anchor" href="#arcgislayers-030"></a></h2>
+<ul><li>New <code><a href="../reference/attachments.html">query_layer_attachments()</a></code> and <code><a href="../reference/attachments.html">download_attachments()</a></code> help you access and download attachments to a layer</li>
+<li>
+<code><a href="../reference/arc_raster.html">arc_raster()</a></code> now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed.</li>
+<li>Add <code>alias</code> argument to <code><a href="../reference/arc_read.html">arc_read()</a></code> allowing replacement or labelling of field names with alias values (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/169" class="external-link">#169</a>)</li>
+<li>Add <code><a href="../reference/utils.html">pull_field_aliases()</a></code> utility function</li>
+<li>
+<code><a href="../reference/arc_select.html">arc_select()</a></code> now uses <code><a href="https://r.esri.com/arcgisutils/reference/rbind_results.html" class="external-link">arcgisutils::rbind_results()</a></code> for faster row-binding if <a href="https://sebkrantz.github.io/collapse/" class="external-link">collapse</a>, <a href="https://r-datatable.com" class="external-link">data.table</a>, <a href="https://vctrs.r-lib.org/" class="external-link">vctrs</a> are installed (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/175" class="external-link">#175</a>)</li>
+<li>Preserve order of <code>fields</code> column names for <code><a href="../reference/arc_select.html">arc_select()</a></code> (fixes minor bug with <code>arc_read</code> handling of <code>col_names</code>) (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/185" class="external-link">#185</a>)</li>
+<li>Set CRS for a FeatureLayer or ImageServer using <code>"wkid"</code> or <code>"wkt"</code> value if <code>"latestWkid"</code> is missing. (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/188" class="external-link">#188</a>)</li>
+<li>Fix issue with <code><a href="../reference/arc_select.html">arc_select()</a></code> when layer can’t support pagination. (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/191" class="external-link">#191</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="arcgislayers-020">arcgislayers 0.2.0<a class="anchor" aria-label="anchor" href="#arcgislayers-020"></a></h2><p class="text-muted">CRAN release: 2024-02-27</p>
 <ul><li>initial CRAN release</li>
