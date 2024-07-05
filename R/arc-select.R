@@ -82,6 +82,10 @@ arc_select <- function(
   # be sent directly to the API request which is why we convert it to json
   # before we use `update_params()`
   check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
+  check_number_whole(n_max, min = 0, allow_infinite = TRUE)
+  check_string(where, allow_null = TRUE, allow_empty = FALSE)
+  check_character(fields, allow_null = TRUE)
+  check_number_whole(page_size, min = 1, max = x[["maxRecordCount"]], allow_null = TRUE)
 
   # extract the query object
   query <- attr(x, "query")
