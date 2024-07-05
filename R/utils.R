@@ -56,7 +56,7 @@ list_fields <- function(x) {
     res <- infer_esri_type(data.frame())
   }
 
-  res
+  data_frame(res)
 }
 
 #' @export
@@ -72,7 +72,7 @@ pull_field_aliases <- function(x) {
 #' @rdname utils
 list_items <- function(x) {
   check_inherits_any(x, c("FeatureServer", "ImageServer", "MapServer"))
-  rbind(x[["layers"]], x[["tables"]])
+  data_frame(rbind(x[["layers"]], x[["tables"]]))
 }
 
 #' @export
