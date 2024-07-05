@@ -21,6 +21,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     arcgisutils (>= 0.2.0),
+    arcpbf (>= 0.1.2),
     cli,
     httr2 (>= 1.0.0),
     jsonify,

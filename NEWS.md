@@ -1,5 +1,7 @@
-# arcgislayers 0.3.0
+# arcgislayers (development)
 
+- Now uses [`{arcpbf}`](https://r.esri.com/arcpbf/index.html) when a layer supports protocol buffers. 
+  - This is an ~3x speed improvement over json processing.
 - New `query_layer_attachments()` and `download_attachments()` help you access and download attachments to a layer
 - `arc_raster()` now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed. 
 - Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
