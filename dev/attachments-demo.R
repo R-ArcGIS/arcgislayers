@@ -1,6 +1,7 @@
 # install the development version
 # install.packages("pak")
 # pak::pak("r-arcgis/arcgislayers")
+library(pillar)
 
 # for authorizing to your portal
 library(arcgisutils)
@@ -52,7 +53,6 @@ query_layer_attachments(
   layer,
   attachments_definition_expression = "att_name like '%20221005%'"
 )
-
 
 # to download the attachments:
 # res <- download_attachments(

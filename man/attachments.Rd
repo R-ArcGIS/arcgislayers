@@ -8,6 +8,7 @@
 query_layer_attachments(
   x,
   definition_expression = "1=1",
+  attachments_definition_expression = NULL,
   object_ids = NULL,
   global_ids = NULL,
   attachment_types = NULL,
@@ -20,6 +21,7 @@ download_attachments(
   attachments,
   out_dir,
   ...,
+  overwrite = FALSE,
   .progress = TRUE,
   token = arc_token()
 )
