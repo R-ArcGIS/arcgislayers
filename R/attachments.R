@@ -57,7 +57,6 @@ query_layer_attachments <- function(
   check_string(definition_expression, allow_null = TRUE)
   check_string(attachments_definition_expression, allow_null = TRUE)
   check_character(global_ids, allow_null = TRUE)
-  check_bool(overwrite)
   # TODO validate that object_ids is a vector
 
   # ensure that attachments are available.
@@ -158,6 +157,8 @@ download_attachments <- function(
   #    df, col ~ check_character, col ~ check_numeric
   # )
   check_data_frame(attachments)
+  check_bool(overwrite)
+  check_bool(.progress)
 
   if (is.null(attachments[["name"]])) {
     cli::cli_abort(
