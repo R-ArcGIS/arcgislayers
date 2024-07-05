@@ -1,5 +1,6 @@
 # arcgislayers (development)
 
+- `arc_open()` will now work on any resource that works when `f=json` is set in the query parameters closes [#163](https://github.com/R-ArcGIS/arcgislayers/issues/163)
 - Now uses [`{arcpbf}`](https://r.esri.com/arcpbf/index.html) when a layer supports protocol buffers. 
   - This is an ~3x speed improvement over json processing.
 - New `query_layer_attachments()` and `download_attachments()` help you access and download attachments to a layer
