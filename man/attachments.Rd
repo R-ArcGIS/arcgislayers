@@ -8,6 +8,7 @@
 query_layer_attachments(
   x,
   definition_expression = "1=1",
+  attachments_definition_expression = NULL,
   object_ids = NULL,
   global_ids = NULL,
   attachment_types = NULL,
@@ -20,6 +21,7 @@ download_attachments(
   attachments,
   out_dir,
   ...,
+  overwrite = FALSE,
   .progress = TRUE,
   token = arc_token()
 )
@@ -28,6 +30,9 @@ download_attachments(
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
 \item{definition_expression}{default \code{1 = 1}. A SQL where clause that is applied to the layer. Only those records that conform to this expression will be returned. This parameter is required if neither \code{object_ids} or \code{global_ids} have been defined.}
+
+\item{attachments_definition_expression}{default \code{NULL}. A SQL where calsue that is applied to the attachment metadata.
+only attachments that conform to this expression will be returned.}
 
 \item{object_ids}{mutually exclusive with \code{definition_expression} and \code{global_ids}. The object IDs of the features to query attachments of.}
 
@@ -44,6 +49,8 @@ download_attachments(
 \item{attachments}{a \code{data.frame} created by \code{query_layer_attachments()}. Must contain the columns \code{name}, \code{url}, and \code{contentType}.}
 
 \item{out_dir}{the path to the folder to download the file}
+
+\item{overwrite}{default \code{FALSE}. A}
 
 \item{.progress}{default \code{TRUE.} Whether a progress bar should be provided.}
 }

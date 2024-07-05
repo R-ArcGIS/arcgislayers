@@ -6,10 +6,13 @@
 #'
 #' @inheritParams arc_select
 #' @param definition_expression default `1 = 1`. A SQL where clause that is applied to the layer. Only those records that conform to this expression will be returned. This parameter is required if neither `object_ids` or `global_ids` have been defined.
+#' @param attachments_definition_expression default `NULL`. A SQL where calsue that is applied to the attachment metadata.
+#'   only attachments that conform to this expression will be returned.
 #' @param object_ids mutually exclusive with `definition_expression` and `global_ids`. The object IDs of the features to query attachments of.
 #' @param global_ids mutally exclusive with `definition_expression` and `object_ids`. The global IDs of the features to query attachments of.
 #' @param keywords default `NULL`. A character vector of the keywords to filter on.
 #' @param attachment_types default `NULL`. A character vector of attachment types to filter on.
+#' @param overwrite default `FALSE`. A
 #' @rdname attachments
 #' @references [ArcGIS REST API Documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-attachments-feature-service-layer/)
 #' @export
@@ -61,8 +64,6 @@ query_layer_attachments <- function(
     cli::cli_abort("{.arg layer} does not support attachments.")
   }
 
-  b_req <- arc_base_req(x[["url"]], token = token, path = "queryAttachments")
-
   # check that only one of definition_expression, object_ids, and global_ids is provided
   rlang::check_exclusive(definition_expression, object_ids, global_ids, .require = FALSE)
 
@@ -79,18 +80,15 @@ query_layer_attachments <- function(
     keywords <- paste(keywords, collapse = ",")
   }
 
+  # create the base request
+  b_req <- arc_base_req(x[["url"]], token = token, path = "queryAttachments")
+
+  # Fill the body of the request
   req <- httr2::req_body_form(
     b_req,
-    # TODO test these why aren't these working?!!
     objectIds = paste(object_ids, collapse = ","),
-    # TODO create a test for this
     globalIds = paste(global_ids, collapse = ","),
     attachmentTypes = attachment_types,
-    # TODO document common examples:
-    # filter based on
-    # - date
-    # - common prefix
-    # - numeric value
     definitionExpression = definition_expression,
     attachmentsDefinitionExpression = attachments_definition_expression,
     keywords = keywords,
@@ -99,10 +97,12 @@ query_layer_attachments <- function(
     f = "json"
   )
 
+  # send request
   resp <- httr2::req_perform(req)
+  # parse response
   res <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
+  # throw an error if they are there
   arcgisutils::detect_errors(res)
-  # TODO assert that attachmentGroups are present
   # TODO consider importing {heck} for name cleaning later
   unnest_attachment_groups(res$attachmentGroups)
 }
@@ -157,6 +157,8 @@ download_attachments <- function(
   #    df, col ~ check_character, col ~ check_numeric
   # )
   check_data_frame(attachments)
+  check_bool(overwrite)
+  check_bool(.progress)
 
   if (is.null(attachments[["name"]])) {
     cli::cli_abort(
