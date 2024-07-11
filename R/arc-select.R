@@ -78,10 +78,14 @@ arc_select <- function(
   # For this function we extract the query object and manipulate the elements
   # inside of the query object to modify our request. We then splice those
   # values back into `x` and send our request
-  # note that everything that goes into our quey must be the json that will
+  # note that everything that goes into our query must be the json that will
   # be sent directly to the API request which is why we convert it to json
   # before we use `update_params()`
   check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
+  check_number_whole(n_max, min = 0, allow_infinite = TRUE)
+  check_string(where, allow_null = TRUE, allow_empty = FALSE)
+  check_character(fields, allow_null = TRUE)
+  check_number_whole(page_size, min = 1, max = x[["maxRecordCount"]], allow_null = TRUE)
 
   # extract the query object
   query <- attr(x, "query")
@@ -107,13 +111,16 @@ arc_select <- function(
   # handle fields and where clause if missing
   fields <- fields %||% query[["outFields"]]
 
+  # make sure that fields actually exist
   fields <- match_fields(
     fields = fields,
     values = c(x[["fields"]][["name"]], "")
   )
 
+  # include the fields the query
   query[["outFields"]] <- fields
 
+  # include the where clause if present
   query[["where"]] <- where %||% query[["where"]]
 
   # set returnGeometry depending on on geometry arg
@@ -197,7 +204,14 @@ collect_layer <- function(
 
   # parameter validation ----------------------------------------------------
   # get existing parameters
-  query_params <- validate_params(query)
+
+  # determine_format() chooses between pbf and json
+  out_f <- determine_format(x)
+
+  query_params <- validate_params(
+    query,
+    out_f
+  )
 
   # Offsets -----------------------------------------------------------------
 
@@ -218,24 +232,24 @@ collect_layer <- function(
     error_call = error_call
   )
 
-  # identify any errors
-  # TODO: determine how to handle errors
-  # has_error <- vapply(all_resps, function(x) inherits(x, "error"), logical(1))
+  if (out_f == "pbf") {
+    res <- arcpbf::resps_data_pbf(all_resps)
+  } else {
+    # fetch the results
+    res <- lapply(
+      all_resps,
+      # all_resps[!has_error],
+      function(x) {
+        parse_esri_json(
+          httr2::resp_body_string(x),
+          call = error_call
+        )
+      }
+    )
 
-  # fetch the results
-  res <- lapply(
-    all_resps,
-    # all_resps[!has_error],
-    function(x) {
-      parse_esri_json(
-        httr2::resp_body_string(x),
-        call = error_call
-      )
-    }
-  )
-
-  # combine results
-  res <- rbind_results(res, call = error_call)
+    # combine results
+    res <- rbind_results(res, call = error_call)
+  }
 
   # Drop fields that aren't selected to avoid returning OBJECTID when not
   # selected
@@ -425,7 +439,7 @@ add_offset <- function(.req, .offset, .page_size, .params) {
 #'
 #' @keywords internal
 #' @noRd
-validate_params <- function(params) {
+validate_params <- function(params, f = "json") {
   if (!is.null(params[["outFields"]])) {
     params[["outFields"]] <- paste0(params[["outFields"]], collapse = ",")
   } else {
@@ -438,9 +452,9 @@ validate_params <- function(params) {
 
   # set output type to geojson if we return geometry, json if not
   if (is.null(params[["returnGeometry"]]) || isTRUE(params[["returnGeometry"]])) {
-    params[["f"]] <- "json"
+    params[["f"]] <- f
   } else {
-    params[["f"]] <- "json"
+    params[["f"]] <- f
   }
 
   params
@@ -451,7 +465,8 @@ validate_params <- function(params) {
 count_results <- function(req, query, n_max = Inf, error_call = rlang::caller_env()) {
   n_req <- httr2::req_body_form(
     httr2::req_url_path_append(req, "query"),
-    !!!validate_params(query),
+    # count results should always use json
+    !!!validate_params(query, query[["f"]]),
     returnCountOnly = "true"
   )
 
@@ -614,4 +629,42 @@ validate_page_size <- function(
   }
 
   page_size
+}
+
+
+# Protocol Buffer helpers ------------------------------------------------
+
+supports_pbf <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_call()) {
+  # verify that x is an layer
+  obj_check_layer(x, arg, call)
+
+  # extract supported query formats
+  query_formats_raw <- x[["supportedQueryFormats"]]
+
+  # perform a check to make sure the supported query formats are
+  # actually there if not return false. This shouldn't happen though.
+  if (is.null(query_formats_raw)) {
+    return(FALSE)
+  }
+
+  # split and convert to lower case
+  formats <- tolower(strsplit(query_formats_raw, ", ")[[1]])
+  # if for some reason the first element is null we return false
+  # note sure of the utility of this check though.
+
+  if (is.null(formats)) {
+    return(FALSE)
+  }
+
+  # perform the check
+  "pbf" %in% formats
+}
+
+determine_format <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_call()) {
+  use_pbf <- supports_pbf(x, arg, call)
+  if (use_pbf) {
+    "pbf"
+  } else {
+    "json"
+  }
 }

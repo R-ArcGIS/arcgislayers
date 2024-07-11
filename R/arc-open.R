@@ -16,48 +16,45 @@
 #' @returns
 #' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`. Each of these objects is a named list containing the properties of the service.
 #' @examples
-#'
 #' \dontrun{
-#'  # FeatureLayer
-#'  furl <- paste0(
-#'    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
-#'    "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
-#'  )
+#' # FeatureLayer
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#' )
 #'
-#'  arc_open(furl)
+#' arc_open(furl)
 #'
-#'  # Table
-#'  furl <- paste0(
-#'    "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/",
-#'    "USA_Wetlands/FeatureServer/1"
-#'  )
+#' # Table
+#' furl <- paste0(
+#'   "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/",
+#'   "USA_Wetlands/FeatureServer/1"
+#' )
 #'
-#'  arc_open(furl)
+#' arc_open(furl)
 #'
-#'  # ImageServer
-#'  arc_open(
-#'    "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
-#'    )
+#' # ImageServer
+#' arc_open(
+#'   "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+#' )
 #'
-#'  # FeatureServer
-#'  furl <- paste0(
-#'    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
-#'    "PLACES_LocalData_for_BetterHealth/FeatureServer"
-#'  )
+#' # FeatureServer
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'   "PLACES_LocalData_for_BetterHealth/FeatureServer"
+#' )
 #'
-#'  arc_open(furl)
+#' arc_open(furl)
 #'
-#'  # MapServer
-#'  map_url <- paste0(
-#'    "https://services.arcgisonline.com/ArcGIS/rest/services/",
-#'    "World_Imagery/MapServer"
-#'  )
+#' # MapServer
+#' map_url <- paste0(
+#'   "https://services.arcgisonline.com/ArcGIS/rest/services/",
+#'   "World_Imagery/MapServer"
+#' )
 #'
-#'  arc_open(map_url)
-#'
-#'}
+#' arc_open(map_url)
+#' }
 arc_open <- function(url, token = arc_token()) {
-
   check_url(url)
 
   # extract layer metadata
@@ -78,16 +75,13 @@ arc_open <- function(url, token = arc_token()) {
     } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
       layer_class <- "FeatureServer"
     } else {
-      cli::cli_abort(
-        "Can't determine layer type from {.arg url}: {.url {url}}"
-      )
+      return(meta)
     }
   }
 
   # construct the appropriate class based on the resultant `layer_class`
-  res <- switch(
-    layer_class,
-    "FeatureLayer" =  structure(
+  res <- switch(layer_class,
+    "FeatureLayer" = structure(
       meta,
       class = layer_class,
       query = list()
@@ -98,7 +92,8 @@ arc_open <- function(url, token = arc_token()) {
       query = list()
     ),
     "FeatureServer" = structure(
-      meta, class = layer_class
+      meta,
+      class = layer_class
     ),
     "ImageServer" = structure(meta, class = layer_class),
     "MapServer" = structure(meta, class = layer_class),
@@ -106,11 +101,10 @@ arc_open <- function(url, token = arc_token()) {
     cli::cli_abort(
       c(
         "Service type {.val {layer_class}} is not supported.",
-        "i"=  "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
+        "i" = "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
       )
     )
   )
 
   res
 }
-
