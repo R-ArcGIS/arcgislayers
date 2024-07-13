@@ -85,7 +85,17 @@ arc_select <- function(
   check_number_whole(n_max, min = 0, allow_infinite = TRUE)
   check_string(where, allow_null = TRUE, allow_empty = FALSE)
   check_character(fields, allow_null = TRUE)
-  check_number_whole(page_size, min = 1, max = x[["maxRecordCount"]], allow_null = TRUE)
+
+
+  check_number_whole(as.integer(page_size), min = 1, allow_null = TRUE)
+  check_number_whole(
+    as.integer(page_size),
+    # bug in the standalone checks
+    # needs to be a double and cannot be used with
+    # max at the same time which is why it is brought into two calls
+    max = as.double(x[["maxRecordCount"]]),
+    allow_null = TRUE
+  )
 
   # extract the query object
   query <- attr(x, "query")
