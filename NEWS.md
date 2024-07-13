@@ -1,3 +1,13 @@
+# arcgislayers (development version)
+
+## Bug fixes
+
+- `page_size` resulted in error due to introduction of type-check. Fixed and added test to avoid in the future.  [#205](https://github.com/R-ArcGIS/arcgislayers/issues/205)
+
+## New features
+
+## Breaking changes 
+
 # arcgislayers 0.3.0
 
 - `arc_open()` will now work on any resource that works when `f=json` is set in the query parameters closes [#163](https://github.com/R-ArcGIS/arcgislayers/issues/163)
