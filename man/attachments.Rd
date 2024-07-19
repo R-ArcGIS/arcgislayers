@@ -13,6 +13,7 @@ query_layer_attachments(
   global_ids = NULL,
   attachment_types = NULL,
   keywords = NULL,
+  return_metadata = TRUE,
   ...,
   token = arc_token()
 )
@@ -41,6 +42,8 @@ only attachments that conform to this expression will be returned.}
 \item{attachment_types}{default \code{NULL}. A character vector of attachment types to filter on.}
 
 \item{keywords}{default \code{NULL}. A character vector of the keywords to filter on.}
+
+\item{return_metadata}{default \code{TRUE}. Returns metadata stored in the \code{exifInfo} field.}
 
 \item{...}{unused}
 

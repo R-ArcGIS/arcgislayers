@@ -12,6 +12,7 @@
 #' @param global_ids mutally exclusive with `definition_expression` and `object_ids`. The global IDs of the features to query attachments of.
 #' @param keywords default `NULL`. A character vector of the keywords to filter on.
 #' @param attachment_types default `NULL`. A character vector of attachment types to filter on.
+#' @param return_metadata default `TRUE`. Returns metadata stored in the `exifInfo` field.
 #' @param overwrite default `FALSE`. A
 #' @rdname attachments
 #' @references [ArcGIS REST API Documentation](https://developers.arcgis.com/rest/services-reference/enterprise/query-attachments-feature-service-layer/)
@@ -124,7 +125,6 @@ unnest_attachment_groups <- function(x) {
   )
   data_frame(res)
 }
-
 
 
 # Attachment types
