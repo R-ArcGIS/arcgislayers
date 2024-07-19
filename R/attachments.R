@@ -49,6 +49,7 @@ query_layer_attachments <- function(
     global_ids = NULL,
     attachment_types = NULL,
     keywords = NULL,
+    return_metadata = TRUE,
     ...,
     token = arc_token()
     # Ignored arguments for now:
@@ -93,7 +94,7 @@ query_layer_attachments <- function(
     attachmentsDefinitionExpression = attachments_definition_expression,
     keywords = keywords,
     returnUrl = TRUE,
-    returnMetadata = TRUE,
+    returnMetadata = return_metadata,
     f = "json"
   )
 
