@@ -6,6 +6,9 @@
 
 ## New features
 
+- `arc_raster()` gains an argument `raster_fn` which takes a character scalar and performs a raster function server side before returning results
+- `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
+
 ## Breaking changes 
 
 # arcgislayers 0.3.0
