@@ -12,10 +12,31 @@ list_service_raster_fns(
 }
 \arguments{
 \item{x}{an \code{ImageServer}.}
+
+\item{arg}{An argument name in the current function.}
+
+\item{call}{The execution environment of a currently running
+function, e.g. \code{call = caller_env()}. The corresponding function
+call is retrieved and mentioned in error messages as the source
+of the error.
+
+You only need to supply \code{call} when throwing a condition from a
+helper function which wouldn't be relevant to mention in the
+message.
+
+Can also be \code{NULL} or a \link[rlang:topic-defuse]{defused function call} to
+respectively not display any call or hard-code a code to display.
+
+For more information about error calls, see \ifelse{html}{\link[rlang:topic-error-call]{Including function calls in error messages}}{\link[rlang:topic-error-call]{Including function calls in error messages}}.}
 }
 \value{
 a data.frame of the available raster functions.
 }
 \description{
-List Available Raster Funcitons
+This function returns the \code{rasterFunctionInfos} field of the \code{ImageServer}'s metadata
+as a \code{data.frame}. If the field does not exist then an error is emitted.
+}
+\examples{
+# example code
+
 }

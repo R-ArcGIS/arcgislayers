@@ -3,6 +3,7 @@
 #' This function returns the `rasterFunctionInfos` field of the `ImageServer`'s metadata
 #' as a `data.frame`. If the field does not exist then an error is emitted.
 #'
+#' @inheritParams arcgisutils::infer_esri_type
 #' @param x an `ImageServer`.
 #' @returns a data.frame of the available raster functions.
 #' @examples

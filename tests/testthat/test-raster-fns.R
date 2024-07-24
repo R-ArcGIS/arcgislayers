@@ -1,5 +1,4 @@
 test_that("use raster functions", {
-  library(arcgis)
   furl <- "https://di-usfsdata.img.arcgis.com/arcgis/rest/services/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"
 
   x <- arc_open(furl)
@@ -21,7 +20,6 @@ test_that("use raster functions", {
 })
 
 test_that("list service raster functions", {
-  library(arcgis)
   furl <- "https://di-usfsdata.img.arcgis.com/arcgis/rest/services/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"
 
   x <- arc_open(furl)
