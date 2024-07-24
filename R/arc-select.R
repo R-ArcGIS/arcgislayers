@@ -629,14 +629,6 @@ supports_pbf <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_cal
     arg = arg,
     call = call
   )
-  # verify that x is an layer
-  # FIXME: This check makes arc_select error on ImageServer inputs
-  check_inherits_any(
-    x,
-    class = c("FeatureLayer", "Table", "ImageServer"),
-    arg = arg,
-    call = call
-  )
 
   # extract supported query formats
   query_formats_raw <- x[["supportedQueryFormats"]]
