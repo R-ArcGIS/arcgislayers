@@ -104,7 +104,7 @@ arc_raster <- function(
 
   tmp <- tempfile(fileext = paste0(".", format))
   exported_image_path <- resp_meta[["href"]]
-  utils::download.file(exported_image_path, tmp, quiet = TRUE)
+  utils::download.file(exported_image_path, tmp, quiet = TRUE, mode="wb")
 
   res <- terra::rast(
     tmp
