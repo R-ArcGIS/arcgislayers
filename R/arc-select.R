@@ -86,17 +86,6 @@ arc_select <- function(
   check_string(where, allow_null = TRUE, allow_empty = FALSE)
   check_character(fields, allow_null = TRUE)
 
-
-  check_number_whole(as.integer(page_size), min = 1, allow_null = TRUE)
-  check_number_whole(
-    as.integer(page_size),
-    # bug in the standalone checks
-    # needs to be a double and cannot be used with
-    # max at the same time which is why it is brought into two calls
-    max = as.double(x[["maxRecordCount"]]),
-    allow_null = TRUE
-  )
-
   # extract the query object
   query <- attr(x, "query")
 
@@ -216,7 +205,7 @@ collect_layer <- function(
   # get existing parameters
 
   # determine_format() chooses between pbf and json
-  out_f <- determine_format(x)
+  out_f <- determine_format(x, call = error_call)
 
   query_params <- validate_params(
     query,
@@ -600,35 +589,24 @@ validate_page_size <- function(
     page_size = NULL,
     max_records = NULL,
     error_call = rlang::caller_env()) {
+  if (is.numeric(page_size)) {
+    # coerce to integer if page_size is numeric
+    page_size <- as.integer(page_size)
+  }
+
+  check_number_whole(page_size, min = 1, allow_null = TRUE, call = error_call)
+  check_number_whole(
+    page_size,
+    # bug in the standalone checks
+    # needs to be a double and cannot be used with
+    # max at the same time which is why it is brought into two calls
+    max = as.double(max_records),
+    allow_null = TRUE,
+    call = error_call
+  )
+
   # if page_size is null, use max records (default)
   page_size <- page_size %||% max_records
-
-  # coerce to integer
-  page_size <- as.integer(page_size)
-
-  if (!is.numeric(page_size) && !length(page_size) == 0) {
-    cli::cli_abort(
-      "{.arg page_size} must be a numeric scalar,
-      not {.obj_type_friendly {page_size}}",
-      call = error_call
-    )
-  }
-
-  page_size_len <- length(page_size)
-
-  if (!rlang::has_length(page_size, 1)) {
-    cli::cli_abort(
-      "{.arg page_size} must be length 1, not {page_size_len}",
-      call = error_call
-    )
-  }
-
-  if (page_size < 1) {
-    cli::cli_abort(
-      "{.arg page_size} must be a positive integer.",
-      call = error_call
-    )
-  }
 
   if (is.numeric(max_records) && (page_size > max_records)) {
     cli::cli_abort(
@@ -646,7 +624,13 @@ validate_page_size <- function(
 
 supports_pbf <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_call()) {
   # verify that x is an layer
-  obj_check_layer(x, arg, call)
+  # FIXME: This check makes arc_select error on ImageServer inputs
+  check_inherits_any(
+    x,
+    class = c("FeatureLayer", "Table", "ImageServer"),
+    arg = arg,
+    call = call
+  )
 
   # extract supported query formats
   query_formats_raw <- x[["supportedQueryFormats"]]
