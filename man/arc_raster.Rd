@@ -15,6 +15,8 @@ arc_raster(
   width = NULL,
   height = NULL,
   format = "tiff",
+  ...,
+  raster_fn = NULL,
   token = arc_token()
 )
 }
@@ -40,6 +42,10 @@ If not specified, uses the CRS of \code{x}.}
 
 \item{format}{default \code{"tiff"}. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".}
 
+\item{...}{additional key value pairs to be passed to \code{\link[httr2:req_body]{httr2::req_body_form()}}.}
+
+\item{raster_fn}{a scalar string with the name of the service raster function. See \code{\link[=list_service_raster_fns]{list_service_raster_fns()}} for available raster functions.}
+
 \item{token}{default \code{arc_token()} authorization token.}
 }
 \value{
@@ -61,8 +67,8 @@ landsat <- arc_open(img_url)
 arc_raster(
   landsat,
   xmin = -71,
-  ymin = 43,
   xmax = -67,
+  ymin = 43,
   ymax = 47.5,
   bbox_crs = 4326,
   width = 100,
