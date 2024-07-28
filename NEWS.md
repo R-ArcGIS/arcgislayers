@@ -1,11 +1,30 @@
-# arcgislayers (development)
+# arcgislayers (development version)
 
+## Bug fixes
+
+- `page_size` resulted in error due to introduction of type-check. Fixed and added test to avoid in the future.  [#205](https://github.com/R-ArcGIS/arcgislayers/issues/205)
+
+## New features
+
+- `arc_raster()` gains an argument `raster_fn` which takes a character scalar and performs a raster function server side before returning results
+- `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
+
+## Breaking changes 
+
+# arcgislayers 0.3.0
+
+- `arc_open()` will now work on any resource that works when `f=json` is set in the query parameters closes [#163](https://github.com/R-ArcGIS/arcgislayers/issues/163)
+- Now uses [`{arcpbf}`](https://r.esri.com/arcpbf/index.html) when a layer supports protocol buffers. 
+  - This is an ~3x speed improvement over json processing.
+- New `query_layer_attachments()` and `download_attachments()` help you access and download attachments to a layer
 - `arc_raster()` now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed. 
 - Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
 - Add `pull_field_aliases()` utility function
 - `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
 - Improve handling of `filter_geom` by `arc_select()` by using `sf::st_concave_hull()` to process input geometry (in cases when applying `sf::st_union()` does not generate a single POLYGON) and warn if the input geometry is empty or longer than length 1. (@elipousson, #166)
 - Preserve order of `fields` column names for `arc_select()` (fixes minor bug with `arc_read` handling of `col_names`) (#185)
+- Set CRS for a FeatureLayer or ImageServer using `"wkid"` or `"wkt"` value if `"latestWkid"` is missing. (#188)
+- Fix issue with `arc_select()` when layer can't support pagination. (#191)
 
 # arcgislayers 0.2.0
 
