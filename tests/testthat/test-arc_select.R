@@ -64,13 +64,14 @@ test_that("arc_select(): respects `...`", {
   )
 })
 
-test_that("arc_select(): filter_geom works", {
+test_that("arc_select(): supports multiple filter_geom input types", {
   nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_State_Boundaries/FeatureServer/0"
 
   flayer <- arc_open(furl)
 
+  # allow bbox input for filter_geom
   bbox_res <- arc_select(
     flayer,
     filter_geom = sf::st_bbox(nc),
@@ -83,10 +84,13 @@ test_that("arc_select(): filter_geom works", {
       "Tennessee", "Virginia")
   )
 
-  sfc_res <- arc_select(
-    flayer,
-    filter_geom = nc$geometry,
-    fields = "STATE_NAME"
+  # allow sfc input for filter_geom
+  sfc_res <- suppressMessages(
+    arc_select(
+      flayer,
+      filter_geom = nc$geometry,
+      fields = "STATE_NAME"
+    )
   )
 
   expect_identical(
@@ -98,6 +102,7 @@ test_that("arc_select(): filter_geom works", {
 
   flayer <- arc_open(furl)
 
+  # allow sfg input for filter_geom
   sfg_res <- arc_select(
     flayer,
     filter_geom = nc$geometry[1],
@@ -109,6 +114,7 @@ test_that("arc_select(): filter_geom works", {
     c("North Carolina", "Tennessee", "Virginia")
   )
 
+  # allow multiple POINTs as input for filter_geom
   points_res <- arc_select(
     flayer,
     filter_geom = sf::st_sample(nc, size = 10),
@@ -119,5 +125,50 @@ test_that("arc_select(): filter_geom works", {
     unique(points_res[["STATE_NAME"]]),
     "North Carolina"
   )
+})
 
+test_that("arc_select(): warns for Table layers and provides message for MULTIPOLYGON input", {
+  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+
+  turl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
+
+  tlayer <- arc_open(turl)
+
+  # warn on table URLs
+  expect_warning(
+    arc_select(
+      tlayer,
+      filter_geom = nc$geometry
+    )
+  )
+
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  # message on MULTIPOLYGON input filters
+  expect_message(
+    arc_select(
+      flayer,
+      filter_geom = nc$geometry[87]
+    ),
+    'sf::st_concave_hull()'
+  )
+})
+
+
+test_that("arc_select(): errors for invalid filter_geom inputs", {
+  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+
+  # error on sf input
+  expect_error(
+    arc_select(
+      flayer,
+      filter_geom = nc
+    )
+  )
 })
