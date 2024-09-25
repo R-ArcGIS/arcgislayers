@@ -3,6 +3,7 @@
 ## Bug fixes
 
 - `page_size` resulted in error due to introduction of type-check. Fixed and added test to avoid in the future.  [#205](https://github.com/R-ArcGIS/arcgislayers/issues/205)
+- Add warning if `arc_select()` results include fewer features than expected from request [#220](https://github.com/R-ArcGIS/arcgislayers/issues/220)
 
 ## New features
 
