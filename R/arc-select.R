@@ -267,6 +267,17 @@ collect_layer <- function(
     sf::st_crs(res) <- sf::st_crs(x)
   }
 
+  if (nrow(res) < n_feats) {
+    # See https://github.com/R-ArcGIS/arcgislayers/issues/110
+    cli::cli_warn(
+      c(
+        "Results include fewer than the expected {n_feats} features.",
+        "*" = "Try setting {.arg page_size} to a smaller value to make
+        sure results include all available features."
+      )
+    )
+  }
+
   res
 }
 
