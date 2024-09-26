@@ -22,6 +22,7 @@
 - Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
 - Add `pull_field_aliases()` utility function
 - `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
+- Improve handling of `filter_geom` by `arc_select()` by using `sf::st_concave_hull()` to process input geometry (in cases when applying `sf::st_union()` does not generate a single POLYGON) and warn if the input geometry is empty or longer than length 1. (@elipousson, #166)
 - Preserve order of `fields` column names for `arc_select()` (fixes minor bug with `arc_read` handling of `col_names`) (#185)
 - Set CRS for a FeatureLayer or ImageServer using `"wkid"` or `"wkt"` value if `"latestWkid"` is missing. (#188)
 - Fix issue with `arc_select()` when layer can't support pagination. (#191)
