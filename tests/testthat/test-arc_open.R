@@ -4,8 +4,15 @@
 test_that("arc_open(): Feature Layer", {
   ft_url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
-  expect_no_error(arc_open(ft_url))
+  lyr <- arc_open(ft_url)
 
+  expect_no_error(lyr)
+
+  ft_query_url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0/query?outFields=%2A&where=1%3D1"
+
+  lyr_q <- arc_open(ft_query_url)
+
+  expect_identical(lyr, lyr_q)
 })
 
 
