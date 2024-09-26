@@ -216,3 +216,50 @@ data_frame <- function(x, call = rlang::caller_env()) {
   check_data_frame(x, call = call)
   structure(x, class = c("tbl", "data.frame"))
 }
+
+#' @noRd
+clear_url_query <- function(url, keep_default = FALSE) {
+  query <- parse_url_query(url, keep_default = keep_default)
+
+  if (rlang::is_empty(query)) {
+    return(url)
+  }
+
+  url_elements <- httr2::url_parse(url)
+
+  # Rebuild URL without query
+  paste0(
+    url_elements[["scheme"]], "://",
+    url_elements[["hostname"]],
+    sub("/query$", "", url_elements[["path"]])
+  )
+}
+
+#' @noRd
+parse_url_query <- function(url, keep_default = FALSE) {
+  # Parse url
+  url_elements <- httr2::url_parse(url)
+
+  # Return empty list if no query is included in url
+  if (is.null(url_elements[["query"]])) {
+    return(list())
+  }
+
+  # Check for default query values
+  query_match <- match(
+    url_elements[["query"]],
+    c(
+      list(outFields = "*", where = "1=1", f = "geojson"),
+      list(outFields = "*", where = "1=1")
+    )
+  )
+
+  # Return empty list for default query
+  if (!is.numeric(query_match) && !keep_default) {
+    invisible(list())
+  }
+
+  # Otherwise return query
+  url_elements[["query"]]
+}
+
