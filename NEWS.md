@@ -9,6 +9,7 @@
 
 - `arc_raster()` gains an argument `raster_fn` which takes a character scalar and performs a raster function server side before returning results
 - `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
+- `arc_open()` ignores default queries included in input URLs and retains custom queries in place of `query` argument. ([#215](https://github.com/R-ArcGIS/arcgislayers/issues/215))
 
 ## Breaking changes 
 
