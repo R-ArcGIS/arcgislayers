@@ -221,7 +221,7 @@ data_frame <- function(x, call = rlang::caller_env()) {
 clear_url_query <- function(url, keep_default = FALSE) {
   query <- parse_url_query(url, keep_default = keep_default)
 
-  if (rlang::is_empty(query)) {
+  if (!is.null(query) && rlang::is_empty(query)) {
     return(url)
   }
 
@@ -254,9 +254,9 @@ parse_url_query <- function(url, keep_default = FALSE) {
     )
   )
 
-  # Return empty list for default query
-  if (!is.numeric(query_match) && !keep_default) {
-    invisible(list())
+  # Return NULL for default query
+  if (is.numeric(query_match) && !keep_default) {
+    return(NULL)
   }
 
   # Otherwise return query

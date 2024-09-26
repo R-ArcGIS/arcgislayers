@@ -58,7 +58,7 @@ arc_open <- function(url, token = arc_token()) {
   check_url(url)
 
   # parse url query and strip from url if query matches default
-  query <- parse_url_query(url)
+  query <- parse_url_query(url) %||% list()
   url <- clear_url_query(url)
 
   # extract layer metadata
