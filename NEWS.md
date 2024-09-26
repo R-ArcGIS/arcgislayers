@@ -1,4 +1,4 @@
-# arcgislayers (development version)
+# arcgislayers 0.3.1
 
 ## Bug fixes
 
