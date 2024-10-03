@@ -1,69 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/esri-geometry-notes.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/arc_open.html</loc>
-  </url>
-  <url>
-    <loc>/reference/arc_raster.html</loc>
-  </url>
-  <url>
-    <loc>/reference/arc_read.html</loc>
-  </url>
-  <url>
-    <loc>/reference/arc_select.html</loc>
-  </url>
-  <url>
-    <loc>/reference/attachments.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_feature_server.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_layer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_layer_estimates.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/modify.html</loc>
-  </url>
-  <url>
-    <loc>/reference/publish.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spatial_filter.html</loc>
-  </url>
-  <url>
-    <loc>/reference/truncate_layer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/update_params.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utils.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/arc_open.html</loc></url>
+<url><loc>/reference/arc_raster.html</loc></url>
+<url><loc>/reference/arc_read.html</loc></url>
+<url><loc>/reference/arc_select.html</loc></url>
+<url><loc>/reference/attachments.html</loc></url>
+<url><loc>/reference/create_feature_server.html</loc></url>
+<url><loc>/reference/get_layer.html</loc></url>
+<url><loc>/reference/get_layer_estimates.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/list_service_raster_fns.html</loc></url>
+<url><loc>/reference/modify.html</loc></url>
+<url><loc>/reference/publish.html</loc></url>
+<url><loc>/reference/spatial_filter.html</loc></url>
+<url><loc>/reference/truncate_layer.html</loc></url>
+<url><loc>/reference/update_params.html</loc></url>
+<url><loc>/reference/utils.html</loc></url>
 </urlset>
+
