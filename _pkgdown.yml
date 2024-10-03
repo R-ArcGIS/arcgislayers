@@ -20,6 +20,7 @@ reference:
   - get_layer_estimates
   - query_layer_attachments
   - download_attachments
+  - list_service_raster_fns
 - title: Publish Services
   contents:
   - create_feature_server
