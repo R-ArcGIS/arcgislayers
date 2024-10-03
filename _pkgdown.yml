@@ -5,3 +5,43 @@ template:
 navbar:
   structure:
     right:  [search, github]
+
+reference:
+
+- title: Read Services
+  contents:
+  - arc_open
+  - arc_raster
+  - arc_read
+  - arc_select
+  - get_layer
+  - get_all_layers
+  - get_layers
+  - get_layer_estimates
+  - query_layer_attachments
+  - download_attachments
+- title: Publish Services
+  contents:
+  - create_feature_server
+  - xss_defaults
+  - add_item
+  - publish_item
+  - publish_layer
+  - .publish_params
+- title: Edit Services
+  contents:
+  - add_features
+  - update_features
+  - delete_features
+  - truncate_layer
+- title: Utilities
+  contents:
+  - clear_query
+  - list_fields
+  - pull_field_aliases
+  - list_items
+  - refresh_layer
+  - prepare_spatial_filter
+  - match_spatial_rel
+  - update_params
+  
