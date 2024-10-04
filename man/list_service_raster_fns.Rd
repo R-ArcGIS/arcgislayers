@@ -37,6 +37,13 @@ This function returns the \code{rasterFunctionInfos} field of the \code{ImageSer
 as a \code{data.frame}. If the field does not exist then an error is emitted.
 }
 \examples{
-# example code
+# use paste to avoid cran note
+furl <- paste0(
+  "https://di-usfsdata.img.arcgis.com/arcgis/rest/services",
+  "/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"
+)
 
+service <- arc_open(furl)
+raster_fns <- list_service_raster_fns(service)
+head(raster_fns)
 }
