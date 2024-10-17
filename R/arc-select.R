@@ -174,20 +174,20 @@ collect_layer <- function(
   req <- arc_base_req(x[["url"]], token)
 
   # determine if the layer can query
-  can_query <- switch(class(x),
-    "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
-    "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
-    "ImageServer" = x[["supportsAdvancedQueries"]],
-    FALSE
-  )
+  # can_query <- switch(class(x),
+  #   "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
+  #   "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
+  #   "ImageServer" = x[["supportsAdvancedQueries"]],
+  #   FALSE
+  # )
 
-  # throw error if the layer cannot query
-  if (!can_query) {
-    cli::cli_abort(
-      "{class(x)} {.val {x[['name']]}} does not support querying",
-      call = error_call
-    )
-  }
+  # # throw error if the layer cannot query
+  # if (!can_query) {
+  #   cli::cli_abort(
+  #     "{class(x)} {.val {x[['name']]}} does not support querying",
+  #     call = error_call
+  #   )
+  # }
 
   # extract existing query
   query <- attr(x, "query")
