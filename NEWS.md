@@ -1,3 +1,9 @@
+# arcgislayers (development version)
+
+## Breaking changes
+
+- `dplyr` methods for `collect()`, `select()`, and `filter()` have been removed. <https://github.com/R-ArcGIS/arcgislayers/issues/111> <https://github.com/R-ArcGIS/arcgislayers/issues/224> <https://github.com/R-ArcGIS/arcgislayers/issues/218>
+
 # arcgislayers 0.3.1
 
 ## Bug fixes

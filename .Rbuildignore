@@ -15,3 +15,4 @@
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^README\.md$
+^R/dplyr-features\.R$
