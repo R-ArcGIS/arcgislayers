@@ -1,14 +1,25 @@
 # arcgislayers (development version)
 
+## Breaking changes
+
+- `dplyr` methods for `collect()`, `select()`, and `filter()` have been removed. <https://github.com/R-ArcGIS/arcgislayers/issues/111> <https://github.com/R-ArcGIS/arcgislayers/issues/224> <https://github.com/R-ArcGIS/arcgislayers/issues/218>
+
+## New features
+
+- Improve handling of `filter_geom` by `arc_select()` by warning if applying `sf::st_union()` to the filter does not generate a length 1 sfc, or if `filter_geom` is supplied when accessing a Table, or if `filter_geom` is empty (@elipousson, #166)
+
+# arcgislayers 0.3.1
+
 ## Bug fixes
 
 - `page_size` resulted in error due to introduction of type-check. Fixed and added test to avoid in the future.  [#205](https://github.com/R-ArcGIS/arcgislayers/issues/205)
+- Add warning if `arc_select()` results include fewer features than expected from request [#220](https://github.com/R-ArcGIS/arcgislayers/issues/220)
 
 ## New features
 
 - `arc_raster()` gains an argument `raster_fn` which takes a character scalar and performs a raster function server side before returning results
 - `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
-- Improve handling of `filter_geom` by `arc_select()` by warning if applying `sf::st_union()` to the filter does not generate a length 1 sfc, or if `filter_geom` is supplied when accessing a Table, or if `filter_geom` is empty (@elipousson, #166)
+- `arc_open()` ignores queries included in input URLs and retains any custom queries in the `query` attribute for `Table` and `FeatureLayer`s. ([#215](https://github.com/R-ArcGIS/arcgislayers/issues/215))
 
 ## Breaking changes 
 
