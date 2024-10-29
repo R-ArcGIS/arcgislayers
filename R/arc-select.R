@@ -126,7 +126,7 @@ arc_select <- function(
   query[["returnGeometry"]] <- geometry
 
   # handle filter geometry if not missing
-  if (!is.null(filter_geom)) {
+  if (!is.null(filter_geom) && inherits(x, "FeatureLayer")) {
     spatial_filter <- prepare_spatial_filter(
       filter_geom,
       crs = crs,
@@ -135,6 +135,14 @@ arc_select <- function(
 
     # append spatial filter fields to the query
     query <- c(query, spatial_filter)
+  } else if (!is.null(filter_geom)) {
+    # warn if filter_geom is supplied but object is not a FeatureLayer
+    cli::cli_warn(
+      "{.arg filter_geom} is ignored when {.arg x} is
+      {.obj_simple_type {.cls {class(x)}}}."
+    )
+
+    filter_geom <- NULL
   }
 
   # handle SR if not missing
