@@ -4,6 +4,10 @@
 
 - `dplyr` methods for `collect()`, `select()`, and `filter()` have been removed. <https://github.com/R-ArcGIS/arcgislayers/issues/111> <https://github.com/R-ArcGIS/arcgislayers/issues/224> <https://github.com/R-ArcGIS/arcgislayers/issues/218>
 
+## Bug fixes
+
+- `arc_select()` includes argument name in error message when `...` contains non-string values. <https://github.com/R-ArcGIS/arcgislayers/issues/226>
+
 # arcgislayers 0.3.1
 
 ## Bug fixes
