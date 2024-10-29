@@ -101,7 +101,7 @@ arc_select <- function(
     key <- dots_names[i]
     val <- dots[[i]]
     # check that the value is a scalar and non-empty
-    check_string(val, allow_empty = FALSE)
+    check_string(val, arg = key, allow_empty = FALSE)
 
     # insert into query
     query[[key]] <- val
