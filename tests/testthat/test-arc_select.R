@@ -63,3 +63,21 @@ test_that("arc_select(): respects `...`", {
     )
   )
 })
+
+test_that("arc_select(): reports informative errors with `...`", {
+  furl <- paste0(
+    "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest",
+    "/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+  )
+  flayer <- arc_open(furl)
+  expr <- arc_select(
+    flayer,
+    wher = FALSE,
+    n_max = 1
+  ) |> rlang::expr()
+  
+  expect_error(
+    rlang::eval_bare(data), 
+    "`wher` must be a single string, not `FALSE`"
+  )
+})
