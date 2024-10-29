@@ -99,9 +99,8 @@ query results based on a predicate function.</p></dd>
 reference. If the <code>sfc</code> is missing a CRS (or is an <code>sfg</code> object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the <code>sfc</code>
 object has multiple features, the features are unioned with
-<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. If an <code>sfc</code> object has <code>MULTIPOLYGON</code> geometry, the features
-are unioned before being cast to <code>POLYGON</code> geometry with <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html" class="external-link">sf::st_cast()</a></code>. All
-geometries are checked for validity before conversion.</p>
+<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. If an <code>sfc</code> object has <code>MULTIPOLYGON</code> geometry, the
+features are cast to <code>POLYGON</code> geometry and only the first element is used.</p>
     </div>
 
     <div class="section level2">

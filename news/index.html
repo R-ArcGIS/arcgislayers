@@ -34,15 +34,19 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="arcgislayers-development-version">arcgislayers (development version)<a class="anchor" aria-label="anchor" href="#arcgislayers-development-version"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
-<ul><li>
-<code>dplyr</code> methods for <code>collect()</code>, <code>select()</code>, and <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code> have been removed. <a href="https://github.com/R-ArcGIS/arcgislayers/issues/111" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/111</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/224" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/224</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/218" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/218</a>
-</li>
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>Improve handling of <code>filter_geom</code> by <code><a href="../reference/arc_select.html">arc_select()</a></code> by warning if applying <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code> to the filter does not generate a length 1 sfc, or if <code>filter_geom</code> is supplied when accessing a Table, or if <code>filter_geom</code> is empty (<a href="https://github.com/elipousson" class="external-link">@elipousson</a>, <a href="https://github.com/R-ArcGIS/arcgislayers/issues/166" class="external-link">#166</a>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
 <code><a href="../reference/arc_select.html">arc_select()</a></code> includes argument name in error message when <code>...</code> contains non-string values. <a href="https://github.com/R-ArcGIS/arcgislayers/issues/226" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/226</a>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>
+<code>dplyr</code> methods for <code>collect()</code>, <code>select()</code>, and <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code> have been removed. <a href="https://github.com/R-ArcGIS/arcgislayers/issues/111" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/111</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/224" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/224</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/218" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/218</a>
 </li>
 </ul></div>
 </div>
