@@ -20,11 +20,8 @@
 #'  reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is
 #'  assumed to use the same spatial reference as the FeatureLayer. If the `sfc`
 #'  object has multiple features, the features are unioned with
-#'  [sf::st_union()]. If an `sfc` object has `MULTIPOLYGON` geometry that can't
-#'  be converted into a single "POLYGON", the features cast to `MULTIPOINT`
-#'  geometry with [sf::st_cast()] and then converted to a `POLYGON` with
-#'  [sf::st_concave_hull()] (using `ratio = 1` and `allow_holes = FALSE`). All
-#'  geometries are checked for validity before conversion.
+#'  [sf::st_union()]. If an `sfc` object has `MULTIPOLYGON` geometry, the
+#'  features are cast to `POLYGON` geometry and only the first element is used.
 #'
 #' @returns [prepare_spatial_filter()] returns a named list with the
 #'   `geometryType`, `geometry` (as Esri JSON), and spatial relation predicate.

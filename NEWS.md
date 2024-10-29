@@ -8,6 +8,7 @@
 
 - `arc_raster()` gains an argument `raster_fn` which takes a character scalar and performs a raster function server side before returning results
 - `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
+- Improve handling of `filter_geom` by `arc_select()` by warning if applying `sf::st_union()` to the filter does not generate a length 1 sfc, or if `filter_geom` is supplied when accessing a Table, or if `filter_geom` is empty (@elipousson, #166)
 
 ## Breaking changes 
 
@@ -21,7 +22,6 @@
 - Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
 - Add `pull_field_aliases()` utility function
 - `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
-- Improve handling of `filter_geom` by `arc_select()` by using `sf::st_concave_hull()` to process input geometry (in cases when applying `sf::st_union()` does not generate a single POLYGON) and warn if the input geometry is empty or longer than length 1. (@elipousson, #166)
 - Preserve order of `fields` column names for `arc_select()` (fixes minor bug with `arc_read` handling of `col_names`) (#185)
 - Set CRS for a FeatureLayer or ImageServer using `"wkid"` or `"wkt"` value if `"latestWkid"` is missing. (#188)
 - Fix issue with `arc_select()` when layer can't support pagination. (#191)
