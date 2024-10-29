@@ -1,5 +1,9 @@
 # arcgislayers (development version)
 
+## Fixes
+
+- Report more informative error when ivalid arguments are passed to `...` <https://github.com/R-ArcGIS/arcgislayers/issues/226>
+
 ## Breaking changes
 
 - `dplyr` methods for `collect()`, `select()`, and `filter()` have been removed. <https://github.com/R-ArcGIS/arcgislayers/issues/111> <https://github.com/R-ArcGIS/arcgislayers/issues/224> <https://github.com/R-ArcGIS/arcgislayers/issues/218>
