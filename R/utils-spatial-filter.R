@@ -98,31 +98,7 @@ filter_geom_as_sfg <- function(
   # https://github.com/R-ArcGIS/arcgislayers/issues/4
   # https://github.com/R-ArcGIS/arcgislayers/issues/166
   if (rlang::inherits_any(filter_geom, c("sfc_MULTIPOLYGON", "MULTIPOLYGON"))) {
-
-    filter_poly <- sf::st_cast(filter_geom, to = "POLYGON")
-
-    # no message is needed if cast returns a single geometry
-    if (length(filter_poly) == 1) {
-      if (is_sfg(filter_poly)) {
-        return(filter_poly)
-      }
-
-      return(filter_poly[[1]])
-    }
-
-    cli::cli_bullets(
-      c(
-        "!" = "{.arg filter_geom} geometry can't be {.val MULTIPOLYGON}.",
-        "i" = "Using {.fn sf::st_concave_hull} with {.code allow_holes = FALSE}
-        to convert to {.val POLYGON}."
-      )
-    )
-
-    filter_geom <- sf::st_concave_hull(
-      sf::st_cast(filter_geom, to = "MULTIPOINT"),
-      ratio = 1,
-      allow_holes = FALSE
-    )
+    filter_geom <- sf::st_cast(filter_geom, to = "POLYGON")
   }
 
   # return any sfg object
@@ -135,7 +111,7 @@ filter_geom_as_sfg <- function(
 
   if (geom_length > 1) {
     cli::cli_warn(
-      c("{.arg filter_geom} is a {geom_length} length {.cls sfc} object.",
+      c("{.arg filter_geom} contains {geom_length} elements.",
         "i" = "Using geometry from first element only.")
     )
   }
