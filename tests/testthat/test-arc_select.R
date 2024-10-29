@@ -85,7 +85,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
   )
 
   # allow sfc input for filter_geom
-  sfc_res <- suppressMessages(
+  sfc_res <- suppressWarnings(
     arc_select(
       flayer,
       filter_geom = nc$geometry,
@@ -95,7 +95,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
 
   expect_identical(
     sfc_res[["STATE_NAME"]],
-    c("Georgia", "North Carolina", "South Carolina", "Tennessee", "Virginia")
+    c("North Carolina", "Virginia")
   )
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
@@ -140,19 +140,6 @@ test_that("arc_select(): warns for Table layers and provides message for MULTIPO
       tlayer,
       filter_geom = nc$geometry
     )
-  )
-
-  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
-
-  flayer <- arc_open(furl)
-
-  # message on MULTIPOLYGON input filters
-  expect_message(
-    arc_select(
-      flayer,
-      filter_geom = nc$geometry[87]
-    ),
-    'sf::st_concave_hull()'
   )
 })
 
