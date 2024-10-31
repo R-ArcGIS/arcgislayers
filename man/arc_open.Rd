@@ -12,15 +12,18 @@ arc_open(url, token = arc_token())
 \item{token}{your authorization token.}
 }
 \value{
-Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}. Each of these objects is a named list containing the properties of the service.
+Depending on the provided URL returns a \code{FeatureLayer}, \code{Table},
+\code{FeatureServer}, \code{ImageServer}, \code{MapServer}, \code{GroupLayer}, \code{FeatureService},
+or \code{MapService}. Each of these objects is a named list containing the
+properties of the service.
 }
 \description{
 Provided a URL, create an object referencing the remote resource.
 The resultant object acts as a reference to the remote data source.
 }
 \details{
-To extract data from the remote resource utilize \code{\link[=arc_select]{arc_select()}} for objects of class
-\code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, utilize \code{\link[=arc_raster]{arc_raster()}}.
+To extract data from the remote resource use \code{\link[=arc_select]{arc_select()}} for objects of
+class \code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, use \code{\link[=arc_raster]{arc_raster()}}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
@@ -62,6 +65,25 @@ map_url <- paste0(
 )
 
 arc_open(map_url)
+
+# Item Page (Feature Service or Map Service)
+
+item_url <- paste0(
+  "https://www.arcgis.com/home/item.html",
+  "?id=10df2279f9684e4a9f6a7f08febac2a9"
+)
+
+arc_open(item_url)
+
+# Group Page (Feature Service)
+
+group_url <- paste0(
+  "https://www.arcgis.com/home/group.html",
+  "?id=1d1f24e8556642f49448f1c88b5a571b"
+)
+
+arc_open(group_url)
+
 }
 }
 \seealso{
