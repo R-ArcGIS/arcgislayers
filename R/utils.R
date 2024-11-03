@@ -255,7 +255,7 @@ parse_url_query <- function(url, keep_default = FALSE) {
   )
 
   # Return NULL if query matches a default value
-  if (!is.na(query_match)) {
+  if (!all(is.na(query_match))) {
     return(NULL)
   }
 
