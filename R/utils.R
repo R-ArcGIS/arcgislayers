@@ -241,8 +241,8 @@ parse_url_query <- function(url, keep_default = FALSE) {
   url_elements <- httr2::url_parse(url)
 
   # Return empty list if no query is included in url
-  if (is.null(url_elements[["query"]])) {
-    return(list())
+  if (is.null(url_elements[["query"]]) || keep_default) {
+    return(url_elements[["query"]] %||% list())
   }
 
   # Check for default query values
@@ -254,8 +254,8 @@ parse_url_query <- function(url, keep_default = FALSE) {
     )
   )
 
-  # Return NULL for default query
-  if (is.numeric(query_match) && !keep_default) {
+  # Return NULL if query matches a default value
+  if (!is.na(query_match)) {
     return(NULL)
   }
 
@@ -263,3 +263,31 @@ parse_url_query <- function(url, keep_default = FALSE) {
   url_elements[["query"]]
 }
 
+#' Test if the vector is a content url of the supplied type
+#' @keywords internal
+is_arc_content_url <- function(
+    x,
+    type = c("search", "item", "group", "user"),
+    ...,
+    perl = TRUE
+) {
+  pattern <- paste0("(", paste0(type, collapse = "|"), ")(?=\\.html)")
+  is_url(x, pattern = pattern, ..., perl = perl)
+}
+
+#' Extract the content URL type
+#' @noRd
+extract_content_url_type <- function(
+    url,
+    type = c("search", "item", "group", "user")
+) {
+  type <- paste0(type, collapse = "|")
+  str_extract(url, paste0("(", type, ")(?=\\.html)"))
+}
+
+#' Simplified string extract
+#' @noRd
+str_extract <- function(string, pattern) {
+  matches <- regexpr(pattern, string, perl = TRUE)
+  regmatches(string, matches)
+}

@@ -2,24 +2,48 @@
 % Please edit documentation in R/arc-open.R
 \name{arc_open}
 \alias{arc_open}
+\alias{arc_sharing}
 \title{Open connection to remote resource}
 \usage{
-arc_open(url, token = arc_token())
+arc_open(url, token = arc_token(), ...)
+
+arc_sharing(
+  url,
+  token = arc_token(),
+  resource = c("content", "community", "portals"),
+  call = caller_env()
+)
 }
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
 \item{token}{your authorization token.}
+
+\item{...}{Additional parameters passed by \code{\link[=arc_open]{arc_open()}} to \code{\link[=arc_sharing]{arc_sharing()}}.}
+
+\item{resource}{Resource type to access with the ArcGIS Portal API. One of
+"content" (default), "community", or "portals".}
+
+\item{call}{The execution environment of a currently
+running function, e.g. \code{caller_env()}. The function will be
+mentioned in error messages as the source of the error. See the
+\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \value{
-Depending on the provided URL returns a \code{FeatureLayer}, \code{Table},
-\code{FeatureServer}, \code{ImageServer}, \code{MapServer}, \code{GroupLayer}, \code{FeatureService},
-or \code{MapService}. Each of these objects is a named list containing the
-properties of the service.
+Depending on the provided URL, \code{arc_open()} returns a \code{FeatureLayer},
+\code{Table}, \code{FeatureServer}, \code{ImageServer}, \code{MapServer}, \code{GroupLayer},
+\code{FeatureService}, or \code{MapService}. \code{arc_sharing()} returns a \verb{ArcGIS item},
+\verb{ArcGIS user}, or \verb{ArcGIS group} object. Each of these objects is a named
+list containing the properties of the service.
 }
 \description{
-Provided a URL, create an object referencing the remote resource.
-The resultant object acts as a reference to the remote data source.
+\code{\link[=arc_open]{arc_open()}} uses a URL to create an object referencing the remote resource.
+Typically, \code{arc_open} is used with a FeatureServer, ImageServer, or
+MapServer URL and uses the \href{https://developers.arcgis.com/rest/services-reference/enterprise/get-started-with-the-services-directory/}{ArcGIS Server Services Directory API}.
+If an item or group URL is supplied, \code{arc_open} calls \code{\link[=arc_sharing]{arc_sharing()}} which
+uses the \href{https://developers.arcgis.com/rest/users-groups-and-items/working-with-users-groups-and-items/}{ArcGIS Portal Directory REST API}
+(also known as the Sharing API) for working with users, groups, and content
+in an organization.
 }
 \details{
 To extract data from the remote resource use \code{\link[=arc_select]{arc_select()}} for objects of
@@ -66,26 +90,32 @@ map_url <- paste0(
 
 arc_open(map_url)
 
-# Item Page (Feature Service or Map Service)
-
+# Item Page
 item_url <- paste0(
   "https://www.arcgis.com/home/item.html",
-  "?id=10df2279f9684e4a9f6a7f08febac2a9"
+  "?id=58e5b2fe5aaa4aa782175c334734e0a9"
 )
 
 arc_open(item_url)
 
-# Group Page (Feature Service)
-
+# Group Page
 group_url <- paste0(
   "https://www.arcgis.com/home/group.html",
-  "?id=1d1f24e8556642f49448f1c88b5a571b"
+  "?id=c755678be14e4a0984af36a15f5b643e"
 )
 
 arc_open(group_url)
 
+# Sharing API
+sharing_api_url <- paste0(
+  "https://www.arcgis.com/sharing/rest",
+  "/community/groups/1d1f24e8556642f49448f1c88b5a571b"
+)
+
+arc_open(sharing_api_url)
+
 }
 }
 \seealso{
-arc_select arc_raster
+\code{\link[=arc_select]{arc_select()}}; \code{\link[=arc_raster]{arc_raster()}}
 }
