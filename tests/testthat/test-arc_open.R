@@ -50,6 +50,11 @@ test_that("arc_open(): GroupLayer", {
   expect_no_error(arc_open(gurl))
 })
 
+test_that("arc_open(): Item", {
+  gurl <- "https://www.arcgis.com/home/item.html?id=58e5b2fe5aaa4aa782175c334734e0a9"
+  expect_no_error(arc_open(gurl))
+})
+
 test_that("arc_open(): doesn't filter NULL properties", {
 
   furl <- "https://geodata.md.gov/imap/rest/services/Transportation/MD_Transit/FeatureServer/8"
