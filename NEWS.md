@@ -1,3 +1,7 @@
+# arcgislayers (development version)
+
+- Adjusts `arc_select()` to not error out when `query` capability isn't explicitly listed. Instead `cli_alert_danger()` is used to communicate the issue <https://github.com/R-ArcGIS/arcgislayers/pull/230>
+
 # arcgislayers 0.3.1
 
 ## Bug fixes
