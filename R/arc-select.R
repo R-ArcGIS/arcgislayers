@@ -192,8 +192,7 @@ collect_layer <- function(
   # throw warning if the layer cannot query
   if (!can_query) {
     cli::cli_alert_danger(
-      "{class(x)} {.val {x[['name']]}} does not support querying",
-      call = error_call
+      "{class(x)} {.val {x[['name']]}} does not support querying"
     )
   }
 
