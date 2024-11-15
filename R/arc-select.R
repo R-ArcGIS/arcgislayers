@@ -189,9 +189,9 @@ collect_layer <- function(
     FALSE
   )
 
-  # throw error if the layer cannot query
+  # throw warning if the layer cannot query
   if (!can_query) {
-    cli::cli_abort(
+    cli::cli_alert_danger(
       "{class(x)} {.val {x[['name']]}} does not support querying",
       call = error_call
     )
