@@ -308,7 +308,7 @@ label_layer_fields <- function(
 #' @param .layer A Table or FeatureLayer object. Required.
 #' @param field Default `NULL`. Field or fields to replace. Fields that do
 #'   not have coded value domains are ignored.
-#' @param codes Use of field alias values. Defaults to `c("replace", "label"),`.
+#' @param codes Use of field alias values. Defaults to `"replace"`.
 #' There are two options:
 #'
 #'  - `"replace"`: coded values replace existing column values.
