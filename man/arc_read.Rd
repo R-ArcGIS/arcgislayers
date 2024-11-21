@@ -39,7 +39,8 @@ returned. By default, all fields are returned.}
 to return.}
 
 \item{name_repair}{Default \code{"unique"}. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for
-details. If \code{name_repair = NULL}, names are set directly.}
+details. If \code{name_repair = NULL} and \code{alias = "replace"} may include
+invalid names.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
 the CRS for the input \code{FeatureLayer}, a transformation will occur
@@ -57,7 +58,6 @@ supplied.}
 \item \code{"drop"}, field alias values are ignored.
 \item \code{"label"}: field alias values are assigned as a label attribute for each field.
 \item \code{"replace"}: field alias values replace existing column names. \code{col_names}
-must \code{TRUE} for this option to be applied.
 }}
 
 \item{token}{your authorization token.}

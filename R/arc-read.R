@@ -18,7 +18,22 @@
 #' @param n_max Defaults to `Inf` or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.
-#' @inheritParams set_layer_col_names
+#' @param col_names Default `TRUE`. Column names or name handling rule.
+#'   `col_names` can be `TRUE`, `FALSE`, `NULL`, or a character vector:
+#'
+#'  - If `TRUE`, use existing default column names for the layer or table.
+#'  If `FALSE` or `NULL`, column names will be generated automatically: X1, X2,
+#'  X3 etc.
+#'  - If `col_names` is a character vector, values replace the existing column
+#'  names. `col_names` can't be length 0 or longer than the number of fields in
+#'  the returned layer.
+#' @param alias Use of field alias values. Default `c("drop", "label",
+#'   "replace"),`. There are three options:
+#'
+#'  - `"drop"`, field alias values are ignored.
+#'  - `"label"`: field alias values are assigned as a label attribute for each field.
+#'  - `"replace"`: field alias values replace existing column names. `col_names`
+#' @inheritParams set_layer_aliases
 #' @param fields Default `NULL`. a character vector of the field names to
 #'   returned. By default all fields are returned. Ignored if `col_names` is
 #'   supplied.
@@ -112,85 +127,53 @@ arc_read <- function(
     ...
   )
 
-  set_layer_col_names(
+  # check col_names input
+  if (!is.null(col_names) && !rlang::is_logical(col_names) && !is.character(col_names)) {
+    cli::cli_abort("{.arg col_names} must be `TRUE`, `FALSE`, `NULL`, or a character vector.")
+  }
+
+  if (identical(col_names, "alias")) {
+    # Set alias to "replace" as name if col_names = "alias"
+    alias <- "replace"
+    lifecycle::deprecate_soft(
+      "deprecated",
+      what = "arc_read(col_names = \"can't be alias\")",
+      with = "arc_read(alias = \"replace\")",
+    )
+  }
+
+  if (identical(alias, "drop") || is.character(col_names) || isFALSE(col_names)) {
+    layer <- set_col_names(
+      .data = layer,
+      col_names = col_names,
+      name_repair = name_repair
+    )
+
+    return(layer)
+  }
+
+  set_layer_aliases(
     .data = layer,
     .layer = x,
-    col_names = col_names,
     name_repair = name_repair,
     alias = alias
   )
 }
 
-#' Set and repair column names for FeatureLayer or Table data frame
-#'
-#' [set_layer_col_names()] can replace or label column names based on the the
-#' field aliases from a corresponding `Table` or `FeatureLayer` object created
-#' with `arc_open()`. Optionally repair names using [vctrs::vec_as_names()].
-#'
-#' @param .data A data frame returned by `arc_select() `or `arc_read()`.
-#' @param .layer A Table or FeatureLayer object. Required if `alias` is `"label"` or
-#'   `"replace"`.
-#' @param col_names Default `TRUE`. Column names or name handling rule.
-#'   `col_names` can be `TRUE`, `FALSE`, `NULL`, or a character vector:
-#'
-#'  - If `TRUE`, use existing default column names for the layer or table.
-#'  If `FALSE` or `NULL`, column names will be generated automatically: X1, X2,
-#'  X3 etc.
-#'  - If `col_names` is a character vector, values replace the existing column
-#'  names. `col_names` can't be length 0 or longer than the number of fields in
-#'  the returned layer.
-#' @param alias Use of field alias values. Default `c("drop", "label",
-#'   "replace"),`. There are three options:
-#'
-#'  - `"drop"`, field alias values are ignored.
-#'  - `"label"`: field alias values are assigned as a label attribute for each field.
-#'  - `"replace"`: field alias values replace existing column names. `col_names`
-#'  must `TRUE` for this option to be applied.
-#' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
-#'   details. If `name_repair = NULL`, names are set directly.
-#' @inheritParams rlang::args_error_context
-#' @export
-set_layer_col_names <- function(
-    .data,
-    .layer = NULL,
-    col_names = TRUE,
-    name_repair = NULL,
-    alias = c("drop", "label", "replace"),
-    call = rlang::caller_env()) {
-  # check col_names input
-  if (!is.null(col_names) && !rlang::is_logical(col_names) && !is.character(col_names)) {
-    cli::cli_abort(
-      "{.arg col_names} must be `TRUE`, `FALSE`, `NULL`, or a character vector.",
-      call = call
-    )
-  }
-
-  alias <- rlang::arg_match(alias, error_call = call)
-
-  # skip col_names and alias handling if possible
-  if (rlang::is_true(col_names) && alias == "drop") {
-    return(repair_layer_names(.data, name_repair = name_repair, call = call))
-  }
-
-  existing_nm <- names(.data)
+#' Handle col_names
+#' @noRd
+set_col_names <- function(.data,
+                          col_names = TRUE,
+                          name_repair = NULL,
+                          call = rlang::caller_env()
+) {
   n_col <- ncol(.data)
-  sf_column <- attr(.data, "sf_column")
+  nm <- names(.data)
 
-  # Use existing names by default
-  replace_nm <- existing_nm
-
-  if (alias != "drop" || identical(col_names, "alias")) {
-    # get alias values and drop names
-    alias_val <- pull_field_aliases(.layer)[setdiff(existing_nm, sf_column)]
-    alias_val <- as.character(alias_val)
-
-    if (alias == "replace") {
-      # NOTE: alias values may not be valid names
-      replace_nm <- alias_val
-    }
-  }
-
-  if (is.character(col_names)) {
+  if (rlang::is_false(col_names)) {
+    # Use X1, X2, etc. as names if col_names is FALSE
+    nm <- paste0("X", seq(n_col))
+  } else if (is.character(col_names)) {
     col_names_len <- length(col_names)
 
     # Check col_names length
@@ -199,54 +182,72 @@ set_layer_col_names <- function(
         "{.arg col_names} must be length {n_col}{? or shorter}, not {col_names_len}.",
         call = call
       )
+    } else if ((col_names_len + 1) < n_col) {
+      # fill missing field names using pattern, X1, X2, etc.
+      col_names <- c(col_names, paste0("X", seq(length(col_names) + 1, n_col)))
     }
 
-    if (identical(col_names, "alias")) {
-      # Assign alias values as name if col_names = "alias"
-      col_names <- alias_val
-      lifecycle::signal_stage(
-        "superseded",
-        what = "arc_read(col_names = \"can't be alias\")",
-        with = "arc_read(alias = \"replace\")",
-      )
-    }
-
-    replace_nm <- col_names
-  }
-
-  if (rlang::is_false(col_names) || is.null(col_names)) {
-    # Use X1, X2, etc. as names if col_names is FALSE
-    replace_nm <- paste0("X", seq_along(existing_nm))
-  }
-
-  replace_nm_len <- length(replace_nm)
-
-  if (replace_nm_len < n_col) {
-    # fill missing field names using pattern, X1, X2, etc.
-    replace_nm <- c(replace_nm, paste0("X", seq(replace_nm_len + 1, n_col)))
-
-    # But keep the default sf column name
+    # But always keep the default sf column name
     if (inherits(.data, "sf")) {
-      replace_nm[[n_col]] <- sf_column
+      col_names[[n_col]] <- attr(.data, "sf_column")
+    }
+
+    nm <- col_names
+  }
+
+  repair_layer_names(.data, names = nm, name_repair = name_repair, call = call)
+}
+
+#' Set column labels or names based FeatureLayer or Table data frame field aliases
+#'
+#' [set_layer_aliases()] can replace or label column names based on the the
+#' field aliases from a corresponding `Table` or `FeatureLayer` object created
+#' with `arc_open()`. Optionally repair names using [vctrs::vec_as_names()].
+#'
+#' @param .data A data frame returned by `arc_select()` or `arc_read()`.
+#' @param .layer A Table or FeatureLayer object. Required.
+#' @param alias Use of field alias values. Default `c("label", "replace"),`.
+#'   There are two options:
+#'
+#'  - `"label"`: field alias values are assigned as a label attribute for each field.
+#'  - `"replace"`: field alias values replace existing column names.
+#' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
+#'   details. If `name_repair = NULL` and `alias = "replace"` may include
+#'   invalid names.
+#' @inheritParams rlang::args_error_context
+#' @export
+set_layer_aliases <- function(
+    .data,
+    .layer,
+    name_repair = "unique",
+    alias = c("label", "replace"),
+    call = rlang::caller_env()) {
+  alias <- rlang::arg_match(alias, error_call = call)
+  nm <- names(.data)
+  sf_column <- attr(.data, "sf_column")
+  alias_val <- pull_field_aliases(.layer)[setdiff(nm, sf_column)]
+
+  # NOTE: alias values may not be valid names
+  if (alias == "replace") {
+    # get unnamed alias values
+    nm <- unname(alias_val)
+
+    # geometry columns don't include an alias so keep existing
+    if (!is.null(sf_column)) {
+      nm[[ncol(.data)]] <- sf_column
     }
   }
 
   .data <- repair_layer_names(
     .data,
-    names = replace_nm,
+    names = nm,
     name_repair = name_repair,
     call = call
   )
 
-  if (alias != "label") {
+  if (alias == "replace") {
     return(.data)
   }
-
-  # Name alias values with layer names
-  alias_val <- rlang::set_names(
-    alias_val,
-    nm = setdiff(replace_nm, sf_column)
-  )
 
   label_layer_fields(.data, values = alias_val)
 }
@@ -297,66 +298,64 @@ label_layer_fields <- function(
   x
 }
 
-
 #' Set coded values for FeatureLayer or Table data frame
 #'
-#' [set_layer_coded_values()] can replace column values based on `codedValue`
+#' [encode_field_values()] can replace column values based on `codedValue`
 #' type field domains from a corresponding `Table` or `FeatureLayer` object
 #' created with `arc_open()`.
 #'
 #' @param .data A data frame returned by `arc_select()` or `arc_read()`.
 #' @param .layer A Table or FeatureLayer object. Required.
-#' @param field Default `NULL`. Field or fields to replace. Fields that are do
-#'   not have coded values domains are ignored.
-#' @param codes Use of field alias values. Default `c("replace"),`.
+#' @param field Default `NULL`. Field or fields to replace. Fields that do
+#'   not have coded value domains are ignored.
+#' @param codes Use of field alias values. Defaults to `c("replace", "label"),`.
 #' There are two options:
 #'
 #'  - `"replace"`: coded values replace existing column values.
 #'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
 #' @export
-set_layer_coded_values <- function(
+encode_field_values <- function(
     .data,
     .layer,
     field = NULL,
     codes = c("replace", "label"),
     call = rlang::caller_env()) {
-  values <- pull_coded_values(.layer, field = field)
+  values <- pull_coded_values(.layer, field = field, call = call)
+
+  codes <- rlang::arg_match(codes, error_call = call)
 
   # Check if coded values is an empty list
   if (rlang::is_empty(values)) {
-    if (is.null(field)) {
-      cli::cli_warn(
-        "{.arg layer} does not contain any coded values."
-      )
-    } else {
-      cli::cli_warn(
-        "{.arg field} does not specific any coded value fields."
-      )
+    message <- "{.arg layer} does not contain any coded values."
+
+    if (!is.null(field)) {
+      message <- "{.arg field} {.val {field}} do not contain any coded values."
+    }
+
+    cli::cli_warn(message)
+    return(.data)
+  }
+
+  # Replace column values by default
+  if (codes == "replace") {
+    for (col in names(values)) {
+      .data[[col]] <- values[[col]][.data[[col]]]
     }
 
     return(.data)
   }
 
-  codes <- rlang::arg_match(codes, error_call = call)
-
-  if (codes == "replace") {
-    # Replace column values by default
-    for (col in names(values)) {
-      .data[[col]] <- values[[col]][.data[[col]]]
-    }
-  } else {
-    # Label column values using new_labelled_col helper
-    for (col in names(values)) {
-      .data[[col]] <- new_labelled_col(
-        .data[[col]],
-        labels = rlang::set_names(
-          names(values[[col]]),
-          values[[col]]
-        ),
-        call = call
-      )
-    }
+  # Label column values using new_labelled_col helper
+  for (col in names(values)) {
+    .data[[col]] <- new_labelled_col(
+      .data[[col]],
+      labels = rlang::set_names(
+        names(values[[col]]),
+        values[[col]]
+      ),
+      call = call
+    )
   }
 
   .data
