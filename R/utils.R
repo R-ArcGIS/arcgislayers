@@ -295,7 +295,7 @@ pull_coded_values <- function(x, field = NULL) {
 
       values <- x[["codedValues"]]
 
-      rlang::set_names(values[["code"]], values[["name"]])
+      rlang::set_names(values[["name"]], values[["code"]])
     }
   )
 
