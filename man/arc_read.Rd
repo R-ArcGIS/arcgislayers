@@ -96,7 +96,7 @@ data in the \code{{readr}} package.
   )
 
  # use field aliases as column names
- arc_read(furl, col_names = "alias")
+ arc_read(furl, alias = "replace")
 
  # read an ImageServer directly
  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"

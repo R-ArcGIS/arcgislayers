@@ -13,34 +13,17 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams arc_open
-#' @param col_names Default `TRUE`. Column names or name handling rule.
-#'   `col_names` can be `TRUE`, `FALSE`, `NULL`, or a character vector:
-#'
-#'  - If `TRUE`, use existing default column names for the layer or table.
-#'  If `FALSE` or `NULL`, column names will be generated automatically: X1, X2,
-#'  X3 etc.
-#'  - If `col_names` is a character vector, values replace the existing column
-#'  names. `col_names` can't be length 0 or longer than the number of fields in
-#'  the returned layer.
 #' @param col_select Default `NULL`. A character vector of the field names to be
 #'   returned. By default, all fields are returned.
 #' @param n_max Defaults to `Inf` or an option set with
 #'   `options("arcgislayers.n_max" = <max records>)`. Maximum number of records
 #'   to return.
-#' @param alias Use of field alias values. Default `c("drop", "label",
-#'   "replace"),`. There are three options:
-#'
-#'  - `"drop"`, field alias values are ignored.
-#'  - `"label"`: field alias values are assigned as a label attribute for each field.
-#'  - `"replace"`: field alias values replace existing column names. `col_names`
-#'  must `TRUE` for this option to be applied.
+#' @inheritParams set_layer_col_names
 #' @param fields Default `NULL`. a character vector of the field names to
 #'   returned. By default all fields are returned. Ignored if `col_names` is
 #'   supplied.
 #' @inheritParams arc_select
 #' @inheritParams arc_raster
-#' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
-#'   details. If `name_repair = NULL`, names are set directly.
 #' @param ... Additional arguments passed to [arc_select()] if URL is a
 #'   `FeatureLayer` or `Table` or [arc_raster()] if URL is an `ImageLayer`.
 #' @returns An sf object, a `data.frame`, or an object of class `SpatRaster`.
@@ -62,7 +45,7 @@
 #'   )
 #'
 #'  # use field aliases as column names
-#'  arc_read(furl, col_names = "alias")
+#'  arc_read(furl, alias = "replace")
 #'
 #'  # read an ImageServer directly
 #'  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
@@ -130,22 +113,49 @@ arc_read <- function(
   )
 
   set_layer_col_names(
-    layer,
+    .data = layer,
+    .layer = x,
     col_names = col_names,
     name_repair = name_repair,
-    alias = alias,
-    x = x
+    alias = alias
   )
 }
 
-#' Set names for layer or table
-#' @noRd
+#' Set and repair column names for FeatureLayer or Table data frame
+#'
+#' [set_layer_col_names()] can replace or label column names based on the the
+#' field aliases from a corresponding `Table` or `FeatureLayer` object created
+#' with `arc_open()`. Optionally repair names using [vctrs::vec_as_names()].
+#'
+#' @param .data A data frame returned by `arc_select() `or `arc_read()`.
+#' @param .layer A Table or FeatureLayer object. Required if `alias` is `"label"` or
+#'   `"replace"`.
+#' @param col_names Default `TRUE`. Column names or name handling rule.
+#'   `col_names` can be `TRUE`, `FALSE`, `NULL`, or a character vector:
+#'
+#'  - If `TRUE`, use existing default column names for the layer or table.
+#'  If `FALSE` or `NULL`, column names will be generated automatically: X1, X2,
+#'  X3 etc.
+#'  - If `col_names` is a character vector, values replace the existing column
+#'  names. `col_names` can't be length 0 or longer than the number of fields in
+#'  the returned layer.
+#' @param alias Use of field alias values. Default `c("drop", "label",
+#'   "replace"),`. There are three options:
+#'
+#'  - `"drop"`, field alias values are ignored.
+#'  - `"label"`: field alias values are assigned as a label attribute for each field.
+#'  - `"replace"`: field alias values replace existing column names. `col_names`
+#'  must `TRUE` for this option to be applied.
+#' @param name_repair Default `"unique"`. See [vctrs::vec_as_names()] for
+#'   details. If `name_repair = NULL`, names are set directly.
+#' @inheritParams rlang::args_error_context
+#' @export
 set_layer_col_names <- function(
-    layer,
+    .data,
+    .layer = NULL,
     col_names = TRUE,
     name_repair = NULL,
     alias = c("drop", "label", "replace"),
-    x = NULL,
     call = rlang::caller_env()) {
   # check col_names input
   if (!is.null(col_names) && !rlang::is_logical(col_names) && !is.character(col_names)) {
@@ -159,19 +169,19 @@ set_layer_col_names <- function(
 
   # skip col_names and alias handling if possible
   if (rlang::is_true(col_names) && alias == "drop") {
-    return(repair_layer_names(layer, name_repair = name_repair, call = call))
+    return(repair_layer_names(.data, name_repair = name_repair, call = call))
   }
 
-  existing_nm <- names(layer)
-  n_col <- ncol(layer)
-  sf_column <- attr(layer, "sf_column")
+  existing_nm <- names(.data)
+  n_col <- ncol(.data)
+  sf_column <- attr(.data, "sf_column")
 
   # Use existing names by default
   replace_nm <- existing_nm
 
   if (alias != "drop" || identical(col_names, "alias")) {
     # get alias values and drop names
-    alias_val <- pull_field_aliases(x)[setdiff(existing_nm, sf_column)]
+    alias_val <- pull_field_aliases(.layer)[setdiff(existing_nm, sf_column)]
     alias_val <- as.character(alias_val)
 
     if (alias == "replace") {
@@ -216,20 +226,20 @@ set_layer_col_names <- function(
     replace_nm <- c(replace_nm, paste0("X", seq(replace_nm_len + 1, n_col)))
 
     # But keep the default sf column name
-    if (inherits(layer, "sf")) {
+    if (inherits(.data, "sf")) {
       replace_nm[[n_col]] <- sf_column
     }
   }
 
-  layer <- repair_layer_names(
-    layer,
+  .data <- repair_layer_names(
+    .data,
     names = replace_nm,
     name_repair = name_repair,
     call = call
   )
 
   if (alias != "label") {
-    return(layer)
+    return(.data)
   }
 
   # Name alias values with layer names
@@ -238,7 +248,7 @@ set_layer_col_names <- function(
     nm = setdiff(replace_nm, sf_column)
   )
 
-  label_layer_fields(layer, values = alias_val)
+  label_layer_fields(.data, values = alias_val)
 }
 
 #' Repair layer names using `vctrs::vec_as_names` and `rlang::set_names`
