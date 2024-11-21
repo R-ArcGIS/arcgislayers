@@ -296,3 +296,88 @@ label_layer_fields <- function(
   attr(x, "label") <- value
   x
 }
+
+
+#' Set coded values for FeatureLayer or Table data frame
+#'
+#' [set_layer_coded_values()] can replace column values based on `codedValue`
+#' type field domains from a corresponding `Table` or `FeatureLayer` object
+#' created with `arc_open()`.
+#'
+#' @param .data A data frame returned by `arc_select()` or `arc_read()`.
+#' @param .layer A Table or FeatureLayer object. Required.
+#' @param field Default `NULL`. Field or fields to replace. Fields that are do
+#'   not have coded values domains are ignored.
+#' @param codes Use of field alias values. Default `c("replace"),`.
+#' There are two options:
+#'
+#'  - `"replace"`: coded values replace existing column values.
+#'  - `"label"`: coded values are applied as value labels.
+#' @inheritParams rlang::args_error_context
+#' @export
+set_layer_coded_values <- function(
+    .data,
+    .layer,
+    field = NULL,
+    codes = c("replace", "label"),
+    call = rlang::caller_env()) {
+  values <- pull_coded_values(.layer, field = field)
+
+  # Check if coded values is an empty list
+  if (rlang::is_empty(values)) {
+    if (is.null(field)) {
+      cli::cli_warn(
+        "{.arg layer} does not contain any coded values."
+      )
+    } else {
+      cli::cli_warn(
+        "{.arg field} does not specific any coded value fields."
+      )
+    }
+
+    return(.data)
+  }
+
+  codes <- rlang::arg_match(codes, error_call = call)
+
+  if (codes == "replace") {
+    # Replace column values by default
+    for (col in names(values)) {
+      .data[[col]] <- values[[col]][.data[[col]]]
+    }
+  } else {
+    # Label column values using new_labelled_col helper
+    for (col in names(values)) {
+      .data[[col]] <- new_labelled_col(
+        .data[[col]],
+        labels = rlang::set_names(
+          names(values[[col]]),
+          values[[col]]
+        ),
+        call = call
+      )
+    }
+  }
+
+  .data
+}
+
+#' Set value labels compatible w/ `haven::labelled` package
+#' @noRd
+new_labelled_col <- function(x,
+                             labels = NULL,
+                             label = NULL,
+                             ...,
+                             class = character(),
+                             call = rlang::caller_env()) {
+  rlang::check_installed("vctrs", call = call)
+
+  vctrs::new_vctr(
+    x,
+    labels = rlang::set_names(labels, names(labels)),
+    label = label,
+    ...,
+    class = c(class, "haven_labelled"),
+    inherit_base_type = TRUE
+  )
+}
