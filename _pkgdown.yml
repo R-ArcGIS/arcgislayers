@@ -45,4 +45,4 @@ reference:
   - prepare_spatial_filter
   - match_spatial_rel
   - update_params
-  
+  - starts_with("set_layer")
