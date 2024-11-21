@@ -312,7 +312,7 @@ label_layer_fields <- function(
 #' There are two options:
 #'
 #'  - `"replace"`: coded values replace existing column values.
-#'  - `"label"`: coded values are applied as value labels.
+#'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
 #' @export
 set_layer_coded_values <- function(
