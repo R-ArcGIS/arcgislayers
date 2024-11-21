@@ -4,6 +4,8 @@
 ## New features
 
 - Improve handling of `filter_geom` by `arc_select()` by warning if applying `sf::st_union()` to the filter does not generate a length 1 sfc, or if `filter_geom` is supplied when accessing a Table, or if `filter_geom` is empty (@elipousson, #166)
+- Export `set_layer_col_names()` (previously used internally by `arc_read()`) to allow use of alias values with data returned by `arc_select()` (#169).
+- Add new `set_layer_coded_values()` function to support replacement or labelling of values with coded value domains (#134).
 
 ## Bug fixes
 
