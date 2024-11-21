@@ -263,3 +263,41 @@ parse_url_query <- function(url, keep_default = FALSE) {
   url_elements[["query"]]
 }
 
+#' @noRd
+list_field_domains <- function(x, field = NULL, keep_null = FALSE) {
+  fields <- list_fields(x)
+  nm <- fields[["name"]]
+
+  domains <- rlang::set_names(fields[["domain"]], nm)
+
+  if (!is.null(field)) {
+    field <- rlang::arg_match(nm, multiple = TRUE)
+    domains <- domains[nm %in% field]
+  }
+
+  if (keep_null) {
+    return(domains)
+  }
+
+  domains[!vapply(domains, is.null, logical(1))]
+}
+
+#' @noRd
+pull_coded_values <- function(x, field = NULL) {
+  domains <- list_field_domains(x, field = field, keep_null = FALSE)
+
+  domains <- lapply(
+    domains,
+    \(x)  {
+      if (x[["type"]] != "codedValue") {
+        return(NULL)
+      }
+
+      values <- x[["codedValues"]]
+
+      rlang::set_names(values[["code"]], values[["name"]])
+    }
+  )
+
+  domains
+}
