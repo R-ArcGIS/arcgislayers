@@ -20,7 +20,7 @@ encode_field_values(
 \item{field}{Default \code{NULL}. Field or fields to replace. Fields that do
 not have coded value domains are ignored.}
 
-\item{codes}{Use of field alias values. Defaults to \verb{c("replace", "label"),}.
+\item{codes}{Use of field alias values. Defaults to \code{"replace"}.
 There are two options:
 \itemize{
 \item \code{"replace"}: coded values replace existing column values.

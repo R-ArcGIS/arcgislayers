@@ -127,20 +127,19 @@ arc_read <- function(
     ...
   )
 
-  # check col_names input
-  if (!is.null(col_names) && !rlang::is_logical(col_names) && !is.character(col_names)) {
-    cli::cli_abort("{.arg col_names} must be `TRUE`, `FALSE`, `NULL`, or a character vector.")
-  }
-
   if (identical(col_names, "alias")) {
     # Set alias to "replace" as name if col_names = "alias"
     alias <- "replace"
+    col_names <- NULL
+
     lifecycle::deprecate_soft(
       "deprecated",
       what = "arc_read(col_names = \"can't be alias\")",
       with = "arc_read(alias = \"replace\")",
     )
   }
+
+  alias <- rlang::arg_match(alias)
 
   if (identical(alias, "drop") || is.character(col_names) || isFALSE(col_names)) {
     layer <- set_col_names(
@@ -160,6 +159,36 @@ arc_read <- function(
   )
 }
 
+#' @noRd
+check_col_names <- function(col_names,
+                            max_len,
+                            call = rlang::caller_env()) {
+  if (rlang::is_logical(col_names) || is.null(col_names)) {
+    return(invisible(NULL))
+  }
+
+  # check col_names input
+  if (!is.character(col_names)) {
+    cli::cli_abort(
+      "{.arg col_names} must be `TRUE`, `FALSE`, `NULL`, or a character vector.",
+      call = call
+    )
+  }
+
+  col_names_len <- length(col_names)
+
+  # Check col_names length
+  if (col_names_len > 0 && col_names_len <= max_len) {
+    return(invisible(NULL))
+  }
+
+  cli::cli_abort(
+    "{.arg col_names} must be length {max_len}{? or shorter},
+    not {col_names_len}.",
+    call = call
+  )
+}
+
 #' Handle col_names
 #' @noRd
 set_col_names <- function(.data,
@@ -168,28 +197,34 @@ set_col_names <- function(.data,
                           call = rlang::caller_env()
 ) {
   n_col <- ncol(.data)
+  check_col_names(col_names, max_len = n_col, call = call)
+
   nm <- names(.data)
+  sf_column <- attr(.data, "sf_column")
+  field_nm <- setdiff(nm, sf_column)
 
   if (rlang::is_false(col_names)) {
     # Use X1, X2, etc. as names if col_names is FALSE
-    nm <- paste0("X", seq(n_col))
-  } else if (is.character(col_names)) {
+    col_names <- paste0("X", seq(n_col))
+  }
+
+  if (is.character(col_names)) {
     col_names_len <- length(col_names)
 
-    # Check col_names length
-    if ((col_names_len > n_col) || col_names_len == 0) {
-      cli::cli_abort(
-        "{.arg col_names} must be length {n_col}{? or shorter}, not {col_names_len}.",
-        call = call
-      )
-    } else if ((col_names_len + 1) < n_col) {
-      # fill missing field names using pattern, X1, X2, etc.
-      col_names <- c(col_names, paste0("X", seq(length(col_names) + 1, n_col)))
-    }
+    if (col_names_len == n_col && !is.null(sf_column)) {
+      # replace sf column name if lengths match
+      .data <- sf::st_set_geometry(.data, col_names[[n_col]])
+    } else {
+      # if shorter fill missing field names using pattern, X1, X2, etc.
+      if (col_names_len < length(field_nm)) {
+        col_names <- c(
+          col_names,
+          paste0("X", seq(length(col_names) + 1, n_col))
+        )
+      }
 
-    # But always keep the default sf column name
-    if (inherits(.data, "sf")) {
-      col_names[[n_col]] <- attr(.data, "sf_column")
+      # but keep default sf column name
+      col_names[[n_col]] <- sf_column %||% col_names[[n_col]]
     }
 
     nm <- col_names
@@ -198,7 +233,8 @@ set_col_names <- function(.data,
   repair_layer_names(.data, names = nm, name_repair = name_repair, call = call)
 }
 
-#' Set column labels or names based FeatureLayer or Table data frame field aliases
+#' Set column labels or names based FeatureLayer or Table data frame field
+#' aliases
 #'
 #' [set_layer_aliases()] can replace or label column names based on the the
 #' field aliases from a corresponding `Table` or `FeatureLayer` object created
@@ -206,8 +242,8 @@ set_col_names <- function(.data,
 #'
 #' @param .data A data frame returned by `arc_select()` or `arc_read()`.
 #' @param .layer A Table or FeatureLayer object. Required.
-#' @param alias Use of field alias values. Default `c("label", "replace"),`.
-#'   There are two options:
+#' @param alias Use of field alias values. Defaults to `"label"`. There are two
+#'   options:
 #'
 #'  - `"label"`: field alias values are assigned as a label attribute for each field.
 #'  - `"replace"`: field alias values replace existing column names.
@@ -225,18 +261,17 @@ set_layer_aliases <- function(
   alias <- rlang::arg_match(alias, error_call = call)
   nm <- names(.data)
   sf_column <- attr(.data, "sf_column")
-  alias_val <- pull_field_aliases(.layer)[setdiff(nm, sf_column)]
+  # get unnamed alias values
+  alias_val <- unname(pull_field_aliases(.layer)[setdiff(nm, sf_column)])
 
-  # NOTE: alias values may not be valid names
   if (alias == "replace") {
-    # get unnamed alias values
-    nm <- unname(alias_val)
-
-    # geometry columns don't include an alias so keep existing
-    if (!is.null(sf_column)) {
-      nm[[ncol(.data)]] <- sf_column
-    }
+    # Return if alias values are identical to the existing field names
+    # NOTE: alias values may not be valid names
+    nm <- alias_val
   }
+
+  # geometry columns don't include an alias so keep any existing sf column
+  nm[[ncol(.data)]] <- sf_column %||% nm[[ncol(.data)]]
 
   .data <- repair_layer_names(
     .data,
@@ -248,6 +283,11 @@ set_layer_aliases <- function(
   if (alias == "replace") {
     return(.data)
   }
+
+  alias_val <- rlang::set_names(
+    alias_val,
+    setdiff(names(.data), attr(.data, "sf_column"))
+  )
 
   label_layer_fields(.data, values = alias_val)
 }

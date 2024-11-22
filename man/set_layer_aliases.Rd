@@ -2,7 +2,8 @@
 % Please edit documentation in R/arc-read.R
 \name{set_layer_aliases}
 \alias{set_layer_aliases}
-\title{Set column labels or names based FeatureLayer or Table data frame field aliases}
+\title{Set column labels or names based FeatureLayer or Table data frame field
+aliases}
 \usage{
 set_layer_aliases(
   .data,
@@ -21,8 +22,8 @@ set_layer_aliases(
 details. If \code{name_repair = NULL} and \code{alias = "replace"} may include
 invalid names.}
 
-\item{alias}{Use of field alias values. Default \verb{c("label", "replace"),}.
-There are two options:
+\item{alias}{Use of field alias values. Defaults to \code{"label"}. There are two
+options:
 \itemize{
 \item \code{"label"}: field alias values are assigned as a label attribute for each field.
 \item \code{"replace"}: field alias values replace existing column names.
