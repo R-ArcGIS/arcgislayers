@@ -4,6 +4,8 @@
 ## New features
 
 - Improve handling of `filter_geom` by `arc_select()` by warning if applying `sf::st_union()` to the filter does not generate a length 1 sfc, or if `filter_geom` is supplied when accessing a Table, or if `filter_geom` is empty (@elipousson, #166)
+- Export `set_layer_aliases()` (previously used internally by `arc_read()`) to allow use of alias values with data returned by `arc_select()` (#169).
+- Add new `encode_field_values()` function to support replacement or labeling of values with coded value domains (#134).
 
 ## Bug fixes
 
@@ -13,6 +15,7 @@
 ## Breaking changes
 
 - `dplyr` methods for `collect()`, `select()`, and `filter()` have been removed. <https://github.com/R-ArcGIS/arcgislayers/issues/111> <https://github.com/R-ArcGIS/arcgislayers/issues/224> <https://github.com/R-ArcGIS/arcgislayers/issues/218>
+- Soft deprecate `arc_read(col_names = "alias")` (use `arc_read(alias = "replace")` instead)
 
 # arcgislayers 0.3.1
 

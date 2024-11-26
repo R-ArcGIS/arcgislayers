@@ -263,3 +263,60 @@ parse_url_query <- function(url, keep_default = FALSE) {
   url_elements[["query"]]
 }
 
+#' List field domains for a layer
+#' @noRd
+list_field_domains <- function(x,
+                               field = NULL,
+                               keep_null = FALSE,
+                               arg = rlang::caller_arg(x),
+                               call = rlang::caller_env()) {
+  fields <- list_fields(x)
+  nm <- fields[["name"]]
+
+  if (is.null(nm)) {
+    cli::cli_abort("{.arg {x}} must have field names.", call = call)
+  }
+
+  domains <- rlang::set_names(fields[["domain"]], nm)
+
+  if (!is.null(field)) {
+    field <- rlang::arg_match(nm, multiple = TRUE, error_call = call)
+    domains <- domains[nm %in% field]
+  }
+
+  if (keep_null) {
+    return(domains)
+  }
+
+  domains[!vapply(domains, is.null, logical(1))]
+}
+
+#' Pull a named list of codes for fields using codedValue domain type
+#' @noRd
+pull_coded_values <- function(x,
+                              field = NULL,
+                              arg = rlang::caller_arg(x),
+                              call = rlang::caller_env()) {
+  domains <- list_field_domains(
+    x,
+    field = field,
+    keep_null = FALSE,
+    arg = arg,
+    call = call
+  )
+
+  domains <- lapply(
+    domains,
+    function(x) {
+      if (x[["type"]] != "codedValue") {
+        return(NULL)
+      }
+
+      values <- x[["codedValues"]]
+
+      rlang::set_names(values[["name"]], values[["code"]])
+    }
+  )
+
+  domains
+}

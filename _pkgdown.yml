@@ -40,9 +40,10 @@ reference:
   - clear_query
   - list_fields
   - pull_field_aliases
+  - set_layer_aliases
+  - encode_field_values
   - list_items
   - refresh_layer
   - prepare_spatial_filter
   - match_spatial_rel
   - update_params
-  
