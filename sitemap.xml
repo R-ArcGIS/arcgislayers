@@ -10,12 +10,14 @@
 <url><loc>/reference/arc_select.html</loc></url>
 <url><loc>/reference/attachments.html</loc></url>
 <url><loc>/reference/create_feature_server.html</loc></url>
+<url><loc>/reference/encode_field_values.html</loc></url>
 <url><loc>/reference/get_layer.html</loc></url>
 <url><loc>/reference/get_layer_estimates.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/list_service_raster_fns.html</loc></url>
 <url><loc>/reference/modify.html</loc></url>
 <url><loc>/reference/publish.html</loc></url>
+<url><loc>/reference/set_layer_aliases.html</loc></url>
 <url><loc>/reference/spatial_filter.html</loc></url>
 <url><loc>/reference/truncate_layer.html</loc></url>
 <url><loc>/reference/update_params.html</loc></url>
