@@ -32,8 +32,27 @@ running function, e.g. \code{caller_env()}. The function will be
 mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
+\value{
+A data.frame with fields encoded with their respective domains.
+}
 \description{
 \code{\link[=encode_field_values]{encode_field_values()}} can replace column values based on \code{codedValue}
 type field domains from a corresponding \code{Table} or \code{FeatureLayer} object
 created with \code{arc_open()}.
+}
+\examples{
+\donttest{
+layer <- arc_open(
+  "https://geodata.baltimorecity.gov/egis/rest/services/Housing/dmxOwnership/MapServer/0"
+)
+
+res <- arc_select(
+  layer,
+  n_max = 100,
+  where = "RESPAGCY <> '  '",
+  fields = "RESPAGCY"
+)
+encoded <- encode_field_values(res, layer)
+table(encoded$RESPAGCY)
+}
 }

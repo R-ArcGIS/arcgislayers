@@ -26,7 +26,6 @@ test_that("arc_read(): ImageServer can be read", {
 
   expect_s4_class(res, "SpatRaster")
   expect_equal(attr(class(res), "package"), "terra")
-
 })
 
 
@@ -55,7 +54,6 @@ test_that("arc_read(): n_max is correct", {
 
   expect_equal(nrow(arc_read(furl, n_max = 1)), 1L)
   expect_equal(nrow(arc_read(furl, n_max = 1234)), 1234L)
-
 })
 
 test_that("arc_read(): n_max option is respected", {
@@ -86,14 +84,13 @@ test_that("arc_read(): correct error with unsupported type", {
   expect_error(arc_read(furl), "is not a supported type")
 })
 
-
 test_that("arc_read(): no error on tricky polylines", {
   skip_on_cran()
   url <- "https://gisportalp.itd.idaho.gov/xserver/rest/services/RH_GeneralService/MapServer/1"
 
-  expect_no_error(arc_read(url, where = "OBJECTID = 440013"))
+  res <- arc_read(url, where = "OBJECTID = 440013")
+  expect_equal(res, structure(data.frame(), null_elements = integer()))
 })
-
 
 test_that("arc_read(): error with invalid col_names", {
   skip_on_cran()
@@ -136,4 +133,93 @@ test_that("arc_read(): work with alias label", {
 
   layer <- arc_read(furl, n_max = 1, fields = "STATE_ABBR", alias = "label")
   expect_identical(attr(layer[[1]], "label"), "State Abbreviation")
+})
+
+test_that("arc_read() permits alias = \"drop\"", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  expect_no_error(arc_read(furl, n_max = 20, alias = "drop"))
+})
+
+test_that("arc_read() permits alias = \"drop\"", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  expect_no_error(arc_read(furl, n_max = 20, alias = "drop"))
+})
+
+test_that("arc_read() validates alias", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  expect_no_error(arc_read(furl, n_max = 5, alias = NULL))
+  expect_error(arc_read(furl, n_max = 5, alias = c("drop", "label")), "`alias`")
+})
+
+test_that("arc_read() permits col_names = TRUE", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  expect_no_error(arc_read(furl, n_max = 5, col_names = TRUE))
+})
+
+test_that("arc_read() permits col_names = FALSE", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  res <- arc_read(furl, n_max = 5, col_names = FALSE)
+  expect_identical(paste("X", 1:52, sep = ""), colnames(res))
+})
+
+test_that("arc_read() throws deprecation warning", {
+  skip_on_cran()
+  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+  # this should give a deprecation warning
+  expect_warning(arc_read(furl, n_max = 5, col_names = "alias"))
+})
+
+test_that("set_layer_aliases() replaces names with alias", {
+  skip_on_cran()
+  furl <- paste0(
+    "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
+    "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+  )
+
+  flayer <- arc_open(furl)
+  res <- arc_select(flayer, n_max = 1)
+  with_aliases <- set_layer_aliases(res, flayer)
+
+  expect_identical(
+    colnames(with_aliases),
+    c(
+      "OBJECTID", "Name", "State Name", "State FIPS", "FIPS", "Area in square miles",
+      "2020 Total Population", "People per square mile", "State Abbreviation",
+      "County FIPS", "Shape__Area", "Shape__Length", "geometry"
+    )
+  )
+})
+
+test_that("set_layer_aliases() puts alias as label attribute for the column", {
+  skip_on_cran()
+  furl <- paste0(
+    "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
+    "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+  )
+
+  flayer <- arc_open(furl)
+  res <- arc_select(flayer, n_max = 1)
+  with_aliases <- set_layer_aliases(res, flayer, alias = "label")
+
+  aliases <- vapply(
+    sf::st_drop_geometry(with_aliases), 
+    attr, 
+    character(1), 
+    "label", 
+    USE.NAMES = FALSE
+  )
+
+  expect_identical(
+    aliases,
+    c(
+      "OBJECTID", "Name", "State Name", "State FIPS", "FIPS", "Area in square miles",
+      "2020 Total Population", "People per square mile", "State Abbreviation",
+      "County FIPS", "Shape__Area", "Shape__Length", "geometry"
+    )
+  )
 })

@@ -13,7 +13,7 @@ arc_read(
   crs = NULL,
   ...,
   fields = NULL,
-  alias = c("drop", "label", "replace"),
+  alias = "drop",
   token = arc_token()
 )
 }
@@ -81,34 +81,33 @@ data in the \code{{readr}} package.
 }
 \examples{
 \dontrun{
-  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
-  # read entire service
-  arc_read(furl)
+# read entire service
+arc_read(furl)
 
-  # apply tolower() to column names
-  arc_read(url, name_repair = tolower)
+# apply tolower() to column names
+arc_read(url, name_repair = tolower)
 
-  # use paste0 to prevent CRAN check NOTE
-  furl <- paste0(
-    "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
-    "EmergencyFacilities/FeatureServer/0"
-  )
+# use paste0 to prevent CRAN check NOTE
+furl <- paste0(
+  "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
+  "EmergencyFacilities/FeatureServer/0"
+)
 
- # use field aliases as column names
- arc_read(furl, alias = "replace")
+# use field aliases as column names
+arc_read(furl, alias = "replace")
 
- # read an ImageServer directly
- img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+# read an ImageServer directly
+img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
- arc_read(
-   img_url,
-   width = 100, height = 100,
-   xmin = -71, ymin = 43,
-   xmax = -67, ymax = 47.5,
-   bbox_crs = 4326
- )
-
+arc_read(
+  img_url,
+  width = 100, height = 100,
+  xmin = -71, ymin = 43,
+  xmax = -67, ymax = 47.5,
+  bbox_crs = 4326
+)
 }
 }
 \seealso{

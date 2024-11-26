@@ -9,7 +9,7 @@ set_layer_aliases(
   .data,
   .layer,
   name_repair = "unique",
-  alias = c("label", "replace"),
+  alias = c("replace", "label"),
   call = rlang::caller_env()
 )
 }
@@ -22,7 +22,7 @@ set_layer_aliases(
 details. If \code{name_repair = NULL} and \code{alias = "replace"} may include
 invalid names.}
 
-\item{alias}{Use of field alias values. Defaults to \code{"label"}. There are two
+\item{alias}{Use of field alias values. Defaults to \code{"replace"}. There are two
 options:
 \itemize{
 \item \code{"label"}: field alias values are assigned as a label attribute for each field.
@@ -34,8 +34,30 @@ running function, e.g. \code{caller_env()}. The function will be
 mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
+\value{
+A data.frame. When \code{alias = "replace"}, the column names are modified.
+When \code{alias = "label"} each column has a new \code{label} attribute.
+}
 \description{
 \code{\link[=set_layer_aliases]{set_layer_aliases()}} can replace or label column names based on the the
 field aliases from a corresponding \code{Table} or \code{FeatureLayer} object created
 with \code{arc_open()}. Optionally repair names using \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}.
+}
+\examples{
+furl <- paste0(
+  "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
+  "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+)
+
+# open the feature service
+flayer <- arc_open(furl)
+
+# select first five rows
+five_counties <- arc_select(flayer, n_max = 5)
+
+# add aliases
+with_aliases <- set_layer_aliases(five_counties, flayer)
+
+# preview the new names
+str(with_aliases, give.attr = FALSE)
 }

@@ -45,47 +45,75 @@
 #' @seealso [arc_select()]; [arc_raster()]
 #' @examples
 #' \dontrun{
-#'   furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+#' furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 #'
-#'   # read entire service
-#'   arc_read(furl)
+#' # read entire service
+#' arc_read(furl)
 #'
-#'   # apply tolower() to column names
-#'   arc_read(url, name_repair = tolower)
+#' # apply tolower() to column names
+#' arc_read(url, name_repair = tolower)
 #'
-#'   # use paste0 to prevent CRAN check NOTE
-#'   furl <- paste0(
-#'     "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
-#'     "EmergencyFacilities/FeatureServer/0"
-#'   )
+#' # use paste0 to prevent CRAN check NOTE
+#' furl <- paste0(
+#'   "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
+#'   "EmergencyFacilities/FeatureServer/0"
+#' )
 #'
-#'  # use field aliases as column names
-#'  arc_read(furl, alias = "replace")
+#' # use field aliases as column names
+#' arc_read(furl, alias = "replace")
 #'
-#'  # read an ImageServer directly
-#'  img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+#' # read an ImageServer directly
+#' img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 #'
-#'  arc_read(
-#'    img_url,
-#'    width = 100, height = 100,
-#'    xmin = -71, ymin = 43,
-#'    xmax = -67, ymax = 47.5,
-#'    bbox_crs = 4326
-#'  )
-#'
+#' arc_read(
+#'   img_url,
+#'   width = 100, height = 100,
+#'   xmin = -71, ymin = 43,
+#'   xmax = -67, ymax = 47.5,
+#'   bbox_crs = 4326
+#' )
 #' }
 #' @export
 arc_read <- function(
-    url,
-    col_names = TRUE,
-    col_select = NULL,
-    n_max = Inf,
-    name_repair = "unique",
-    crs = NULL,
-    ...,
-    fields = NULL,
-    alias = c("drop", "label", "replace"),
-    token = arc_token()) {
+  url,
+  col_names = TRUE,
+  col_select = NULL,
+  n_max = Inf,
+  name_repair = "unique",
+  crs = NULL,
+  ...,
+  fields = NULL,
+  alias = "drop",
+  token = arc_token()
+) {
+  # argument validation
+  check_string(url, allow_empty = FALSE)
+  check_character(fields, allow_null = TRUE)
+  check_character(col_select, allow_null = TRUE)
+
+  # be flexible with alias here
+  alias <- alias %||% "drop"
+  alias <- rlang::arg_match(alias, values = c("drop", "label", "replace"))
+
+  is_valid_col_names_arg <- rlang::is_logical(col_names, 1) ||
+    rlang::is_null(col_names) ||
+    rlang::is_character(col_names)
+
+  if (!is_valid_col_names_arg) {
+    cli::cli_abort(
+      "{.arg col_names} must be one of {.val TRUE}, {.val FALSE},\\
+      {.val NULL}, or a character vector of the new column names"
+    )
+  }
+
+  if (!rlang::is_integerish(n_max, 1)) {
+    cli::cli_abort("{.arg n_max} must be a scalar integer.")
+  }
+
+  if (!is.null(token)) {
+    obj_check_token(token)
+  }
+
   x <- arc_open(url = url, token = token)
 
   # Default crs must be NULL since crs can't be taken from x at execution
@@ -138,8 +166,6 @@ arc_read <- function(
       with = "arc_read(alias = \"replace\")",
     )
   }
-
-  alias <- rlang::arg_match(alias)
 
   if (identical(alias, "drop") || is.character(col_names) || isFALSE(col_names)) {
     layer <- set_col_names(
@@ -194,8 +220,7 @@ check_col_names <- function(col_names,
 set_col_names <- function(.data,
                           col_names = TRUE,
                           name_repair = NULL,
-                          call = rlang::caller_env()
-) {
+                          call = rlang::caller_env()) {
   n_col <- ncol(.data)
   check_col_names(col_names, max_len = n_col, call = call)
 
@@ -242,7 +267,7 @@ set_col_names <- function(.data,
 #'
 #' @param .data A data frame returned by `arc_select()` or `arc_read()`.
 #' @param .layer A Table or FeatureLayer object. Required.
-#' @param alias Use of field alias values. Defaults to `"label"`. There are two
+#' @param alias Use of field alias values. Defaults to `"replace"`. There are two
 #'   options:
 #'
 #'  - `"label"`: field alias values are assigned as a label attribute for each field.
@@ -252,12 +277,36 @@ set_col_names <- function(.data,
 #'   invalid names.
 #' @inheritParams rlang::args_error_context
 #' @export
+#' @returns
+#' A data.frame. When `alias = "replace"`, the column names are modified.
+#' When `alias = "label"` each column has a new `label` attribute.
+#'
+#' @examples
+#' furl <- paste0(
+#'   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
+#'   "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
+#' )
+#'
+#' # open the feature service
+#' flayer <- arc_open(furl)
+#'
+#' # select first five rows
+#' five_counties <- arc_select(flayer, n_max = 5)
+#'
+#' # add aliases
+#' with_aliases <- set_layer_aliases(five_counties, flayer)
+#'
+#' # preview the new names
+#' str(with_aliases, give.attr = FALSE)
 set_layer_aliases <- function(
-    .data,
-    .layer,
-    name_repair = "unique",
-    alias = c("label", "replace"),
-    call = rlang::caller_env()) {
+  .data,
+  .layer,
+  name_repair = "unique",
+  alias = c("replace", "label"),
+  call = rlang::caller_env()
+) {
+  check_data_frame(.data)
+  check_inherits_any(.layer, c("FeatureLayer", "Table", "ImageServer"))
   alias <- rlang::arg_match(alias, error_call = call)
   nm <- names(.data)
   sf_column <- attr(.data, "sf_column")
@@ -280,7 +329,7 @@ set_layer_aliases <- function(
     call = call
   )
 
-  if (alias == "replace") {
+  if (alias == "replace" && rlang::is_null(name_repair)) {
     return(.data)
   }
 
@@ -295,10 +344,11 @@ set_layer_aliases <- function(
 #' Repair layer names using `vctrs::vec_as_names` and `rlang::set_names`
 #' @noRd
 repair_layer_names <- function(
-    layer,
-    names = NULL,
-    name_repair = "unique",
-    call = rlang::caller_env()) {
+  layer,
+  names = NULL,
+  name_repair = "unique",
+  call = rlang::caller_env()
+) {
   names <- names %||% colnames(layer)
 
   if (!is.null(name_repair)) {
@@ -318,8 +368,9 @@ repair_layer_names <- function(
 #' Apply a label attribute value to each column of layer
 #' @noRd
 label_layer_fields <- function(
-    layer,
-    values) {
+  layer,
+  values
+) {
   nm <- intersect(names(values), colnames(layer))
 
   for (v in nm) {
@@ -355,12 +406,34 @@ label_layer_fields <- function(
 #'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
 #' @export
+#' @examples
+#' \donttest{
+#' layer <- arc_open(
+#'   "https://geodata.baltimorecity.gov/egis/rest/services/Housing/dmxOwnership/MapServer/0"
+#' )
+#'
+#' res <- arc_select(
+#'   layer,
+#'   n_max = 100,
+#'   where = "RESPAGCY <> '  '",
+#'   fields = "RESPAGCY"
+#' )
+#' encoded <- encode_field_values(res, layer)
+#' table(encoded$RESPAGCY)
+#' }
+#' @returns
+#' A data.frame with fields encoded with their respective domains.
 encode_field_values <- function(
-    .data,
-    .layer,
-    field = NULL,
-    codes = c("replace", "label"),
-    call = rlang::caller_env()) {
+  .data,
+  .layer,
+  field = NULL,
+  codes = c("replace", "label"),
+  call = rlang::caller_env()
+) {
+  check_data_frame(.data)
+  check_character(field, allow_null = TRUE)
+  check_inherits_any(.layer, c("FeatureLayer", "Table", "ImageServer"))
+
   values <- pull_coded_values(.layer, field = field, call = call)
 
   codes <- rlang::arg_match(codes, error_call = call)
