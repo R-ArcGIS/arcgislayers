@@ -280,7 +280,7 @@ list_field_domains <- function(x,
   domains <- rlang::set_names(fields[["domain"]], nm)
 
   if (!is.null(field)) {
-    field <- rlang::arg_match(nm, multiple = TRUE, error_call = call)
+    field <- rlang::arg_match(field, nm, multiple = TRUE, error_call = call)
     domains <- domains[nm %in% field]
   }
 
