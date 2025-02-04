@@ -43,19 +43,19 @@
 #' download_attachments(att, "layer_attachments")
 #' }
 query_layer_attachments <- function(
-    x,
-    definition_expression = "1=1",
-    attachments_definition_expression = NULL,
-    object_ids = NULL,
-    global_ids = NULL,
-    attachment_types = NULL,
-    keywords = NULL,
-    return_metadata = TRUE,
-    ...,
-    token = arc_token()
-    # Ignored arguments for now:
-    # returnMetadata, size,
-    ) {
+  x,
+  definition_expression = "1=1",
+  attachments_definition_expression = NULL,
+  object_ids = NULL,
+  global_ids = NULL,
+  attachment_types = NULL,
+  keywords = NULL,
+  return_metadata = TRUE,
+  ...,
+  token = arc_token()
+  # Ignored arguments for now:
+  # returnMetadata, size,
+) {
   check_string(definition_expression, allow_null = TRUE)
   check_string(attachments_definition_expression, allow_null = TRUE)
   check_character(global_ids, allow_null = TRUE)
@@ -101,8 +101,14 @@ query_layer_attachments <- function(
 
   # send request
   resp <- httr2::req_perform(req)
+  cli::cli_alert_info("Logging httr2 response")
+  print(resp)
   # parse response
-  res <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
+  resp_string <- httr2::resp_body_string(resp)
+
+  cli::cli_alert_info("Printing httr2::resp_body_string() result")
+  cat(resp_string)
+  res <- RcppSimdJson::fparse(resp_string)
   # throw an error if they are there
   arcgisutils::detect_errors(res)
   # TODO consider importing {heck} for name cleaning later
@@ -146,12 +152,13 @@ possible_attachment_types <- c(
 #' @param .progress default `TRUE.` Whether a progress bar should be provided.
 #' @param out_dir the path to the folder to download the file
 download_attachments <- function(
-    attachments,
-    out_dir,
-    ...,
-    overwrite = FALSE,
-    .progress = TRUE,
-    token = arc_token()) {
+  attachments,
+  out_dir,
+  ...,
+  overwrite = FALSE,
+  .progress = TRUE,
+  token = arc_token()
+) {
   # check that the input is a data frame with the appropriate types
   # how can we generalize this a bit more?
   # check_df_cols(
