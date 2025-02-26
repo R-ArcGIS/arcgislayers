@@ -1,9 +1,9 @@
 #' Extract a layer from a Feature or Map Server
 #'
 #' These helpers provide easy access to the layers contained in a
-#' `FeatureServer` or `MapServer`.
+#' `FeatureServer`, `MapServer`, or `GroupLayer`.
 #'
-#' @param x an object of class `FeatureServer` or `MapServer`
+#' @param x an object of class `FeatureServer`, `MapServer`, or `GroupLayer`.
 #' @param id default `NULL`. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in `get_layer()`.
 #' @param name default `NULL`. The name associated with the layer you want to retrieve. `name` is mutually exclusive with `id`. This is a scalar in `get_layer()`.
 #' @inheritParams arc_open
@@ -37,6 +37,8 @@
 #'   get_all_layers(fserv)
 #' }
 get_layer <- function(x, id = NULL, name = NULL, token = arc_token()) {
+  check_inherits_any(x, class = c("FeatureServer", "MapServer", "GroupLayer"))
+
   # check for mutual exclusivity between id and name
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
@@ -149,6 +151,7 @@ get_layer.GroupLayer <- function(
 #' @rdname get_layer
 #' @export
 get_all_layers <- function(x, token = arc_token()) {
+  check_inherits_any(x, class = c("FeatureServer", "MapServer", "GroupLayer"))
   UseMethod("get_all_layers")
 }
 
@@ -189,6 +192,8 @@ get_layers <- function(
     name = NULL,
     token = arc_token()
 ) {
+  check_inherits_any(x, class = c("FeatureServer", "MapServer", "GroupLayer"))
+
   if (is.null(id) && is.null(name)) {
     cli::cli_abort("{.arg id} or {.arg name} must be provided.")
   } else if (!is.null(id) && !is.null(name)) {
