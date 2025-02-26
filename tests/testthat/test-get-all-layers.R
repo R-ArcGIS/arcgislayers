@@ -1,7 +1,7 @@
 test_that("get_all_layers(): Must be `FeatureServer`, `MapServer` or `GroupLayer`", {
   skip_on_cran()
   server_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/hexagons_state/FeatureServer"
-  expect_error(get_layers(server_url, 0))
+  expect_error(get_all_layers(server_url, 0))
 })
 
 
