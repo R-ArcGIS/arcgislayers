@@ -13,7 +13,7 @@ get_all_layers(x, token = arc_token())
 get_layers(x, id = NULL, name = NULL, token = arc_token())
 }
 \arguments{
-\item{x}{an object of class \code{FeatureServer} or \code{MapServer}}
+\item{x}{an object of class \code{FeatureServer}, \code{MapServer}, or \code{GroupLayer}.}
 
 \item{id}{default \code{NULL}. A numeric vector of unique ID of the layer you want to retrieve. This is a scalar in \code{get_layer()}.}
 
@@ -31,7 +31,7 @@ Each a list containing \code{FeatureLayer} and \code{Table}s respectively.
 }
 \description{
 These helpers provide easy access to the layers contained in a
-\code{FeatureServer} or \code{MapServer}.
+\code{FeatureServer}, \code{MapServer}, or \code{GroupLayer}.
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
