@@ -5,11 +5,15 @@ server_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/service
 
 fsrv <- arc_open(server_url)
 
-test_that("get_layer(): Generic - name and id are mutually exclusive", {
+test_that("get_layer(): Must be `FeatureServer`, `MapServer` or `GroupLayer`", {
   skip_on_cran()
-  expect_error(get_layer(srv, 0, "break"))
+  expect_error(get_layer(server_url, 0))
 })
 
+test_that("get_layer(): Generic - name and id are mutually exclusive", {
+  skip_on_cran()
+  expect_error(get_layer(fsrv, 0, "break"))
+})
 
 test_that("get_layer(): `FeatureServer` by ID", {
   skip_on_cran()

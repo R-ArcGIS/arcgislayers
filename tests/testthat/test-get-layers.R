@@ -5,6 +5,11 @@ furl <- paste0(
 
 fsrv <- arc_open(furl)
 
+test_that("get_layers(): Must be `FeatureServer`, `MapServer` or `GroupLayer`", {
+  skip_on_cran()
+  expect_error(get_layers(furl, 0))
+})
+
 test_that("get_layers(): Mutually Exclusive", {
   expect_error(
     get_layers(fsrv, 0:1, name = c("Tracts", "ZCTAs"))
