@@ -453,7 +453,9 @@ encode_field_values <- function(
   # Replace column values by default
   if (codes == "replace") {
     for (col in names(values)) {
-      .data[[col]] <- values[[col]][.data[[col]]]
+      replace_val <- values[[col]]
+      miss_val <- is.na(.data[[col]])
+      .data[[col]][!miss_val] <- replace_val[.data[[col]][!miss_val]]
     }
 
     return(.data)
