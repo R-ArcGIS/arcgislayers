@@ -80,7 +80,8 @@ respectively not display any call or hard-code a code to display.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># use paste to avoid cran note</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># use paste to avoid cran note</span></span></span>
 <span class="r-in"><span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"https://di-usfsdata.img.arcgis.com/arcgis/rest/services"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"</span></span></span>
@@ -89,15 +90,7 @@ respectively not display any call or hard-code a code to display.</p>
 <span class="r-in"><span><span class="va">service</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">raster_fns</span> <span class="op">&lt;-</span> <span class="fu">list_service_raster_fns</span><span class="op">(</span><span class="va">service</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">raster_fns</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 6 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name                     description                                     help </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> SPCD_0000_TOTAL          TOTAL                                           <span style="color: #949494;">""</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> None                     Make a Raster or Raster Dataset into a Functio… <span style="color: #949494;">""</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> SPCD_0010_Abies_spp.     fir spp.                                        <span style="color: #949494;">""</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> SPCD_0011_Abies_amabilis Pacific silver fir                              <span style="color: #949494;">""</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> SPCD_0012_Abies_balsamea balsam fir                                      <span style="color: #949494;">""</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> SPCD_0015_Abies_concolor white fir                                       <span style="color: #949494;">""</span>   </span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
