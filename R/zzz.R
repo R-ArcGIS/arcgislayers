@@ -25,11 +25,4 @@ s3_register <- function(pkg, generic, class, fun = NULL) {
 .onLoad <- function(...) {
   s3_register("sf", "st_crs", "FeatureLayer")
   s3_register("sf", "st_crs", "ImageServer")
-  # s3_register("dplyr", "collect", "FeatureLayer")
-  # s3_register("dplyr", "collect", "Table")
-  # s3_register("dplyr", "filter", "Table")
-  # s3_register("dplyr", "filter", "FeatureLayer")
-  # s3_register("dplyr", "select", "FeatureLayer")
-  # s3_register("dplyr", "select", "Table")
 }
-
