@@ -31,12 +31,11 @@
 #' prepare_spatial_filter(sf::st_point(c(0, 5)), 4326, "intersects")
 #' @export
 prepare_spatial_filter <- function(
-    filter_geom,
-    crs,
-    predicate,
-    error_call = rlang::caller_env()
+  filter_geom,
+  crs,
+  predicate,
+  error_call = rlang::caller_env()
 ) {
-
   check_inherits_any(
     filter_geom,
     class = c("sfc", "sfg", "bbox"),
@@ -65,8 +64,15 @@ prepare_spatial_filter <- function(
   filter_sfg <- filter_geom_as_sfg(filter_geom, error_call = error_call)
 
   list(
-    geometryType = arcgisutils::determine_esri_geo_type(filter_sfg, call = error_call),
-    geometry = arcgisutils::as_esri_geometry(filter_sfg, crs = filter_crs, call = error_call),
+    geometryType = arcgisutils::determine_esri_geo_type(
+      filter_sfg,
+      call = error_call
+    ),
+    geometry = arcgisutils::as_esri_geometry(
+      filter_sfg,
+      crs = filter_crs,
+      call = error_call
+    ),
     spatialRel = match_spatial_rel(predicate, error_call = error_call)
     # TODO is `inSR` needed if the CRS is specified in the geometry???
   )
@@ -75,8 +81,8 @@ prepare_spatial_filter <- function(
 #' Convert input filter_geom to a sfg object
 #' @noRd
 filter_geom_as_sfg <- function(
-    filter_geom,
-    error_call = rlang::caller_env()
+  filter_geom,
+  error_call = rlang::caller_env()
 ) {
   # NOTE: CRS cannot be missing
   if (inherits(filter_geom, "bbox")) {
@@ -108,8 +114,10 @@ filter_geom_as_sfg <- function(
 
   if (geom_length > 1) {
     cli::cli_warn(
-      c("{.arg filter_geom} contains {geom_length} elements.",
-        "i" = "Using geometry from first element only.")
+      c(
+        "{.arg filter_geom} contains {geom_length} elements.",
+        "i" = "Using geometry from first element only."
+      )
     )
   }
 
@@ -165,7 +173,11 @@ match_spatial_rel <- function(predicate, error_call = rlang::caller_env()) {
 
   # ensure a correct one has been chosen
   predicate <- tolower(predicate)
-  predicate <- rlang::arg_match(predicate, pred_arg_vals, error_call = error_call)
+  predicate <- rlang::arg_match(
+    predicate,
+    pred_arg_vals,
+    error_call = error_call
+  )
 
   esri_predicates[grepl(predicate, esri_predicates, ignore.case = TRUE)]
 }

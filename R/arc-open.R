@@ -76,7 +76,9 @@ arc_open <- function(url, token = arc_token()) {
       layer_class <- "ImageServer"
     } else if (grepl("MapServer", meta[["url"]])) {
       layer_class <- "MapServer"
-    } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
+    } else if (
+      "layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])
+    ) {
       layer_class <- "FeatureServer"
     } else {
       return(meta)
@@ -84,7 +86,8 @@ arc_open <- function(url, token = arc_token()) {
   }
 
   # construct the appropriate class based on the resultant `layer_class`
-  res <- switch(layer_class,
+  res <- switch(
+    layer_class,
     "FeatureLayer" = structure(
       meta,
       class = layer_class,

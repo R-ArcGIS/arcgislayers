@@ -43,19 +43,19 @@
 #' download_attachments(att, "layer_attachments")
 #' }
 query_layer_attachments <- function(
-    x,
-    definition_expression = "1=1",
-    attachments_definition_expression = NULL,
-    object_ids = NULL,
-    global_ids = NULL,
-    attachment_types = NULL,
-    keywords = NULL,
-    return_metadata = TRUE,
-    ...,
-    token = arc_token()
-    # Ignored arguments for now:
-    # returnMetadata, size,
-    ) {
+  x,
+  definition_expression = "1=1",
+  attachments_definition_expression = NULL,
+  object_ids = NULL,
+  global_ids = NULL,
+  attachment_types = NULL,
+  keywords = NULL,
+  return_metadata = TRUE,
+  ...,
+  token = arc_token()
+  # Ignored arguments for now:
+  # returnMetadata, size,
+) {
   check_string(definition_expression, allow_null = TRUE)
   check_string(attachments_definition_expression, allow_null = TRUE)
   check_character(global_ids, allow_null = TRUE)
@@ -67,11 +67,20 @@ query_layer_attachments <- function(
   }
 
   # check that only one of definition_expression, object_ids, and global_ids is provided
-  rlang::check_exclusive(definition_expression, object_ids, global_ids, .require = FALSE)
+  rlang::check_exclusive(
+    definition_expression,
+    object_ids,
+    global_ids,
+    .require = FALSE
+  )
 
   # validate attachment types if provided
   if (!is.null(attachment_types)) {
-    rlang::arg_match(attachment_types, possible_attachment_types, multiple = TRUE)
+    rlang::arg_match(
+      attachment_types,
+      possible_attachment_types,
+      multiple = TRUE
+    )
   }
 
   # check keywords
@@ -129,13 +138,72 @@ unnest_attachment_groups <- function(x) {
 
 # Attachment types
 possible_attachment_types <- c(
-  "7z", "aif", "avi", "bmp", "csv", "doc", "docx", "dot", "ecw", "emf", "eps",
-  "geodatabase", "geojson", "gif", "gml", "gtar", "gz", "img", "j2k", "jp2",
-  "jpc", "jpe", "jpeg", "jpf", "jpg", "json", "m4a", "mdb", "mid", "mov", "mp2",
-  "mp3", "mp4", "mpa", "mpe", "mpeg", "mpg", "mpv2", "pdf", "png", "ppt",
-  "pptx", "ps", "psd", "qt", "ra", "ram", "raw", "rmi", "sid", "tar", "tgz",
-  "tif", "tiff", "txt", "vrml", "wav", "wma", "wmf", "wmv", "wps", "xls",
-  "xlsx", "xlt", "xml", "zip"
+  "7z",
+  "aif",
+  "avi",
+  "bmp",
+  "csv",
+  "doc",
+  "docx",
+  "dot",
+  "ecw",
+  "emf",
+  "eps",
+  "geodatabase",
+  "geojson",
+  "gif",
+  "gml",
+  "gtar",
+  "gz",
+  "img",
+  "j2k",
+  "jp2",
+  "jpc",
+  "jpe",
+  "jpeg",
+  "jpf",
+  "jpg",
+  "json",
+  "m4a",
+  "mdb",
+  "mid",
+  "mov",
+  "mp2",
+  "mp3",
+  "mp4",
+  "mpa",
+  "mpe",
+  "mpeg",
+  "mpg",
+  "mpv2",
+  "pdf",
+  "png",
+  "ppt",
+  "pptx",
+  "ps",
+  "psd",
+  "qt",
+  "ra",
+  "ram",
+  "raw",
+  "rmi",
+  "sid",
+  "tar",
+  "tgz",
+  "tif",
+  "tiff",
+  "txt",
+  "vrml",
+  "wav",
+  "wma",
+  "wmf",
+  "wmv",
+  "wps",
+  "xls",
+  "xlsx",
+  "xlt",
+  "xml",
+  "zip"
 )
 
 
@@ -146,12 +214,13 @@ possible_attachment_types <- c(
 #' @param .progress default `TRUE.` Whether a progress bar should be provided.
 #' @param out_dir the path to the folder to download the file
 download_attachments <- function(
-    attachments,
-    out_dir,
-    ...,
-    overwrite = FALSE,
-    .progress = TRUE,
-    token = arc_token()) {
+  attachments,
+  out_dir,
+  ...,
+  overwrite = FALSE,
+  .progress = TRUE,
+  token = arc_token()
+) {
   # check that the input is a data frame with the appropriate types
   # how can we generalize this a bit more?
   # check_df_cols(
@@ -213,7 +282,9 @@ download_attachments <- function(
 
   # Create the output directory if it doesn't yet exists
   if (!dir.exists(out_dir)) {
-    cli::cli_inform("Directory {.path {out_dir}} does not exist. Creating folders.")
+    cli::cli_inform(
+      "Directory {.path {out_dir}} does not exist. Creating folders."
+    )
     dir.create(out_dir, recursive = TRUE)
   }
 
@@ -252,7 +323,6 @@ download_attachments <- function(
     on_error = "continue",
     progress = .progress
   )
-
 
   Map(.download_attachment, resps, content_types, out_fps)
 }

@@ -87,7 +87,6 @@ refresh_layer <- function(x) {
 }
 
 
-
 #' Get chunk indices
 #'
 #' For a given number of items and a chunk size, determine the start and end
@@ -138,7 +137,9 @@ coalesce_crs <- function(x, y) {
 #' Does x match the pattern of a URL?
 #' @noRd
 is_url <- function(x, pattern = NULL, ...) {
-  if (!rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)) {
+  if (
+    !rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)
+  ) {
     return(FALSE)
   }
 
@@ -155,12 +156,13 @@ is_url <- function(x, pattern = NULL, ...) {
 #' Check if x is a valid URL
 #' @noRd
 check_url <- function(
-    x,
-    pattern = NULL,
-    ...,
-    allow_null = FALSE,
-    arg = rlang::caller_arg(url),
-    call = rlang::caller_env()) {
+  x,
+  pattern = NULL,
+  ...,
+  allow_null = FALSE,
+  arg = rlang::caller_arg(url),
+  call = rlang::caller_env()
+) {
   if (allow_null && is.null(x)) {
     return(invisible(NULL))
   }
@@ -185,7 +187,13 @@ check_url <- function(
 
 #' Check if x and y share the same coordiante reference system
 #' @noRd
-check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::caller_arg(y), call = rlang::caller_env()) {
+check_crs_match <- function(
+  x,
+  y,
+  x_arg = rlang::caller_arg(x),
+  y_arg = rlang::caller_arg(y),
+  call = rlang::caller_env()
+) {
   x_crs <- sf::st_crs(x)
   y_crs <- sf::st_crs(y)
 
@@ -195,7 +203,8 @@ check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::c
 
   if (!is.na(x_crs) && !is.na(y_crs)) {
     cli::cli_abort(
-      c("{.arg {x_arg}} and {.arg {y_arg}} must share the same CRS.",
+      c(
+        "{.arg {x_arg}} and {.arg {y_arg}} must share the same CRS.",
         "*" = "Tranform {.arg {y_arg}} to the same CRS as {.arg {x_arg}} with
           {.fn sf::st_transform}"
       ),
@@ -229,7 +238,8 @@ clear_url_query <- function(url, keep_default = FALSE) {
 
   # Rebuild URL without query
   paste0(
-    url_elements[["scheme"]], "://",
+    url_elements[["scheme"]],
+    "://",
     url_elements[["hostname"]],
     sub("/query$", "", url_elements[["path"]])
   )
@@ -265,11 +275,13 @@ parse_url_query <- function(url, keep_default = FALSE) {
 
 #' List field domains for a layer
 #' @noRd
-list_field_domains <- function(x,
-                               field = NULL,
-                               keep_null = FALSE,
-                               arg = rlang::caller_arg(x),
-                               call = rlang::caller_env()) {
+list_field_domains <- function(
+  x,
+  field = NULL,
+  keep_null = FALSE,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
   fields <- list_fields(x)
   nm <- fields[["name"]]
 
@@ -293,10 +305,12 @@ list_field_domains <- function(x,
 
 #' Pull a named list of codes for fields using codedValue domain type
 #' @noRd
-pull_coded_values <- function(x,
-                              field = NULL,
-                              arg = rlang::caller_arg(x),
-                              call = rlang::caller_env()) {
+pull_coded_values <- function(
+  x,
+  field = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
   domains <- list_field_domains(
     x,
     field = field,

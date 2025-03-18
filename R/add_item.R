@@ -57,18 +57,16 @@
 #' @returns
 #' A named list containing the url of the newly published service.
 add_item <- function(
-    x,
-    title,
-    description = "",
-    tags = character(0),
-    snippet = "",
-    categories = character(0),
-    async = FALSE,
-    type = "Feature Service",
-    token = arc_token()
+  x,
+  title,
+  description = "",
+  tags = character(0),
+  snippet = "",
+  categories = character(0),
+  async = FALSE,
+  type = "Feature Service",
+  token = arc_token()
 ) {
-
-
   # validate the token
   obj_check_token(token)
 
@@ -101,15 +99,12 @@ add_item <- function(
       cli::cli_abort("Aborting.")
     } else {
       cli::cli_warn(
-        c("{.arg x} has no CRS.",
-          "*" = "Set CRS with {.fn sf::st_set_crs}")
+        c("{.arg x} has no CRS.", "*" = "Set CRS with {.fn sf::st_set_crs}")
       )
     }
-
   } else if (!interactive() && is.na(sf::st_crs(x))) {
     cli::cli_warn(
-      c("CRS is missing from {.arg x}",
-        "i" = "Using {.val EPSG:3857}")
+      c("CRS is missing from {.arg x}", "i" = "Using {.val EPSG:3857}")
     )
   }
 
@@ -159,12 +154,12 @@ add_item <- function(
 
 #' @noRd
 check_add_item_args <- function(
-    description = "",
-    snippet = "",
-    async = FALSE,
-    type = "Feature Service",
-    call = rlang::caller_env()) {
-
+  description = "",
+  snippet = "",
+  async = FALSE,
+  type = "Feature Service",
+  call = rlang::caller_env()
+) {
   # if async = TRUE stop
   if (async) {
     cli::cli_abort(
@@ -211,12 +206,11 @@ check_add_item_args <- function(
 #' @inheritParams add_item
 #' @rdname publish
 publish_item <- function(
-    item_id,
-    publish_params = .publish_params(),
-    file_type = "featureCollection",
-    token = arc_token()
+  item_id,
+  publish_params = .publish_params(),
+  file_type = "featureCollection",
+  token = arc_token()
 ) {
-
   # validate the token
   obj_check_token(token)
 
@@ -235,7 +229,6 @@ publish_item <- function(
 
   # add token and agent
   base_req <- arc_base_req(req_url, token)
-
 
   # create request
   req <- httr2::req_body_form(
@@ -260,13 +253,12 @@ publish_item <- function(
 #' @rdname publish
 #' @param ... arguments passed into `add_item()`.
 publish_layer <- function(
-    x,
-    title,
-    ...,
-    publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
-    token = arc_token()
+  x,
+  title,
+  ...,
+  publish_params = .publish_params(title, target_crs = sf::st_crs(x)),
+  token = arc_token()
 ) {
-
   adtl_args <- rlang::list2(...)
 
   item_res <- rlang::inject(
@@ -277,7 +269,6 @@ publish_layer <- function(
       !!!adtl_args
     )
   )
-
 
   # fetch item_id
   item_id <- item_res[["id"]]
@@ -301,13 +292,12 @@ publish_layer <- function(
 #' @param copyright an optional character scalar containing copyright text to
 #'  add to the published Feature Service.
 .publish_params <- function(
-    name = NULL,
-    description = NULL,
-    copyright = NULL,
-    target_crs = 3857,
-    max_record_count = 2000L
+  name = NULL,
+  description = NULL,
+  copyright = NULL,
+  target_crs = 3857,
+  max_record_count = 2000L
 ) {
-
   # https://developers.arcgis.com/rest/users-groups-and-items/publish-item.htm#GUID-9E8F8526-5D58-4706-95F3-432905CC3303
   # FeatureCollection publish parameters:
   # - name
@@ -337,4 +327,3 @@ publish_layer <- function(
     )
   )
 }
-

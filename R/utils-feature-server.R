@@ -58,9 +58,7 @@ get_layer <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
 #' @export
 get_layer.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
-
   if (!is.null(name)) {
-
     # grab both table and layer names to check agains
     layer_names <- x[["layers"]][["name"]]
     table_names <- x[["tables"]][["name"]]
@@ -71,7 +69,9 @@ get_layer.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
     # error if not found
     if (all(!is_layer_name, !is_table_name)) {
-      cli::cli_abort("{.arg name} not available in {.code {c(layer_names, table_names)}}")
+      cli::cli_abort(
+        "{.arg name} not available in {.code {c(layer_names, table_names)}}"
+      )
     }
 
     # grab layer ids
@@ -79,7 +79,6 @@ get_layer.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
     # fetch the index
     item_url <- file.path(x[["url"]], layer_ids[which(layer_names == name)])
-
   } else if (!is.null(id)) {
     layer_ids <- x[["layers"]][["id"]]
     table_ids <- x[["tables"]][["id"]]
@@ -98,18 +97,16 @@ get_layer.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
   }
 
   arc_open(item_url, token = token)
-
 }
 
 #' @export
 get_layer.GroupLayer <- function(
-    x,
-    id = NULL,
-    name = NULL,
-    token = arc_token()
+  x,
+  id = NULL,
+  name = NULL,
+  token = arc_token()
 ) {
   if (!is.null(name)) {
-
     layer_names <- x[["subLayers"]][["name"]]
 
     # check if name is present as a table or layer
@@ -128,7 +125,6 @@ get_layer.GroupLayer <- function(
 
     # the new item_url
     item_url <- sub("\\d+$", item_id, x[["url"]])
-
   } else if (!is.null(id)) {
     layer_ids <- x[["subLayers"]][["id"]]
 
@@ -137,7 +133,13 @@ get_layer.GroupLayer <- function(
 
     if (!is_layer) {
       cli::cli_abort(
-        paste0("{.arg id} ", id, " not in available IDs (", toString(unlist(layer_ids)), ")")
+        paste0(
+          "{.arg id} ",
+          id,
+          " not in available IDs (",
+          toString(unlist(layer_ids)),
+          ")"
+        )
       )
     }
 
@@ -187,10 +189,10 @@ get_all_layers.GroupLayer <- function(x, token = arc_token()) {
 #' @export
 #' @rdname get_layer
 get_layers <- function(
-    x,
-    id = NULL,
-    name = NULL,
-    token = arc_token()
+  x,
+  id = NULL,
+  name = NULL,
+  token = arc_token()
 ) {
   check_inherits_any(x, class = c("FeatureServer", "MapServer", "GroupLayer"))
 
@@ -210,7 +212,6 @@ get_layers <- function(
 
 #' @export
 get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
-
   if (!is.null(id)) {
     # cast as integer
     id <- as.integer(id)
@@ -239,7 +240,10 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     }
 
     # create lookup table for fetching ids
-    lu <- stats::setNames(c(x[["layers"]][["id"]], x[["tables"]][["id"]]), valid_names)
+    lu <- stats::setNames(
+      c(x[["layers"]][["id"]], x[["tables"]][["id"]]),
+      valid_names
+    )
 
     item_urls <- file.path(
       x[["url"]],
@@ -262,10 +266,10 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
 
 #' @export
 get_layers.GroupLayer <- function(
-    x,
-    id = NULL,
-    name = NULL,
-    token = arc_token()
+  x,
+  id = NULL,
+  name = NULL,
+  token = arc_token()
 ) {
   if (!is.null(id)) {
     # cast as integer
@@ -288,7 +292,6 @@ get_layers.GroupLayer <- function(
       function(.x) sub("\\d+$", .x, x[["url"]]),
       character(1)
     )
-
   } else if (!is.null(name)) {
     valid_names <- x[["subLayers"]][["name"]]
 
@@ -310,7 +313,6 @@ get_layers.GroupLayer <- function(
       function(.x) sub("\\d+$", .x, x[["url"]]),
       character(1)
     )
-
   }
 
   if (length(item_urls) < 1) {

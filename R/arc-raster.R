@@ -46,19 +46,20 @@
 #'
 #' @export
 arc_raster <- function(
-    x,
-    xmin,
-    xmax,
-    ymin,
-    ymax,
-    bbox_crs = NULL,
-    crs = sf::st_crs(x),
-    width = NULL,
-    height = NULL,
-    format = "tiff",
-    ...,
-    raster_fn = NULL,
-    token = arc_token()) {
+  x,
+  xmin,
+  xmax,
+  ymin,
+  ymax,
+  bbox_crs = NULL,
+  crs = sf::st_crs(x),
+  width = NULL,
+  height = NULL,
+  format = "tiff",
+  ...,
+  raster_fn = NULL,
+  token = arc_token()
+) {
   check_string(raster_fn, allow_null = TRUE)
   if (!is.null(raster_fn)) {
     if (!raster_fn %in% list_service_raster_fns(x)[["name"]]) {
@@ -69,7 +70,10 @@ arc_raster <- function(
         )
       )
     } else {
-      raster_fn <- jsonify::to_json(list(rasterFunction = raster_fn), unbox = TRUE)
+      raster_fn <- jsonify::to_json(
+        list(rasterFunction = raster_fn),
+        unbox = TRUE
+      )
     }
   }
   # validate and extract CRS object
@@ -104,7 +108,7 @@ arc_raster <- function(
 
   tmp <- tempfile(fileext = paste0(".", format))
   exported_image_path <- resp_meta[["href"]]
-  utils::download.file(exported_image_path, tmp, quiet = TRUE, mode="wb")
+  utils::download.file(exported_image_path, tmp, quiet = TRUE, mode = "wb")
 
   res <- terra::rast(
     tmp

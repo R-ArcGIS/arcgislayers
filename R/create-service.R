@@ -34,20 +34,19 @@
 #'   create_feature_server("My empty feature server")
 #' }
 create_feature_server <- function(
-    service_name,
-    description = "",
-    crs = 3857,
-    capabilities = c("create", "delete", "query", "update", "editing"),
-    query_formats = c("json", "geojson"),
-    initial_extent = list(xmin = NULL, xmax = NULL, ymin = NULL, ymax = NULL),
-    max_record_count = 1000L,
-    allow_updates = TRUE,
-    copyright = "",
-    has_static_data = FALSE,
-    xss_prevention = xss_defaults(),
-    token = arc_token()
+  service_name,
+  description = "",
+  crs = 3857,
+  capabilities = c("create", "delete", "query", "update", "editing"),
+  query_formats = c("json", "geojson"),
+  initial_extent = list(xmin = NULL, xmax = NULL, ymin = NULL, ymax = NULL),
+  max_record_count = 1000L,
+  allow_updates = TRUE,
+  copyright = "",
+  has_static_data = FALSE,
+  xss_prevention = xss_defaults(),
+  token = arc_token()
 ) {
-
   match.arg(capabilities, several.ok = TRUE)
   # TODO add common parameters (such as tag and description)
   # https://developers.arcgis.com/rest/users-groups-and-items/common-parameters.htm
@@ -65,7 +64,12 @@ create_feature_server <- function(
   host <- token[["arcgis_host"]]
 
   # create the request url
-  req_url <- paste0(host, "/sharing/rest/content/users/", user, "/createService")
+  req_url <- paste0(
+    host,
+    "/sharing/rest/content/users/",
+    user,
+    "/createService"
+  )
 
   # ensure the CRS is valid
   valid_crs <- validate_crs(crs)
@@ -78,7 +82,7 @@ create_feature_server <- function(
       "hasStaticData" = has_static_data,
       "maxRecordCount" = as.integer(max_record_count),
       "supportedQueryFormats" = paste0(tolower(query_formats), collapse = ","),
-      "capabilities" =  paste0(tolower(capabilities), collapse = ","),
+      "capabilities" = paste0(tolower(capabilities), collapse = ","),
       "description" = "",
       "copyrightText" = "",
       "spatialReference" = valid_crs[["spatialReference"]],
@@ -112,7 +116,6 @@ create_feature_server <- function(
   detect_errors(resp_parsed)
 
   arc_open(resp_parsed[["encodedServiceURL"]])
-
 }
 
 #' @export
@@ -125,8 +128,6 @@ xss_defaults <- function() {
   )
 }
 
-
 # IDEALLY we can create a layer with the field names and types etc already specified
 # then we can use `add_features()` to add data in parallel. This will likely be much
 # faster than uploading a file directly
-

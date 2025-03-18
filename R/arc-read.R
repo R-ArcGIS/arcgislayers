@@ -167,7 +167,9 @@ arc_read <- function(
     )
   }
 
-  if (identical(alias, "drop") || is.character(col_names) || isFALSE(col_names)) {
+  if (
+    identical(alias, "drop") || is.character(col_names) || isFALSE(col_names)
+  ) {
     layer <- set_col_names(
       .data = layer,
       col_names = col_names,
@@ -186,9 +188,7 @@ arc_read <- function(
 }
 
 #' @noRd
-check_col_names <- function(col_names,
-                            max_len,
-                            call = rlang::caller_env()) {
+check_col_names <- function(col_names, max_len, call = rlang::caller_env()) {
   if (rlang::is_logical(col_names) || is.null(col_names)) {
     return(invisible(NULL))
   }
@@ -217,10 +217,12 @@ check_col_names <- function(col_names,
 
 #' Handle col_names
 #' @noRd
-set_col_names <- function(.data,
-                          col_names = TRUE,
-                          name_repair = NULL,
-                          call = rlang::caller_env()) {
+set_col_names <- function(
+  .data,
+  col_names = TRUE,
+  name_repair = NULL,
+  call = rlang::caller_env()
+) {
   n_col <- ncol(.data)
   check_col_names(col_names, max_len = n_col, call = call)
 
@@ -478,12 +480,14 @@ encode_field_values <- function(
 
 #' Set value labels compatible w/ `haven::labelled` package
 #' @noRd
-new_labelled_col <- function(x,
-                             labels = NULL,
-                             label = NULL,
-                             ...,
-                             class = character(),
-                             call = rlang::caller_env()) {
+new_labelled_col <- function(
+  x,
+  labels = NULL,
+  label = NULL,
+  ...,
+  class = character(),
+  call = rlang::caller_env()
+) {
   rlang::check_installed("vctrs", call = call)
 
   vctrs::new_vctr(
