@@ -23,19 +23,31 @@ knitr::opts_chunk$set(
 [![](https://cranlogs.r-pkg.org/badges/arcgislayers)](https://cran.r-project.org/package=arcgislayers)
 <!-- badges: end -->
 
-The goal of `{arcgislayers}` is to provide an R interface to the [ArcGIS REST API](https://developers.arcgis.com/rest/).
+
+`{arcgislayers}` simplifies accessing and managing data the ArcGIS Ecosystem. With it you can: 
+
+- Read data from ArcGIS Online, Enterprise, Survey123, Location Platform, Hub, and more
+- Read Imagery as `SpatRaster` from `{terra}`
+- Read Feature Services as `sf` objects
+- Publish {sf} objects and data.frame's as Feature Services
+- Download attachments from Survey123
+
+
 
 ## Installation
 
 It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
 
 ``` r
-remotes::install_github("r-arcgis/arcgis", dependencies = TRUE)
+install.packages(
+  "arcgis",
+  repos = c("https://r-arcgis.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ## Usage
 
-### Creating a simple feature object from an ArcGIS FeatureLayer
+### Read data from a Feature Service
 
 ```{r}
 library(arcgis)
@@ -56,7 +68,6 @@ For example, you can create a `FeatureLayer` object based on a Feature Server UR
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
 county_fl <- arc_open(furl)
-
 county_fl
 ```
 
@@ -67,6 +78,8 @@ If no arguments are provided to `arc_select()` the entire feature layer is retur
 ```{r}
 arc_select(county_fl)
 ```
+
+
 ### Filtering using `where` or `filter_geom` arguments 
 
 You can also use the `fields` argument to select columns or the `where` argument to subset rows.
@@ -133,7 +146,7 @@ Workflows that require authorization include:
 ### Accessing non-public data
 
 The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
-For more information on tokens and authorization functions, see the [authorization article](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html).
+For more information on tokens and authorization functions, see the [authorization article](https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/).
 
 ### Publishing and modifying services from R
 
@@ -143,6 +156,6 @@ The package includes functions to publish data to an ArcGIS Portal:
 - `publish_item()`: Publishes an existing FeatureLayer
 - `publish_layer()`: is a higher level wrapper around both `add_item()` and `publish_item()`
 
-There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
+There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge).
 
 These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
