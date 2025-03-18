@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,16 +32,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="arcgislayers-development-version">arcgislayers (development version)<a class="anchor" aria-label="anchor" href="#arcgislayers-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="arcgislayers-040">arcgislayers 0.4.0<a class="anchor" aria-label="anchor" href="#arcgislayers-040"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>
 <ul><li>Improve handling of <code>filter_geom</code> by <code><a href="../reference/arc_select.html">arc_select()</a></code> by warning if applying <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code> to the filter does not generate a length 1 sfc, or if <code>filter_geom</code> is supplied when accessing a Table, or if <code>filter_geom</code> is empty (<a href="https://github.com/elipousson" class="external-link">@elipousson</a>, <a href="https://github.com/R-ArcGIS/arcgislayers/issues/166" class="external-link">#166</a>)</li>
 <li>Export <code><a href="../reference/set_layer_aliases.html">set_layer_aliases()</a></code> (previously used internally by <code><a href="../reference/arc_read.html">arc_read()</a></code>) to allow use of alias values with data returned by <code><a href="../reference/arc_select.html">arc_select()</a></code> (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/169" class="external-link">#169</a>).</li>
 <li>Add new <code><a href="../reference/encode_field_values.html">encode_field_values()</a></code> function to support replacement or labeling of values with coded value domains (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/134" class="external-link">#134</a>).</li>
 <li>Improve input checks for <code><a href="../reference/get_layer.html">get_layer()</a></code>, <code><a href="../reference/get_layer.html">get_all_layers()</a></code>, and <code><a href="../reference/get_layer.html">get_layers()</a></code> to require FeatureServer, MapServer, or GroupLayer input objects.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
 <ul><li>Adjusts <code><a href="../reference/arc_select.html">arc_select()</a></code> to not error out when <code>query</code> capability isn’t explicitly listed. Instead <code>cli_alert_danger()</code> is used to communicate the issue <a href="https://github.com/R-ArcGIS/arcgislayers/pull/230" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/pull/230</a>
 </li>
 <li>
@@ -49,7 +49,7 @@
 </li>
 </ul></div>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
 <ul><li>
 <code>dplyr</code> methods for <code>collect()</code>, <code>select()</code>, and <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code> have been removed. <a href="https://github.com/R-ArcGIS/arcgislayers/issues/111" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/111</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/224" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/224</a> <a href="https://github.com/R-ArcGIS/arcgislayers/issues/218" class="external-link uri">https://github.com/R-ArcGIS/arcgislayers/issues/218</a>
 </li>

@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,27 +54,38 @@
 </div>
 <!-- badges: start -->
 
-<p>The goal of <a href="https://r.esri.com/arcgislayers/" class="external-link">arcgislayers</a> is to provide an R interface to the <a href="https://developers.arcgis.com/rest/" class="external-link">ArcGIS REST API</a>.</p>
+<p><a href="https://r.esri.com/arcgislayers/" class="external-link">arcgislayers</a> simplifies accessing and managing data the ArcGIS Ecosystem. With it you can:</p>
+<ul>
+<li>Read data from ArcGIS Online, Enterprise, Survey123, Location Platform, Hub, and more</li>
+<li>Read Imagery as <code>SpatRaster</code> from <a href="https://rspatial.org/" class="external-link">terra</a>
+</li>
+<li>Read Feature Services as <code>sf</code> objects</li>
+<li>Publish {sf} objects and data.frame’s as Feature Services</li>
+<li>Download attachments from Survey123</li>
+</ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>It is recommend you install and use the metapackage <code>{arcgis}</code>. You can install the development version of arcgis like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-arcgis/arcgis"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>  <span class="st">"arcgis"</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://r-arcgis.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <div class="section level3">
-<h3 id="creating-a-simple-feature-object-from-an-arcgis-featurelayer">Creating a simple feature object from an ArcGIS FeatureLayer<a class="anchor" aria-label="anchor" href="#creating-a-simple-feature-object-from-an-arcgis-featurelayer"></a>
+<h3 id="read-data-from-a-feature-service">Read data from a Feature Service<a class="anchor" aria-label="anchor" href="#read-data-from-a-feature-service"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt; → arcgisutils v0.3.0</span></span>
-<span><span class="co">#&gt; → arcgislayers v0.3.0</span></span>
-<span><span class="co">#&gt; → arcgisgeocode v0.1.3</span></span>
-<span><span class="co">#&gt; → arcgisplaces v0.1.0</span></span></code></pre></div>
+<span><span class="co">#&gt; → arcgisutils v0.3.1.9000</span></span>
+<span><span class="co">#&gt; → arcgislayers v0.3.1.9000</span></span>
+<span><span class="co">#&gt; → arcgisgeocode v0.2.2</span></span>
+<span><span class="co">#&gt; → arcgisplaces v0.1.1</span></span></code></pre></div>
 <p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):</p>
 <ul>
 <li><code>FeatureLayer</code></li>
@@ -89,7 +100,6 @@
 <code class="sourceCode R"><span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"</span></span>
 <span></span>
 <span><span class="va">county_fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span>
-<span></span>
 <span><span class="va">county_fl</span></span>
 <span><span class="co">#&gt; &lt;FeatureLayer&gt;</span></span>
 <span><span class="co">#&gt; Name: USA Counties - Generalized</span></span>
@@ -100,45 +110,49 @@
 <p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Simple feature collection with 3143 features and 12 fields</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'jsonify':</span></span>
+<span><span class="co">#&gt;   method     from    </span></span>
+<span><span class="co">#&gt;   print.json jsonlite</span></span>
+<span><span class="co">#&gt; Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s</span></span>
+<span><span class="co">#&gt; Simple feature collection with 3144 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    OBJECTID            NAME STATE_NAME STATE_FIPS  FIPS    SQMI</span></span>
-<span><span class="co">#&gt; 1         1  Autauga County    Alabama         01 01001  604.37</span></span>
-<span><span class="co">#&gt; 2         2  Baldwin County    Alabama         01 01003 1633.14</span></span>
-<span><span class="co">#&gt; 3         3  Barbour County    Alabama         01 01005  904.52</span></span>
-<span><span class="co">#&gt; 4         4     Bibb County    Alabama         01 01007  626.17</span></span>
-<span><span class="co">#&gt; 5         5   Blount County    Alabama         01 01009  650.63</span></span>
-<span><span class="co">#&gt; 6         6  Bullock County    Alabama         01 01011  625.14</span></span>
-<span><span class="co">#&gt; 7         7   Butler County    Alabama         01 01013  777.88</span></span>
-<span><span class="co">#&gt; 8         8  Calhoun County    Alabama         01 01015  612.27</span></span>
-<span><span class="co">#&gt; 9         9 Chambers County    Alabama         01 01017  603.11</span></span>
-<span><span class="co">#&gt; 10       10 Cherokee County    Alabama         01 01019  599.98</span></span>
-<span><span class="co">#&gt;             POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area</span></span>
-<span><span class="co">#&gt; 1  1970-01-01 11:20:05     97.3         AL         001   0.1489034</span></span>
-<span><span class="co">#&gt; 2  1970-01-03 11:22:47    141.9         AL         003   0.4044891</span></span>
-<span><span class="co">#&gt; 3  1970-01-01 02:00:23     27.9         AL         005   0.2224307</span></span>
-<span><span class="co">#&gt; 4  1970-01-01 01:11:33     35.6         AL         007   0.1577359</span></span>
-<span><span class="co">#&gt; 5  1970-01-01 11:25:34     90.9         AL         009   0.1675296</span></span>
-<span><span class="co">#&gt; 6  1969-12-31 21:52:37     16.6         AL         011   0.1557273</span></span>
-<span><span class="co">#&gt; 7  1970-01-01 00:17:31     24.5         AL         013   0.1927305</span></span>
-<span><span class="co">#&gt; 8  1970-01-02 03:20:41    190.2         AL         015   0.1523369</span></span>
-<span><span class="co">#&gt; 9  1970-01-01 04:39:32     57.7         AL         017   0.1531136</span></span>
-<span><span class="co">#&gt; 10 1970-01-01 01:56:11     41.6         AL         019   0.1527217</span></span>
-<span><span class="co">#&gt;    Shape__Length                       geometry</span></span>
-<span><span class="co">#&gt; 1       1.884137 POLYGON ((-86.82067 32.3473...</span></span>
-<span><span class="co">#&gt; 2       3.678276 POLYGON ((-87.97309 31.1648...</span></span>
-<span><span class="co">#&gt; 3       2.218514 POLYGON ((-85.74337 31.6262...</span></span>
-<span><span class="co">#&gt; 4       1.852453 POLYGON ((-87.41986 33.0117...</span></span>
-<span><span class="co">#&gt; 5       2.067456 POLYGON ((-86.96799 33.8604...</span></span>
-<span><span class="co">#&gt; 6       2.006250 POLYGON ((-85.4114 32.15551...</span></span>
-<span><span class="co">#&gt; 7       1.769462 POLYGON ((-86.44912 31.9712...</span></span>
-<span><span class="co">#&gt; 8       2.149825 POLYGON ((-85.79353 33.5634...</span></span>
-<span><span class="co">#&gt; 9       1.637226 POLYGON ((-85.58963 32.7313...</span></span>
-<span><span class="co">#&gt; 10      1.794142 POLYGON ((-85.41657 34.0869...</span></span></code></pre></div>
+<span><span class="co">#&gt;    OBJECTID               NAME   STATE_NAME STATE_FIPS  FIPS SQMI</span></span>
+<span><span class="co">#&gt; 1         1 Grand Forks County North Dakota         38 38035 51.3</span></span>
+<span><span class="co">#&gt; 2         2       Grant County North Dakota         38 38037  1.4</span></span>
+<span><span class="co">#&gt; 3         3      Griggs County North Dakota         38 38039  3.1</span></span>
+<span><span class="co">#&gt; 4         4   Hettinger County North Dakota         38 38041  2.1</span></span>
+<span><span class="co">#&gt; 5         5      Kidder County North Dakota         38 38043  1.6</span></span>
+<span><span class="co">#&gt; 6         6     LaMoure County North Dakota         38 38045  3.5</span></span>
+<span><span class="co">#&gt; 7         7       Logan County North Dakota         38 38047  1.8</span></span>
+<span><span class="co">#&gt; 8         8     McHenry County North Dakota         38 38049  2.8</span></span>
+<span><span class="co">#&gt; 9         9    McIntosh County North Dakota         38 38051  2.5</span></span>
+<span><span class="co">#&gt; 10       10    McKenzie County North Dakota         38 38053  5.3</span></span>
+<span><span class="co">#&gt;    POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
+<span><span class="co">#&gt; 1       73170     50.8         ND         035   0.4503702      2.961625</span></span>
+<span><span class="co">#&gt; 2        2301      1.4         ND         037   0.5040677      3.413506</span></span>
+<span><span class="co">#&gt; 3        2306      3.2         ND         039   0.2230339      1.949037</span></span>
+<span><span class="co">#&gt; 4        2489      2.2         ND         041   0.3427475      2.691898</span></span>
+<span><span class="co">#&gt; 5        2394      1.7         ND         043   0.4378065      2.719487</span></span>
+<span><span class="co">#&gt; 6        4093      3.6         ND         045   0.3502662      2.702124</span></span>
+<span><span class="co">#&gt; 7        1876      1.9         ND         047   0.3090110      2.454735</span></span>
+<span><span class="co">#&gt; 8        5345      2.8         ND         049   0.5877751      3.261400</span></span>
+<span><span class="co">#&gt; 9        2530      2.5         ND         051   0.2971127      2.421863</span></span>
+<span><span class="co">#&gt; 10      14704      5.1         ND         053   0.8862776      4.625264</span></span>
+<span><span class="co">#&gt;                          geometry</span></span>
+<span><span class="co">#&gt; 1  POLYGON ((-96.88943 47.6739...</span></span>
+<span><span class="co">#&gt; 2  POLYGON ((-102.0034 46.0528...</span></span>
+<span><span class="co">#&gt; 3  POLYGON ((-97.96167 47.2449...</span></span>
+<span><span class="co">#&gt; 4  POLYGON ((-102.0034 46.2058...</span></span>
+<span><span class="co">#&gt; 5  POLYGON ((-100.0885 46.6357...</span></span>
+<span><span class="co">#&gt; 6  POLYGON ((-99.00921 46.2830...</span></span>
+<span><span class="co">#&gt; 7  POLYGON ((-99.04408 46.2833...</span></span>
+<span><span class="co">#&gt; 8  POLYGON ((-100.9647 47.8540...</span></span>
+<span><span class="co">#&gt; 9  POLYGON ((-99.87578 45.9435...</span></span>
+<span><span class="co">#&gt; 10 POLYGON ((-103.6744 47.3320...</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtering-using-where-or-filter_geom-arguments">Filtering using <code>where</code> or <code>filter_geom</code> arguments<a class="anchor" aria-label="anchor" href="#filtering-using-where-or-filter_geom-arguments"></a>
@@ -157,72 +171,48 @@
 <span><span class="co">#&gt; Bounding box:  xmin: -158.2674 ymin: 21.24986 xmax: -71.02671 ymax: 47.77552</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    STATE_ABBR          POPULATION                       geometry</span></span>
-<span><span class="co">#&gt; 1          AZ 1970-02-20 22:56:08 POLYGON ((-111.0425 33.4759...</span></span>
-<span><span class="co">#&gt; 2          AZ 1970-01-12 20:50:33 POLYGON ((-110.4522 31.7360...</span></span>
-<span><span class="co">#&gt; 3          CA 1970-01-20 06:19:13 POLYGON ((-121.4721 37.4777...</span></span>
-<span><span class="co">#&gt; 4          CA 1970-01-14 06:52:07 POLYGON ((-122.3076 37.8917...</span></span>
-<span><span class="co">#&gt; 5          CA 1970-01-12 11:10:54 POLYGON ((-120.6636 36.2787...</span></span>
-<span><span class="co">#&gt; 6          CA 1970-04-26 17:40:09 POLYGON ((-118.1067 33.7475...</span></span>
-<span><span class="co">#&gt; 7          CA 1970-02-06 16:16:29 POLYGON ((-117.509 33.50848...</span></span>
-<span><span class="co">#&gt; 8          CA 1970-01-28 18:43:05 POLYGON ((-116.0824 33.4258...</span></span>
-<span><span class="co">#&gt; 9          CA 1970-01-19 03:17:35 POLYGON ((-121.6652 38.1692...</span></span>
-<span><span class="co">#&gt; 10         CA 1970-01-26 01:00:54 POLYGON ((-117.7832 33.9507...</span></span></code></pre></div>
+<span><span class="co">#&gt;    STATE_ABBR POPULATION                       geometry</span></span>
+<span><span class="co">#&gt; 1          OH    1264817 POLYGON ((-81.37707 41.3463...</span></span>
+<span><span class="co">#&gt; 2          OH    1323807 POLYGON ((-83.24282 39.8044...</span></span>
+<span><span class="co">#&gt; 3          PA    1250578 POLYGON ((-79.86399 40.2007...</span></span>
+<span><span class="co">#&gt; 4          PA    1603797 POLYGON ((-75.1429 39.8816,...</span></span>
+<span><span class="co">#&gt; 5          HI    1016508 POLYGON ((-157.6733 21.2980...</span></span>
+<span><span class="co">#&gt; 6          IL    5275541 POLYGON ((-88.26711 41.9887...</span></span>
+<span><span class="co">#&gt; 7          AZ    4420568 POLYGON ((-111.0425 33.4759...</span></span>
+<span><span class="co">#&gt; 8          AZ    1043433 POLYGON ((-110.4522 31.7360...</span></span>
+<span><span class="co">#&gt; 9          CA    1682353 POLYGON ((-121.4721 37.4777...</span></span>
+<span><span class="co">#&gt; 10         CA    1165927 POLYGON ((-122.3076 37.8917...</span></span></code></pre></div>
 <p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             name                 type                  alias       sqlType</span></span>
-<span><span class="co">#&gt; 1       OBJECTID     esriFieldTypeOID               OBJECTID  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 2           NAME  esriFieldTypeString                   Name  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 3     STATE_NAME  esriFieldTypeString             State Name  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 4     STATE_FIPS  esriFieldTypeString             State FIPS  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 5           FIPS  esriFieldTypeString                   FIPS  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 6           SQMI  esriFieldTypeDouble   Area in square miles  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 7     POPULATION esriFieldTypeInteger  2020 Total Population  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 8       POP_SQMI  esriFieldTypeDouble People per square mile  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 9     STATE_ABBR  esriFieldTypeString     State Abbreviation  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 10   COUNTY_FIPS  esriFieldTypeString            County FIPS  sqlTypeOther</span></span>
-<span><span class="co">#&gt; 11   Shape__Area  esriFieldTypeDouble            Shape__Area sqlTypeDouble</span></span>
-<span><span class="co">#&gt; 12 Shape__Length  esriFieldTypeDouble          Shape__Length sqlTypeDouble</span></span>
-<span><span class="co">#&gt;    nullable editable domain defaultValue length</span></span>
-<span><span class="co">#&gt; 1     FALSE    FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 2      TRUE     TRUE     NA           NA     50</span></span>
-<span><span class="co">#&gt; 3      TRUE     TRUE     NA           NA     20</span></span>
-<span><span class="co">#&gt; 4      TRUE     TRUE     NA           NA      2</span></span>
-<span><span class="co">#&gt; 5      TRUE     TRUE     NA           NA      5</span></span>
-<span><span class="co">#&gt; 6      TRUE     TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 7      TRUE     TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 8      TRUE     TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 9      TRUE     TRUE     NA           NA      2</span></span>
-<span><span class="co">#&gt; 10     TRUE     TRUE     NA           NA      3</span></span>
-<span><span class="co">#&gt; 11     TRUE    FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 12     TRUE    FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                 description</span></span>
-<span><span class="co">#&gt; 1                                                                                                                                                                                                                      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2                                                                                                                                                        {"value":"The name of the county.","fieldValueType":"nameOrTitle"}</span></span>
-<span><span class="co">#&gt; 3                                                                                                                         {"value":"The name for the state in which the county is located.","fieldValueType":"nameOrTitle"}</span></span>
-<span><span class="co">#&gt; 4                                                                                                 {"value":"The code (two-digit number) for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 5  {"value":"The combined state and county codes. County codes begin with 001 for each state; use the combined code (five-digit number) to uniquely identify a county in the country.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 6                                                                             {"value":"The area of the county in square miles using the North America Albers Equal Area Conic projection.","fieldValueType":"measurement"}</span></span>
-<span><span class="co">#&gt; 7                                                                                                                                           {"value":"The 2020 population of the county.","fieldValueType":"countOrAmount"}</span></span>
-<span><span class="co">#&gt; 8                                                                                                                             {"value":"The 2020 population of the county per square mile.","fieldValueType":"measurement"}</span></span>
-<span><span class="co">#&gt; 9                                                                                                 {"value":"The two-letter abbreviation for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 10                                                                                                                            {"value":"The code (three-digit number) for the county.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 11                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 12                                                                                                                                                                                                                     &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A data frame: 12 × 10</span></span>
+<span><span class="co">#&gt;    name   type  alias sqlType nullable editable domain defaultValue length</span></span>
+<span><span class="co">#&gt;  * &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt;    &lt;lgl&gt;    &lt;lgl&gt;  &lt;lgl&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1 OBJEC… esri… OBJE… sqlTyp… FALSE    FALSE    NA     NA               NA</span></span>
+<span><span class="co">#&gt;  2 NAME   esri… Name  sqlTyp… TRUE     TRUE     NA     NA               50</span></span>
+<span><span class="co">#&gt;  3 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA               20</span></span>
+<span><span class="co">#&gt;  4 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2</span></span>
+<span><span class="co">#&gt;  5 FIPS   esri… FIPS  sqlTyp… TRUE     TRUE     NA     NA                5</span></span>
+<span><span class="co">#&gt;  6 SQMI   esri… Area… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
+<span><span class="co">#&gt;  7 POPUL… esri… 2020… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
+<span><span class="co">#&gt;  8 POP_S… esri… Peop… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
+<span><span class="co">#&gt;  9 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2</span></span>
+<span><span class="co">#&gt; 10 COUNT… esri… Coun… sqlTyp… TRUE     TRUE     NA     NA                3</span></span>
+<span><span class="co">#&gt; 11 Shape… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA</span></span>
+<span><span class="co">#&gt; 12 Shape… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: description &lt;chr&gt;</span></span></code></pre></div>
 <p>You can also provide a <code>bbox</code>, <code>sfc</code>, or <code>sfg</code> object to the <code>filter_geom</code> argument to perform a spatial filter. If the <code>sfc</code> object contains more than one geometry, the object is combined with <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. See documentation for more (<code><a href="reference/arc_select.html">?arc_select</a></code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `nc' from data source </span></span>
-<span><span class="co">#&gt;   `/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/sf/shape/nc.shp' </span></span>
+<span><span class="co">#&gt;   `/Users/josiahparry/Library/R/arm64/4.5/library/sf/shape/nc.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 100 features and 14 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  NAD27</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; Geodetic CRS:  NAD27</span></span>
+<span></span>
 <span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
 <span>  <span class="va">county_fl</span>,</span>
 <span>  filter_geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">nc</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
@@ -232,26 +222,26 @@
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS   SQMI</span></span>
-<span><span class="co">#&gt; 1     1890 Alleghany County North Carolina         37 37005 236.26</span></span>
-<span><span class="co">#&gt; 2     1892      Ashe County North Carolina         37 37009 429.38</span></span>
-<span><span class="co">#&gt; 3     1982   Watauga County North Carolina         37 37189 313.32</span></span>
-<span><span class="co">#&gt; 4     1984    Wilkes County North Carolina         37 37193 756.33</span></span>
-<span><span class="co">#&gt; 5     2471   Johnson County      Tennessee         47 47091 302.69</span></span>
-<span><span class="co">#&gt; 6     2855   Grayson County       Virginia         51 51077 445.57</span></span>
-<span><span class="co">#&gt;            POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
-<span><span class="co">#&gt; 1 1969-12-31 22:01:28     46.1         NC         005  0.06140165      1.231232</span></span>
-<span><span class="co">#&gt; 2 1970-01-01 02:22:57     61.9         NC         009  0.11428581      1.442112</span></span>
-<span><span class="co">#&gt; 3 1970-01-01 10:01:26    172.6         NC         189  0.08142272      1.287674</span></span>
-<span><span class="co">#&gt; 4 1970-01-01 13:19:29     87.2         NC         193  0.19911944      1.984232</span></span>
-<span><span class="co">#&gt; 5 1969-12-31 23:59:08     59.3         TN         091  0.07960385      1.290607</span></span>
-<span><span class="co">#&gt; 6 1969-12-31 23:15:33     34.4         VA         077  0.11578917      1.945424</span></span>
+<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS  SQMI</span></span>
+<span><span class="co">#&gt; 1      467   Johnson County      Tennessee         47 47091  58.8</span></span>
+<span><span class="co">#&gt; 2     1924 Alleghany County North Carolina         37 37005  47.0</span></span>
+<span><span class="co">#&gt; 3     1926      Ashe County North Carolina         37 37009  60.3</span></span>
+<span><span class="co">#&gt; 4     2016   Watauga County North Carolina         37 37189 174.4</span></span>
+<span><span class="co">#&gt; 5     2018    Wilkes County North Carolina         37 37193  84.9</span></span>
+<span><span class="co">#&gt; 6     2995   Grayson County       Virginia         51 51077  34.1</span></span>
+<span><span class="co">#&gt;   POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
+<span><span class="co">#&gt; 1      17948     59.3         TN         091  0.07960385      1.290607</span></span>
+<span><span class="co">#&gt; 2      10888     46.1         NC         005  0.06140165      1.231232</span></span>
+<span><span class="co">#&gt; 3      26577     61.9         NC         009  0.11428581      1.442112</span></span>
+<span><span class="co">#&gt; 4      54086    172.6         NC         189  0.08142272      1.287674</span></span>
+<span><span class="co">#&gt; 5      65969     87.2         NC         193  0.19911944      1.984232</span></span>
+<span><span class="co">#&gt; 6      15333     34.4         VA         077  0.11578917      1.945424</span></span>
 <span><span class="co">#&gt;                         geometry</span></span>
-<span><span class="co">#&gt; 1 POLYGON ((-81.2397 36.36549...</span></span>
-<span><span class="co">#&gt; 2 POLYGON ((-81.47258 36.2344...</span></span>
-<span><span class="co">#&gt; 3 POLYGON ((-81.80605 36.1046...</span></span>
-<span><span class="co">#&gt; 4 POLYGON ((-81.02037 36.0350...</span></span>
-<span><span class="co">#&gt; 5 POLYGON ((-81.74091 36.3919...</span></span>
+<span><span class="co">#&gt; 1 POLYGON ((-81.74091 36.3919...</span></span>
+<span><span class="co">#&gt; 2 POLYGON ((-81.2397 36.36549...</span></span>
+<span><span class="co">#&gt; 3 POLYGON ((-81.47258 36.2344...</span></span>
+<span><span class="co">#&gt; 4 POLYGON ((-81.80605 36.1046...</span></span>
+<span><span class="co">#&gt; 5 POLYGON ((-81.02037 36.0350...</span></span>
 <span><span class="co">#&gt; 6 POLYGON ((-81.34512 36.5729...</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -259,7 +249,7 @@
 </h3>
 <p>A <code>SpatRaster</code> object from the <a href="https://rspatial.org/" class="external-link">terra</a> package can be extracted from an <code>ImageServer</code> using <code><a href="reference/arc_raster.html">arc_raster()</a></code>.</p>
 <p><code><a href="reference/arc_raster.html">arc_raster()</a></code> will extract the area defined by <code>xmin</code>, <code>ymin</code>, <code>xmax</code>, and <code>ymax</code>. You can optionally specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">img_url</span> <span class="op">&lt;-</span> <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span>
 <span></span>
 <span><span class="va">landsat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">img_url</span><span class="op">)</span></span>
@@ -289,7 +279,7 @@
 <div class="section level3">
 <h3 id="accessing-non-public-data">Accessing non-public data<a class="anchor" aria-label="anchor" href="#accessing-non-public-data"></a>
 </h3>
-<p>The same functions for reading public ArcGIS Online and Enterprise services (such as <code><a href="reference/arc_open.html">arc_open()</a></code>,<code><a href="reference/arc_read.html">arc_read()</a></code>,<code><a href="reference/arc_select.html">arc_select()</a></code>,<code><a href="reference/arc_raster.html">arc_raster()</a></code>, etc.) can be used to read data from non-public services by using the <code>token</code> argument. For more information on tokens and authorization functions, see the <a href="https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html" class="external-link">authorization article</a>.</p>
+<p>The same functions for reading public ArcGIS Online and Enterprise services (such as <code><a href="reference/arc_open.html">arc_open()</a></code>,<code><a href="reference/arc_read.html">arc_read()</a></code>,<code><a href="reference/arc_select.html">arc_select()</a></code>,<code><a href="reference/arc_raster.html">arc_raster()</a></code>, etc.) can be used to read data from non-public services by using the <code>token</code> argument. For more information on tokens and authorization functions, see the <a href="https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/" class="external-link">authorization article</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="publishing-and-modifying-services-from-r">Publishing and modifying services from R<a class="anchor" aria-label="anchor" href="#publishing-and-modifying-services-from-r"></a>
@@ -304,7 +294,7 @@
 <code><a href="reference/publish.html">publish_layer()</a></code>: is a higher level wrapper around both <code><a href="reference/publish.html">add_item()</a></code> and <code><a href="reference/publish.html">publish_item()</a></code>
 </li>
 </ul>
-<p>There are also functions to add or modify data including <code><a href="reference/modify.html">add_features()</a></code>, <code><a href="reference/modify.html">update_features()</a></code>, and <code><a href="reference/modify.html">delete_features()</a></code>. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the <a href="https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html" class="external-link">R-ArcGIS Bridge website</a>.</p>
+<p>There are also functions to add or modify data including <code><a href="reference/modify.html">add_features()</a></code>, <code><a href="reference/modify.html">update_features()</a></code>, and <code><a href="reference/modify.html">delete_features()</a></code>. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the <a href="https://developers.arcgis.com/r-bridge" class="external-link">R-ArcGIS Bridge website</a>.</p>
 <p>These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.</p>
 </div>
 </div>
