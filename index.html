@@ -61,7 +61,7 @@
 </li>
 <li>Read Feature Services as <code>sf</code> objects</li>
 <li>Publish {sf} objects and data.frame’s as Feature Services</li>
-<li>Download attachments from Survey123</li>
+<li>Query and download attachments from Survey123</li>
 </ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -82,7 +82,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">arcgis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt; → arcgisutils v0.3.1.9000</span></span>
+<span><span class="co">#&gt; → arcgisutils v0.3.3</span></span>
 <span><span class="co">#&gt; → arcgislayers v0.3.1.9000</span></span>
 <span><span class="co">#&gt; → arcgisgeocode v0.2.2</span></span>
 <span><span class="co">#&gt; → arcgisplaces v0.1.1</span></span></code></pre></div>
@@ -110,38 +110,34 @@
 <p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 method overwritten by 'jsonify':</span></span>
-<span><span class="co">#&gt;   method     from    </span></span>
-<span><span class="co">#&gt;   print.json jsonlite</span></span>
-<span><span class="co">#&gt; Iterating ■■■■■■■■■■■■■■■■ 50% | ETA: 1s</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3144 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    OBJECTID               NAME   STATE_NAME STATE_FIPS  FIPS SQMI</span></span>
-<span><span class="co">#&gt; 1         1 Grand Forks County North Dakota         38 38035 51.3</span></span>
-<span><span class="co">#&gt; 2         2       Grant County North Dakota         38 38037  1.4</span></span>
-<span><span class="co">#&gt; 3         3      Griggs County North Dakota         38 38039  3.1</span></span>
-<span><span class="co">#&gt; 4         4   Hettinger County North Dakota         38 38041  2.1</span></span>
-<span><span class="co">#&gt; 5         5      Kidder County North Dakota         38 38043  1.6</span></span>
-<span><span class="co">#&gt; 6         6     LaMoure County North Dakota         38 38045  3.5</span></span>
-<span><span class="co">#&gt; 7         7       Logan County North Dakota         38 38047  1.8</span></span>
-<span><span class="co">#&gt; 8         8     McHenry County North Dakota         38 38049  2.8</span></span>
-<span><span class="co">#&gt; 9         9    McIntosh County North Dakota         38 38051  2.5</span></span>
-<span><span class="co">#&gt; 10       10    McKenzie County North Dakota         38 38053  5.3</span></span>
-<span><span class="co">#&gt;    POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
-<span><span class="co">#&gt; 1       73170     50.8         ND         035   0.4503702      2.961625</span></span>
-<span><span class="co">#&gt; 2        2301      1.4         ND         037   0.5040677      3.413506</span></span>
-<span><span class="co">#&gt; 3        2306      3.2         ND         039   0.2230339      1.949037</span></span>
-<span><span class="co">#&gt; 4        2489      2.2         ND         041   0.3427475      2.691898</span></span>
-<span><span class="co">#&gt; 5        2394      1.7         ND         043   0.4378065      2.719487</span></span>
-<span><span class="co">#&gt; 6        4093      3.6         ND         045   0.3502662      2.702124</span></span>
-<span><span class="co">#&gt; 7        1876      1.9         ND         047   0.3090110      2.454735</span></span>
-<span><span class="co">#&gt; 8        5345      2.8         ND         049   0.5877751      3.261400</span></span>
-<span><span class="co">#&gt; 9        2530      2.5         ND         051   0.2971127      2.421863</span></span>
-<span><span class="co">#&gt; 10      14704      5.1         ND         053   0.8862776      4.625264</span></span>
+<span><span class="co">#&gt;    OBJECTID               NAME   STATE_NAME STATE_FIPS  FIPS SQMI POPULATION</span></span>
+<span><span class="co">#&gt; 1         1 Grand Forks County North Dakota         38 38035 51.3      73170</span></span>
+<span><span class="co">#&gt; 2         2       Grant County North Dakota         38 38037  1.4       2301</span></span>
+<span><span class="co">#&gt; 3         3      Griggs County North Dakota         38 38039  3.1       2306</span></span>
+<span><span class="co">#&gt; 4         4   Hettinger County North Dakota         38 38041  2.1       2489</span></span>
+<span><span class="co">#&gt; 5         5      Kidder County North Dakota         38 38043  1.6       2394</span></span>
+<span><span class="co">#&gt; 6         6     LaMoure County North Dakota         38 38045  3.5       4093</span></span>
+<span><span class="co">#&gt; 7         7       Logan County North Dakota         38 38047  1.8       1876</span></span>
+<span><span class="co">#&gt; 8         8     McHenry County North Dakota         38 38049  2.8       5345</span></span>
+<span><span class="co">#&gt; 9         9    McIntosh County North Dakota         38 38051  2.5       2530</span></span>
+<span><span class="co">#&gt; 10       10    McKenzie County North Dakota         38 38053  5.3      14704</span></span>
+<span><span class="co">#&gt;    POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
+<span><span class="co">#&gt; 1      50.8         ND         035   0.4503702      2.961625</span></span>
+<span><span class="co">#&gt; 2       1.4         ND         037   0.5040677      3.413506</span></span>
+<span><span class="co">#&gt; 3       3.2         ND         039   0.2230339      1.949037</span></span>
+<span><span class="co">#&gt; 4       2.2         ND         041   0.3427475      2.691898</span></span>
+<span><span class="co">#&gt; 5       1.7         ND         043   0.4378065      2.719487</span></span>
+<span><span class="co">#&gt; 6       3.6         ND         045   0.3502662      2.702124</span></span>
+<span><span class="co">#&gt; 7       1.9         ND         047   0.3090110      2.454735</span></span>
+<span><span class="co">#&gt; 8       2.8         ND         049   0.5877751      3.261400</span></span>
+<span><span class="co">#&gt; 9       2.5         ND         051   0.2971127      2.421863</span></span>
+<span><span class="co">#&gt; 10      5.1         ND         053   0.8862776      4.625264</span></span>
 <span><span class="co">#&gt;                          geometry</span></span>
 <span><span class="co">#&gt; 1  POLYGON ((-96.88943 47.6739...</span></span>
 <span><span class="co">#&gt; 2  POLYGON ((-102.0034 46.0528...</span></span>
@@ -185,22 +181,45 @@
 <p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A data frame: 12 × 10</span></span>
-<span><span class="co">#&gt;    name   type  alias sqlType nullable editable domain defaultValue length</span></span>
-<span><span class="co">#&gt;  * &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt;    &lt;lgl&gt;    &lt;lgl&gt;  &lt;lgl&gt;         &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1 OBJEC… esri… OBJE… sqlTyp… FALSE    FALSE    NA     NA               NA</span></span>
-<span><span class="co">#&gt;  2 NAME   esri… Name  sqlTyp… TRUE     TRUE     NA     NA               50</span></span>
-<span><span class="co">#&gt;  3 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA               20</span></span>
-<span><span class="co">#&gt;  4 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2</span></span>
-<span><span class="co">#&gt;  5 FIPS   esri… FIPS  sqlTyp… TRUE     TRUE     NA     NA                5</span></span>
-<span><span class="co">#&gt;  6 SQMI   esri… Area… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
-<span><span class="co">#&gt;  7 POPUL… esri… 2020… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
-<span><span class="co">#&gt;  8 POP_S… esri… Peop… sqlTyp… TRUE     TRUE     NA     NA               NA</span></span>
-<span><span class="co">#&gt;  9 STATE… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2</span></span>
-<span><span class="co">#&gt; 10 COUNT… esri… Coun… sqlTyp… TRUE     TRUE     NA     NA                3</span></span>
-<span><span class="co">#&gt; 11 Shape… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA</span></span>
-<span><span class="co">#&gt; 12 Shape… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: description &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;             name                 type                  alias       sqlType nullable</span></span>
+<span><span class="co">#&gt; 1       OBJECTID     esriFieldTypeOID               OBJECTID  sqlTypeOther    FALSE</span></span>
+<span><span class="co">#&gt; 2           NAME  esriFieldTypeString                   Name  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 3     STATE_NAME  esriFieldTypeString             State Name  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 4     STATE_FIPS  esriFieldTypeString             State FIPS  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 5           FIPS  esriFieldTypeString                   FIPS  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 6           SQMI  esriFieldTypeDouble   Area in square miles  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 7     POPULATION esriFieldTypeInteger  2020 Total Population  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 8       POP_SQMI  esriFieldTypeDouble People per square mile  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 9     STATE_ABBR  esriFieldTypeString     State Abbreviation  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 10   COUNTY_FIPS  esriFieldTypeString            County FIPS  sqlTypeOther     TRUE</span></span>
+<span><span class="co">#&gt; 11   Shape__Area  esriFieldTypeDouble            Shape__Area sqlTypeDouble     TRUE</span></span>
+<span><span class="co">#&gt; 12 Shape__Length  esriFieldTypeDouble          Shape__Length sqlTypeDouble     TRUE</span></span>
+<span><span class="co">#&gt;    editable domain defaultValue length</span></span>
+<span><span class="co">#&gt; 1     FALSE     NA           NA     NA</span></span>
+<span><span class="co">#&gt; 2      TRUE     NA           NA     50</span></span>
+<span><span class="co">#&gt; 3      TRUE     NA           NA     20</span></span>
+<span><span class="co">#&gt; 4      TRUE     NA           NA      2</span></span>
+<span><span class="co">#&gt; 5      TRUE     NA           NA      5</span></span>
+<span><span class="co">#&gt; 6      TRUE     NA           NA     NA</span></span>
+<span><span class="co">#&gt; 7      TRUE     NA           NA     NA</span></span>
+<span><span class="co">#&gt; 8      TRUE     NA           NA     NA</span></span>
+<span><span class="co">#&gt; 9      TRUE     NA           NA      2</span></span>
+<span><span class="co">#&gt; 10     TRUE     NA           NA      3</span></span>
+<span><span class="co">#&gt; 11    FALSE     NA           NA     NA</span></span>
+<span><span class="co">#&gt; 12    FALSE     NA           NA     NA</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                 description</span></span>
+<span><span class="co">#&gt; 1                                                                                                                                                                                                                      &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2                                                                                                                                                        {"value":"The name of the county.","fieldValueType":"nameOrTitle"}</span></span>
+<span><span class="co">#&gt; 3                                                                                                                         {"value":"The name for the state in which the county is located.","fieldValueType":"nameOrTitle"}</span></span>
+<span><span class="co">#&gt; 4                                                                                                 {"value":"The code (two-digit number) for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
+<span><span class="co">#&gt; 5  {"value":"The combined state and county codes. County codes begin with 001 for each state; use the combined code (five-digit number) to uniquely identify a county in the country.","fieldValueType":"uniqueIdentifier"}</span></span>
+<span><span class="co">#&gt; 6                                                                             {"value":"The area of the county in square miles using the North America Albers Equal Area Conic projection.","fieldValueType":"measurement"}</span></span>
+<span><span class="co">#&gt; 7                                                                                                                                           {"value":"The 2020 population of the county.","fieldValueType":"countOrAmount"}</span></span>
+<span><span class="co">#&gt; 8                                                                                                                             {"value":"The 2020 population of the county per square mile.","fieldValueType":"measurement"}</span></span>
+<span><span class="co">#&gt; 9                                                                                                 {"value":"The two-letter abbreviation for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
+<span><span class="co">#&gt; 10                                                                                                                            {"value":"The code (three-digit number) for the county.","fieldValueType":"uniqueIdentifier"}</span></span>
+<span><span class="co">#&gt; 11                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 12                                                                                                                                                                                                                     &lt;NA&gt;</span></span></code></pre></div>
 <p>You can also provide a <code>bbox</code>, <code>sfc</code>, or <code>sfg</code> object to the <code>filter_geom</code> argument to perform a spatial filter. If the <code>sfc</code> object contains more than one geometry, the object is combined with <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. See documentation for more (<code><a href="reference/arc_select.html">?arc_select</a></code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
@@ -222,20 +241,20 @@
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS  SQMI</span></span>
-<span><span class="co">#&gt; 1      467   Johnson County      Tennessee         47 47091  58.8</span></span>
-<span><span class="co">#&gt; 2     1924 Alleghany County North Carolina         37 37005  47.0</span></span>
-<span><span class="co">#&gt; 3     1926      Ashe County North Carolina         37 37009  60.3</span></span>
-<span><span class="co">#&gt; 4     2016   Watauga County North Carolina         37 37189 174.4</span></span>
-<span><span class="co">#&gt; 5     2018    Wilkes County North Carolina         37 37193  84.9</span></span>
-<span><span class="co">#&gt; 6     2995   Grayson County       Virginia         51 51077  34.1</span></span>
-<span><span class="co">#&gt;   POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
-<span><span class="co">#&gt; 1      17948     59.3         TN         091  0.07960385      1.290607</span></span>
-<span><span class="co">#&gt; 2      10888     46.1         NC         005  0.06140165      1.231232</span></span>
-<span><span class="co">#&gt; 3      26577     61.9         NC         009  0.11428581      1.442112</span></span>
-<span><span class="co">#&gt; 4      54086    172.6         NC         189  0.08142272      1.287674</span></span>
-<span><span class="co">#&gt; 5      65969     87.2         NC         193  0.19911944      1.984232</span></span>
-<span><span class="co">#&gt; 6      15333     34.4         VA         077  0.11578917      1.945424</span></span>
+<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS  SQMI POPULATION</span></span>
+<span><span class="co">#&gt; 1      467   Johnson County      Tennessee         47 47091  58.8      17948</span></span>
+<span><span class="co">#&gt; 2     1924 Alleghany County North Carolina         37 37005  47.0      10888</span></span>
+<span><span class="co">#&gt; 3     1926      Ashe County North Carolina         37 37009  60.3      26577</span></span>
+<span><span class="co">#&gt; 4     2016   Watauga County North Carolina         37 37189 174.4      54086</span></span>
+<span><span class="co">#&gt; 5     2018    Wilkes County North Carolina         37 37193  84.9      65969</span></span>
+<span><span class="co">#&gt; 6     2995   Grayson County       Virginia         51 51077  34.1      15333</span></span>
+<span><span class="co">#&gt;   POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
+<span><span class="co">#&gt; 1     59.3         TN         091  0.07960385      1.290607</span></span>
+<span><span class="co">#&gt; 2     46.1         NC         005  0.06140165      1.231232</span></span>
+<span><span class="co">#&gt; 3     61.9         NC         009  0.11428581      1.442112</span></span>
+<span><span class="co">#&gt; 4    172.6         NC         189  0.08142272      1.287674</span></span>
+<span><span class="co">#&gt; 5     87.2         NC         193  0.19911944      1.984232</span></span>
+<span><span class="co">#&gt; 6     34.4         VA         077  0.11578917      1.945424</span></span>
 <span><span class="co">#&gt;                         geometry</span></span>
 <span><span class="co">#&gt; 1 POLYGON ((-81.74091 36.3919...</span></span>
 <span><span class="co">#&gt; 2 POLYGON ((-81.2397 36.36549...</span></span>
