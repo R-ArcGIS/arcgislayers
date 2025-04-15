@@ -30,8 +30,7 @@ knitr::opts_chunk$set(
 - Read Imagery as `SpatRaster` from `{terra}`
 - Read Feature Services as `sf` objects
 - Publish {sf} objects and data.frame's as Feature Services
-- Download attachments from Survey123
-
+- Query and download attachments from Survey123
 
 
 ## Installation

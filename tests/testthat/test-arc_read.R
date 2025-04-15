@@ -39,12 +39,21 @@ test_that("arc_read(): name_repair works", {
 
   expect_named(layer, c("name", "fips", "geometry"))
 
-  layer <- arc_read(furl, col_select = col_select, col_names = c("Name", "FIPS Code"))
+  layer <- arc_read(
+    furl,
+    col_select = col_select,
+    col_names = c("Name", "FIPS Code")
+  )
 
   expect_named(layer, c("Name", "FIPS Code", "geometry"))
 
   expect_error(
-    arc_read(furl, col_select = col_select, col_names = c("Name", "Name"), name_repair = "check_unique")
+    arc_read(
+      furl,
+      col_select = col_select,
+      col_names = c("Name", "Name"),
+      name_repair = "check_unique"
+    )
   )
 })
 
@@ -95,8 +104,14 @@ test_that("arc_read(): no error on tricky polylines", {
 test_that("arc_read(): error with invalid col_names", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
-  expect_error(arc_read(furl, n_max = 1, col_names = 1), "or a character vector")
-  expect_error(arc_read(furl, n_max = 1, col_names = character(0)), "must be length 13 or shorter, not 0")
+  expect_error(
+    arc_read(furl, n_max = 1, col_names = 1),
+    "or a character vector"
+  )
+  expect_error(
+    arc_read(furl, n_max = 1, col_names = character(0)),
+    "must be length 13 or shorter, not 0"
+  )
 })
 
 test_that("arc_read(): work with col_names = FALSE", {
@@ -110,7 +125,10 @@ test_that("arc_read(): work with col_names vector", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
-  expect_named(arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"), c("name", "X2", "geometry"))
+  expect_named(
+    arc_read(furl, fields = c("NAME", "STATE_NAME"), col_names = "name"),
+    c("name", "X2", "geometry")
+  )
   expect_named(arc_read(furl, fields = "", col_names = "geom"), "geom")
 })
 
@@ -118,13 +136,19 @@ test_that("arc_read(): work with col_names vector", {
 test_that("arc_read(): error with invalid alias", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
-  expect_error(arc_read(furl, n_max = 1, alias = "droop"), 'Did you mean "drop"?')
+  expect_error(
+    arc_read(furl, n_max = 1, alias = "droop"),
+    'Did you mean "drop"?'
+  )
 })
 
 test_that("arc_read(): work with alias replace", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
-  expect_named(arc_read(furl, n_max = 1, fields = "STATE_ABBR", alias = "replace"), c("State Abbreviation", "geometry"))
+  expect_named(
+    arc_read(furl, n_max = 1, fields = "STATE_ABBR", alias = "replace"),
+    c("State Abbreviation", "geometry")
+  )
 })
 
 test_that("arc_read(): work with alias label", {
@@ -188,9 +212,19 @@ test_that("set_layer_aliases() replaces names with alias", {
   expect_identical(
     colnames(with_aliases),
     c(
-      "OBJECTID", "Name", "State Name", "State FIPS", "FIPS", "Area in square miles",
-      "2020 Total Population", "People per square mile", "State Abbreviation",
-      "County FIPS", "Shape__Area", "Shape__Length", "geometry"
+      "OBJECTID",
+      "Name",
+      "State Name",
+      "State FIPS",
+      "FIPS",
+      "Area in square miles",
+      "2020 Total Population",
+      "People per square mile",
+      "State Abbreviation",
+      "County FIPS",
+      "Shape__Area",
+      "Shape__Length",
+      "geometry"
     )
   )
 })
@@ -207,19 +241,28 @@ test_that("set_layer_aliases() puts alias as label attribute for the column", {
   with_aliases <- set_layer_aliases(res, flayer, alias = "label")
 
   aliases <- vapply(
-    sf::st_drop_geometry(with_aliases), 
-    attr, 
-    character(1), 
-    "label", 
+    sf::st_drop_geometry(with_aliases),
+    attr,
+    character(1),
+    "label",
     USE.NAMES = FALSE
   )
 
   expect_identical(
     aliases,
     c(
-      "OBJECTID", "Name", "State Name", "State FIPS", "FIPS", "Area in square miles",
-      "2020 Total Population", "People per square mile", "State Abbreviation",
-      "County FIPS", "Shape__Area", "Shape__Length", "geometry"
+      "OBJECTID",
+      "Name",
+      "State Name",
+      "State FIPS",
+      "FIPS",
+      "Area in square miles",
+      "2020 Total Population",
+      "People per square mile",
+      "State Abbreviation",
+      "County FIPS",
+      "Shape__Area",
+      "Shape__Length"
     )
   )
 })

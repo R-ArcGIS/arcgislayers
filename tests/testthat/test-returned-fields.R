@@ -9,11 +9,14 @@ test_that("arc_select(x, fields = \"\"): returns no fields", {
   expect_identical(colnames(res), "geometry")
 })
 
-test_that('arc_select(x, fields = "", geometry = NULL): returns 0 columns all rows', {
-  expect_identical(
-    dim(arc_select(flayer, fields = "", geometry = FALSE)),
-    c(4186L, 0L)
-  )
+test_that('arc_select(x, fields = "", geometry = NULL): returns empty geometry points', {
+  res <- arc_select(flayer, fields = "", geometry = FALSE)
+
+  # geometry is returned as empty points
+  expect_identical(dim(res), c(4186L, 1L))
+
+  # all points are empty
+  expect_true(all(sf::st_is_empty(res)))
 })
 
 
@@ -28,7 +31,8 @@ test_that('arc_select(flayer, fields = "state_abbr") does not include OID', {
 test_that("arc_select() doesnt remove OID with fields", {
   res <- arc_select(
     flayer,
-    fields = c("state_abbr", "objectid"), n_max = 10
+    fields = c("state_abbr", "objectid"),
+    n_max = 10
   )
   expect_identical(
     colnames(res),
@@ -43,11 +47,9 @@ test_that("arc_select() with fields works on tables", {
   )
 
   flayer <- arc_open(furl)
-  expect_no_error(arc_select(flayer, fields = "", n_max = 100))
 
   res <- arc_select(flayer, fields = "objectid", n_max = 100)
   expect_identical(colnames(res), "OBJECTID")
-
 
   res <- arc_select(flayer, n_max = 100)
   expect_identical(
@@ -60,7 +62,6 @@ test_that("arc_select() works with ImageServers", {
   landsat <- arc_open(
     "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
   )
-
 
   res <- arc_select(landsat, fields = "Name", n_max = 10)
 

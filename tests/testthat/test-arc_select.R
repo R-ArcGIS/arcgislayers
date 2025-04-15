@@ -1,15 +1,12 @@
 test_that("arc_select(): polygons can be parsed", {
-
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
   flayer <- arc_open(furl)
 
   expect_no_error(arc_select(flayer))
-
 })
 
 
 test_that("arc_select(): tables can be parsed", {
-
   furl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
 
   tblayer <- arc_open(furl)
@@ -49,7 +46,6 @@ test_that("arc_select(): respects `n_max` & `page_size`", {
 
 
 test_that("arc_select(): respects `...`", {
-
   furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
 
   flayer <- arc_open(furl)
@@ -57,7 +53,7 @@ test_that("arc_select(): respects `...`", {
   expect_error(
     arc_select(
       flayer,
-      where =  "TotalPopulation > 25000",
+      where = "TotalPopulation > 25000",
       fields = c("StateAbbr", "StateName"),
       returnCountOnly = "true"
     )
@@ -65,7 +61,7 @@ test_that("arc_select(): respects `...`", {
 })
 
 test_that("arc_select(): supports multiple filter_geom input types", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_State_Boundaries/FeatureServer/0"
 
@@ -80,8 +76,14 @@ test_that("arc_select(): supports multiple filter_geom input types", {
 
   expect_identical(
     bbox_res[["STATE_NAME"]],
-    c("Georgia", "Kentucky", "North Carolina", "South Carolina",
-      "Tennessee", "Virginia")
+    c(
+      "Georgia",
+      "Kentucky",
+      "North Carolina",
+      "South Carolina",
+      "Tennessee",
+      "Virginia"
+    )
   )
 
   # allow sfc input for filter_geom
@@ -98,7 +100,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
     c("North Carolina", "Virginia")
   )
 
-  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
   flayer <- arc_open(furl)
 
@@ -110,8 +112,8 @@ test_that("arc_select(): supports multiple filter_geom input types", {
   )
 
   expect_identical(
-    unique(sfg_res[["STATE_NAME"]]),
-    c("North Carolina", "Tennessee", "Virginia")
+    sort(unique(sfg_res[["STATE_NAME"]])),
+    sort(c("North Carolina", "Tennessee", "Virginia"))
   )
 
   # allow multiple POINTs as input for filter_geom
@@ -128,7 +130,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
 })
 
 test_that("arc_select(): warns for Table layers and provides message for MULTIPOLYGON input", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
 
   turl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
 
@@ -145,9 +147,9 @@ test_that("arc_select(): warns for Table layers and provides message for MULTIPO
 
 
 test_that("arc_select(): errors for invalid filter_geom inputs", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
 
-  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties/FeatureServer/0"
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer"
 
   flayer <- arc_open(furl)
 

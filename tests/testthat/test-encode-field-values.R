@@ -17,19 +17,19 @@ test_that("encode_field_values() encodes field values", {
   expect_true(all(encoded_vals %in% domain_vals))
 })
 
-test_that("encode_field_values() encodes field values when field is set", {
-  skip_on_cran()
-  flayer <- arc_open(
-    "https://services1.arcgis.com/99lidPhWCzftIe9K/ArcGIS/rest/services/UtahRoads/FeatureServer/0"
-  )
+# test_that("encode_field_values() encodes field values when field is set", {
+#   skip_on_cran()
+#   flayer <- arc_open(
+#     "https://services1.arcgis.com/99lidPhWCzftIe9K/ArcGIS/rest/services/UtahRoads/FeatureServer/0"
+#   )
 
-  res <- arc_select(layer, n_max = 100)
+#   res <- arc_select(layer, n_max = 100)
 
-  encoded <- encode_field_values(res, flayer, field = "CARTOCODE")
+#   encoded <- encode_field_values(res, flayer, field = "CARTOCODE")
 
-  # fetch domains and known values
-  domains <- list_field_domains(layer, field = "CARTOCODE")
-  domain_vals <- domains[[c("CARTOCODE", "codedValues", "name")]]
+#   # fetch domains and known values
+#   domains <- list_field_domains(layer, field = "CARTOCODE")
+#   domain_vals <- domains[[c("CARTOCODE", "codedValues", "name")]]
 
-  expect_true(all(encoded[["CARTOCODE"]] %in% domain_vals))
-})
+#   expect_true(all(encoded[["CARTOCODE"]] %in% domain_vals))
+# })

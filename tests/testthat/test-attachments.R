@@ -3,7 +3,7 @@ layer <- arc_open(furl)
 
 test_that("query_layer_attachments() default args", {
   # connect to the layer
-  expect_no_error()
+  expect_no_error(query_layer_attachments(layer))
 })
 
 
@@ -35,6 +35,6 @@ test_that("download_attachments()", {
       layer,
       attachments_definition_expression = "att_name like 'image0%'"
     )
-  res <- download_attachments(att, tmp)
+  res <- download_attachments(att, tmp, overwrite = TRUE)
   expect_true(all(basename(unlist(res)) %in% list.files(tmp)))
 })
