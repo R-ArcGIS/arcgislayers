@@ -1,7 +1,7 @@
 Package: arcgislayers
 Type: Package
 Title: An Interface to ArcGIS Data Services
-Version: 0.2.1
+Version: 0.4.0
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9910-865X")),
@@ -21,18 +21,18 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     arcgisutils (>= 0.2.0),
-    arcpbf (>= 0.1.2),
+    arcpbf (>= 0.1.5),
     cli,
-    httr2 (>= 1.0.0),
+    httr2 (>= 1.0.5),
     jsonify,
     lifecycle,
-    RcppSimdJson,
+    RcppSimdJson (>= 0.1.13),
     rlang,
     sf,
     terra,
     utils
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     dbplyr,
     dplyr,
@@ -41,5 +41,5 @@ Suggests:
     tidyselect,
     vctrs
 Config/testthat/edition: 3
-URL: https://r.esri.com/arcgislayers/, https://github.com/R-ArcGIS/arcgislayers
+URL: https://developers.arcgis.com/r-bridge, https://github.com/R-ArcGIS/arcgislayers
 BugReports: https://github.com/R-ArcGIS/arcgislayers/issues

@@ -20,9 +20,8 @@
 #'  reference. If the `sfc` is missing a CRS (or is an `sfg` object) it is
 #'  assumed to use the same spatial reference as the FeatureLayer. If the `sfc`
 #'  object has multiple features, the features are unioned with
-#'  [sf::st_union()]. If an `sfc` object has `MULTIPOLYGON` geometry, the features
-#'  are unioned before being cast to `POLYGON` geometry with [sf::st_cast()]. All
-#'  geometries are checked for validity before conversion.
+#'  [sf::st_union()]. If an `sfc` object has `MULTIPOLYGON` geometry, the
+#'  features are cast to `POLYGON` geometry and only the first element is used.
 #'
 #' @returns [prepare_spatial_filter()] returns a named list with the
 #'   `geometryType`, `geometry` (as Esri JSON), and spatial relation predicate.
@@ -32,27 +31,27 @@
 #' prepare_spatial_filter(sf::st_point(c(0, 5)), 4326, "intersects")
 #' @export
 prepare_spatial_filter <- function(
-    filter_geom,
-    crs,
-    predicate,
-    error_call = rlang::caller_env()
+  filter_geom,
+  crs,
+  predicate,
+  error_call = rlang::caller_env()
 ) {
-
   check_inherits_any(
     filter_geom,
     class = c("sfc", "sfg", "bbox"),
     call = error_call
   )
 
-  # NOTE: CRS cannot be missing
-  if (inherits(filter_geom, "bbox")) {
-    filter_geom <- sf::st_as_sfc(filter_geom)
-  } else if (any(!sf::st_is_valid(filter_geom))) {
-    filter_geom <- sf::st_make_valid(filter_geom)
+  if (is_sfc(filter_geom) && rlang::is_empty(filter_geom)) {
+    cli::cli_warn(
+      "{.arg filter_geom} contains no features and can't be used for query."
+    )
+
+    return(NULL)
   }
 
   # FIXME: Unsure how to handle sfg inputs w/o checking CRS
-  if (inherits(filter_geom, "sfg")) {
+  if (is_sfg(filter_geom)) {
     filter_crs <- crs
   } else {
     filter_crs <- sf::st_crs(filter_geom)
@@ -62,38 +61,68 @@ prepare_spatial_filter <- function(
     }
   }
 
-  # if an sfc_multipolygon we union and cast to polygon
-  # related issue: https://github.com/R-ArcGIS/arcgislayers/issues/4
-  if (inherits(filter_geom, "sfc_MULTIPOLYGON")) {
-    cli::cli_inform(
-      c(
-        "!" = "{.arg filter_geom} cannot be a {.val MULTIPOLYGON} geometry.",
-        "i" = "Using {.fn sf::st_union} and {.fn sf::st_cast} to create a
-        {.val POLYGON} for {.arg filter_geom}."
-      ),
-      call = error_call
-    )
-    filter_geom <- sf::st_union(filter_geom)
-    filter_geom <- sf::st_cast(filter_geom, to = "POLYGON")
-  } else if (inherits(filter_geom, "MULTIPOLYGON")) {
-    filter_geom <- sf::st_cast(filter_geom, "POLYGON")
-  }
-
-  # if its an sfc object it must be length one
-  if (inherits(filter_geom, "sfc")) {
-    if (length(filter_geom) > 1) {
-      filter_geom <- sf::st_union(filter_geom)
-    }
-    # extract the sfg object which is used to write Esri json
-    filter_geom <- filter_geom[[1]]
-  }
+  filter_sfg <- filter_geom_as_sfg(filter_geom, error_call = error_call)
 
   list(
-    geometryType = arcgisutils::determine_esri_geo_type(filter_geom),
-    geometry = arcgisutils::as_esri_geometry(filter_geom, crs = filter_crs),
+    geometryType = arcgisutils::determine_esri_geo_type(
+      filter_sfg,
+      call = error_call
+    ),
+    geometry = arcgisutils::as_esri_geometry(
+      filter_sfg,
+      crs = filter_crs,
+      call = error_call
+    ),
     spatialRel = match_spatial_rel(predicate, error_call = error_call)
     # TODO is `inSR` needed if the CRS is specified in the geometry???
   )
+}
+
+#' Convert input filter_geom to a sfg object
+#' @noRd
+filter_geom_as_sfg <- function(
+  filter_geom,
+  error_call = rlang::caller_env()
+) {
+  # NOTE: CRS cannot be missing
+  if (inherits(filter_geom, "bbox")) {
+    filter_geom <- sf::st_as_sfc(filter_geom)
+  } else if (any(!sf::st_is_valid(filter_geom))) {
+    filter_geom <- sf::st_make_valid(filter_geom)
+  }
+
+  # union multi-element sfc inputs (e.g. convert multiple POLYGON features to a
+  # single MULTIPOLYGON feature)
+  if (is_sfc(filter_geom) && length(filter_geom) > 1) {
+    filter_geom <- sf::st_union(filter_geom)
+  }
+
+  # if an sfc_multipolygon we union and cast to polygon - see related issues:
+  # https://github.com/R-ArcGIS/arcgislayers/issues/4
+  # https://github.com/R-ArcGIS/arcgislayers/issues/166
+  if (rlang::inherits_any(filter_geom, c("sfc_MULTIPOLYGON", "MULTIPOLYGON"))) {
+    filter_geom <- sf::st_cast(filter_geom, to = "POLYGON")
+  }
+
+  # return any sfg object
+  if (is_sfg(filter_geom)) {
+    return(filter_geom)
+  }
+
+  # if its an sfc object it must be length one
+  geom_length <- length(filter_geom)
+
+  if (geom_length > 1) {
+    cli::cli_warn(
+      c(
+        "{.arg filter_geom} contains {geom_length} elements.",
+        "i" = "Using geometry from first element only."
+      )
+    )
+  }
+
+  # extract the sfg object which is used to write Esri json
+  filter_geom[[1]]
 }
 
 #' @description
@@ -144,7 +173,23 @@ match_spatial_rel <- function(predicate, error_call = rlang::caller_env()) {
 
   # ensure a correct one has been chosen
   predicate <- tolower(predicate)
-  predicate <- rlang::arg_match(predicate, pred_arg_vals, error_call = error_call)
+  predicate <- rlang::arg_match(
+    predicate,
+    pred_arg_vals,
+    error_call = error_call
+  )
 
   esri_predicates[grepl(predicate, esri_predicates, ignore.case = TRUE)]
+}
+
+#' Is x a sfc object?
+#' @noRd
+is_sfc <- function(x) {
+  rlang::inherits_any(x, "sfc")
+}
+
+#' Is x a sfg object?
+#' @noRd
+is_sfg <- function(x) {
+  rlang::inherits_any(x, "sfg")
 }

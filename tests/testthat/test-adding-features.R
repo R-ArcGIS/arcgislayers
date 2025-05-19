@@ -1,9 +1,8 @@
 test_that("Adding features to a table work", {
-
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
 
-  set_arc_token(auth_code())
+  set_arc_token(auth_user())
 
   # ensure that Iris Test exists first
   res <- publish_layer(iris, "Iris Test")
@@ -21,13 +20,18 @@ test_that("Adding features to a table work", {
   expect_success(add_features(irs, test_row, match_on = "alias"))
 
   # create a massive data frame
-  test_df <- as_tibble(sample_n(iris, 4500, replace = TRUE)) |>
+  test_df <- dplyr::as_tibble(
+    dplyr::sample_n(iris, 4500, replace = TRUE)
+  ) |>
     dplyr::mutate(
-      Species = sample(c("Hi", "Howdy", "Esri", "Ft"), dplyr::n(), replace = TRUE)
+      Species = sample(
+        c("Hi", "Howdy", "Esri", "Ft"),
+        dplyr::n(),
+        replace = TRUE
+      )
     )
 
   expect_success(add_features(irs, test_df, match_on = "alias"))
-
 })
 
 test_that("Adding features to a feature layer works", {

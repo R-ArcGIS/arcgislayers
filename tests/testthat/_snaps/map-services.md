@@ -5,7 +5,7 @@
     Output
       <MapServer <13 layers, 0 tables>>
       CRS: 3857
-      Capabilities: Data,Map,Query
+      Capabilities: Map,Query,Data
         0: NHDPlusGage (esriGeometryPoint)
         1: NHDPlusSink (esriGeometryPoint)
         2: NHDPoint (esriGeometryPoint)

@@ -28,12 +28,11 @@
 #' }
 #' @export
 truncate_layer <- function(
-    x,
-    async = FALSE,
-    attachment_only = FALSE,
-    token = arc_token()
+  x,
+  async = FALSE,
+  attachment_only = FALSE,
+  token = arc_token()
 ) {
-
   # check to see if it is a compatible class
   obj_check_layer(x)
 

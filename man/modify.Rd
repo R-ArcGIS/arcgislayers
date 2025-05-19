@@ -80,7 +80,7 @@ spatial filter.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 For a more detailed guide to adding, updating, and deleting features, view the
-tutorial on the \href{https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html}{R-ArcGIS Bridge website}.
+tutorial on the \href{https://developers.arcgis.com/r-bridge/editing/editing-overview/}{R-ArcGIS Bridge website}.
 
 Regarding the \code{match_on} argument:when publishing an object to an ArcGIS Portal
 from R, the object's names are provided as the alias. The object's names are

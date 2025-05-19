@@ -13,7 +13,7 @@ arc_read(
   crs = NULL,
   ...,
   fields = NULL,
-  alias = c("drop", "label", "replace"),
+  alias = "drop",
   token = arc_token()
 )
 }
@@ -39,7 +39,8 @@ returned. By default, all fields are returned.}
 to return.}
 
 \item{name_repair}{Default \code{"unique"}. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for
-details. If \code{name_repair = NULL}, names are set directly.}
+details. If \code{name_repair = NULL} and \code{alias = "replace"} may include
+invalid names.}
 
 \item{crs}{the spatial reference to be returned. If the CRS is different than
 the CRS for the input \code{FeatureLayer}, a transformation will occur
@@ -57,7 +58,6 @@ supplied.}
 \item \code{"drop"}, field alias values are ignored.
 \item \code{"label"}: field alias values are assigned as a label attribute for each field.
 \item \code{"replace"}: field alias values replace existing column names. \code{col_names}
-must \code{TRUE} for this option to be applied.
 }}
 
 \item{token}{your authorization token.}
@@ -81,34 +81,33 @@ data in the \code{{readr}} package.
 }
 \examples{
 \dontrun{
-  furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
+furl <- "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3"
 
-  # read entire service
-  arc_read(furl)
+# read entire service
+arc_read(furl)
 
-  # apply tolower() to column names
-  arc_read(url, name_repair = tolower)
+# apply tolower() to column names
+arc_read(url, name_repair = tolower)
 
-  # use paste0 to prevent CRAN check NOTE
-  furl <- paste0(
-    "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
-    "EmergencyFacilities/FeatureServer/0"
-  )
+# use paste0 to prevent CRAN check NOTE
+furl <- paste0(
+  "https://sampleserver6.arcgisonline.com/arcgis/rest/services/",
+  "EmergencyFacilities/FeatureServer/0"
+)
 
- # use field aliases as column names
- arc_read(furl, col_names = "alias")
+# use field aliases as column names
+arc_read(furl, alias = "replace")
 
- # read an ImageServer directly
- img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
+# read an ImageServer directly
+img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
- arc_read(
-   img_url,
-   width = 100, height = 100,
-   xmin = -71, ymin = 43,
-   xmax = -67, ymax = 47.5,
-   bbox_crs = 4326
- )
-
+arc_read(
+  img_url,
+  width = 100, height = 100,
+  xmin = -71, ymin = 43,
+  xmax = -67, ymax = 47.5,
+  bbox_crs = 4326
+)
 }
 }
 \seealso{

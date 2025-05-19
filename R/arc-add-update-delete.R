@@ -1,5 +1,3 @@
-
-
 # Add Features ------------------------------------------------------------
 
 #' Add Features to Feature Layer
@@ -19,7 +17,7 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' For a more detailed guide to adding, updating, and deleting features, view the
-#' tutorial on the [R-ArcGIS Bridge website](https://r.esri.com/r-bridge-site/location-services/workflows/add-delete-update.html).
+#' tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge/editing/editing-overview/).
 #'
 #' Regarding the `match_on` argument:when publishing an object to an ArcGIS Portal
 #' from R, the object's names are provided as the alias. The object's names are
@@ -49,14 +47,13 @@
 #' - `update_features()` returns a list with an element named `updateResults` which is a `data.frame` with columns `objectId`, `uniqueId`, `globalId`, `success`
 #' - `delete_features()` returns a list with an element named `deleteResults` which is a `data.frame` with columns `objectId`, `uniqueId`, `globalId`, `success`
 add_features <- function(
-    x,
-    .data,
-    chunk_size = 2000,
-    match_on = c("name", "alias"),
-    rollback_on_failure = TRUE,
-    token = arc_token()
+  x,
+  .data,
+  chunk_size = 2000,
+  match_on = c("name", "alias"),
+  rollback_on_failure = TRUE,
+  token = arc_token()
 ) {
-
   # initial check for type of `x`
   obj_check_layer(x)
 
@@ -129,7 +126,7 @@ add_features <- function(
 
     all_reqs[[i]] <- httr2::req_body_form(
       req,
-      features = as_esri_features(.data[start:end,]),
+      features = as_esri_features(.data[start:end, ]),
       rollbackOnFailure = rollback_on_failure,
       f = "json"
     )
@@ -142,7 +139,6 @@ add_features <- function(
   do.call(
     rbind.data.frame,
     lapply(all_resps, function(res) {
-
       resp <- RcppSimdJson::fparse(
         httr2::resp_body_string(res)
       )
@@ -163,14 +159,13 @@ add_features <- function(
 #' @inheritParams add_features
 #' @rdname modify
 update_features <- function(
-    x,
-    .data,
-    match_on = c("name", "alias"),
-    token = arc_token(),
-    rollback_on_failure = TRUE,
-    ...
+  x,
+  .data,
+  match_on = c("name", "alias"),
+  token = arc_token(),
+  rollback_on_failure = TRUE,
+  ...
 ) {
-
   match_on <- match.arg(match_on)
 
   # TODO field types from x need to be compared to that of `.data`
@@ -188,21 +183,23 @@ update_features <- function(
   # rather than relying on GDAL client side.
   # ALTERNATIVELY let me provide a feature set so i can pass in CRS
   if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
-
     if (is.na(sf::st_crs(.data)) && inherits(.data, "sf")) {
       cli::cli_warn(
-        c("{.arg data} is missing a CRS",
+        c(
+          "{.arg data} is missing a CRS",
           "i" = paste0("Setting CRS to ", sf::st_crs(x)$srid)
-        ))
+        )
+      )
     } else if (inherits(.data, "sf")) {
       cli::cli_abort(
-        c("{.arg x} and {.arg .data} must share the same CRS",
+        c(
+          "{.arg x} and {.arg .data} must share the same CRS",
           "*" = "Tranform {.arg .data} to the same CRS as {.arg x} with
           {.fn sf::st_transform}"
         )
       )
     }
-  }  # not that addFeatures does not update layer definitions so if any attributes
+  } # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
   feature_fields <- list_fields(x)
   cnames <- colnames(.data)
@@ -270,7 +267,6 @@ inform_nin_feature <- function(nin_feature) {
 
 # Delete Features ---------------------------------------------------------
 
-
 #' Delete Features from Feature Layer
 #'
 #' Delete features from a feature layer based on object ID, a where clause, or a
@@ -288,24 +284,25 @@ inform_nin_feature <- function(nin_feature) {
 #' @export
 #' @rdname modify
 delete_features <- function(
-    x,
-    object_ids = NULL,
-    where = NULL,
-    filter_geom = NULL,
-    predicate = "intersects",
-    rollback_on_failure = TRUE,
-    token = arc_token(),
-    ...
+  x,
+  object_ids = NULL,
+  where = NULL,
+  filter_geom = NULL,
+  predicate = "intersects",
+  rollback_on_failure = TRUE,
+  token = arc_token(),
+  ...
 ) {
-
   obj_check_layer(x)
 
   # where, oid, or filter_geom necessary
   if (is.null(object_ids) && is.null(where) && is.null(filter_geom)) {
     cli::cli_abort(
-      c("No features to delete",
-      "i" = "Supply at least one of {.arg object_ids}, {.arg where},
-      or {.arg filter_geom}")
+      c(
+        "No features to delete",
+        "i" = "Supply at least one of {.arg object_ids}, {.arg where},
+      or {.arg filter_geom}"
+      )
     )
   }
 
@@ -343,5 +340,3 @@ delete_features <- function(
 
   RcppSimdJson::fparse(httr2::resp_body_string(resp))
 }
-
-

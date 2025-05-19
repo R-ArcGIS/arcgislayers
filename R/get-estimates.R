@@ -16,7 +16,6 @@
 #' A named list containing all estimate info. If `extent` is present,
 #' it is available as an object of class `bbox`.
 get_layer_estimates <- function(x, token = arc_token()) {
-
   # check if its a supported layer
   obj_check_layer(x)
 
@@ -35,7 +34,7 @@ get_layer_estimates <- function(x, token = arc_token()) {
   )
 
   resp <- httr2::req_perform(
-      httr2::req_url_query(est_req, f = "json")
+    httr2::req_url_query(est_req, f = "json")
   )
 
   # process json string
@@ -56,7 +55,3 @@ get_layer_estimates <- function(x, token = arc_token()) {
   # return the rest
   res_raw
 }
-
-
-
-

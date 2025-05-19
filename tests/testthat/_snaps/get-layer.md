@@ -29,7 +29,7 @@
       Name: High Resolution 30cm Imagery
       Geometry Type: esriGeometryPolygon
       CRS: 3857
-      Capabilities: Map,Tilemap,Query,Data
+      Capabilities: Map,Query,Data,Tilemap
 
 # get_layer(): `MapServer` by name
 
@@ -40,7 +40,7 @@
       Name: Citations
       Geometry Type: esriGeometryPolygon
       CRS: 3857
-      Capabilities: Map,Tilemap,Query,Data
+      Capabilities: Map,Query,Data,Tilemap
 
 # get_layer(): `GroupLayer` by ID
 

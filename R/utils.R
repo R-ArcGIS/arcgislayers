@@ -56,7 +56,7 @@ list_fields <- function(x) {
     res <- infer_esri_type(data.frame())
   }
 
-  res
+  data_frame(res)
 }
 
 #' @export
@@ -72,7 +72,7 @@ pull_field_aliases <- function(x) {
 #' @rdname utils
 list_items <- function(x) {
   check_inherits_any(x, c("FeatureServer", "ImageServer", "MapServer"))
-  rbind(x[["layers"]], x[["tables"]])
+  data_frame(rbind(x[["layers"]], x[["tables"]]))
 }
 
 #' @export
@@ -85,7 +85,6 @@ refresh_layer <- function(x) {
   attr(x, "query") <- query
   x
 }
-
 
 
 #' Get chunk indices
@@ -138,7 +137,9 @@ coalesce_crs <- function(x, y) {
 #' Does x match the pattern of a URL?
 #' @noRd
 is_url <- function(x, pattern = NULL, ...) {
-  if (!rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)) {
+  if (
+    !rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)
+  ) {
     return(FALSE)
   }
 
@@ -155,12 +156,13 @@ is_url <- function(x, pattern = NULL, ...) {
 #' Check if x is a valid URL
 #' @noRd
 check_url <- function(
-    x,
-    pattern = NULL,
-    ...,
-    allow_null = FALSE,
-    arg = rlang::caller_arg(url),
-    call = rlang::caller_env()) {
+  x,
+  pattern = NULL,
+  ...,
+  allow_null = FALSE,
+  arg = rlang::caller_arg(url),
+  call = rlang::caller_env()
+) {
   if (allow_null && is.null(x)) {
     return(invisible(NULL))
   }
@@ -185,7 +187,13 @@ check_url <- function(
 
 #' Check if x and y share the same coordiante reference system
 #' @noRd
-check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::caller_arg(y), call = rlang::caller_env()) {
+check_crs_match <- function(
+  x,
+  y,
+  x_arg = rlang::caller_arg(x),
+  y_arg = rlang::caller_arg(y),
+  call = rlang::caller_env()
+) {
   x_crs <- sf::st_crs(x)
   y_crs <- sf::st_crs(y)
 
@@ -195,7 +203,8 @@ check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::c
 
   if (!is.na(x_crs) && !is.na(y_crs)) {
     cli::cli_abort(
-      c("{.arg {x_arg}} and {.arg {y_arg}} must share the same CRS.",
+      c(
+        "{.arg {x_arg}} and {.arg {y_arg}} must share the same CRS.",
         "*" = "Tranform {.arg {y_arg}} to the same CRS as {.arg {x_arg}} with
           {.fn sf::st_transform}"
       ),
@@ -215,4 +224,113 @@ check_crs_match <- function(x, y, x_arg = rlang::caller_arg(x), y_arg = rlang::c
 data_frame <- function(x, call = rlang::caller_env()) {
   check_data_frame(x, call = call)
   structure(x, class = c("tbl", "data.frame"))
+}
+
+#' @noRd
+clear_url_query <- function(url, keep_default = FALSE) {
+  query <- parse_url_query(url, keep_default = keep_default)
+
+  if (!is.null(query) && rlang::is_empty(query)) {
+    return(url)
+  }
+
+  url_elements <- httr2::url_parse(url)
+
+  # Rebuild URL without query
+  paste0(
+    url_elements[["scheme"]],
+    "://",
+    url_elements[["hostname"]],
+    sub("/query$", "", url_elements[["path"]])
+  )
+}
+
+#' @noRd
+parse_url_query <- function(url, keep_default = FALSE) {
+  # Parse url
+  url_elements <- httr2::url_parse(url)
+
+  # Return empty list if no query is included in url
+  if (is.null(url_elements[["query"]])) {
+    return(list())
+  }
+
+  # Check for default query values
+  query_match <- match(
+    url_elements[["query"]],
+    c(
+      list(outFields = "*", where = "1=1", f = "geojson"),
+      list(outFields = "*", where = "1=1")
+    )
+  )
+
+  # Return NULL for default query
+  if (is.numeric(query_match) && !keep_default) {
+    return(NULL)
+  }
+
+  # Otherwise return query
+  url_elements[["query"]]
+}
+
+#' List field domains for a layer
+#' @noRd
+list_field_domains <- function(
+  x,
+  field = NULL,
+  keep_null = FALSE,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  fields <- list_fields(x)
+  nm <- fields[["name"]]
+
+  if (is.null(nm)) {
+    cli::cli_abort("{.arg {x}} must have field names.", call = call)
+  }
+
+  domains <- rlang::set_names(fields[["domain"]], nm)
+
+  if (!is.null(field)) {
+    field <- rlang::arg_match(field, nm, multiple = TRUE, error_call = call)
+    domains <- domains[nm %in% field]
+  }
+
+  if (keep_null) {
+    return(domains)
+  }
+
+  domains[!vapply(domains, is.null, logical(1))]
+}
+
+#' Pull a named list of codes for fields using codedValue domain type
+#' @noRd
+pull_coded_values <- function(
+  x,
+  field = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  domains <- list_field_domains(
+    x,
+    field = field,
+    keep_null = FALSE,
+    arg = arg,
+    call = call
+  )
+
+  domains <- lapply(
+    domains,
+    function(x) {
+      if (x[["type"]] != "codedValue") {
+        return(NULL)
+      }
+
+      values <- x[["codedValues"]]
+
+      rlang::set_names(values[["name"]], values[["code"]])
+    }
+  )
+
+  domains
 }

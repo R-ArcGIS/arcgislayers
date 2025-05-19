@@ -28,20 +28,23 @@ print.Table <- function(x, ...) {
   query <- compact(attr(x, "query"))
 
   if (any(lengths(query) > 0)) {
-
     # print if selection is made
     q_names <- names(query)
 
     # print the query if it exisrts
-    q_str <- vapply(q_names, prettify_param, character(1), query, USE.NAMES = TRUE)
+    q_str <- vapply(
+      q_names,
+      prettify_param,
+      character(1),
+      query,
+      USE.NAMES = TRUE
+    )
     q_body <- paste0(names(q_str), ": ", q_str)
 
     cat("Query:", q_body, sep = "\n  ")
-
   }
 
   invisible(x)
-
 }
 
 #' @export
@@ -55,7 +58,6 @@ head.Table <- function(x, n = 6, token = arc_token(), ...) {
 #
 #' @export
 print.FeatureLayer <- function(x, ...) {
-
   to_print <- compact(list(
     "Name" = x[["name"]],
     "Geometry Type" = x[["geometryType"]],
@@ -75,7 +77,13 @@ print.FeatureLayer <- function(x, ...) {
     # print if selection is made
     q_names <- names(query)
 
-    q_str <- vapply(q_names, prettify_param, character(1), query, USE.NAMES = TRUE)
+    q_str <- vapply(
+      q_names,
+      prettify_param,
+      character(1),
+      query,
+      USE.NAMES = TRUE
+    )
     q_body <- paste0(names(q_str), ": ", q_str)
 
     cat("Query:", q_body, sep = "\n  ")
@@ -95,7 +103,6 @@ head.FeatureLayer <- function(x, n = 6, token = arc_token(), ...) {
 
 #' @export
 print.FeatureServer <- function(x, n, ...) {
-
   n_fts <- length(x[["layers"]][["id"]])
   n_tbls <- length(x[["tables"]][["id"]])
 
@@ -114,9 +121,10 @@ print.FeatureServer <- function(x, n, ...) {
 
   header <- sprintf(
     "<%s <%s, %s>>",
-    class(x), fts_lbl, tbls_lbl
+    class(x),
+    fts_lbl,
+    tbls_lbl
   )
-
 
   # identify CRS
   crs <- x[["spatialReference"]][["latestWkid"]]
@@ -155,12 +163,10 @@ print.FeatureServer <- function(x, n, ...) {
     box_layers_ln <- NULL
   }
 
-
   # Tables
   # if tables aren't missing populate
   tbls <- x[["tables"]]
   if (!is.null(tbls)) {
-
     box_tbl <- paste0(
       "  ",
       tbls[["id"]],
@@ -170,7 +176,6 @@ print.FeatureServer <- function(x, n, ...) {
       "Table",
       ")"
     )
-
   } else {
     # if missing assign to null
     box_tbl <- NULL
@@ -190,10 +195,11 @@ print.MapServer <- function(x, ...) print.FeatureServer(x, ...)
 
 #' @export
 print.ImageServer <- function(x, ...) {
-
   header <- sprintf(
     "<%s <%i bands, %i fields>>",
-    class(x), x$bandCount, length(x$fields$name) %||% 0
+    class(x),
+    x$bandCount,
+    length(x$fields$name) %||% 0
   )
 
   extent <- paste(
@@ -206,7 +212,11 @@ print.ImageServer <- function(x, ...) {
 
   to_print <- compact(list(
     "Name" = x[["name"]],
-    "Description" = substr(x[["description"]], 1, options('width')$width %||% 80 - 14),
+    "Description" = substr(
+      x[["description"]],
+      1,
+      options('width')$width %||% 80 - 14
+    ),
     "Extent" = extent,
     "Resolution" = paste(round(x$pixelSizeX, 2), "x", round(x$pixelSizeY, 2)),
     "CRS" = x[["extent"]][["spatialReference"]][["latestWkid"]],
@@ -217,14 +227,12 @@ print.ImageServer <- function(x, ...) {
   # cat out
   cat(header, body, sep = "\n")
   invisible(x)
-
 }
 
 
 # GroupLayer --------------------------------------------------------------
 #' @export
 print.GroupLayer <- function(x, ...) {
-
   n_layers <- length(x[["subLayers"]])
 
   header <- cli::cli_fmt(
@@ -236,13 +244,13 @@ print.GroupLayer <- function(x, ...) {
   to_print <- compact(list(
     "Name" = x[["name"]],
     "Description" = {
-        desc <- substr(x[["description"]], 1, options('width')$width %||% 80 - 14)
-        if (!nzchar(desc)) {
-          NULL
-        } else {
-          desc
-        }
-      },
+      desc <- substr(x[["description"]], 1, options('width')$width %||% 80 - 14)
+      if (!nzchar(desc)) {
+        NULL
+      } else {
+        desc
+      }
+    },
     "CRS" = x[["extent"]][["spatialReference"]][["latestWkid"]],
     "Capabilities" = x[["capabilities"]]
   ))
@@ -275,4 +283,3 @@ prettify_param <- function(param, query) {
   width <- ifelse(is.null(cwidth), 20, cwidth)
   strtrim(as.character(query[[param]]), width - n_pad)
 }
-

@@ -57,6 +57,10 @@
 arc_open <- function(url, token = arc_token()) {
   check_url(url)
 
+  # parse url query and strip from url if query matches default
+  query <- parse_url_query(url) %||% list()
+  url <- clear_url_query(url)
+
   # extract layer metadata
   meta <- fetch_layer_metadata(url, token)
 
@@ -72,7 +76,9 @@ arc_open <- function(url, token = arc_token()) {
       layer_class <- "ImageServer"
     } else if (grepl("MapServer", meta[["url"]])) {
       layer_class <- "MapServer"
-    } else if ("layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])) {
+    } else if (
+      "layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])
+    ) {
       layer_class <- "FeatureServer"
     } else {
       return(meta)
@@ -80,16 +86,17 @@ arc_open <- function(url, token = arc_token()) {
   }
 
   # construct the appropriate class based on the resultant `layer_class`
-  res <- switch(layer_class,
+  res <- switch(
+    layer_class,
     "FeatureLayer" = structure(
       meta,
       class = layer_class,
-      query = list()
+      query = query
     ),
     "Table" = structure(
       meta,
       class = layer_class,
-      query = list()
+      query = query
     ),
     "FeatureServer" = structure(
       meta,
