@@ -67,7 +67,8 @@ update_definition <- function(
   x,
   ...,
   async = FALSE,
-  token = arc_token()
+  token = arc_token(),
+  verbose = TRUE
 ) {
   check_inherits_any(x, c("FeatureServer", "FeatureLayer"))
 
@@ -78,6 +79,7 @@ update_definition <- function(
   )
 
   update_definition <- rlang::list2(...)
+  arcgisutils::check_dots_names(update_definition)
 
   # Customize theme for messages
   dl_theme <- cli::cli_div(
@@ -91,7 +93,7 @@ update_definition <- function(
   definition <- x[names(x) %in% names(update_definition)]
 
   # Display existing service/layer definition values
-  if (length(definition) > 0 && any(definition != "")) {
+  if (length(definition) > 0 && any(definition != "") && verbose) {
     cli::cli_bullets(c("i" = "Existing definition values:"))
     cli::cli_dl(items = definition)
   }
@@ -110,9 +112,11 @@ update_definition <- function(
   check_resp_body_error(resp = resp)
 
   # Display update
-  cli::cli_bullets(c("v" = "Updated definition values:"))
-  cli::cli_dl(items = update_definition)
-  cli::cli_end(dl_theme)
+  if (verbose) {
+    cli::cli_bullets(c("v" = "Updated definition values:"))
+    cli::cli_dl(items = update_definition)
+    cli::cli_end(dl_theme)
+   }
 
   # Refresh x to include updated definitions
   x <- arc_open(x[["url"]], token = token)
