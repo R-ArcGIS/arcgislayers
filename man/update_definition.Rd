@@ -2,14 +2,17 @@
 % Please edit documentation in R/update_definition.R
 \name{update_definition}
 \alias{update_definition}
-\title{Update a Feature Layer or Feature Service definition}
+\alias{add_definition}
+\title{Add or update a Feature Layer or Feature Service definition}
 \usage{
-update_definition(x = NULL, ..., async = FALSE, token = arc_token())
+update_definition(x, ..., async = FALSE, token = arc_token())
+
+add_definition(x, ..., async = FALSE, token = arc_token())
 }
 \arguments{
 \item{x}{A Feature Layer or Feature Service class object.}
 
-\item{...}{Additional parameters "updateDefinition" body for the request.}
+\item{...}{Additional parameters for the "addToDefinition" or "updateDefinition" body of the request.}
 
 \item{async}{Default \code{FALSE}. If \code{TRUE}, support asynchronous processing for
 the request.}
@@ -17,11 +20,18 @@ the request.}
 \item{token}{your authorization token.}
 }
 \description{
-\code{\link[=update_definition]{update_definition()}} supports updating a definition property for a hosted
-Feature Service or Feature Layer. Examples of properties include the layer
-name, renderer, or field properties. Parameters passed to \code{...} must have
-names matching the definitions. Parameters are converted to a JSON
-\code{updateDefinition} parameter using \code{\link[jsonify:to_json]{jsonify::to_json()}}. See the ArcGIS REST API documentation on Administer Hosted Feature Services
-for more details on updating the definition for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
-or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer}.
+\code{\link[=add_definition]{add_definition()}} and \code{\link[=update_definition]{update_definition()}} support adding or updating
+definition properties for a hosted Feature Service or Feature Layer. Examples
+of properties include the layer name, renderer, or field properties.
+Parameters passed to \code{...} must have names matching the definitions.
+Parameters are converted to a JSON \code{addToDefinition} or \code{updateDefinition}
+parameter using \code{\link[jsonify:to_json]{jsonify::to_json()}}.
+}
+\details{
+See the ArcGIS REST API documentation on Administer Hosted Feature Services
+for more details:
+\itemize{
+\item adding definitions for a \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer/}{FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-service/}{a FeatureService}
+\item updating the definition for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
+}
 }
