@@ -35,6 +35,8 @@ reference:
   - update_features
   - delete_features
   - truncate_layer
+  - add_definition
+  - update_definition
 - title: Utilities
   contents:
   - clear_query
