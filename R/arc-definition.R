@@ -21,6 +21,7 @@
 #' @param ... Additional parameters for the "addToDefinition" or "updateDefinition" body of the request.
 #' @param async Default `FALSE`. If `TRUE`, support asynchronous processing for
 #'   the request.
+#' @param verbose Default `TRUE`. If `FALSE`, suppresses cli messages.
 #' @inheritParams arc_open
 #' @returns An updated "FeatureServer" or "FeatureLayer" object.
 #' @rdname definition
@@ -79,7 +80,7 @@ update_definition <- function(
   )
 
   update_definition <- rlang::list2(...)
-  arcgisutils::check_dots_names(update_definition)
+  check_dots_named(update_definition)
 
   # Customize theme for messages
   dl_theme <- cli::cli_div(
@@ -116,7 +117,7 @@ update_definition <- function(
     cli::cli_bullets(c("v" = "Updated definition values:"))
     cli::cli_dl(items = update_definition)
     cli::cli_end(dl_theme)
-   }
+  }
 
   # Refresh x to include updated definitions
   x <- arc_open(x[["url"]], token = token)
@@ -172,7 +173,7 @@ as_admin_service_url <- function(url) {
 #' @noRd
 check_resp_body_error <- function(
   resp,
-  error_call = caller_env()
+  error_call = rlang::caller_env()
 ) {
   body <- httr2::resp_body_json(resp)
 

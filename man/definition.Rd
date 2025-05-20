@@ -8,7 +8,7 @@
 \usage{
 add_definition(x, ..., async = FALSE, token = arc_token())
 
-update_definition(x, ..., async = FALSE, token = arc_token())
+update_definition(x, ..., async = FALSE, token = arc_token(), verbose = TRUE)
 
 delete_definition(x, ..., async = FALSE, token = arc_token())
 }
@@ -21,6 +21,8 @@ delete_definition(x, ..., async = FALSE, token = arc_token())
 the request.}
 
 \item{token}{your authorization token.}
+
+\item{verbose}{Default \code{TRUE}. If \code{FALSE}, suppresses cli messages.}
 }
 \value{
 An updated "FeatureServer" or "FeatureLayer" object.
