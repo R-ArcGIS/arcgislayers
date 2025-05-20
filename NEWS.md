@@ -1,3 +1,9 @@
+# arcgislayers development
+
+## New features
+
+- Add `update_definition()` function (#127) for FeatureServer and FeatureLayer objects.
+
 # arcgislayers 0.4.0
 
 
