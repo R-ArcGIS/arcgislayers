@@ -20,6 +20,46 @@
 #' @param async Default `FALSE`. If `TRUE`, support asynchronous processing for
 #'   the request.
 #' @inheritParams arc_open
+#' @returns An updated "FeatureServer" or "FeatureLayer" object.
+#' @rdname definition
+#' @export
+add_definition <- function(
+  x,
+  ...,
+  async = FALSE,
+  token = arc_token()
+) {
+  check_inherits_any(x, c("FeatureServer", "FeatureLayer"))
+
+  req <- arc_base_req(
+    url = as_admin_service_url(x[["url"]]),
+    token = token,
+    path = "addToDefinition"
+  )
+
+  add_definition <- rlang::list2(...)
+
+  req <- httr2::req_body_form(
+    req,
+    addToDefinition = jsonify::to_json(
+      add_definition,
+      unbox = TRUE
+    ),
+    async = async,
+    f = "json"
+  )
+
+  # TODO: Consider adding message showing added definitions
+
+  resp <- httr2::req_perform(req)
+  check_resp_body_error(resp = resp)
+
+  # Refresh x to include added definitions
+  x <- arc_open(x[["url"]], token = token)
+  invisible(x)
+}
+
+#' @rdname definition
 #' @export
 update_definition <- function(
   x,
@@ -73,44 +113,6 @@ update_definition <- function(
   cli::cli_end(dl_theme)
 
   # Refresh x to include updated definitions
-  x <- arc_open(x[["url"]], token = token)
-  invisible(x)
-}
-
-#' @rdname update_definition
-#' @export
-add_definition <- function(
-  x,
-  ...,
-  async = FALSE,
-  token = arc_token()
-) {
-  check_inherits_any(x, c("FeatureServer", "FeatureLayer"))
-
-  req <- arc_base_req(
-    url = as_admin_service_url(x[["url"]]),
-    token = token,
-    path = "addToDefinition"
-  )
-
-  add_definition <- rlang::list2(...)
-
-  req <- httr2::req_body_form(
-    req,
-    addToDefinition = jsonify::to_json(
-      add_definition,
-      unbox = TRUE
-    ),
-    async = async,
-    f = "json"
-  )
-
-  # TODO: Consider adding message showing added definitions
-
-  resp <- httr2::req_perform(req)
-  check_resp_body_error(resp = resp)
-
-  # Refresh x to include added definitions
   x <- arc_open(x[["url"]], token = token)
   invisible(x)
 }
