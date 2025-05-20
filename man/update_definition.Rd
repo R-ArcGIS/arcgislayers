@@ -2,36 +2,26 @@
 % Please edit documentation in R/update_definition.R
 \name{update_definition}
 \alias{update_definition}
-\alias{.update_definition_name}
-\alias{.update_layer_properties}
-\title{Update Feature Layer or Service definition}
+\title{Update a Feature Layer or Feature Service definition}
 \usage{
-update_definition(x, update = NULL, async = FALSE, token = arc_token())
-
-.update_definition_name(...)
-
-.update_layer_properties(
-  description = NULL,
-  license_text = NULL,
-  xss_trusted_fields = NULL,
-  display_field = NULL,
-  min_scale = NULL,
-  max_scale = NULL,
-  max_records = NULL,
-  default_visibility = NULL,
-  ...
-)
+update_definition(x = NULL, ..., async = FALSE, token = arc_token())
 }
 \arguments{
 \item{x}{A Feature Layer or Feature Service class object.}
 
-\item{update}{A named list used as the "updateDefinition" body for the
-request.}
+\item{...}{Additional parameters "updateDefinition" body for the request.}
 
 \item{async}{Default \code{FALSE}. If \code{TRUE}, support asynchronous processing for
 the request.}
+
+\item{token}{your authorization token.}
 }
 \description{
-\url{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer-.htm#ESRI_SECTION2_027B8A04953C409E9A9D9051DD4CDBEE}
-\url{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}
+\code{\link[=update_definition]{update_definition()}} supports updating a definition property for a hosted
+Feature Service or Feature Layer. Examples of properties include the layer
+name, renderer, or field properties. Parameters passed to \code{...} must have
+names matching the definitions. Parameters are converted to a JSON
+\code{updateDefinition} parameter using \code{\link[jsonify:to_json]{jsonify::to_json()}}. See the ArcGIS REST API documentation on Administer Hosted Feature Services
+for more details on updating the definition for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
+or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer}.
 }
