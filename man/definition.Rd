@@ -3,11 +3,14 @@
 \name{add_definition}
 \alias{add_definition}
 \alias{update_definition}
-\title{Add or update a Feature Layer or Feature Service definition}
+\alias{delete_definition}
+\title{Add, update, or delete a Feature Layer or Feature Service definition}
 \usage{
 add_definition(x, ..., async = FALSE, token = arc_token())
 
 update_definition(x, ..., async = FALSE, token = arc_token())
+
+delete_definition(x, ..., async = FALSE, token = arc_token())
 }
 \arguments{
 \item{x}{A Feature Layer or Feature Service class object.}
@@ -24,17 +27,19 @@ An updated "FeatureServer" or "FeatureLayer" object.
 }
 \description{
 \code{\link[=add_definition]{add_definition()}} and \code{\link[=update_definition]{update_definition()}} support adding or updating
-definition properties for a hosted Feature Service or Feature Layer. Examples
-of properties include the layer name, renderer, or field properties.
-Parameters passed to \code{...} must have names matching the definitions.
-Parameters are converted to a JSON \code{addToDefinition} or \code{updateDefinition}
-parameter using \code{\link[jsonify:to_json]{jsonify::to_json()}}.
+definition properties for a hosted Feature Service or Feature Layer.
+\code{\link[=delete_definition]{delete_definition()}} supports deleting a definition. Examples of properties
+include the layer name, renderer, or field properties. Parameters passed to
+\code{...} must have names matching the definitions. Parameters are converted to a
+JSON \code{addToDefinition} or \code{updateDefinition} parameter using
+\code{\link[jsonify:to_json]{jsonify::to_json()}}.
 }
 \details{
 See the ArcGIS REST API documentation on Administer Hosted Feature Services
 for more details:
 \itemize{
 \item adding definitions for a \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer/}{FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-service/}{a FeatureService}
-\item updating the definition for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
+\item updating definitions for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
+\item deleting definitions for \href{https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-layer/}{a FeatureLayer} or a \href{https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-service/}{FeatureService}
 }
 }

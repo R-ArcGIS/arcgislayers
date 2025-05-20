@@ -2,7 +2,7 @@
 
 ## New features
 
-- Add `update_definition()` (#127) and `add_definition()` (#178) functions for FeatureServer and FeatureLayer objects.
+- `add_definition()` (#178), `update_definition()` (#127), and [delete_definition()] functions for FeatureServer and FeatureLayer objects.
 
 # arcgislayers 0.4.0
 
@@ -38,15 +38,15 @@
 - `list_service_raster_fns()` is a new helper function to list available raster functions for an `ImageServer`
 - `arc_open()` ignores queries included in input URLs and retains any custom queries in the `query` attribute for `Table` and `FeatureLayer`s. ([#215](https://github.com/R-ArcGIS/arcgislayers/issues/215))
 
-## Breaking changes 
+## Breaking changes
 
 # arcgislayers 0.3.0
 
 - `arc_open()` will now work on any resource that works when `f=json` is set in the query parameters closes [#163](https://github.com/R-ArcGIS/arcgislayers/issues/163)
-- Now uses [`{arcpbf}`](https://r.esri.com/arcpbf/index.html) when a layer supports protocol buffers. 
+- Now uses [`{arcpbf}`](https://r.esri.com/arcpbf/index.html) when a layer supports protocol buffers.
   - This is an ~3x speed improvement over json processing.
 - New `query_layer_attachments()` and `download_attachments()` help you access and download attachments to a layer
-- `arc_raster()` now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed. 
+- `arc_raster()` now downloads the exported image to a temp file instead of creating a connection to the url returned. This fixes an issue where rasters would stop working after the url had been removed.
 - Add `alias` argument to `arc_read()` allowing replacement or labelling of field names with alias values (#169)
 - Add `pull_field_aliases()` utility function
 - `arc_select()` now uses `arcgisutils::rbind_results()` for faster row-binding if `{collapse}`, `{data.table}`, `{vctrs}` are installed (#175)
@@ -58,7 +58,7 @@
 
 - initial CRAN release
 
-# arcgislayers 0.1.0 
+# arcgislayers 0.1.0
 
 - `arc_open()` no longer removes `NULL` properties h/t [@elipousson](https://github.com/elipousson)
 - includes `page_size` argument to `arc_select()` allowing users to return smaller page sizes and avoid timeouts for dense geometries
@@ -77,7 +77,7 @@
 - repository made public
 - add lifecycle badges to all exported functions <https://github.com/R-ArcGIS/arcgislayers/pull/101>
 
-- **Breaking**: 
+- **Breaking**:
   - `token` arguments are required to be a valid `httr2_token` object (strings are not supported).
   - all `host` arguments are removed. Instead, the host is fetched from the `token`.
   - all `user` arguments are removed. Instead, the username is fetched from the `token`. If it is not found, an error is thrown.

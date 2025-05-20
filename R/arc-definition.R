@@ -1,19 +1,21 @@
-#' Add or update a Feature Layer or Feature Service definition
+#' Add, update, or delete a Feature Layer or Feature Service definition
 #'
 #' [add_definition()] and [update_definition()] support adding or updating
-#' definition properties for a hosted Feature Service or Feature Layer. Examples
-#' of properties include the layer name, renderer, or field properties.
-#' Parameters passed to `...` must have names matching the definitions.
-#' Parameters are converted to a JSON `addToDefinition` or `updateDefinition`
-#' parameter using [jsonify::to_json()].
+#' definition properties for a hosted Feature Service or Feature Layer.
+#' [delete_definition()] supports deleting a definition. Examples of properties
+#' include the layer name, renderer, or field properties. Parameters passed to
+#' `...` must have names matching the definitions. Parameters are converted to a
+#' JSON `addToDefinition` or `updateDefinition` parameter using
+#' [jsonify::to_json()].
 #'
 #' See the ArcGIS REST API documentation on Administer Hosted Feature Services
 #' for more details:
 #'
 #' - adding definitions for a [FeatureLayer](https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer/) or [a FeatureService](https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-service/)
-#' - updating the definition for [a
+#' - updating definitions for [a
 #' FeatureLayer](https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/) or [a
 #' FeatureService](https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm)
+#' - deleting definitions for [a FeatureLayer](https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-layer/) or a [FeatureService](https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-service/)
 #'
 #' @param x A Feature Layer or Feature Service class object.
 #' @param ... Additional parameters for the "addToDefinition" or "updateDefinition" body of the request.
@@ -113,6 +115,44 @@ update_definition <- function(
   cli::cli_end(dl_theme)
 
   # Refresh x to include updated definitions
+  x <- arc_open(x[["url"]], token = token)
+  invisible(x)
+}
+
+#' @rdname definition
+#' @export
+delete_definition <- function(
+  x,
+  ...,
+  async = FALSE,
+  token = arc_token()
+) {
+  check_inherits_any(x, c("FeatureServer", "FeatureLayer"))
+
+  req <- arc_base_req(
+    url = as_admin_service_url(x[["url"]]),
+    token = token,
+    path = "deleteFromDefinition"
+  )
+
+  delete_definition <- rlang::list2(...)
+
+  req <- httr2::req_body_form(
+    req,
+    deleteFromDefinition = jsonify::to_json(
+      delete_definition,
+      unbox = TRUE
+    ),
+    async = async,
+    f = "json"
+  )
+
+  # TODO: Consider adding message showing deleted definitions
+
+  resp <- httr2::req_perform(req)
+  check_resp_body_error(resp = resp)
+
+  # Refresh x to include added definitions
   x <- arc_open(x[["url"]], token = token)
   invisible(x)
 }
