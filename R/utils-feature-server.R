@@ -222,7 +222,7 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     # if not report and remove
     baddies <- id[!in_ids]
 
-    if (length(baddies > 1)) {
+    if (length(baddies) >= 1) {
       cli::cli_warn("Invalid ID{?s}: {.val {as.character(baddies)}}")
     }
 
@@ -235,7 +235,7 @@ get_layers.default <- function(x, id = NULL, name = NULL, token = arc_token()) {
     in_names <- name %in% valid_names
     baddies <- name[!in_names]
 
-    if (length(baddies) > 1) {
+    if (length(baddies) >= 1) {
       cli::cli_warn("Invalid item names{?s}: {.val {baddies}}")
     }
 
@@ -281,7 +281,7 @@ get_layers.GroupLayer <- function(
     # if not report and remove
     baddies <- id[!in_ids]
 
-    if (length(baddies) > 1) {
+    if (length(baddies) >= 1) {
       cli::cli_warn("Invalid ID{?s}: {.val {as.character(baddies)}}")
     }
 
@@ -299,7 +299,7 @@ get_layers.GroupLayer <- function(
     in_names <- name %in% valid_names
     baddies <- name[!in_names]
 
-    if (length(baddies) > 1) {
+    if (length(baddies) >= 1) {
       cli::cli_warn("Invalid item names{?s}: {.val {baddies}}")
     }
 
