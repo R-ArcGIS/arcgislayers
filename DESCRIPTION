@@ -10,7 +10,9 @@ Authors@R: c(
     person("Kenneth", "Vernon", , "kenneth.b.vernon@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0003-0098-5092")),
     person("Martha", "Bass", role = "ctb",
-           comment = c(ORCID = "0009-0004-0268-5426"))
+           comment = c(ORCID = "0009-0004-0268-5426")),
+    person("Antony", "Barja", role = "ctb",
+           comment = c(ORCID = "0000-0001-5921-2858"))       
   )
 Description: Enables users of 'ArcGIS Enterprise', 'ArcGIS Online', or
     'ArcGIS Platform' to read, write, publish, or manage vector and raster

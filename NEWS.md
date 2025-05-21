@@ -1,11 +1,15 @@
-# arcgislayers development
+# arcgislayers (development) 
 
-## Bug fixes
+## Bug Fixes
 
+- Improve `update_features()` with an error message when the `objectid` is not an `integer` ([#250](https://github.com/R-ArcGIS/arcgislayers/issues/250))
 - `get_layer()` warns as expected on invalid layer names values. ([#251](https://github.com/R-ArcGIS/arcgislayers/issues/251))
 
-# arcgislayers 0.4.0
+## New Features
 
+## Breaking changes 
+
+# arcgislayers 0.4.0
 
 ## New features
 
