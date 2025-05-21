@@ -2,7 +2,7 @@
 
 ## New features
 
-- `add_definition()` (#178), `update_definition()` (#127), and [delete_definition()] functions for FeatureServer and FeatureLayer objects.
+- `add_definition()` (#178), `update_definition()` (#127), and `delete_definition()` functions for FeatureServer and FeatureLayer objects.
 
 # arcgislayers 0.4.0
 
