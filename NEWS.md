@@ -1,11 +1,17 @@
-# arcgislayers development
+# arcgislayers (development) 
 
 ## New features
 
 - `add_definition()` (#178), `update_definition()` (#127), and `delete_definition()` functions for FeatureServer and FeatureLayer objects.
 
-# arcgislayers 0.4.0
+## Bug Fixes
 
+- Improve `update_features()` with an error message when the `objectid` is not an `integer` ([#250](https://github.com/R-ArcGIS/arcgislayers/issues/250))
+- `get_layer()` warns as expected on invalid layer names values. ([#251](https://github.com/R-ArcGIS/arcgislayers/issues/251))
+
+## Breaking changes 
+
+# arcgislayers 0.4.0
 
 ## New features
 
