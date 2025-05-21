@@ -1,5 +1,14 @@
-# arcgislayers 0.4.0
+# arcgislayers (development) 
 
+## Bug Fixes
+
+- Improve `update_features()` with an error message when the `objectid` is not an `integer`. 
+
+## New Features
+
+## Breaking changes 
+
+# arcgislayers 0.4.0
 
 ## New features
 
