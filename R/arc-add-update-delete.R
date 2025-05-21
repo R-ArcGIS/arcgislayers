@@ -201,6 +201,15 @@ update_features <- function(
     }
   } # not that addFeatures does not update layer definitions so if any attributes
   # are provided that aren't in the feature layer, they will be ignored
+
+  objectid_condition <- .data[['objectid']] |> is.integer()
+  if(isFALSE(objectid_condition)){
+    cli::cli_abort(c(
+      "x" = "The {.field objectid} column must be of type {.cls integer}.",
+      "i" = "Convert with {.code as.integer()} if needed."
+    ))
+  }
+
   feature_fields <- list_fields(x)
   cnames <- colnames(.data)
 
