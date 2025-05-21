@@ -8,12 +8,12 @@
 \usage{
 add_definition(x, ..., async = FALSE, token = arc_token())
 
-update_definition(x, ..., async = FALSE, token = arc_token(), verbose = TRUE)
+update_definition(x, ..., async = FALSE, token = arc_token())
 
 delete_definition(x, ..., async = FALSE, token = arc_token())
 }
 \arguments{
-\item{x}{A Feature Layer or Feature Service class object.}
+\item{x}{A Feature Layer, Table, or Feature Service class object.}
 
 \item{...}{Additional parameters for the "addToDefinition" or "updateDefinition" body of the request.}
 
@@ -21,20 +21,18 @@ delete_definition(x, ..., async = FALSE, token = arc_token())
 the request.}
 
 \item{token}{your authorization token.}
-
-\item{verbose}{Default \code{TRUE}. If \code{FALSE}, suppresses cli messages.}
 }
 \value{
-An updated "FeatureServer" or "FeatureLayer" object.
+If \code{async = FALSE}, return an updated "FeatureServer" or "FeatureLayer" object with the added, updated, or deleted definitions. If \code{async = TRUE}, the input Feature Layer or Feature Server object \code{x} is returned as is.
 }
 \description{
 \code{\link[=add_definition]{add_definition()}} and \code{\link[=update_definition]{update_definition()}} support adding or updating
 definition properties for a hosted Feature Service or Feature Layer.
 \code{\link[=delete_definition]{delete_definition()}} supports deleting a definition. Examples of properties
-include the layer name, renderer, or field properties. Parameters passed to
-\code{...} must have names matching the definitions. Parameters are converted to a
-JSON \code{addToDefinition} or \code{updateDefinition} parameter using
-\code{\link[jsonify:to_json]{jsonify::to_json()}}.
+include the layer name, renderer, or field properties. Named parameters
+passed to \code{...} must have names matching supported definitions. Parameters
+are converted to a JSON \code{addToDefinition}, \code{updateDefinition}, or
+\code{deleteFromDefinition} query parameter using \code{\link[jsonify:to_json]{jsonify::to_json()}}.
 }
 \details{
 See the ArcGIS REST API documentation on Administer Hosted Feature Services
