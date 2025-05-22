@@ -399,8 +399,9 @@ label_layer_fields <- function(
 #'
 #' @param .data A data frame returned by `arc_select()` or `arc_read()`.
 #' @param .layer A Table or FeatureLayer object. Required.
-#' @param field Default `NULL`. Field or fields to replace. Fields that do
-#'   not have coded value domains are ignored.
+#' @param field Optional character vector with names of fields to replace.
+#'   Fields that do not have coded value domains are ignored. Defaults to `NULL`
+#'   to replace or label all fields with coded value domains.
 #' @param codes Use of field alias values. Defaults to `"replace"`.
 #' There are two options:
 #'
@@ -442,10 +443,10 @@ encode_field_values <- function(
 
   # Check if coded values is an empty list
   if (rlang::is_empty(values)) {
-    message <- "{.arg layer} does not contain any coded values."
+    message <- "{.arg .layer} does not contain any coded values."
 
     if (!is.null(field)) {
-      message <- "{.arg field} {.val {field}} do not contain any coded values."
+      message <- "{.arg field} {.val {field}} does not contain any coded values."
     }
 
     cli::cli_warn(message)
@@ -455,9 +456,16 @@ encode_field_values <- function(
   # Replace column values by default
   if (codes == "replace") {
     for (col in names(values)) {
-      replace_val <- values[[col]]
-      miss_val <- is.na(.data[[col]])
-      .data[[col]][!miss_val] <- replace_val[.data[[col]][!miss_val]]
+      # Coerce numeric columns to character
+      col_val <- as.character(.data[[col]])
+
+      # Replace column values if not all missing
+      miss_val <- is.na(col_val)
+      if (!all(miss_val)) {
+        replace_val <- values[[col]]
+        col_replace <- replace_val[col_val[!miss_val]]
+        .data[[col]][!miss_val] <- col_replace
+      }
     }
 
     return(.data)
