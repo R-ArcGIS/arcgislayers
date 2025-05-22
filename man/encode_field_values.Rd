@@ -17,8 +17,9 @@ encode_field_values(
 
 \item{.layer}{A Table or FeatureLayer object. Required.}
 
-\item{field}{Default \code{NULL}. Field or fields to replace. Fields that do
-not have coded value domains are ignored.}
+\item{field}{Optional character vector with names of fields to replace.
+Fields that do not have coded value domains are ignored. Defaults to \code{NULL}
+to replace or label all fields with coded value domains.}
 
 \item{codes}{Use of field alias values. Defaults to \code{"replace"}.
 There are two options:
