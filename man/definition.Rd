@@ -4,7 +4,7 @@
 \alias{add_definition}
 \alias{update_definition}
 \alias{delete_definition}
-\title{Add, update, or delete a Feature Layer or Feature Service definition}
+\title{Add, update, or delete a Feature Layer, Table, or Feature Service definition}
 \usage{
 add_definition(x, ..., async = FALSE, token = arc_token())
 
@@ -38,8 +38,43 @@ are converted to a JSON \code{addToDefinition}, \code{updateDefinition}, or
 See the ArcGIS REST API documentation on Administer Hosted Feature Services
 for more details:
 \itemize{
+\item see the \href{https://developers.arcgis.com/web-map-specification/objects/layerDefinition/}{layerDefinition} object documentation.
 \item adding definitions for a \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer/}{FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-service/}{a FeatureService}
 \item updating definitions for \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/}{a FeatureLayer} or \href{https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-service-.htm}{a FeatureService}
 \item deleting definitions for \href{https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-layer/}{a FeatureLayer} or a \href{https://developers.arcgis.com/rest/services-reference/online/delete-from-definition-feature-service/}{FeatureService}
+}
+}
+\examples{
+if (interactive()) {
+# authenticate
+set_arc_token(auth_code())
+
+# publish a layer
+published <- publish_layer(iris, "Iris Test")
+
+iris_fl <- arc_open(published$services$encodedServiceURL) |>
+  get_layer(0)
+
+# Update the name of the layer
+update_definition(
+  iris_fl,
+  name = "New Layer Name"
+)
+
+# add an index on the the layer
+add_definition(
+  penguin_fl,
+  indexes = list(
+    name = "index1",
+    fields = "Species",
+    isUnique = FALSE,
+    isAscending = FALSE,
+    description = "Example index"
+  )
+)
+
+# refresh the layer to get the updates
+iris_fl <- refresh_layer(pengiris_flin_fl)
+iris_fl[["indexes"]]
 }
 }

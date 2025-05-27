@@ -5,7 +5,6 @@ test_that("update_definition works", {
 
   # ensure that Iris Test exists first
   # publish_layer(iris, "Iris Test")
-
   irs <- arc_open(
     "https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/Iris%20Test/FeatureServer/0"
   )
@@ -25,5 +24,10 @@ test_that("update_definition works", {
   expect_identical(irs_update$description, update_desc)
 
   # Clean-up after test by restoring existing description
-  update_definition(irs_update, description = existing_desc)
+  update_definition(
+    irs_update,
+    description = existing_desc,
+    name = "New Iris Name",
+    summary = "This is a test feature service to check the updateDefinition endpoint."
+  )
 })

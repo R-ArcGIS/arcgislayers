@@ -11,6 +11,7 @@
 #' See the ArcGIS REST API documentation on Administer Hosted Feature Services
 #' for more details:
 #'
+#' - see the [layerDefinition](https://developers.arcgis.com/web-map-specification/objects/layerDefinition/) object documentation.
 #' - adding definitions for a [FeatureLayer](https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-layer/) or [a FeatureService](https://developers.arcgis.com/rest/services-reference/online/add-to-definition-feature-service/)
 #' - updating definitions for [a
 #' FeatureLayer](https://developers.arcgis.com/rest/services-reference/online/update-definition-feature-layer/) or [a
@@ -25,6 +26,39 @@
 #' @returns If `async = FALSE`, return an updated "FeatureServer" or "FeatureLayer" object with the added, updated, or deleted definitions. If `async = TRUE`, the input Feature Layer or Feature Server object `x` is returned as is.
 #' @rdname definition
 #' @export
+#' @examples
+#' if (interactive()) {
+#' # authenticate
+#' set_arc_token(auth_code())
+#'
+#' # publish a layer
+#' published <- publish_layer(iris, "Iris Test")
+#'
+#' iris_fl <- arc_open(published$services$encodedServiceURL) |>
+#'   get_layer(0)
+#'
+#' # Update the name of the layer
+#' update_definition(
+#'   iris_fl,
+#'   name = "New Layer Name"
+#' )
+#'
+#' # add an index on the the layer
+#' add_definition(
+#'   penguin_fl,
+#'   indexes = list(
+#'     name = "index1",
+#'     fields = "Species",
+#'     isUnique = FALSE,
+#'     isAscending = FALSE,
+#'     description = "Example index"
+#'   )
+#' )
+#'
+#' # refresh the layer to get the updates
+#' iris_fl <- refresh_layer(pengiris_flin_fl)
+#' iris_fl[["indexes"]]
+#' }
 add_definition <- function(
   x,
   ...,
