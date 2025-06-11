@@ -1,10 +1,9 @@
 # arcgislayers (development)
 
-## New Features
-
 ## New features
 
 - `add_definition()` (#178), `update_definition()` (#127), and `delete_definition()` functions for FeatureServer and FeatureLayer objects.
+- `arc_select()` allows arguments with numeric and logical values (as well as strings) to be passed via `...`. This change allows users to specify `returnDistinctValues = TRUE` in combination with select `fields` ([#233](https://github.com/R-ArcGIS/arcgislayers/issues/233)) and improves validation of any parameters passed via `...` ([#266](https://github.com/R-ArcGIS/arcgislayers/issues/266)).
 
 ## Bug Fixes
 
