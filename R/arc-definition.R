@@ -183,7 +183,7 @@ delete_definition <- function(
   check_resp_body_error(resp = resp)
 
   print_definition_values(
-    definition,
+    delete_definition,
     what = class(x),
     action = "Deleted"
   )
