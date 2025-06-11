@@ -83,16 +83,46 @@ arc_select <- function(
   # be sent directly to the API request which is why we convert it to json
   # before we use `update_params()`
   check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
-  check_number_whole(n_max, min = 0, allow_infinite = TRUE)
-  check_string(where, allow_null = TRUE, allow_empty = FALSE)
-  check_character(fields, allow_null = TRUE)
+
+  query <- build_layer_query(
+    x,
+    ...,
+    fields = fields,
+    where = where,
+    geometry = geometry,
+    filter_geom = filter_geom,
+    crs = crs,
+    predicate = predicate
+  )
+
+  # update the parameters based on our query list
+  x <- update_params(x, !!!query)
+
+  # send the request
+  collect_layer(x, n_max = n_max, token = token, page_size = page_size, ...)
+}
+
+#' @noRd
+build_layer_query <- function(
+  x,
+  ...,
+  fields = NULL,
+  where = NULL,
+  crs = sf::st_crs(x),
+  geometry = TRUE,
+  filter_geom = NULL,
+  predicate = "intersects",
+  call = rlang::caller_env()
+) {
+  check_string(where, allow_null = TRUE, allow_empty = FALSE, call = call)
+  check_character(fields, allow_null = TRUE, call = call)
 
   # extract the query object
   query <- attr(x, "query")
 
   # if dots provided we check that all elements are named
   dots <- rlang::list2(...)
-  check_dots_named(dots)
+  check_dots_named(dots, call = call)
 
   # extract dots names
   dots_names <- names(dots)
@@ -101,8 +131,14 @@ arc_select <- function(
   for (i in seq_along(dots)) {
     key <- dots_names[i]
     val <- dots[[i]]
-    # check that the value is a scalar and non-empty
-    check_string(val, arg = key, allow_empty = FALSE)
+
+    if (key == "outFields") {
+      # Allow character vector for `outFields`
+      check_character(val, arg = key, call = call)
+    } else {
+      # Otherwise require string, logical, or whole number
+      check_query_value(val, arg = key, call = call)
+    }
 
     # insert into query
     query[[key]] <- val
@@ -114,16 +150,33 @@ arc_select <- function(
   # make sure that fields actually exist
   fields <- match_fields(
     fields = fields,
-    values = c(x[["fields"]][["name"]], "")
+    values = c(x[["fields"]][["name"]], ""),
+    error_call = call
   )
 
   # include the fields the query
+  if (!is.null(query[["outFields"]]) && !is.null(fields)) {
+    cli::cli_bullets(
+      c("x" = "{.arg outFields} is ignored when {.arg fields} is supplied.")
+    )
+  }
+
   query[["outFields"]] <- fields
 
   # include the where clause if present
   query[["where"]] <- where %||% query[["where"]]
 
-  # set returnGeometry depending on on geometry arg
+  # set returnGeometry (typically based on geometry arg)
+  returnGeometry <- query[["returnGeometry"]]
+  if (!is.null(returnGeometry) && (as.logical(returnGeometry) != geometry)) {
+    cli::cli_bullets(
+      c(
+        "x" = "{.arg geometry} is ignored when
+        {.arg returnGeometry} is supplied."
+      )
+    )
+    geometry <- as.logical(returnGeometry)
+  }
   query[["returnGeometry"]] <- geometry
 
   # handle filter geometry if not missing
@@ -131,7 +184,8 @@ arc_select <- function(
     spatial_filter <- prepare_spatial_filter(
       filter_geom,
       crs = crs,
-      predicate = predicate
+      predicate = predicate,
+      error_call = call
     )
 
     # append spatial filter fields to the query
@@ -151,11 +205,7 @@ arc_select <- function(
     query[["outSR"]] <- jsonify::to_json(validate_crs(crs)[[1]], unbox = TRUE)
   }
 
-  # update the parameters based on our query list
-  x <- update_params(x, !!!query)
-
-  # send the request
-  collect_layer(x, n_max = n_max, token = token, page_size = page_size, ...)
+  query
 }
 
 #' Query a FeatureLayer or Table object
@@ -274,6 +324,11 @@ collect_layer <- function(
   if (rlang::is_empty(res)) {
     cli::cli_alert_info("No features returned from query")
     return(res)
+  }
+
+  # Make sure to drop geometry if `returnGeometry = FALSE`
+  if (inherits(res, "sf") && isFALSE(query[["returnGeometry"]])) {
+    res <- sf::st_drop_geometry(res)
   }
 
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
@@ -526,6 +581,8 @@ validate_results_count <- function(
   n_max = Inf,
   error_call = rlang::caller_env()
 ) {
+  check_number_whole(n_max, min = 0, allow_infinite = TRUE, call = error_call)
+
   if (is.null(n_results)) {
     cli::cli_abort(
       c(
@@ -709,4 +766,42 @@ determine_format <- function(
   } else {
     "json"
   }
+}
+
+
+#' Check validity of query values
+#' @noRd
+check_query_value <- function(
+  x,
+  what,
+  ...,
+  allow_na = FALSE,
+  allow_null = FALSE,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  # Allow non-empty strings
+  if (rlang::is_string(x) && x != "") {
+    return(invisible(NULL))
+  }
+
+  # Allow scalar logical values
+  if (is.logical(x) && length(x) == 1) {
+    return(invisible(NULL))
+  }
+
+  # Allow whole number values
+  if (rlang::is_integerish(x)) {
+    return(invisible(NULL))
+  }
+
+  stop_input_type(
+    x,
+    what = c("a non-empty string", "a whole number", "`TRUE`", "`FALSE`"),
+    ...,
+    allow_na = allow_na,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
 }
