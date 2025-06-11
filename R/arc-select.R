@@ -196,8 +196,6 @@ build_layer_query <- function(
       "{.arg filter_geom} is ignored when {.arg x} is
       {.obj_simple_type {.cls {class(x)}}}."
     )
-
-    filter_geom <- NULL
   }
 
   # handle SR if not missing
