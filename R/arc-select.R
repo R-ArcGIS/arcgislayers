@@ -102,7 +102,7 @@ arc_select <- function(
     key <- dots_names[i]
     val <- dots[[i]]
     # check that the value is a scalar and non-empty
-    check_string(val, arg = key, allow_empty = FALSE)
+    check_query_value(val, arg = key, allow_empty = FALSE)
 
     # insert into query
     query[[key]] <- val
@@ -220,10 +220,7 @@ collect_layer <- function(
   # determine_format() chooses between pbf and json
   out_f <- determine_format(x, call = error_call)
 
-  query_params <- validate_params(
-    query,
-    out_f
-  )
+  query_params <- validate_params(query, out_f)
 
   # Offsets -----------------------------------------------------------------
 
@@ -271,15 +268,24 @@ collect_layer <- function(
     res <- res[, match_nm[!is.na(match_nm)], drop = FALSE]
   }
 
+  # if the result is empty we return a nothing with a message
   if (rlang::is_empty(res)) {
     cli::cli_alert_info("No features returned from query")
     return(res)
   }
 
+  # we ensure that the CRS is added
   if (inherits(res, "sf") && is.na(sf::st_crs(res))) {
     sf::st_crs(res) <- sf::st_crs(x)
   }
 
+  # ensure that geometry is dropped if geometry is set to false
+  # sometimes empty geometry is returned
+  if (inherits(res, "sf") && !query[["returnGeometry"]]) {
+    res <- sf::st_drop_geometry(res)
+  }
+
+  # emit a message if the number of rows is less than what we counted
   if (nrow(res) < n_feats) {
     # See https://github.com/R-ArcGIS/arcgislayers/issues/110
     cli::cli_warn(
