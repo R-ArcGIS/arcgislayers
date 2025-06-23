@@ -85,6 +85,7 @@ test_that("arc_read(): n_max option is ignored when n_max is set", {
 
   layer <- arc_read(furl, n_max = 321)
   expect_equal(nrow(layer), 321L)
+  options("arcgislayers.n_max" = Inf)
 })
 
 test_that("arc_read(): correct error with unsupported type", {
