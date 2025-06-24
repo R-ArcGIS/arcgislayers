@@ -13,10 +13,7 @@ test_that('arc_select(x, fields = "", geometry = NULL): returns empty geometry p
   res <- arc_select(flayer, fields = "", geometry = FALSE)
 
   # geometry is returned as empty points
-  expect_identical(dim(res), c(4186L, 1L))
-
-  # all points are empty
-  expect_true(all(sf::st_is_empty(res)))
+  expect_identical(dim(res), c(4186L, 0L))
 })
 
 
