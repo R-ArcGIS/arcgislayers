@@ -103,6 +103,7 @@ When <code>alias = "label"</code> each column has a new <code>label</code> attri
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># select first five rows</span></span></span>
 <span class="r-in"><span><span class="va">five_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">flayer</span>, n_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Query results limited to 5 out of 3144 available features.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add aliases</span></span></span>
 <span class="r-in"><span><span class="va">with_aliases</span> <span class="op">&lt;-</span> <span class="fu">set_layer_aliases</span><span class="op">(</span><span class="va">five_counties</span>, <span class="va">flayer</span><span class="op">)</span></span></span>
