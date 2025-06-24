@@ -463,6 +463,20 @@ encode_field_values <- function(
       miss_val <- is.na(col_val) | col_val == ""
       if (any(!miss_val)) {
         replace_val <- values[[col]]
+        bad_val <- !(col_val %in% names(replace_val)) & !miss_val
+
+        # warn on invalid values
+        if (any(bad_val)) {
+          bad_val_unique <- unique(col_val[bad_val])
+          cli::cli_alert_info(
+            "{col} contains {length(bad_val_unique)} value{?s} that {?is/are} not included in the coded values for the field: {.str {bad_val_unique}}"
+          )
+
+          # TODO: Allow option to turn bad values to NA values
+          # col_val[bad_val] <- NA_character_
+          miss_val <- miss_val | bad_val
+        }
+
         col_val[!miss_val] <- replace_val[col_val[!miss_val]]
         .data[[col]] <- col_val
       }
