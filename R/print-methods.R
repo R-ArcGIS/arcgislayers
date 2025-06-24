@@ -49,7 +49,7 @@ print.Table <- function(x, ...) {
 
 #' @export
 head.Table <- function(x, n = 6, token = arc_token(), ...) {
-  collect_layer(x, n, token)
+  arc_select(x, n_max = n, token = token, ...)
 }
 
 # Feature Layer -----------------------------------------------------------
@@ -95,7 +95,7 @@ print.FeatureLayer <- function(x, ...) {
 #' @importFrom utils head
 #' @export
 head.FeatureLayer <- function(x, n = 6, token = arc_token(), ...) {
-  collect_layer(x, n, token)
+  arc_select(x, n_max = n, token = token, ...)
 }
 
 

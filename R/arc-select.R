@@ -75,6 +75,7 @@ arc_select <- function(
   page_size = NULL,
   token = arc_token()
 ) {
+  error_call <- rlang::caller_call()
   # Developer note:
   # For this function we extract the query object and manipulate the elements
   # inside of the query object to modify our request. We then splice those
