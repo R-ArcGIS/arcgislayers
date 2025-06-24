@@ -459,12 +459,12 @@ encode_field_values <- function(
       # Coerce numeric columns to character
       col_val <- as.character(.data[[col]])
 
-      # Replace column values if not all missing
-      miss_val <- is.na(col_val)
-      if (!all(miss_val)) {
+      # Replace column values if not all missing or empty strings
+      miss_val <- is.na(col_val) | col_val != ""
+      if (any(!miss_val)) {
         replace_val <- values[[col]]
-        col_replace <- replace_val[col_val[!miss_val]]
-        .data[[col]][!miss_val] <- col_replace
+        col_val[!miss_val] <- replace_val[col_val[!miss_val]]
+        .data[[col]] <- col_val
       }
     }
 
