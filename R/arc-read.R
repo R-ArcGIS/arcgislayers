@@ -460,7 +460,7 @@ encode_field_values <- function(
       col_val <- as.character(.data[[col]])
 
       # Replace column values if not all missing or empty strings
-      miss_val <- is.na(col_val) | col_val != ""
+      miss_val <- is.na(col_val) | col_val == ""
       if (any(!miss_val)) {
         replace_val <- values[[col]]
         col_val[!miss_val] <- replace_val[col_val[!miss_val]]
