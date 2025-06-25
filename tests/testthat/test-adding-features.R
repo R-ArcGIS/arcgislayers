@@ -1,11 +1,11 @@
-test_that("Adding features to a table work", {
+test_that("Adding feature and updating them to a table work", {
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
 
   set_arc_token(auth_user())
 
   # ensure that Iris Test exists first
-  res <- publish_layer(iris, "Iris Test")
+  res <- publish_layer(iris, ulid::ulid())
 
   irs <- arc_open(file.path(res$services$encodedServiceURL, "0"))
 
@@ -17,7 +17,7 @@ test_that("Adding features to a table work", {
     Species = "ArcGIS Iris"
   )
 
-  expect_success(add_features(irs, test_row, match_on = "alias"))
+  expect_no_error(add_features(irs, test_row, match_on = "alias"))
 
   # create a massive data frame
   test_df <- dplyr::as_tibble(
@@ -31,8 +31,19 @@ test_that("Adding features to a table work", {
       )
     )
 
-  expect_success(add_features(irs, test_df, match_on = "alias"))
+  expect_no_error(add_features(irs, test_df, match_on = "alias"))
+
+  # collect the feature service
+  to_update <- arc_select(irs) |>
+    dplyr::transmute(
+      object_id = as.integer(object_id),
+      Sepal_Length = Sepal_Length * 1.05
+    )
+
+  # update all of these
+  update_res <- update_features(irs, to_update, chunk_size = 25)
 })
+
 
 test_that("Adding features to a feature layer works", {
   skip("Must be ran interactively")
