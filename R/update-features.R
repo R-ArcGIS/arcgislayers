@@ -4,7 +4,7 @@
 update_features <- function(
   x,
   .data,
-  chunk_size = 1000,
+  chunk_size = 500,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
@@ -112,11 +112,23 @@ update_features <- function(
   # create base request
   req <- arc_base_req(paste0(x[["url"]], "/updateFeatures"), token)
 
+  n_chunks <- lengths(indices)[1]
   # # pre-allocate list
   all_reqs <- vector("list", length = lengths(indices)[1])
 
+  if (progress) {
+    pb <- cli::cli_progress_bar(
+      "Chunking features",
+      type = "iterator",
+      total = n_chunks
+    )
+  }
   # # populate the requests veector
   for (i in seq_along(all_reqs)) {
+    if (progress) {
+      cli::cli_progress_update(1, id = pb)
+    }
+
     start <- indices[["start"]][i]
     end <- indices[["end"]][i]
 
@@ -128,11 +140,15 @@ update_features <- function(
     )
   }
 
-  # # send the requests in parallel
+  if (progress) {
+    cli::cli_progress_done(pb)
+  }
+
+  # send the requests in parallel
   all_resps <- httr2::req_perform_parallel(all_reqs, progress = progress)
 
   # parse the responses into a data frame
-  do.call(
+  res <- do.call(
     rbind.data.frame,
     lapply(all_resps, function(res) {
       resp_str <- httr2::resp_body_string(res)
@@ -141,4 +157,5 @@ update_features <- function(
       resp[["updateResults"]]
     })
   )
+  data_frame(res)
 }
