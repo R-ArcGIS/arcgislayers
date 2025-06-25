@@ -197,7 +197,7 @@ inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
     )
 
     if (cont == 2L) {
-      cli::cli_abort("Stopping. Features will not be added.", call = error_call)
+      cli::cli_abort("Stopping.", call = error_call)
     }
   }
 }
