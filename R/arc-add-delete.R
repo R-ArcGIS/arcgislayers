@@ -9,6 +9,7 @@
 #'  the alias. See Details for more.
 #' @param rollback_on_failure if anything errors, roll back writes.
 #'  Defaults to `TRUE`.
+#' @param progress default `TRUE`. A progress bar to be rendered by `httr2` to track requests.
 #' @param token your authorization token.
 #'
 #' @inheritParams arc_select
@@ -180,7 +181,7 @@ inform_nin_feature <- function(nin_feature) {
 #' Delete features from a feature layer based on object ID, a where clause, or a
 #' spatial filter.
 #'
-#' @inheritParams obj_check_layer
+#' @inheritParams arc_select
 #' @param object_ids a numeric vector of object IDs to be deleted.
 #' @param where a simple SQL where statement indicating which features should be
 #'   deleted. When the where statement evaluates to `TRUE`, those values will be

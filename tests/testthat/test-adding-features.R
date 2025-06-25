@@ -5,7 +5,7 @@ test_that("Adding feature and updating them to a table work", {
   set_arc_token(auth_user())
 
   # ensure that Iris Test exists first
-  res <- publish_layer(iris, ulid::ulid())
+  res <- publish_layer(iris, "Iris test")
 
   irs <- arc_open(file.path(res$services$encodedServiceURL, "0"))
 
