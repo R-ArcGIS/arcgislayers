@@ -1,7 +1,7 @@
 Package: arcgislayers
 Type: Package
 Title: An Interface to ArcGIS Data Services
-Version: 0.4.0
+Version: 0.4.0.9000
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9910-865X")),
@@ -12,7 +12,7 @@ Authors@R: c(
     person("Martha", "Bass", role = "ctb",
            comment = c(ORCID = "0009-0004-0268-5426")),
     person("Antony", "Barja", role = "ctb",
-           comment = c(ORCID = "0000-0001-5921-2858"))       
+           comment = c(ORCID = "0000-0001-5921-2858"))
   )
 Description: Enables users of 'ArcGIS Enterprise', 'ArcGIS Online', or
     'ArcGIS Platform' to read, write, publish, or manage vector and raster
@@ -33,6 +33,8 @@ Imports:
     sf,
     terra,
     utils
+Depends: 
+    R (>= 4.1.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
@@ -43,5 +45,6 @@ Suggests:
     tidyselect,
     vctrs
 Config/testthat/edition: 3
-URL: https://developers.arcgis.com/r-bridge, https://github.com/R-ArcGIS/arcgislayers
+URL: https://developers.arcgis.com/r-bridge,
+    https://github.com/R-ArcGIS/arcgislayers
 BugReports: https://github.com/R-ArcGIS/arcgislayers/issues

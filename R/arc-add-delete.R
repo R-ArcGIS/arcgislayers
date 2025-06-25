@@ -9,6 +9,7 @@
 #'  the alias. See Details for more.
 #' @param rollback_on_failure if anything errors, roll back writes.
 #'  Defaults to `TRUE`.
+#' @param progress default `TRUE`. A progress bar to be rendered by `httr2` to track requests.
 #' @param token your authorization token.
 #'
 #' @inheritParams arc_select
@@ -52,6 +53,7 @@ add_features <- function(
   chunk_size = 2000,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
+  progress = TRUE,
   token = arc_token()
 ) {
   # initial check for type of `x`
@@ -133,7 +135,7 @@ add_features <- function(
   }
 
   # send the requests in parallel
-  all_resps <- httr2::req_perform_parallel(all_reqs)
+  all_resps <- httr2::req_perform_parallel(all_reqs, progress = progress)
 
   # parse the responses into a data frame
   do.call(
@@ -152,110 +154,6 @@ add_features <- function(
   )
 }
 
-
-# Update Features ---------------------------------------------------------
-
-#' @export
-#' @inheritParams add_features
-#' @rdname modify
-update_features <- function(
-  x,
-  .data,
-  match_on = c("name", "alias"),
-  token = arc_token(),
-  rollback_on_failure = TRUE,
-  ...
-) {
-  match_on <- match.arg(match_on)
-
-  # TODO field types from x need to be compared to that of `.data`
-  # if the field types do not match either error or do the conversion for the user
-
-  # What is the difference between `applyEdits`, and `append` both are a way to do upserting.
-
-  # Update Feature Layer
-  # https://developers.arcgis.com/rest/services-reference/enterprise/update-features.htm
-  # check CRS compaitibility between x and `.data`
-  # feedback for rest api team:
-  # it is possible to specify the CRS of the input data for adding features or spatial
-  # filters, however it is _not_ possible for updating features. If it is, it is undocumented
-  # it would be nice to be able to utilize the the transformations server side
-  # rather than relying on GDAL client side.
-  # ALTERNATIVELY let me provide a feature set so i can pass in CRS
-  if (!identical(sf::st_crs(x), sf::st_crs(.data))) {
-    if (is.na(sf::st_crs(.data)) && inherits(.data, "sf")) {
-      cli::cli_warn(
-        c(
-          "{.arg data} is missing a CRS",
-          "i" = paste0("Setting CRS to ", sf::st_crs(x)$srid)
-        )
-      )
-    } else if (inherits(.data, "sf")) {
-      cli::cli_abort(
-        c(
-          "{.arg x} and {.arg .data} must share the same CRS",
-          "*" = "Tranform {.arg .data} to the same CRS as {.arg x} with
-          {.fn sf::st_transform}"
-        )
-      )
-    }
-  } # not that addFeatures does not update layer definitions so if any attributes
-  # are provided that aren't in the feature layer, they will be ignored
-
-  objectid_condition <- is.integer(.data[["objectid"]])
-  if (!objectid_condition) {
-  cli::cli_abort(
-    c(
-      "x" = "The {.field objectid} column must be of type {.cls integer}.",
-      "i" = "Convert with {.code as.integer()} if needed."
-    )
-  )
-  }
-
-  feature_fields <- list_fields(x)
-  cnames <- colnames(.data)
-
-  # find which columns are present in the layer
-  present_index <- cnames %in% feature_fields[[match_on]]
-
-  # fetch the geometry column name
-  geo_col <- attr(.data, "sf_column")
-
-  if (match_on == "alias") {
-    lu <- stats::setNames(feature_fields[["name"]], feature_fields[["alias"]])
-
-    # ensure the geo_col is present if its an sf object
-    if (inherits(.data, "sf")) {
-      cnames[length(cnames)] <- geo_col
-    } else {
-      cnames <- unname(lu[cnames])
-    }
-    colnames(.data) <- cnames
-  }
-
-  inform_nin_feature(
-    # columns not in the feature layer
-    setdiff(cnames[!present_index], geo_col)
-  )
-
-  # subset accordingly
-  .data <- .data[, present_index]
-
-  # create base request
-  req <- arc_base_req(paste0(x[["url"]], "/updateFeatures"), token)
-
-  req <- httr2::req_body_form(
-    req,
-    # transform `.data`
-    features = as_esri_features(.data),
-    rollbackOnFailure = rollback_on_failure,
-    f = "json",
-    ...
-  )
-
-  resp <- httr2::req_perform(req)
-  RcppSimdJson::fparse(httr2::resp_body_string(resp))
-}
 
 #' @noRd
 inform_nin_feature <- function(nin_feature) {
@@ -283,7 +181,7 @@ inform_nin_feature <- function(nin_feature) {
 #' Delete features from a feature layer based on object ID, a where clause, or a
 #' spatial filter.
 #'
-#' @inheritParams obj_check_layer
+#' @inheritParams arc_select
 #' @param object_ids a numeric vector of object IDs to be deleted.
 #' @param where a simple SQL where statement indicating which features should be
 #'   deleted. When the where statement evaluates to `TRUE`, those values will be
