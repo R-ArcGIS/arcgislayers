@@ -58,13 +58,11 @@ test_that("Adding features to a feature layer works", {
   nc_layer <- get_layer(arc_open(res$services$encodedServiceURL), 0)
 
   nc$geometry <- sf::st_convex_hull(nc$geometry)
-
   res <- add_features(nc_layer, nc)
 })
 
 
 test_that("truncate_layer() works:", {
   skip("Must be ran interactively")
-
   truncate_layer(nc_layer)
 })

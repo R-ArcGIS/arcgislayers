@@ -50,7 +50,7 @@
 add_features <- function(
   x,
   .data,
-  chunk_size = 2000,
+  chunk_size = 500,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
@@ -106,7 +106,7 @@ add_features <- function(
   )
 
   # subset accordingly
-  .data <- .data[, present_index]
+  .data <- .data[, present_index, drop = FALSE]
 
   # count the number of rows in a data frame
   n <- nrow(.data)
@@ -118,20 +118,37 @@ add_features <- function(
   base_req <- arc_base_req(x[["url"]], token)
   req <- httr2::req_url_path_append(base_req, "addFeatures")
 
+  n_chunks <- lengths(indices)[1]
   # pre-allocate list
-  all_reqs <- vector("list", length = lengths(indices)[1])
+  all_reqs <- vector("list", length = n_chunks)
+
+  # create a progress bar for chunking
+  if (progress) {
+    pb <- cli::cli_progress_bar(
+      "Chunking features",
+      type = "iterator",
+      total = n_chunks
+    )
+  }
 
   # populate the requests veector
   for (i in seq_along(all_reqs)) {
+    if (progress) {
+      cli::cli_progress_update(1, id = pb)
+    }
     start <- indices[["start"]][i]
     end <- indices[["end"]][i]
 
     all_reqs[[i]] <- httr2::req_body_form(
       req,
-      features = as_esri_features(.data[start:end, ]),
+      features = as_esri_features(.data[start:end, , drop = FALSE]),
       rollbackOnFailure = rollback_on_failure,
       f = "json"
     )
+  }
+
+  if (progress) {
+    cli::cli_progress_done(pb)
   }
 
   # send the requests in parallel
@@ -156,12 +173,13 @@ add_features <- function(
 
 
 #' @noRd
-inform_nin_feature <- function(nin_feature) {
+inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
   if (length(nin_feature) == 0) {
     return(invisible(NULL))
   }
 
-  cli::cli_inform(
+  # TODO fix with pluralisation
+  cli::cli_alert_danger(
     paste0(
       "Columns in `.data` not in feature(s): ",
       ifelse(
@@ -171,6 +189,17 @@ inform_nin_feature <- function(nin_feature) {
       )
     )
   )
+
+  if (interactive()) {
+    cont <- utils::menu(
+      c("Yes", "No"),
+      title = "Columns not found in feature service. Would you like to continue?"
+    )
+
+    if (cont == 2L) {
+      cli::cli_abort("Stopping. Features will not be added.", call = error_call)
+    }
+  }
 }
 
 
@@ -199,8 +228,9 @@ delete_features <- function(
   filter_geom = NULL,
   predicate = "intersects",
   rollback_on_failure = TRUE,
-  token = arc_token(),
-  ...
+  chunk_size = 1000,
+  progress = TRUE,
+  token = arc_token()
 ) {
   obj_check_layer(x)
 
@@ -215,7 +245,7 @@ delete_features <- function(
     )
   }
 
-  if (!rlang::is_integerish(object_ids)) {
+  if (!rlang::is_integerish(object_ids) && !is.null(object_ids)) {
     cli::cli_abort(
       "`object_ids` must be an integer vector. Consider casting to integer via {.function as.integer}"
     )
@@ -245,16 +275,55 @@ delete_features <- function(
   # https://developers.arcgis.com/rest/services-reference/enterprise/delete-features.htm
   req <- arc_base_req(paste0(x[["url"]], "/deleteFeatures"), token)
 
-  req <- httr2::req_body_form(
-    req,
-    !!!(compact(list(where = where, objectIds = object_ids))),
-    !!!filter_geom,
-    f = "json",
-    rollbackOnFailure = rollback_on_failure,
-    ...
+  n <- length(object_ids)
+  indices <- chunk_indices(n, chunk_size)
+
+  n_chunks <- lengths(indices)[1]
+  # # pre-allocate list
+  all_reqs <- vector("list", length = n_chunks)
+
+  if (progress) {
+    pb <- cli::cli_progress_bar(
+      "Chunking object ids",
+      type = "iterator",
+      total = n_chunks
+    )
+  }
+
+  # # populate the requests veector
+  for (i in seq_along(all_reqs)) {
+    if (progress) {
+      cli::cli_progress_update(1, id = pb)
+    }
+    start <- indices[["start"]][i]
+    end <- indices[["end"]][i]
+
+    all_reqs[[i]] <- httr2::req_body_form(
+      req,
+      !!!(compact(list(where = where, objectIds = object_ids[start:end]))),
+      !!!filter_geom,
+      f = "json",
+      rollbackOnFailure = rollback_on_failure
+    )
+  }
+
+  if (progress) {
+    cli::cli_progress_done(pb)
+  }
+
+  # send the requests in parallel
+  all_resps <- httr2::req_perform_parallel(all_reqs, progress = progress)
+
+  # parse the responses into a data frame
+  res <- do.call(
+    rbind.data.frame,
+    lapply(all_resps, function(res) {
+      resp_str <- httr2::resp_body_string(res)
+      catch_error(resp_str)
+      resp <- RcppSimdJson::fparse(resp_str)
+      resp[["deleteResults"]]
+    })
   )
 
-  resp <- httr2::req_perform(req)
-
-  RcppSimdJson::fparse(httr2::resp_body_string(resp))
+  data_frame(res)
 }

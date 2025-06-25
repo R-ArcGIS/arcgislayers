@@ -128,11 +128,11 @@ update_features <- function(
     )
   }
 
-  # # send the requests in parallel
+  # send the requests in parallel
   all_resps <- httr2::req_perform_parallel(all_reqs, progress = progress)
 
   # parse the responses into a data frame
-  do.call(
+  res <- do.call(
     rbind.data.frame,
     lapply(all_resps, function(res) {
       resp_str <- httr2::resp_body_string(res)
@@ -141,4 +141,5 @@ update_features <- function(
       resp[["updateResults"]]
     })
   )
+  data_frame(res)
 }
