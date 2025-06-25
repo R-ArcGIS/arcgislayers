@@ -228,7 +228,7 @@ delete_features <- function(
   filter_geom = NULL,
   predicate = "intersects",
   rollback_on_failure = TRUE,
-  chunk_size = 1000,
+  chunk_size = 500,
   progress = TRUE,
   token = arc_token()
 ) {
