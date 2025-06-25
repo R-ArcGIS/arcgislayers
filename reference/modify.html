@@ -9,7 +9,7 @@ spatial filter."><meta property="og:image" content="/logo.svg"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@ spatial filter."><meta property="og:image" content="/logo.svg"></head><body>
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Add Features to Feature Layer</h1>
-      <small class="dont-index">Source: <a href="https://github.com/R-ArcGIS/arcgislayers/blob/main/R/arc-add-update-delete.R" class="external-link"><code>R/arc-add-update-delete.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/R-ArcGIS/arcgislayers/blob/main/R/arc-add-delete.R" class="external-link"><code>R/arc-add-delete.R</code></a>, <a href="https://github.com/R-ArcGIS/arcgislayers/blob/main/R/update-features.R" class="external-link"><code>R/update-features.R</code></a></small>
       <div class="d-none name"><code>modify.Rd</code></div>
     </div>
 
@@ -47,16 +47,8 @@ spatial filter.</p>
 <span>  chunk_size <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  match_on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"alias"</span><span class="op">)</span>,</span>
 <span>  rollback_on_failure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">update_features</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  <span class="va">.data</span>,</span>
-<span>  match_on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"alias"</span><span class="op">)</span>,</span>
-<span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  rollback_on_failure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">delete_features</span><span class="op">(</span></span>
@@ -68,6 +60,16 @@ spatial filter.</p>
 <span>  rollback_on_failure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">update_features</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">.data</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  match_on <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"alias"</span><span class="op">)</span>,</span>
+<span>  rollback_on_failure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  token <span class="op">=</span> <span class="fu">arc_token</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -97,12 +99,12 @@ the alias. See Details for more.</p></dd>
 applied only if all submitted edits succeed.</p></dd>
 
 
+<dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
+<dd><p>default <code>TRUE</code>. A progress bar to be rendered by <code>httr2</code> to track requests.</p></dd>
+
+
 <dt id="arg-token">token<a class="anchor" aria-label="anchor" href="#arg-token"></a></dt>
 <dd><p>default <code>arc_token()</code>. An <code>httr2_token</code>.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional query parameters passed to the API.</p></dd>
 
 
 <dt id="arg-object-ids">object_ids<a class="anchor" aria-label="anchor" href="#arg-object-ids"></a></dt>
@@ -124,6 +126,10 @@ query results based on a predicate function.</p></dd>
 <dd><p>Spatial predicate to use with <code>filter_geom</code>. Default
 <code>"intersects"</code>. Possible options are <code>"intersects"</code>, <code>"contains"</code>,
 <code>"crosses"</code>,  <code>"overlaps"</code>,  <code>"touches"</code>, and <code>"within"</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional query parameters passed to the API.</p></dd>
 
 </dl></div>
     <div class="section level2">
