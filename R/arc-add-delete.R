@@ -215,6 +215,15 @@ delete_features <- function(
     )
   }
 
+  if (!rlang::is_integerish(object_ids)) {
+    cli::cli_abort(
+      "`object_ids` must be an integer vector. Consider casting to integer via {.function as.integer}"
+    )
+  } else {
+    # explicitly ensure that they are integers
+    object_ids <- as.integer(object_ids)
+  }
+
   if (!is.null(object_ids)) {
     object_ids <- paste0(object_ids, collapse = ",")
   }
