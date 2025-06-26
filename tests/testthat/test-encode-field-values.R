@@ -32,6 +32,21 @@ test_that("encode_field_values() encodes field values when field is set", {
   domain_vals <- domains[[c("CARTOCODE", "codedValues", "name")]]
 
   expect_true(all(encoded[["CARTOCODE"]] %in% domain_vals))
+
+  # expect message for field w/ invalid codes
+  expect_message(
+    encode_field_values(res, flayer, field = "SPEED_LMT")
+  )
+
+  # expect no message for field w/ invalid codes if `codes = "replace-valid"`
+  expect_no_message(
+    encode_field_values(
+      res,
+      flayer,
+      field = "SPEED_LMT",
+      codes = "replace-valid"
+    )
+  )
 })
 
 test_that("encode_field_values() works with a range type", {

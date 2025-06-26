@@ -402,10 +402,11 @@ label_layer_fields <- function(
 #' @param field Optional character vector with names of fields to replace.
 #'   Fields that do not have coded value domains are ignored. Defaults to `NULL`
 #'   to replace or label all fields with coded value domains.
-#' @param codes Use of field alias values. Defaults to `"replace"`.
+#' @param codes Use of field alias values. Defaults to `"replace-all"`.
 #' There are two options:
 #'
-#'  - `"replace"`: coded values replace existing column values.
+#'  - `"replace-all"`: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with `NA`.
+#'  - `"replace-valid"`: coded values replace existing _valid_ column values. Any non-coded values remaing in place and are coerced to character.
 #'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
 #' @export
@@ -430,7 +431,7 @@ encode_field_values <- function(
   .data,
   .layer,
   field = NULL,
-  codes = c("replace", "label"),
+  codes = c("replace-all", "replace-valid", "label"),
   call = rlang::caller_env()
 ) {
   check_data_frame(.data)
@@ -439,12 +440,20 @@ encode_field_values <- function(
 
   values <- pull_coded_values(.layer, field = field, call = call)
 
+  if (identical(codes, "replace")) {
+    lifecycle::deprecate_soft(
+      ">0.4.0",
+      'encode_field_values(codes = "should not be set to \'replace\'")',
+      details = 'Please use `encode_field_values(codes = "replace-all")` instead.'
+    )
+    codes <- "replace-all"
+  }
+
   codes <- rlang::arg_match(codes, error_call = call)
 
   # Check if coded values is an empty list
   if (rlang::is_empty(values)) {
     message <- "{.arg .layer} does not contain any coded values."
-
     if (!is.null(field)) {
       message <- "{.arg field} {.val {field}} does not contain any coded values."
     }
@@ -453,48 +462,56 @@ encode_field_values <- function(
     return(.data)
   }
 
-  # Replace column values by default
-  if (codes == "replace") {
+  if (codes == "label") {
+    # Label column values using new_labelled_col helper
     for (col in names(values)) {
-      # Coerce numeric columns to character
-      col_val <- as.character(.data[[col]])
-
-      # Replace column values if not all missing or empty strings
-      miss_val <- is.na(col_val) | col_val == ""
-      if (any(!miss_val)) {
-        replace_val <- values[[col]]
-        bad_val <- !(col_val %in% names(replace_val)) & !miss_val
-
-        # warn on invalid values
-        if (any(bad_val)) {
-          bad_val_unique <- unique(col_val[bad_val])
-          cli::cli_alert_info(
-            "{col} contains {length(bad_val_unique)} value{?s} that {?is/are} not included in the coded values for the field: {.str {bad_val_unique}}"
-          )
-
-          # TODO: Allow option to turn bad values to NA values
-          # col_val[bad_val] <- NA_character_
-          miss_val <- miss_val | bad_val
-        }
-
-        col_val[!miss_val] <- replace_val[col_val[!miss_val]]
-        .data[[col]] <- col_val
-      }
+      .data[[col]] <- new_labelled_col(
+        .data[[col]],
+        labels = rlang::set_names(
+          names(values[[col]]),
+          values[[col]]
+        ),
+        call = call
+      )
     }
 
     return(.data)
   }
 
-  # Label column values using new_labelled_col helper
+  # Replace column values by default
   for (col in names(values)) {
-    .data[[col]] <- new_labelled_col(
-      .data[[col]],
-      labels = rlang::set_names(
-        names(values[[col]]),
-        values[[col]]
-      ),
-      call = call
-    )
+    # Coerce numeric columns to character
+    col_val <- as.character(.data[[col]])
+
+    # Replace column values if not all missing or empty strings
+    miss_val <- is.na(col_val)
+
+    if (any(!miss_val)) {
+      replace_val <- values[[col]]
+
+      bad_val <- !(col_val %in% names(replace_val)) & !miss_val
+      bad_val_unique <- setdiff(
+        unique(col_val[bad_val]),
+        c(" ", "")
+      )
+
+      if (codes == "replace-valid") {
+        # retain existing invalid values
+        miss_val <- miss_val | bad_val
+      } else if (!rlang::is_empty(bad_val_unique)) {
+        # otherwise warn on invalid values that are not "" or " " (too noisy otherwise)
+        cli::cli_inform(
+          c(
+            "!" = "{.field {col}} contains {length(bad_val_unique)}
+            value{?s} that {?is/are} not {?a valid code/valid codes}:
+            {.str {bad_val_unique}}"
+          )
+        )
+      }
+
+      col_val[!miss_val] <- replace_val[col_val[!miss_val]]
+      .data[[col]] <- col_val
+    }
   }
 
   .data
