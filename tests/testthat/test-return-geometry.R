@@ -3,7 +3,7 @@ test_that("arc_select(): geometry flag works", {
   flayer <- arc_open(furl)
 
   res <- arc_select(flayer, n_max = 3, geometry = FALSE)
-  expect_true(all(sf::st_is_empty(sf::st_geometry(res))))
+  expect_false(inherits(res, "sf"))
 
   res <- arc_select(flayer, n_max = 3)
   expect_true("sf" %in% class(res))

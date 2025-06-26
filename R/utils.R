@@ -332,5 +332,5 @@ pull_coded_values <- function(
     }
   )
 
-  domains
+  Filter(length, domains)
 }

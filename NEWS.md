@@ -1,6 +1,10 @@
 # arcgislayers (development)
 
-## New Features
+## Breaking changes
+
+- `update_features()` is now parallelized and sends updates in chunks see `chunk_size` argument and `progress` arguments. The return type is now a `data.frame` and not a list with `updateResults`
+- `delete_features()` is now parallelized and deletes in chunks. See above. 
+- `{arcgislayers}` now depends on R 4.1 or higher.
 
 ## New features
 
@@ -11,8 +15,8 @@
 - Improve `update_features()` with an error message when the `objectid` is not an `integer` ([#250](https://github.com/R-ArcGIS/arcgislayers/issues/250))
 - `get_layer()` warns as expected on invalid layer names values. ([#251](https://github.com/R-ArcGIS/arcgislayers/issues/251))
 - `encode_field_values()` handles numeric columns with coded value domains without warnings or errors. ([#237](https://github.com/R-ArcGIS/arcgislayers/issues/237))
+- `encode_field_values()` now properly skips `range` field types ([#263](https://github.com/R-ArcGIS/arcgislayers/issues/263))
 
-## Breaking changes
 
 # arcgislayers 0.4.0
 
