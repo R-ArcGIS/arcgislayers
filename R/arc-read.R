@@ -403,7 +403,7 @@ label_layer_fields <- function(
 #'   Fields that do not have coded value domains are ignored. Defaults to `NULL`
 #'   to replace or label all fields with coded value domains.
 #' @param codes Use of field alias values. Defaults to `"replace-all"`.
-#' There are two options:
+#' There are three options:
 #'
 #'  - `"replace-all"`: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with `NA`.
 #'  - `"replace-valid"`: coded values replace existing _valid_ column values. Any non-coded values remaing in place and are coerced to character.

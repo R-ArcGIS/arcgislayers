@@ -22,7 +22,7 @@ Fields that do not have coded value domains are ignored. Defaults to \code{NULL}
 to replace or label all fields with coded value domains.}
 
 \item{codes}{Use of field alias values. Defaults to \code{"replace-all"}.
-There are two options:
+There are three options:
 \itemize{
 \item \code{"replace-all"}: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with \code{NA}.
 \item \code{"replace-valid"}: coded values replace existing \emph{valid} column values. Any non-coded values remaing in place and are coerced to character.
