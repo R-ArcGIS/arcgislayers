@@ -121,7 +121,7 @@ print.FeatureServer <- function(x, n, ...) {
 
   header <- sprintf(
     "<%s <%s, %s>>",
-    class(x),
+    class(x)[1],
     fts_lbl,
     tbls_lbl
   )

@@ -9,12 +9,12 @@
 #'  `r lifecycle::badge("experimental")`
 #'
 #' @param url The url of the remote resource. Must be of length one.
-#' @param token your authorization token.
+#' @inheritParams arc_item
 #'
 #' @seealso arc_select arc_raster
 #' @export
 #' @returns
-#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`. Each of these objects is a named list containing the properties of the service.
+#' Depending on item ID or URL returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
 #' @examples
 #' \dontrun{
 #' # FeatureLayer
@@ -54,57 +54,95 @@
 #'
 #' arc_open(map_url)
 #' }
-arc_open <- function(url, token = arc_token()) {
-  check_url(url)
+arc_open <- function(url, host = arc_host(), token = arc_token()) {
+  check_string(url, allow_empty = FALSE)
 
-  # parse url query and strip from url if query matches default
-  query <- parse_url_query(url) %||% list()
-  url <- clear_url_query(url)
+  if (!is_url(url)) {
+    e_msg <- "Expected an item ID or url to a portal item."
 
-  # extract layer metadata
-  meta <- fetch_layer_metadata(url, token)
+    item <- rlang::try_fetch(
+      arc_item(url, host, token),
+      error = function(cnd) cli::cli_abort(e_msg, call = rlang::caller_call(2))
+    )
 
-  # set url for later use
-  meta[["url"]] <- url
-
-  # layer class
-  layer_class <- gsub("\\s", "", meta[["type"]])
-
-  # if it's missing it means it's a server type. Need to deduce.
-  if (length(layer_class) == 0) {
-    if (any(grepl("pixel|band|raster", names(meta)))) {
-      layer_class <- "ImageServer"
-    } else if (grepl("MapServer", meta[["url"]])) {
-      layer_class <- "MapServer"
-    } else if (
-      "layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])
-    ) {
-      layer_class <- "FeatureServer"
-    } else {
-      return(meta)
+    if (is.null(item$url)) {
+      # return a portal item if the url is null
+      return(item)
     }
+
+    # return the portal item if the url type is null
+    if (is.null(arc_url_type(item$url))) {
+      return(item)
+    }
+
+    # otherwise we fetch the url from the new item
+    url <- item$url
   }
 
-  # construct the appropriate class based on the resultant `layer_class`
-  res <- switch(
-    layer_class,
-    "FeatureLayer" = structure(
-      meta,
-      class = layer_class,
-      query = query
+  # parse the provided url
+  info <- arc_url_parse(url)
+
+  switch(
+    info$type,
+    "FeatureServer" = {
+      as_layer_class(clear_url_query(url), token, info$type)
+    },
+    "MapServer" = as_layer_class(
+      clear_url_query(url),
+      token,
+      info$type
     ),
-    "Table" = structure(
-      meta,
-      class = layer_class,
-      query = query
+    "ImageServer" = as_layer_class(
+      clear_url_query(url),
+      token,
+      info$type
     ),
-    "FeatureServer" = structure(
-      meta,
-      class = layer_class
-    ),
-    "ImageServer" = structure(meta, class = layer_class),
-    "MapServer" = structure(meta, class = layer_class),
-    "GroupLayer" = structure(meta, class = layer_class),
+    "SceneServer" = as_layer_class(url, token, info$type),
+    "GeocodeServer" = as_layer_class(url, token, info$type),
+    # FIXME, unclear how to use this...
+    "GeometryServer" = as_layer_class(url, token, info$type),
+    # FIXME, unclear how to use this...
+    "GPServer" = as_layer_class(url, token, info$type),
+    "item" = {
+      # if we have an item url, we fetch the item
+      item <- arc_item(info$query$id, host = host, token = token)
+
+      # if there is no associated url we return the item
+      if (is.null(item[["url"]])) {
+        return(item)
+      }
+
+      url_type <- arc_url_type(item[["url"]])
+
+      if (is.null(url_type)) {
+        return(item)
+      }
+
+      # if there is a URL we're going to recurse
+      arc_open(item[["url"]], host = host, token = token)
+    },
+    "user" = arc_user(info$query$user, host = host, token = token),
+    "group" = arc_group(info$query$id, host = host, token = token),
+    "webscene" = arc_item(info$query$webscene, host = host, token = token),
+    "app" = arc_item(info$query$appid, host = host, token = token),
+    "notebook" = arc_item(info$query$id, host = host, token = token),
+    "experience" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      exp_id <- path_components[which(path_components == "experience") + 1]
+      arc_item(exp_id, host = host, token = token)
+    },
+    "storymap" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      sm_id <- path_components[which(path_components == "stories") + 1]
+      arc_item(sm_id, host = host, token = token)
+    },
+    "dashboard" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      db_id <- path_components[which(path_components == "dashboards") + 1]
+      arc_item(db_id, host = host, token = token)
+    },
+    "datapipeline" = arc_item(info$query$item, host = host, token = token),
+    "webapp" = arc_item(info$query$id, host = host, token = token),
     cli::cli_abort(
       c(
         "Service type {.val {layer_class}} is not supported.",
@@ -112,6 +150,18 @@ arc_open <- function(url, token = arc_token()) {
       )
     )
   )
+}
 
-  res
+#' Fetch metadata and an appropriate class
+#' @noRd
+as_layer_class <- function(url, token, class = NULL) {
+  meta <- fetch_layer_metadata(url, token)
+  meta[["url"]] <- url
+  cls <- if (is.null(meta[["type"]])) {
+    NULL
+  } else {
+    gsub("\\s+", "", meta[["type"]])
+  }
+
+  structure(meta, class = c(cls %||% class, "list"))
 }

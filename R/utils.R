@@ -134,24 +134,6 @@ coalesce_crs <- function(x, y) {
   }
 }
 
-#' Does x match the pattern of a URL?
-#' @noRd
-is_url <- function(x, pattern = NULL, ...) {
-  if (
-    !rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)
-  ) {
-    return(FALSE)
-  }
-
-  url_pattern <-
-    "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-
-  if (is.null(pattern)) {
-    return(grepl(url_pattern, x, ...))
-  }
-
-  grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
-}
 
 #' Check if x is a valid URL
 #' @noRd
