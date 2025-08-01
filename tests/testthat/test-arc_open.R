@@ -100,8 +100,8 @@ test_that("arc_open(): generic item support", {
     c("PortalItem", "list"),
     c("PortalItem", "list"),
     c("PortalItem", "list"),
-    "list",
-    "list",
+    c("PortalGroup", "list"),
+    c("PortalUser", "list"),
     c("PortalItem", "list"),
     c("MapServer", "list"),
     c("PortalItem", "list"),
@@ -131,4 +131,9 @@ test_that("arc_open(): generic item support", {
 
 test_that("arc_open(): informative error with unsupported type", {
   expect_error(arc_open("https://www.google.com/"))
+})
+
+test_that("arc_open(): can open service folders", {
+  url <- "https://egisdata.baltimorecity.gov/egis/rest/services/BaseMaps"
+  expect_equal(class(arc_open(url)), "list")
 })

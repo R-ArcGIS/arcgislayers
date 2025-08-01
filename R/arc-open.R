@@ -96,27 +96,30 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
     )
   }
 
+  # get the first element if since it can have more than one type
+  # for service folders
+  layer_type <- info$type[1]
   switch(
-    info$type,
+    layer_type,
     "FeatureServer" = {
-      as_layer_class(clear_url_query(url), token, info$type)
+      as_layer_class(clear_url_query(url), token, layer_type)
     },
     "MapServer" = as_layer_class(
       clear_url_query(url),
       token,
-      info$type
+      layer_type
     ),
     "ImageServer" = as_layer_class(
       clear_url_query(url),
       token,
-      info$type
+      layer_type
     ),
-    "SceneServer" = as_layer_class(url, token, info$type),
-    "GeocodeServer" = as_layer_class(url, token, info$type),
+    "SceneServer" = as_layer_class(url, token, layer_type),
+    "GeocodeServer" = as_layer_class(url, token, layer_type),
     # FIXME, unclear how to use this...
-    "GeometryServer" = as_layer_class(url, token, info$type),
+    "GeometryServer" = as_layer_class(url, token, layer_type),
     # FIXME, unclear how to use this...
-    "GPServer" = as_layer_class(url, token, info$type),
+    "GPServer" = as_layer_class(url, token, layer_type),
     "item" = {
       # if we have an item url, we fetch the item
       item <- arc_item(info$query$id, host = host, token = token)
@@ -157,9 +160,10 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
     },
     "datapipeline" = arc_item(info$query$item, host = host, token = token),
     "webapp" = arc_item(info$query$id, host = host, token = token),
+    "service_folder" = as_layer_class(url, token = token),
     cli::cli_abort(
       c(
-        "Service type {.val {info$type}} is not supported at this time.",
+        "Service type {.val {layer_type}} is not supported at this time.",
         "i" = "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
       )
     )
