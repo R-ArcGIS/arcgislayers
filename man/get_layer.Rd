@@ -19,7 +19,7 @@ get_layers(x, id = NULL, name = NULL, token = arc_token())
 
 \item{name}{default \code{NULL}. The name associated with the layer you want to retrieve. \code{name} is mutually exclusive with \code{id}. This is a scalar in \code{get_layer()}.}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 \itemize{

@@ -22,7 +22,7 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    arcgisutils (>= 0.2.0),
+    arcgisutils (>= 0.3.3.9000),
     arcpbf (>= 0.1.5),
     cli,
     httr2 (>= 1.0.5),
@@ -34,7 +34,7 @@ Imports:
     terra,
     utils
 Depends: 
-    R (>= 4.1.0)
+    R (>= 4.2.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 

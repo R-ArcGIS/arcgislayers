@@ -47,7 +47,7 @@ only attachments that conform to this expression will be returned.}
 
 \item{...}{unused}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 
 \item{attachments}{a \code{data.frame} created by \code{query_layer_attachments()}. Must contain the columns \code{name}, \code{url}, and \code{contentType}.}
 

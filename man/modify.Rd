@@ -9,7 +9,7 @@
 add_features(
   x,
   .data,
-  chunk_size = 2000,
+  chunk_size = 500,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
@@ -23,14 +23,15 @@ delete_features(
   filter_geom = NULL,
   predicate = "intersects",
   rollback_on_failure = TRUE,
-  token = arc_token(),
-  ...
+  chunk_size = 500,
+  progress = TRUE,
+  token = arc_token()
 )
 
 update_features(
   x,
   .data,
-  chunk_size = 1000,
+  chunk_size = 500,
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
@@ -66,8 +67,6 @@ query results based on a predicate function.}
 \item{predicate}{Spatial predicate to use with \code{filter_geom}. Default
 \code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
 \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
-
-\item{...}{additional query parameters passed to the API.}
 }
 \value{
 \itemize{

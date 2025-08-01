@@ -48,7 +48,7 @@ every feature available. Unused at the moment.}
 
 \item{page_size}{the maximum number of features to return per request. Useful when requests return a 500 error code. See Details.}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 An sf object, or a data.frame
