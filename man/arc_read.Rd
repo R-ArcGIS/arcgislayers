@@ -60,7 +60,7 @@ supplied.}
 \item \code{"replace"}: field alias values replace existing column names. \code{col_names}
 }}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 An sf object, a \code{data.frame}, or an object of class \code{SpatRaster}.

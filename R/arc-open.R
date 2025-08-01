@@ -9,7 +9,7 @@
 #'  `r lifecycle::badge("experimental")`
 #'
 #' @param url The url of the remote resource. Must be of length one.
-#' @inheritParams arc_item
+#' @inheritParams arcgisutils::arc_item
 #'
 #' @seealso arc_select arc_raster
 #' @export
@@ -17,6 +17,10 @@
 #' Depending on item ID or URL returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
 #' @examples
 #' \dontrun{
+#'
+#' # FeatureServer ID
+#' arc_open("3b7221d4e47740cab9235b839fa55cd7")
+#'
 #' # FeatureLayer
 #' furl <- paste0(
 #'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
@@ -82,6 +86,16 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
   # parse the provided url
   info <- arc_url_parse(url)
 
+  if (is.null(info$type)) {
+    cli::cli_abort(
+      c(
+        "!" = "Unable to open the provided url or item ID.",
+        "i" = "If you think this an error, please create an issue:",
+        "{.url https://github.com/r-arcgis/arcgislayers/issues/new}"
+      )
+    )
+  }
+
   switch(
     info$type,
     "FeatureServer" = {
@@ -145,7 +159,7 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
     "webapp" = arc_item(info$query$id, host = host, token = token),
     cli::cli_abort(
       c(
-        "Service type {.val {layer_class}} is not supported.",
+        "Service type {.val {info$type}} is not supported at this time.",
         "i" = "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
       )
     )

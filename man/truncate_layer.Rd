@@ -15,7 +15,7 @@ larger datasets.}
 \item{attachment_only}{default \code{FALSE}. Deletes all the attachments for this
 layer. None of the layer features will be deleted when \code{TRUE}.}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 a named list with the name "success" and a value of \code{TRUE} or \code{FALSE}

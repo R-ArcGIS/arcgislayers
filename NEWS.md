@@ -4,10 +4,11 @@
 
 - `update_features()` is now parallelized and sends updates in chunks see `chunk_size` argument and `progress` arguments. The return type is now a `data.frame` and not a list with `updateResults`
 - `delete_features()` is now parallelized and deletes in chunks. See above. 
-- `{arcgislayers}` now depends on R 4.1 or higher.
+- `{arcgislayers}` now depends on R 4.2 or higher.
 
 ## New features
 
+- `arc_open()` now works with item IDs or a variety of URLs such as item, user, group, and more <https://github.com/R-ArcGIS/arcgislayers/pull/275>
 - `add_definition()` (#178), `update_definition()` (#127), and `delete_definition()` functions for FeatureServer and FeatureLayer objects.
 
 ## Bug Fixes

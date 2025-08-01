@@ -127,3 +127,8 @@ test_that("arc_open(): generic item support", {
     expect_equal(class(item), all_classes[[i]])
   }
 })
+
+
+test_that("arc_open(): informative error with unsupported type", {
+  expect_error(arc_open("https://www.google.com/"))
+})

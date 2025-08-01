@@ -20,7 +20,7 @@ delete_definition(x, ..., async = FALSE, token = arc_token())
 \item{async}{Default \code{FALSE}. If \code{TRUE}, support asynchronous processing for
 the request.}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 If \code{async = FALSE}, return an updated "FeatureServer" or "FeatureLayer" object with the added, updated, or deleted definitions. If \code{async = TRUE}, the input Feature Layer or Feature Server object \code{x} is returned as is.

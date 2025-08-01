@@ -4,15 +4,17 @@
 \alias{arc_open}
 \title{Open connection to remote resource}
 \usage{
-arc_open(url, token = arc_token())
+arc_open(url, host = arc_host(), token = arc_token())
 }
 \arguments{
 \item{url}{The url of the remote resource. Must be of length one.}
 
-\item{token}{your authorization token.}
+\item{host}{default \code{"https://www.arcgis.com"}}
+
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
-Depending on the provided URL returns a \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}. Each of these objects is a named list containing the properties of the service.
+Depending on item ID or URL returns a \code{PortalItem}, \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}, \code{GeocodeServer}, among other. Each of these objects is a named list containing the properties of the service.
 }
 \description{
 Provided a URL, create an object referencing the remote resource.
@@ -26,6 +28,10 @@ To extract data from the remote resource utilize \code{\link[=arc_select]{arc_se
 }
 \examples{
 \dontrun{
+
+# FeatureServer ID
+arc_open("3b7221d4e47740cab9235b839fa55cd7")
+
 # FeatureLayer
 furl <- paste0(
   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
