@@ -90,7 +90,7 @@ arc_select <- function(
 
   # determine if the layer can query
   can_query <- switch(
-    class(x),
+    class(x)[1],
     "FeatureLayer" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "Table" = grepl("query", x[["capabilities"]], ignore.case = TRUE),
     "ImageServer" = x[["supportsAdvancedQueries"]],
