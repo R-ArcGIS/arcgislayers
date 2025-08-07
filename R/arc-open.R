@@ -66,7 +66,13 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
 
     item <- rlang::try_fetch(
       arc_item(url, host, token),
-      error = function(cnd) cli::cli_abort(e_msg, call = rlang::caller_call(2))
+      error = function(cnd) {
+        cli::cli_abort(
+          c(e_msg, cnd$message),
+          call = rlang::caller_call(2),
+          trace = cnd$trace
+        )
+      }
     )
 
     if (is.null(item$url)) {
@@ -80,7 +86,7 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
     }
 
     # otherwise we fetch the url from the new item
-    url <- item$url
+    url <- URLencode(item$url)
   }
 
   # parse the provided url
@@ -136,7 +142,7 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
       }
 
       # if there is a URL we're going to recurse
-      arc_open(item[["url"]], host = host, token = token)
+      arc_open(URLencode(item[["url"]]), host = host, token = token)
     },
     "user" = arc_user(info$query$user, host = host, token = token),
     "group" = arc_group(info$query$id, host = host, token = token),
