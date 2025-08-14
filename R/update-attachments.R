@@ -2,6 +2,7 @@
 
 update_attachments <- function(
   x,
+  feature_id,
   attachment_id,
   path,
   .progress = TRUE,
@@ -9,6 +10,8 @@ update_attachments <- function(
 ) {
   # ensure it is a feature service
   obj_check_layer(x)
+
+  # FIXME check feature_id variable
 
   if (
     !rlang::is_character(attachment_id) && !rlang::is_integer(attachment_id)
@@ -51,17 +54,17 @@ update_attachments <- function(
   for (i in seq_len(n)) {
     f <- curl::form_file(path[i], name = basename(path[i]))
     aid <- attachment_id[i]
+    fid <- feature_id[i]
     req <- arc_base_req(
       url,
-      path = "updateAttachments",
-      token = arc_token()
+      path = c(fid, "updateAttachment"),
+      token = token,
+      query = c(f = "json")
     ) |>
       httr2::req_body_multipart(
         attachmentId = as.character(aid),
         attachment = f,
-        f = "json"
       )
-
     all_reqs[[i]] <- req
   }
 
@@ -72,21 +75,31 @@ update_attachments <- function(
     on_error = "continue"
   )
 
-  all_resps_body <- lapply(all_resps, \(.x) {
-    r <- httr2::resp_body_string(.x)
-    cnd <- catch_error(r)
+  all_resps_body <- lapply(
+    httr2::resps_successes(all_resps),
+    \(.x) {
+      r <- httr2::resp_body_string(.x)
+      cnd <- catch_error(r)
 
-    if (rlang::is_condition(cnd)) {
-      cnd$call <- rlang::caller_call(2)
-      print(cnd)
+      if (rlang::is_condition(cnd)) {
+        cnd$call <- rlang::caller_call(2)
+        print(cnd)
+        return(NULL)
+      }
+      as.data.frame(compact(RcppSimdJson::fparse(r)[[1]]))
     }
-    RcppSimdJson::fparse(r)
-  })
+  )
+
+  res <- rbind_results(all_resps_body)
 
   errors <- httr2::resps_failures(all_resps)
   n_errs <- length(errors)
   if (n_errs > 0) {
-    cli::cli_warn("{n_errs} occured. Returning error responses")
-    return(errors)
+    cli::cli_warn(
+      "{n_errs} occured. Error responses are stored in the `errors` attribute"
+    )
+    attr(res, "errors") <- errors
   }
+
+  res
 }
