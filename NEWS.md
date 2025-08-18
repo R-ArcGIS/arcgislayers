@@ -1,5 +1,7 @@
 # arcgislayers (development)
 
+- ✨ New `update_attachments()` function modifies a feature service's attachments <https://github.com/R-ArcGIS/arcgislayers/pull/277>
+
 ## Breaking changes
 
 - `update_features()` is now parallelized and sends updates in chunks see `chunk_size` argument and `progress` arguments. The return type is now a `data.frame` and not a list with `updateResults`
