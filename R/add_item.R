@@ -139,7 +139,6 @@ add_item <- function(
       categories = categories,
       type = "Feature Collection",
       async = async,
-      url = host,
       f = "json"
     )
   )
