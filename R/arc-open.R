@@ -1,6 +1,6 @@
 #' Open connection to remote resource
 #'
-#' Provided a URL, create an object referencing the remote resource.
+#' Provided a URL or item ID, create an object referencing the remote resource.
 #' The resultant object acts as a reference to the remote data source.
 #'
 #' To extract data from the remote resource utilize [`arc_select()`] for objects of class
@@ -8,25 +8,32 @@
 #'
 #'  `r lifecycle::badge("experimental")`
 #'
-#' @param url The url of the remote resource. Must be of length one.
+#' @param url The URL or item ID of the remote resource. Must be of length one.
 #' @inheritParams arcgisutils::arc_item
 #'
 #' @seealso arc_select arc_raster
 #' @export
 #' @returns
-#' Depending on item ID or URL returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
+#' Depending on URL or item ID returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
 #' @examples
 #' \dontrun{
 #'
-#' # FeatureServer ID
+#' # FeatureServer - from item ID
 #' arc_open("3b7221d4e47740cab9235b839fa55cd7")
 #'
-#' # FeatureLayer
+#' # FeatureServer - from service URL
 #' furl <- paste0(
 #'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
 #'   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
 #' )
 #'
+#' arc_open(furl)
+#'  
+#' # FeatureServer - from item URL
+#' furl <- paste0(
+#'   "https://maps.arcgis.com/home/item.html?id=3b7221d4e47740cab9235b839fa55cd7"
+#' )
+#' 
 #' arc_open(furl)
 #'
 #' # Table
