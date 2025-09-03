@@ -2,12 +2,12 @@
 % Please edit documentation in R/arc-open.R
 \name{arc_open}
 \alias{arc_open}
-\title{Open connection to remote resource}
+\title{Access a Data Service or Portal Item}
 \usage{
 arc_open(url, host = arc_host(), token = arc_token())
 }
 \arguments{
-\item{url}{The url of the remote resource. Must be of length one.}
+\item{url}{a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.}
 
 \item{host}{default \code{"https://www.arcgis.com"}}
 
@@ -17,14 +17,16 @@ arc_open(url, host = arc_host(), token = arc_token())
 Depending on item ID or URL returns a \code{PortalItem}, \code{FeatureLayer}, \code{Table}, \code{FeatureServer}, \code{ImageServer}, or \code{MapServer}, \code{GeocodeServer}, among other. Each of these objects is a named list containing the properties of the service.
 }
 \description{
-Provided a URL, create an object referencing the remote resource.
-The resultant object acts as a reference to the remote data source.
+Access a resource on ArcGIS Online, Enterprise, or Location Platform.
 }
 \details{
-To extract data from the remote resource utilize \code{\link[=arc_select]{arc_select()}} for objects of class
-\code{FeatureLayer} or \code{Table}. For \code{ImageServer}s, utilize \code{\link[=arc_raster]{arc_raster()}}.
+\itemize{
+\item To read the underlying attribute data from a \code{FeatureLayer}, \code{Table}, or \code{ImageServer} use \code{\link[=arc_select]{arc_select()}}.
+\item If you have a \code{MapServer} or \code{FeatureSever} access the individual layes using \code{\link[=get_layer]{get_layer()}}. For
+\item Use \code{\link[=arc_raster]{arc_raster()}} to get imagery as a terra raster object.
+}
 
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
 \dontrun{
@@ -71,5 +73,5 @@ arc_open(map_url)
 }
 }
 \seealso{
-arc_select arc_raster
+arc_select arc_raster get_layer
 }

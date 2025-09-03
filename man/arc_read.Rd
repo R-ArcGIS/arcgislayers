@@ -18,7 +18,7 @@ arc_read(
 )
 }
 \arguments{
-\item{url}{The url of the remote resource. Must be of length one.}
+\item{url}{a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.}
 
 \item{col_names}{Default \code{TRUE}. Column names or name handling rule.
 \code{col_names} can be \code{TRUE}, \code{FALSE}, \code{NULL}, or a character vector:

@@ -1,6 +1,5 @@
-#' Query and download attachments
+#' Query and Download Feature Service Attachments
 #'
-#' Get metadata about attachments associated with features in a layer.
 #' Query attachment information using `query_layer_attachments()` and
 #' download attachments using `download_attachments()`.
 #'
@@ -324,7 +323,7 @@ download_attachments <- function(
     progress = .progress
   )
 
-  Map(.download_attachment, resps, content_types, out_fps)
+  unlist(Map(.download_attachment, resps, content_types, out_fps))
 }
 
 .download_attachment <- function(.resp, .content_type, .fp) {

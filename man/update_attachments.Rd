@@ -24,10 +24,64 @@ update_attachments(
 a \code{data.frame} with 2 columns returning the status of the update.
 }
 \description{
-Feature Services can contain attachments that are associated with a single feature ID. This function enables you to update the attachments of multiple features at once by generating multiple requests and performing them in parallel.
+Feature Services can contain attachments that are associated with a single feature ID.
+\code{update_features()} enables you to update the attachments of multiple features at once
+by generating multiple update requests and performing them in parallel.
 }
 \details{
-To rename or otherwise an attachment in a Feature Service, you must first download that attachment, modify the file on disk, and then upload it again. This is a limitation of ArcGIS Online and Enterprise. If you'd like to see this changed, please submit a community idea at \href{https://community.esri.com/t5/arcgis-online/ct-p/arcgis-online}{community.esri.com}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+To rename or otherwise modify an attachment in a Feature Service, you must first download
+that attachment, modify the file on disk, and then upload it again. This is a limitation
+of ArcGIS Online and Enterprise. If you'd like to see this changed, please submit a community idea at \href{https://community.esri.com/t5/arcgis-online/ct-p/arcgis-online}{community.esri.com}.
+
+If any requests fail, the requests are added as as the \code{errors} attribute to the resultant \code{data.frame}.
+}
+\examples{
+\dontrun{
+if (interactive()) {
+library(arcgisutils)
+
+# authenticate
+set_arc_token(auth_user())
+
+# open a feature service
+feature_layer <- arc_open("your-item-id") |>
+  # layer ID of the feature service
+  get_layer(0)
+
+# query attachment layer information
+attachments <- query_layer_attachments(feature_layer)
+
+# create a temporary directory
+tmp <- tempdir()
+
+# download attachments to the temporary directory
+download_attachments(attachments, tmp)
+
+# get original paths
+fps <- file.path(tmp, attachments$name)
+
+# prepend attachments with the date
+new_filenames <- paste0(Sys.Date(), "-", basename(attachments$name))
+
+# create new file paths
+new_fps <- file.path(dirname(fps), new_filenames)
+
+# rename the files
+file.rename(fps, new_fps)
+
+# update the attachments
+update_res <- update_attachments(
+  feature_layer,
+  # OID of the feature <> attachment relationship
+  attachments$parentObjectId,
+  # the attachment ID
+  attachments$id,
+  # the path to the attachment on disk
+  new_fps
+)
+}
+}
 }
 \references{
 See \href{https://developers.arcgis.com/rest/services-reference/enterprise/update-attachment/#request-parameters}{API documentation} for more.

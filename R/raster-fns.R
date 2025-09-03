@@ -12,7 +12,7 @@
 #' # use paste to avoid cran note
 #' furl <- paste0(
 #'   "https://di-usfsdata.img.arcgis.com/arcgis/rest/services",
-#'   "/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"
+#'   "/FIA_BIGMAP_2018_Tree_Species_Aboveground_Biomass/ImageServer"
 #' )
 #'
 #' service <- arc_open(furl)

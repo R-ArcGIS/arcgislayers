@@ -1,8 +1,16 @@
 #' Update Feature Service Attachments
 #'
-#' Feature Services can contain attachments that are associated with a single feature ID. This function enables you to update the attachments of multiple features at once by generating multiple requests and performing them in parallel.
+#' Feature Services can contain attachments that are associated with a single feature ID.
+#' `update_features()` enables you to update the attachments of multiple features at once
+#' by generating multiple update requests and performing them in parallel.
 #'
-#' To rename or otherwise an attachment in a Feature Service, you must first download that attachment, modify the file on disk, and then upload it again. This is a limitation of ArcGIS Online and Enterprise. If you'd like to see this changed, please submit a community idea at [community.esri.com](https://community.esri.com/t5/arcgis-online/ct-p/arcgis-online).
+#' @details
+#'  `r lifecycle::badge("experimental")`
+#' To rename or otherwise modify an attachment in a Feature Service, you must first download
+#' that attachment, modify the file on disk, and then upload it again. This is a limitation
+#' of ArcGIS Online and Enterprise. If you'd like to see this changed, please submit a community idea at [community.esri.com](https://community.esri.com/t5/arcgis-online/ct-p/arcgis-online).
+#'
+#' If any requests fail, the requests are added as as the `errors` attribute to the resultant `data.frame`.
 #'
 #' @inheritParams arc_open
 #' @param feature_id a vector of object IDs that corresponds to the feature of the corresponding `attachment_id`.
@@ -10,6 +18,52 @@
 #' @returns a `data.frame` with 2 columns returning the status of the update.
 #' @references See [API documentation](https://developers.arcgis.com/rest/services-reference/enterprise/update-attachment/#request-parameters) for more.
 #' @export
+#' @examples
+#' \dontrun{
+#' if (interactive()) {
+#' library(arcgisutils)
+#'
+#' # authenticate
+#' set_arc_token(auth_user())
+#'
+#' # open a feature service
+#' feature_layer <- arc_open("your-item-id") |>
+#'   # layer ID of the feature service
+#'   get_layer(0)
+#'
+#' # query attachment layer information
+#' attachments <- query_layer_attachments(feature_layer)
+#'
+#' # create a temporary directory
+#' tmp <- tempdir()
+#'
+#' # download attachments to the temporary directory
+#' download_attachments(attachments, tmp)
+#'
+#' # get original paths
+#' fps <- file.path(tmp, attachments$name)
+#'
+#' # prepend attachments with the date
+#' new_filenames <- paste0(Sys.Date(), "-", basename(attachments$name))
+#'
+#' # create new file paths
+#' new_fps <- file.path(dirname(fps), new_filenames)
+#'
+#' # rename the files
+#' file.rename(fps, new_fps)
+#'
+#' # update the attachments
+#' update_res <- update_attachments(
+#'   feature_layer,
+#'   # OID of the feature <> attachment relationship
+#'   attachments$parentObjectId,
+#'   # the attachment ID
+#'   attachments$id,
+#'   # the path to the attachment on disk
+#'   new_fps
+#' )
+#' }
+#' }
 update_attachments <- function(
   x,
   feature_id,
@@ -20,8 +74,6 @@ update_attachments <- function(
 ) {
   # ensure it is a feature service
   obj_check_layer(x)
-
-  # FIXME check feature_id variable
 
   if (
     !rlang::is_character(attachment_id) && !rlang::is_integer(attachment_id)
@@ -98,7 +150,7 @@ update_attachments <- function(
 
   all_resps_body <- lapply(
     httr2::resps_successes(all_resps),
-    \(.x) {
+    function(.x) {
       r <- httr2::resp_body_string(.x)
       cnd <- catch_error(r)
 

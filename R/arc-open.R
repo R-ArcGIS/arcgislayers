@@ -1,17 +1,19 @@
-#' Open connection to remote resource
+#' Access a Data Service or Portal Item
 #'
-#' Provided a URL, create an object referencing the remote resource.
-#' The resultant object acts as a reference to the remote data source.
+#' Access a resource on ArcGIS Online, Enterprise, or Location Platform.
 #'
-#' To extract data from the remote resource utilize [`arc_select()`] for objects of class
-#' `FeatureLayer` or `Table`. For `ImageServer`s, utilize [`arc_raster()`].
+#' @details
+
+#' - To read the underlying attribute data from a `FeatureLayer`, `Table`, or `ImageServer` use [`arc_select()`].
+#' - If you have a `MapServer` or `FeatureSever` access the individual layes using [`get_layer()`]. For
+#' - Use [`arc_raster()`] to get imagery as a terra raster object.
 #'
-#'  `r lifecycle::badge("experimental")`
+#'  `r lifecycle::badge("stable")`
 #'
-#' @param url The url of the remote resource. Must be of length one.
+#' @param url a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.
 #' @inheritParams arcgisutils::arc_item
 #'
-#' @seealso arc_select arc_raster
+#' @seealso arc_select arc_raster get_layer
 #' @export
 #' @returns
 #' Depending on item ID or URL returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
