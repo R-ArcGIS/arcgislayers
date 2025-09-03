@@ -391,7 +391,7 @@ label_layer_fields <- function(
   x
 }
 
-#' Set coded values for FeatureLayer or Table data frame
+#' Encode Domain Values
 #'
 #' [encode_field_values()] can replace column values based on `codedValue`
 #' type field domains from a corresponding `Table` or `FeatureLayer` object
