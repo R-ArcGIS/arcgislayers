@@ -1,6 +1,6 @@
 Package: arcgislayers
 Type: Package
-Title: An Interface to ArcGIS Data Services
+Title: Harness ArcGIS Data Services
 Version: 0.4.0.9000
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
