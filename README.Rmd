@@ -35,13 +35,16 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
+The package `arcgisutils` is part of the `{arcgis}` metapackage. You can install the metapackage from CRAN:
 
-``` r
-install.packages(
-  "arcgis",
-  repos = c("https://r-arcgis.r-universe.dev", "https://cloud.r-project.org")
-)
+```r
+install.packages("arcgis")
+```
+
+To install the development version of `{arcgislayers}` run:
+
+```r
+pak::pak("r-arcgis/arcgislayers")
 ```
 
 ## Usage
@@ -83,7 +86,7 @@ arc_select(county_fl)
 
 You can also use the `fields` argument to select columns or the `where` argument to subset rows.
 
-For example, using a character vector of column names for `fields` and a simple SQL where clause for  `where` you can select counties with population greater than 1,000,000:
+For example, using a character vector of column names for `fields` and a simple SQL where clause for `where` you can select counties with population greater than 1,000,000:
 
 ```{r}
 arc_select(
@@ -132,11 +135,11 @@ res <- arc_raster(
 terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
 ```
 
-## Authorization and publication
+## Authentication and publication
 
-Authorization is not required for reading any public data sources. 
+authentication is not required for reading any public data sources. 
 
-Workflows that require authorization include:
+Workflows that require authentication include:
 
  - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services,
  - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)), and
@@ -145,7 +148,7 @@ Workflows that require authorization include:
 ### Accessing non-public data
 
 The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
-For more information on tokens and authorization functions, see the [authorization article](https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/).
+For more information on tokens and authentication functions, see the [authentication article](https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/).
 
 ### Publishing and modifying services from R
 
@@ -157,4 +160,4 @@ The package includes functions to publish data to an ArcGIS Portal:
 
 There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge).
 
-These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
+These functions all require authentication since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
