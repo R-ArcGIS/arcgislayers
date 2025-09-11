@@ -17,7 +17,7 @@ reference:
       - get_all_layers
       - get_layers
       - get_layer_estimates
-      - list_service_raster_fns
+      - raster_fns
   - title: Publish Services
     contents:
       - create_feature_server

@@ -20,11 +20,10 @@ test_that("use raster functions", {
 })
 
 test_that("list service raster functions", {
-  furl <- "https://di-usfsdata.img.arcgis.com/arcgis/rest/services/FIA_BIGMAP_2018_Species_Aboveground_Biomass/ImageServer"
+  furl <- "https://di-usfsdata.img.arcgis.com/arcgis/rest/services/FIA_BIGMAP_2018_Tree_Species_Aboveground_Biomass/ImageServer"
 
   x <- arc_open(furl)
-  raster_fns <- list_service_raster_fns(x)
-  expect_identical(names(raster_fns), names(raster_fns))
+  raster_fns <- list_raster_fns(x)
   expect_s3_class(raster_fns, "data.frame")
   expect_s3_class(raster_fns, "tbl")
 })
