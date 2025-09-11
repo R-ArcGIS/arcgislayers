@@ -100,12 +100,6 @@ add_layer_definition <- function(
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
 
-  print_definition_values(
-    add_definition,
-    what = class(x),
-    action = "Added"
-  )
-
   if (!async) {
     # Refresh x to include updated definitions
     x <- arc_open(x[["url"]], token = token)
@@ -146,14 +140,6 @@ update_layer_definition <- function(
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
 
-  print_definition_values(
-    # Pull existing service/layer definition values
-    existing = x[names(x) %in% names(update_definition)],
-    updated = update_definition,
-    what = class(x),
-    action = "Updated"
-  )
-
   if (!async) {
     # Refresh x to include updated definitions
     x <- arc_open(x[["url"]], token = token)
@@ -193,12 +179,6 @@ delete_layer_definition <- function(
 
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
-
-  print_definition_values(
-    delete_definition,
-    what = class(x),
-    action = "Deleted"
-  )
 
   if (!async) {
     # Refresh x to include deleted definitions
