@@ -30,7 +30,9 @@ list_raster_fns <- function(
   if (!x$allowRasterFunction) {
     cli::cli_abort("{.arg arg} does not support raster functions")
   }
-  data_frame(x$rasterFunctionInfos)
+  res <- data_frame(x$rasterFunctionInfos)
+  res[["help"]][!nzchar(res[["help"]])] <- NA_character_
+  res
 }
 
 #' @export
