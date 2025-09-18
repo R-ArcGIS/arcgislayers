@@ -62,7 +62,7 @@ query_layer_attachments <- function(
 
   # ensure that attachments are available.
   if (!x[["hasAttachments"]]) {
-    cli::cli_abort("{.arg layer} does not support attachments.")
+    cli::cli_alert_info("{.arg layer} does not support attachments.")
   }
 
   # check that only one of definition_expression, object_ids, and global_ids is provided
