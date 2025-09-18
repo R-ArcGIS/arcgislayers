@@ -9,7 +9,7 @@ arc_open(url, host = arc_host(), token = arc_token())
 \arguments{
 \item{url}{a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.}
 
-\item{host}{default \code{"https://www.arcgis.com"}}
+\item{host}{default \code{"https://www.arcgis.com"}. The host of your ArcGIS Portal.}
 
 \item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }

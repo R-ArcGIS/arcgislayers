@@ -11,8 +11,9 @@
 #' of ArcGIS Online and Enterprise. If you'd like to see this changed, please submit a community idea at [community.esri.com](https://community.esri.com/t5/arcgis-online/ct-p/arcgis-online).
 #'
 #' If any requests fail, the requests are added as as the `errors` attribute to the resultant `data.frame`.
-#'
+#' @param path a vecetor of the same length as `feature_id` indicating where the attachment exists.
 #' @inheritParams arc_open
+#' @inheritParams download_attachments
 #' @param feature_id a vector of object IDs that corresponds to the feature of the corresponding `attachment_id`.
 #' @param attachment_id the ID of the attachment—this corresponds to the `id` column returned from `query_layer_attachments()`
 #' @returns a `data.frame` with 2 columns returning the status of the update.

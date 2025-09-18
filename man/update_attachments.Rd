@@ -14,9 +14,15 @@ update_attachments(
 )
 }
 \arguments{
+\item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
+
 \item{feature_id}{a vector of object IDs that corresponds to the feature of the corresponding \code{attachment_id}.}
 
 \item{attachment_id}{the ID of the attachment—this corresponds to the \code{id} column returned from \code{query_layer_attachments()}}
+
+\item{path}{a vecetor of the same length as \code{feature_id} indicating where the attachment exists.}
+
+\item{.progress}{default \code{TRUE.} Whether a progress bar should be provided.}
 
 \item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }

@@ -65,7 +65,6 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
 
   if (!is_url(url)) {
     e_msg <- "Expected an item ID or url to a portal item."
-
     item <- rlang::try_fetch(
       arc_item(url, host, token),
       error = function(cnd) {
@@ -88,12 +87,20 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
     }
 
     # otherwise we fetch the url from the new item
-    url <- URLencode(item$url)
+    url <- utils::URLencode(item$url)
   }
 
   # parse the provided url
   info <- arc_url_parse(url)
 
+  # if the type is null we will check if the $path is not NULL **and** if it contains /service/
+  if (!is.null(info$path) && is.null(info$type)) {
+    if (grepl("services", info$path)) {
+      return(as_layer_class(url, token, NULL))
+    }
+  }
+
+  # if type is not present then we error
   if (is.null(info$type)) {
     cli::cli_abort(
       c(
@@ -107,6 +114,7 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
   # get the first element if since it can have more than one type
   # for service folders
   layer_type <- info$type[1]
+
   switch(
     layer_type,
     "FeatureServer" = {
@@ -144,7 +152,7 @@ arc_open <- function(url, host = arc_host(), token = arc_token()) {
       }
 
       # if there is a URL we're going to recurse
-      arc_open(URLencode(item[["url"]]), host = host, token = token)
+      arc_open(utils::URLencode(item[["url"]]), host = host, token = token)
     },
     "user" = arc_user(info$query$user, host = host, token = token),
     "group" = arc_group(info$query$id, host = host, token = token),

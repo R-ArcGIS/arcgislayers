@@ -1,7 +1,7 @@
-Package: arcgislayers
 Type: Package
+Package: arcgislayers
 Title: Harness ArcGIS Data Services
-Version: 0.4.0.9000
+Version: 0.5.0
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9910-865X")),
@@ -19,10 +19,13 @@ Description: Enables users of 'ArcGIS Enterprise', 'ArcGIS Online', or
     data via ArcGIS location services REST API endpoints
     <https://developers.arcgis.com/rest/>.
 License: Apache License (>= 2)
-Encoding: UTF-8
-LazyData: true
+URL: https://developers.arcgis.com/r-bridge,
+    https://github.com/R-ArcGIS/arcgislayers
+BugReports: https://github.com/R-ArcGIS/arcgislayers/issues
+Depends: 
+    R (>= 4.2.0)
 Imports: 
-    arcgisutils (>= 0.3.3.9000),
+    arcgisutils (>= 0.4.0),
     arcpbf (>= 0.1.5),
     cli,
     httr2 (>= 1.0.5),
@@ -33,14 +36,13 @@ Imports:
     sf,
     terra,
     utils
-Depends: 
-    R (>= 4.2.0)
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
-    vctrs
+    vctrs,
+    curl,
+    dplyr
 Config/testthat/edition: 3
-URL: https://developers.arcgis.com/r-bridge,
-    https://github.com/R-ArcGIS/arcgislayers
-BugReports: https://github.com/R-ArcGIS/arcgislayers/issues
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

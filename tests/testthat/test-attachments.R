@@ -22,7 +22,7 @@ test_that("query_layer_attachments() filter on attachment field", {
   att <-
     query_layer_attachments(
       layer,
-      attachments_definition_expression = "att_name like 'image0%'"
+      attachments_definition_expression = "att_name like '%image0%'"
     )
   expect_true(all(grepl("image0*", att$name)))
 })
@@ -33,7 +33,7 @@ test_that("download_attachments()", {
   att <-
     query_layer_attachments(
       layer,
-      attachments_definition_expression = "att_name like 'image0%'"
+      attachments_definition_expression = "att_name like '%image0%'"
     )
   res <- download_attachments(att, tmp, overwrite = TRUE)
   expect_true(all(basename(unlist(res)) %in% list.files(tmp)))
