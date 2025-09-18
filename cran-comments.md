@@ -1,11 +1,10 @@
 ## R CMD check results
 
-This is a maintenance release.
+This is a minor version bump of arcgislayers which relies on recently published arcigsutils 0.4.0.
+There are minor breaking changes which should not affect any reverse dependencies.
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 note
 
 - `\dontrun{}` is used in places where active internet connection is required or user credentials are required
-- This package depends on `arcpbf` which has a minimum supported rust version
-of 1.70. 
-- This package's check **will fail** on CRAN's Fedora machines. 
+
 
