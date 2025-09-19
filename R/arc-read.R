@@ -500,7 +500,7 @@ encode_field_values <- function(
         miss_val <- miss_val | bad_val
       } else if (!rlang::is_empty(bad_val_unique)) {
         # otherwise warn on invalid values that are not "" or " " (too noisy otherwise)
-        cli::cli_inform(
+        cli::cli_bullets(
           c(
             "!" = "{.field {col}} contains {length(bad_val_unique)}
             value{?s} that {?is/are} not {?a valid code/valid codes}:
