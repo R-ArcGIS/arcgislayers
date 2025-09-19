@@ -44,7 +44,7 @@ If not specified, uses the CRS of \code{x}.}
 
 \item{...}{additional key value pairs to be passed to \code{\link[httr2:req_body]{httr2::req_body_form()}}.}
 
-\item{raster_fn}{a scalar string with the name of the service raster function. See \code{\link[=list_service_raster_fns]{list_service_raster_fns()}} for available raster functions.}
+\item{raster_fn}{a scalar string with the name of the service's raster function. See \code{\link[=list_raster_fns]{list_raster_fns()}} for available raster functions.}
 
 \item{token}{default \code{arc_token()} authorization token.}
 }

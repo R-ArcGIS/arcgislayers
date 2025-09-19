@@ -139,13 +139,18 @@ add_item <- function(
       categories = categories,
       type = "Feature Collection",
       async = async,
-      url = host,
       f = "json"
     )
   )
 
   req <- arc_base_req(req_url, token)
   req_body <- httr2::req_body_form(req, !!!req_fields)
+
+  # debug print
+  # if (isTRUE(getOption("arcgislayers.debug_curl"))) {
+  #   cat(httr2::req_as_curl(req_body), "\n", "\n")
+  # }
+
   resp <- httr2::req_perform(req_body)
   parsed <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
   detect_errors(parsed)
@@ -238,6 +243,10 @@ publish_item <- function(
     publishParameters = jsonify::to_json(publish_params, unbox = TRUE),
     f = "json",
   )
+
+  # if (isTRUE(getOption("arcgislayers.debug_curl"))) {
+  #   cat(httr2::httr2_translate(req))
+  # }
 
   resp <- httr2::req_perform(req)
   res <- RcppSimdJson::fparse(httr2::resp_body_string(resp))

@@ -1,22 +1,28 @@
-#' Open connection to remote resource
+#' Access a Data Service or Portal Item
 #'
-#' Provided a URL, create an object referencing the remote resource.
-#' The resultant object acts as a reference to the remote data source.
+#' Access a resource on ArcGIS Online, Enterprise, or Location Platform.
 #'
-#' To extract data from the remote resource utilize [`arc_select()`] for objects of class
-#' `FeatureLayer` or `Table`. For `ImageServer`s, utilize [`arc_raster()`].
+#' @details
+
+#' - To read the underlying attribute data from a `FeatureLayer`, `Table`, or `ImageServer` use [`arc_select()`].
+#' - If you have a `MapServer` or `FeatureSever` access the individual layes using [`get_layer()`]. For
+#' - Use [`arc_raster()`] to get imagery as a terra raster object.
 #'
-#'  `r lifecycle::badge("experimental")`
+#'  `r lifecycle::badge("stable")`
 #'
-#' @param url The url of the remote resource. Must be of length one.
-#' @param token your authorization token.
+#' @param url a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.
+#' @inheritParams arcgisutils::arc_item
 #'
-#' @seealso arc_select arc_raster
+#' @seealso arc_select arc_raster get_layer
 #' @export
 #' @returns
-#' Depending on the provided URL returns a `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`. Each of these objects is a named list containing the properties of the service.
+#' Depending on item ID or URL returns a `PortalItem`, `FeatureLayer`, `Table`, `FeatureServer`, `ImageServer`, or `MapServer`, `GeocodeServer`, among other. Each of these objects is a named list containing the properties of the service.
 #' @examples
 #' \dontrun{
+#'
+#' # FeatureServer ID
+#' arc_open("3b7221d4e47740cab9235b839fa55cd7")
+#'
 #' # FeatureLayer
 #' furl <- paste0(
 #'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
@@ -54,64 +60,142 @@
 #'
 #' arc_open(map_url)
 #' }
-arc_open <- function(url, token = arc_token()) {
-  check_url(url)
+arc_open <- function(url, host = arc_host(), token = arc_token()) {
+  check_string(url, allow_empty = FALSE)
 
-  # parse url query and strip from url if query matches default
-  query <- parse_url_query(url) %||% list()
-  url <- clear_url_query(url)
+  if (!is_url(url)) {
+    e_msg <- "Expected an item ID or url to a portal item."
+    item <- rlang::try_fetch(
+      arc_item(url, host, token),
+      error = function(cnd) {
+        cli::cli_abort(
+          c(e_msg, cnd$message),
+          call = rlang::caller_call(2),
+          trace = cnd$trace
+        )
+      }
+    )
 
-  # extract layer metadata
-  meta <- fetch_layer_metadata(url, token)
+    if (is.null(item$url)) {
+      # return a portal item if the url is null
+      return(item)
+    }
 
-  # set url for later use
-  meta[["url"]] <- url
+    # return the portal item if the url type is null
+    if (is.null(arc_url_type(item$url))) {
+      return(item)
+    }
 
-  # layer class
-  layer_class <- gsub("\\s", "", meta[["type"]])
+    # otherwise we fetch the url from the new item
+    url <- utils::URLencode(item$url)
+  }
 
-  # if it's missing it means it's a server type. Need to deduce.
-  if (length(layer_class) == 0) {
-    if (any(grepl("pixel|band|raster", names(meta)))) {
-      layer_class <- "ImageServer"
-    } else if (grepl("MapServer", meta[["url"]])) {
-      layer_class <- "MapServer"
-    } else if (
-      "layers" %in% names(meta) || grepl("FeatureServer", meta[["url"]])
-    ) {
-      layer_class <- "FeatureServer"
-    } else {
-      return(meta)
+  # parse the provided url
+  info <- arc_url_parse(url)
+
+  # if the type is null we will check if the $path is not NULL **and** if it contains /service/
+  if (!is.null(info$path) && is.null(info$type)) {
+    if (grepl("services", info$path)) {
+      return(as_layer_class(url, token, NULL))
     }
   }
 
-  # construct the appropriate class based on the resultant `layer_class`
-  res <- switch(
-    layer_class,
-    "FeatureLayer" = structure(
-      meta,
-      class = layer_class,
-      query = query
-    ),
-    "Table" = structure(
-      meta,
-      class = layer_class,
-      query = query
-    ),
-    "FeatureServer" = structure(
-      meta,
-      class = layer_class
-    ),
-    "ImageServer" = structure(meta, class = layer_class),
-    "MapServer" = structure(meta, class = layer_class),
-    "GroupLayer" = structure(meta, class = layer_class),
+  # if type is not present then we error
+  if (is.null(info$type)) {
     cli::cli_abort(
       c(
-        "Service type {.val {layer_class}} is not supported.",
+        "!" = "Unable to open the provided url or item ID.",
+        "i" = "If you think this an error, please create an issue:",
+        "{.url https://github.com/r-arcgis/arcgislayers/issues/new}"
+      )
+    )
+  }
+
+  # get the first element if since it can have more than one type
+  # for service folders
+  layer_type <- info$type[1]
+
+  switch(
+    layer_type,
+    "FeatureServer" = {
+      as_layer_class(clear_url_query(url), token, layer_type)
+    },
+    "MapServer" = as_layer_class(
+      clear_url_query(url),
+      token,
+      layer_type
+    ),
+    "ImageServer" = as_layer_class(
+      clear_url_query(url),
+      token,
+      layer_type
+    ),
+    "SceneServer" = as_layer_class(url, token, layer_type),
+    "GeocodeServer" = as_layer_class(url, token, layer_type),
+    # FIXME, unclear how to use this...
+    "GeometryServer" = as_layer_class(url, token, layer_type),
+    # FIXME, unclear how to use this...
+    "GPServer" = as_layer_class(url, token, layer_type),
+    "item" = {
+      # if we have an item url, we fetch the item
+      item <- arc_item(info$query$id, host = host, token = token)
+
+      # if there is no associated url we return the item
+      if (is.null(item[["url"]])) {
+        return(item)
+      }
+
+      url_type <- arc_url_type(item[["url"]])
+
+      if (is.null(url_type)) {
+        return(item)
+      }
+
+      # if there is a URL we're going to recurse
+      arc_open(utils::URLencode(item[["url"]]), host = host, token = token)
+    },
+    "user" = arc_user(info$query$user, host = host, token = token),
+    "group" = arc_group(info$query$id, host = host, token = token),
+    "webscene" = arc_item(info$query$webscene, host = host, token = token),
+    "app" = arc_item(info$query$appid, host = host, token = token),
+    "notebook" = arc_item(info$query$id, host = host, token = token),
+    "experience" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      exp_id <- path_components[which(path_components == "experience") + 1]
+      arc_item(exp_id, host = host, token = token)
+    },
+    "storymap" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      sm_id <- path_components[which(path_components == "stories") + 1]
+      arc_item(sm_id, host = host, token = token)
+    },
+    "dashboard" = {
+      path_components <- strsplit(info$path, "/")[[1]]
+      db_id <- path_components[which(path_components == "dashboards") + 1]
+      arc_item(db_id, host = host, token = token)
+    },
+    "datapipeline" = arc_item(info$query$item, host = host, token = token),
+    "webapp" = arc_item(info$query$id, host = host, token = token),
+    "service_folder" = as_layer_class(url, token = token),
+    cli::cli_abort(
+      c(
+        "Service type {.val {layer_type}} is not supported at this time.",
         "i" = "Please report this at {.url https://github.com/R-ArcGIS/arcgislayers/issues}"
       )
     )
   )
+}
 
-  res
+#' Fetch metadata and an appropriate class
+#' @noRd
+as_layer_class <- function(url, token, class = NULL) {
+  meta <- fetch_layer_metadata(url, token)
+  meta[["url"]] <- url
+  cls <- if (is.null(meta[["type"]])) {
+    NULL
+  } else {
+    gsub("\\s+", "", meta[["type"]])
+  }
+
+  structure(meta, class = c(cls %||% class, "list"))
 }

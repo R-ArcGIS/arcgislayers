@@ -2,7 +2,7 @@
 % Please edit documentation in R/arc-read.R
 \name{encode_field_values}
 \alias{encode_field_values}
-\title{Set coded values for FeatureLayer or Table data frame}
+\title{Encode Domain Values}
 \usage{
 encode_field_values(
   .data,

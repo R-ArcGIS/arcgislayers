@@ -29,7 +29,7 @@ test_that("arc_select(): respects `n_max`", {
 
   flayer <- arc_open(furl)
 
-  res <- arc_select(flayer, n_max = 999)
+  res <- suppressWarnings(arc_select(flayer, n_max = 999))
 
   expect_identical(nrow(res), 999L)
 })
@@ -61,7 +61,7 @@ test_that("arc_select(): respects `...`", {
 })
 
 test_that("arc_select(): supports multiple filter_geom input types", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_State_Boundaries/FeatureServer/0"
 
@@ -130,7 +130,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
 })
 
 test_that("arc_select(): warns for Table layers and provides message for MULTIPOLYGON input", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   turl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
 
@@ -147,7 +147,7 @@ test_that("arc_select(): warns for Table layers and provides message for MULTIPO
 
 
 test_that("arc_select(): errors for invalid filter_geom inputs", {
-  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer"
 

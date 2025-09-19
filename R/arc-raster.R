@@ -13,7 +13,7 @@
 #'  If not specified, uses the CRS of `x`.
 #' @param format default `"tiff"`. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".
 #' @param ... additional key value pairs to be passed to [`httr2::req_body_form()`].
-#' @param raster_fn a scalar string with the name of the service raster function. See [`list_service_raster_fns()`] for available raster functions.
+#' @param raster_fn a scalar string with the name of the service's raster function. See [`list_raster_fns()`] for available raster functions.
 #' @param width default `NULL`. Cannot exceed `x[["maxImageWidth"]]`.
 #' @param height default `NULL`. Cannot exceed `x[["maxImageHeight"]]`.
 #' @param token default `arc_token()` authorization token.

@@ -134,56 +134,6 @@ coalesce_crs <- function(x, y) {
   }
 }
 
-#' Does x match the pattern of a URL?
-#' @noRd
-is_url <- function(x, pattern = NULL, ...) {
-  if (
-    !rlang::is_vector(x) || rlang::is_empty(x) || !rlang::is_scalar_character(x)
-  ) {
-    return(FALSE)
-  }
-
-  url_pattern <-
-    "http[s]?://(?:[[:alnum:]]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-
-  if (is.null(pattern)) {
-    return(grepl(url_pattern, x, ...))
-  }
-
-  grepl(url_pattern, x, ...) & grepl(pattern, x, ...)
-}
-
-#' Check if x is a valid URL
-#' @noRd
-check_url <- function(
-  x,
-  pattern = NULL,
-  ...,
-  allow_null = FALSE,
-  arg = rlang::caller_arg(url),
-  call = rlang::caller_env()
-) {
-  if (allow_null && is.null(x)) {
-    return(invisible(NULL))
-  }
-
-  if (is_url(x, pattern = pattern)) {
-    return(invisible(NULL))
-  }
-
-  check_string(
-    x,
-    allow_empty = FALSE,
-    allow_null = allow_null,
-    arg = arg,
-    call = call
-  )
-
-  cli::cli_abort(
-    "{.arg {arg}} must be a valid url, not {.obj_type_friendly {x}}.",
-    call = call
-  )
-}
 
 #' Check if x and y share the same coordiante reference system
 #' @noRd

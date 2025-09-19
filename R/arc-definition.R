@@ -1,11 +1,21 @@
-#' Add, update, or delete a Feature Layer, Table, or Feature Service definition
+#' Add, update, or delete a Feature Layer definition
 #'
-#' [add_definition()] and [update_definition()] support adding or updating
-#' definition properties for a hosted Feature Service or Feature Layer.
-#' [delete_definition()] supports deleting a definition. Examples of properties
-#' include the layer name, renderer, or field properties. Named parameters
-#' passed to `...` must have names matching supported definitions. Parameters
-#' are converted to a JSON `addToDefinition`, `updateDefinition`, or
+#' Each layer of a feature service is defined by a "definition." The definition
+#' describes the service such as its fields, symbology, indexes and more.
+#'
+#' @details
+#'
+#'  `r lifecycle::badge("experimental")`
+#'
+#' - Use [add_layer_definition()] for adding fields to a feature service or otherwise
+#' adding to the definition of a feature layer.
+#' - Use [update_layer_definition()] to modify existing aspects of the definition properties.
+#' - Use [delete_layer_definition()] to delete properties from the layer definition.
+#'
+#' Examples of properties include the layer name, renderer, or field properties. Named parameters
+#' passed to `...` must have names matching supported definitions.
+
+#' Parameters are converted to a JSON `addToDefinition`, `updateDefinition`, or
 #' `deleteFromDefinition` query parameter using [jsonify::to_json()].
 #'
 #' See the ArcGIS REST API documentation on Administer Hosted Feature Services
@@ -27,28 +37,29 @@
 #' @rdname definition
 #' @export
 #' @examples
+#' \dontrun{
 #' if (interactive()) {
 #' # authenticate
 #' set_arc_token(auth_code())
 #'
 #' # publish a layer
-#' published <- publish_layer(iris, "Iris Test")
+#' published <- publish_layer(penguins, "Penguin Test")
 #'
-#' iris_fl <- arc_open(published$services$encodedServiceURL) |>
+#' penguin_fl <- arc_open(published$services$encodedServiceURL) |>
 #'   get_layer(0)
 #'
 #' # Update the name of the layer
-#' update_definition(
-#'   iris_fl,
+#' update_layer_definition(
+#'   penguin_fl,
 #'   name = "New Layer Name"
 #' )
 #'
 #' # add an index on the the layer
-#' add_definition(
+#' add_layer_definition(
 #'   penguin_fl,
 #'   indexes = list(
 #'     name = "index1",
-#'     fields = "Species",
+#'     fields = "species",
 #'     isUnique = FALSE,
 #'     isAscending = FALSE,
 #'     description = "Example index"
@@ -56,10 +67,11 @@
 #' )
 #'
 #' # refresh the layer to get the updates
-#' iris_fl <- refresh_layer(pengiris_flin_fl)
-#' iris_fl[["indexes"]]
+#' penguin_fl <- refresh_layer(penguin_fl)
+#' penguin_fl[["indexes"]]
 #' }
-add_definition <- function(
+#' }
+add_layer_definition <- function(
   x,
   ...,
   async = FALSE,
@@ -88,12 +100,6 @@ add_definition <- function(
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
 
-  print_definition_values(
-    add_definition,
-    what = class(x),
-    action = "Added"
-  )
-
   if (!async) {
     # Refresh x to include updated definitions
     x <- arc_open(x[["url"]], token = token)
@@ -104,7 +110,7 @@ add_definition <- function(
 
 #' @rdname definition
 #' @export
-update_definition <- function(
+update_layer_definition <- function(
   x,
   ...,
   async = FALSE,
@@ -134,25 +140,17 @@ update_definition <- function(
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
 
-  print_definition_values(
-    # Pull existing service/layer definition values
-    existing = x[names(x) %in% names(update_definition)],
-    updated = update_definition,
-    what = class(x),
-    action = "Updated"
-  )
-
   if (!async) {
     # Refresh x to include updated definitions
     x <- arc_open(x[["url"]], token = token)
   }
 
-  invisible(x)
+  x
 }
 
 #' @rdname definition
 #' @export
-delete_definition <- function(
+delete_layer_definition <- function(
   x,
   ...,
   async = FALSE,
@@ -182,18 +180,12 @@ delete_definition <- function(
   resp <- httr2::req_perform(req)
   check_resp_body_error(resp = resp)
 
-  print_definition_values(
-    delete_definition,
-    what = class(x),
-    action = "Deleted"
-  )
-
   if (!async) {
     # Refresh x to include deleted definitions
     x <- arc_open(x[["url"]], token = token)
   }
 
-  invisible(x)
+  x
 }
 
 #' Print existing and (optionally) updated definition values

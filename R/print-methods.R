@@ -121,7 +121,7 @@ print.FeatureServer <- function(x, n, ...) {
 
   header <- sprintf(
     "<%s <%s, %s>>",
-    class(x),
+    class(x)[1],
     fts_lbl,
     tbls_lbl
   )
@@ -197,7 +197,7 @@ print.MapServer <- function(x, ...) print.FeatureServer(x, ...)
 print.ImageServer <- function(x, ...) {
   header <- sprintf(
     "<%s <%i bands, %i fields>>",
-    class(x),
+    class(x)[1],
     x$bandCount,
     length(x$fields$name) %||% 0
   )

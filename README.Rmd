@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(pillar)
 ```
 
 # arcgislayers <img src="man/figures/logo.svg" align="right" height="139" alt="" />
@@ -24,137 +25,143 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 
-`{arcgislayers}` simplifies accessing and managing data the ArcGIS Ecosystem. With it you can: 
+`{arcgislayers}` is the core data access package in the R-ArcGIS Bridge, providing a unified interface for working with ArcGIS data services. As part of the `{arcgis}` metapackage, it enables seamless integration between R and the ArcGIS Web GIS ecosystem, including ArcGIS Online, Enterprise, and Location Platform.
 
-- Read data from ArcGIS Online, Enterprise, Survey123, Location Platform, Hub, and more
-- Read Imagery as `SpatRaster` from `{terra}`
-- Read Feature Services as `sf` objects
-- Publish {sf} objects and data.frame's as Feature Services
-- Query and download attachments from Survey123
+
+## Capabilities
+
+- **Connect to any ArcGIS Data Service**: Access feature services, imagery, and portal items from ArcGIS Online, Enterprise and Location Platform using familiar R objects from `sf` and `terra`. 
+- **Publish your R objects**: Turn analysis outputs into live ArcGIS services that others can access, visualize, modify, and use in their workflows.
+- **Modify data in place**: Maintain your production datasets—update, add, or delete features in feature services directly from R.
+- **Attachments**: query, download, and update attachments in feature services created by Survey123.
 
 
 ## Installation
 
-It is recommend you install and use the metapackage `{arcgis}`. You can install the development version of arcgis like so:
+`{arcgislayers}` is part of the `{arcgis}` metapackage, which provides the complete R-ArcGIS Bridge toolkit. For most users, installing the metapackage is recommended:
 
-``` r
-install.packages(
-  "arcgis",
-  repos = c("https://r-arcgis.r-universe.dev", "https://cloud.r-project.org")
-)
+```r
+install.packages("arcgis")
+```
+
+You can also install `{arcgislayers}` individually from CRAN:
+
+```r
+install.packages("arcgislayers")
+```
+
+To install the development version:
+
+```r
+pak::pak("r-arcgis/arcgislayers")
 ```
 
 ## Usage
 
-### Read data from a Feature Service
+The basic workflow is: **connect** ➡️ **query** ➡️ **analyze** ➡️ **publish**. Here's how to get started: 
 
 ```{r}
 library(arcgis)
 ```
 
-`arc_open()` takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):
 
-  - `FeatureLayer`
-  - `Table`
-  - `FeatureServer`
-  - `ImageServer`
-  - `MapServer`
-  - `GroupLayer`
-  
-For example, you can create a `FeatureLayer` object based on a Feature Server URL:
-  
+### Connect to ArcGIS Data Services
+
+`arc_open()` connects to any ArcGIS data service using its URL or item ID. This creates a connection to the remote data without downloading anything yet.
+
 ```{r}
+# Connect to a feature service
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
 county_fl <- arc_open(furl)
 county_fl
 ```
 
-You can then use `arc_select()` to query the feature layer object and return an `sf` object.
+### Query Data
 
-If no arguments are provided to `arc_select()` the entire feature layer is returned in memory as an `sf` object. 
-
-```{r}
-arc_select(county_fl)
-```
-
-
-### Filtering using `where` or `filter_geom` arguments 
-
-You can also use the `fields` argument to select columns or the `where` argument to subset rows.
-
-For example, using a character vector of column names for `fields` and a simple SQL where clause for  `where` you can select counties with population greater than 1,000,000:
+`arc_select()` brings data from ArcGIS into R as familiar `sf` objects. You can get everything, or be selective:
 
 ```{r}
-arc_select(
-  county_fl, 
-  fields = c("state_abbr", "population"), 
+# Get all data (use with caution on large datasets!)
+counties_all <- arc_select(county_fl)
+
+# Get specific columns and rows
+large_counties <- arc_select(
+  county_fl,
+  fields = c("state_abbr", "population"),
   where = "population > 1000000"
 )
+
+large_counties
 ```
 
-For `FeatureLayer` and `Table` objects, and sometimes `ImageServer`s, the `list_fields()` function can be helpful to check available attributes and build a `where` query:
+### Spatial and Attribute Filtering
+
+Filter by location or attributes before bringing data into R:
+
+```{r}
+# Spatial filter: get counties that intersect with North Carolina
+nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
+
+nc_area_counties <- arc_select(
+  county_fl,
+  filter_geom = sf::st_bbox(nc[1,])
+)
+
+nc_area_counties
+```
+
+Use `list_fields()` to explore available attributes:
 
 ```{r}
 list_fields(county_fl)
 ```
 
-You can also provide a `bbox`, `sfc`, or `sfg` object to the `filter_geom` argument to perform a spatial filter. If the `sfc` object contains more than one geometry, the object is combined with `sf::st_union()`. See documentation for more (`?arc_select`).
+### Work with Imagery
+
+`arc_raster()` extracts raster data from ArcGIS ImageServers as `terra` objects:
 
 ```{r}
-nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
-
-arc_select(
-  county_fl,
-  filter_geom = sf::st_bbox(nc[1,])
-)
-```
-
-### Creating a `SpatRaster` from an ArcGIS ImageServer
-
-A `SpatRaster` object from the `{terra}` package can be extracted from an `ImageServer` using `arc_raster()`.
-
-`arc_raster()` will extract the area defined by `xmin`, `ymin`, `xmax`, and `ymax`. You can optionally specify the `width` and `height` of the resultant image. Use `format` to define what type of image is returned.
-
-```{r}
+# Connect to Landsat imagery
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
-
 landsat <- arc_open(img_url)
 
+# Extract imagery for a specific area
 res <- arc_raster(
   landsat, 
-  xmin = -71, ymin = 43, 
-  xmax = -67, ymax = 47.5, 
+  xmin = -71, 
+  ymin = 43, 
+  xmax = -67, 
+  ymax = 47.5, 
   bbox_crs = 4326, 
-  width = 500, height = 500
+  width = 500,
+  height = 500
 )
 
-terra::plotRGB(res, 4, 3, 2, scale = max(landsat[["maxValues"]]))
+terra::plot(res)
 ```
 
-## Authorization and publication
+### Publish Your Results
 
-Authorization is not required for reading any public data sources. 
+Turn your R analysis into ArcGIS services that others can access:
 
-Workflows that require authorization include:
+```{r eval=FALSE}
+# Publish an sf object as a feature service (requires authentication)
+my_analysis <- large_counties |>
+  dplyr::mutate(density_category = ifelse(pop_sqmi > 100, "Dense", "Sparse"))
 
- - interacting with [non-public](https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm) services,
- - publishing a new service (the authorized user must also have [publishing privileges](https://doc.arcgis.com/en/arcgis-online/administer/roles.htm)), and
- - modifying or deleting any existing service (the authorized user must also have [edit access](https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm) to the service).
+publish_layer(
+  my_analysis,
+  title = "County Population Density Analysis",
+  description = "Counties categorized by population density"
+)
+```
 
-### Accessing non-public data
+## Learn more
 
-The same functions for reading public ArcGIS Online and Enterprise services (such as `arc_open()`,`arc_read()`,`arc_select()`,`arc_raster()`, etc.) can be used to read data from non-public services by using the `token` argument.
-For more information on tokens and authorization functions, see the [authorization article](https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/).
+To learn more about about how to most effectively use `{arcgislayers}` for your use case review the [developer site documentation](https://developers.arcgis.com/r-bridge).
 
-### Publishing and modifying services from R
-
-The package includes functions to publish data to an ArcGIS Portal:
-
-- `add_item()`: Creates a new FeatureCollection from a `sf` or `data.frame` object
-- `publish_item()`: Publishes an existing FeatureLayer
-- `publish_layer()`: is a higher level wrapper around both `add_item()` and `publish_item()`
-
-There are also functions to add or modify data including `add_features()`, `update_features()`, and `delete_features()`. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge).
-
-These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.
+- [Authentication](https://developers.arcgis.com/r-bridge/authentication/)
+- [Publishing Layers](https://developers.arcgis.com/r-bridge/layers/publishing/)
+- [Editing Feature Services](https://developers.arcgis.com/r-bridge/editing/editing-overview/)
+- [Geocoding](https://developers.arcgis.com/r-bridge/geocoding/overview/)

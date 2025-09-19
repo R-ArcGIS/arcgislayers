@@ -9,7 +9,7 @@ get_layer_estimates(x, token = arc_token())
 \arguments{
 \item{x}{an object of class \code{FeatureLayer}, \code{Table}, or \code{ImageServer}.}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 }
 \value{
 A named list containing all estimate info. If \code{extent} is present,

@@ -1,6 +1,7 @@
 test_that("Adding feature and updating them to a table work", {
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
+  skip_on_cran()
 
   set_arc_token(auth_user())
 

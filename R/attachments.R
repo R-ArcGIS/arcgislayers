@@ -1,6 +1,5 @@
-#' Query and download attachments
+#' Query and Download Feature Service Attachments
 #'
-#' Get metadata about attachments associated with features in a layer.
 #' Query attachment information using `query_layer_attachments()` and
 #' download attachments using `download_attachments()`.
 #'
@@ -63,7 +62,7 @@ query_layer_attachments <- function(
 
   # ensure that attachments are available.
   if (!x[["hasAttachments"]]) {
-    cli::cli_abort("{.arg layer} does not support attachments.")
+    cli::cli_alert_info("{.arg layer} does not support attachments.")
   }
 
   # check that only one of definition_expression, object_ids, and global_ids is provided
@@ -324,7 +323,7 @@ download_attachments <- function(
     progress = .progress
   )
 
-  Map(.download_attachment, resps, content_types, out_fps)
+  unlist(Map(.download_attachment, resps, content_types, out_fps))
 }
 
 .download_attachment <- function(.resp, .content_type, .fp) {

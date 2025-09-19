@@ -3,7 +3,7 @@
 \name{query_layer_attachments}
 \alias{query_layer_attachments}
 \alias{download_attachments}
-\title{Query and download attachments}
+\title{Query and Download Feature Service Attachments}
 \usage{
 query_layer_attachments(
   x,
@@ -47,7 +47,7 @@ only attachments that conform to this expression will be returned.}
 
 \item{...}{unused}
 
-\item{token}{your authorization token.}
+\item{token}{an \code{httr2_token} as created by \code{auth_code()} or similar}
 
 \item{attachments}{a \code{data.frame} created by \code{query_layer_attachments()}. Must contain the columns \code{name}, \code{url}, and \code{contentType}.}
 
@@ -64,7 +64,6 @@ only attachments that conform to this expression will be returned.}
 Otherwise the path to the file that was downloaded is returned.
 }
 \description{
-Get metadata about attachments associated with features in a layer.
 Query attachment information using \code{query_layer_attachments()} and
 download attachments using \code{download_attachments()}.
 }
