@@ -1,3 +1,9 @@
+# arcgislayers (development)
+
+## New features
+
+- `encode_field_values(codes = "replace-valid")` allows users to retain invalid values when replacing coded values. `encode_field_values(codes = "replace-all")` warns users when fields contain invalid values. ([#267](https://github.com/R-ArcGIS/arcgislayers/issues/267))
+
 # arcgislayers 0.5.0
 
 ## New features
@@ -5,7 +11,6 @@
 - New `update_attachments()` function modifies a feature service's attachments <https://github.com/R-ArcGIS/arcgislayers/pull/277>
 - `arc_open()` now works with item IDs or a variety of URLs such as item, user, group, and more <https://github.com/R-ArcGIS/arcgislayers/pull/275>
 - `add_definition()` (#178), `update_definition()` (#127), and `delete_definition()` functions for FeatureServer and FeatureLayer objects.
-- `encode_field_values(codes = "replace-valid")` allows users to retain invalid values when replacing coded values. `encode_field_values(codes = "replace-all")` warns users when fields contain invalid values. ([#267](https://github.com/R-ArcGIS/arcgislayers/issues/267))
 
 ## Bug Fixes
 
