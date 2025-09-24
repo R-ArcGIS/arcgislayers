@@ -15,7 +15,7 @@ name_repair parameters. For ease of use and convenience, arc_read()
 allows users to access and query a FeatureLayer, Table, or ImageServer with a
 single function call instead of combining arc_open() and arc_select().
 The conventions of col_select are based on functions for reading tabular
-data in the {readr} package."><meta property="og:image" content="/logo.svg"></head><body>
+data in the {readr} package."><meta property="og:image" content="https://developers.arcgis.com/r-bridge/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ data in the {readr} package."><meta property="og:image" content="/logo.svg"></he
 
     <a class="navbar-brand me-2" href="../index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@ data in the <code>{readr}</code> package.</p>
 
 
 <dl><dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
-<dd><p>The url of the remote resource. Must be of length one.</p></dd>
+<dd><p>a url to a service such as a feature service, image server, or map server. Alternatively, an item ID of a portal item or portal url.</p></dd>
 
 
 <dt id="arg-col-names">col_names<a class="anchor" aria-label="anchor" href="#arg-col-names"></a></dt>
@@ -137,7 +137,7 @@ supplied.</p></dd>
 
 
 <dt id="arg-token">token<a class="anchor" aria-label="anchor" href="#arg-token"></a></dt>
-<dd><p>your authorization token.</p></dd>
+<dd><p>an <code>httr2_token</code> as created by <code>auth_code()</code> or similar</p></dd>
 
 </dl></div>
     <div class="section level2">

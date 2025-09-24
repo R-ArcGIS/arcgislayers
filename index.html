@@ -5,15 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>An Interface to ArcGIS Data Services • arcgislayers</title>
+<title>Harness ArcGIS Data Services • arcgislayers</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="An Interface to ArcGIS Data Services">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Harness ArcGIS Data Services">
 <meta name="description" content="Enables users of ArcGIS Enterprise, ArcGIS Online, or ArcGIS Platform to read, write, publish, or manage vector and raster data via ArcGIS location services REST API endpoints &lt;https://developers.arcgis.com/rest/&gt;.">
 <meta property="og:description" content="Enables users of ArcGIS Enterprise, ArcGIS Online, or ArcGIS Platform to read, write, publish, or manage vector and raster data via ArcGIS location services REST API endpoints &lt;https://developers.arcgis.com/rest/&gt;.">
-<meta property="og:image" content="/logo.svg">
+<meta property="og:image" content="https://developers.arcgis.com/r-bridge/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">arcgislayers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,50 +54,47 @@
 </div>
 <!-- badges: start -->
 
-<p><a href="https://developers.arcgis.com/r-bridge" class="external-link">arcgislayers</a> simplifies accessing and managing data the ArcGIS Ecosystem. With it you can:</p>
+<p><a href="https://developers.arcgis.com/r-bridge">arcgislayers</a> is the core data access package in the R-ArcGIS Bridge, providing a unified interface for working with ArcGIS data services. As part of the <a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a> metapackage, it enables seamless integration between R and the ArcGIS Web GIS ecosystem, including ArcGIS Online, Enterprise, and Location Platform.</p>
+<div class="section level2">
+<h2 id="capabilities">Capabilities<a class="anchor" aria-label="anchor" href="#capabilities"></a>
+</h2>
 <ul>
-<li>Read data from ArcGIS Online, Enterprise, Survey123, Location Platform, Hub, and more</li>
-<li>Read Imagery as <code>SpatRaster</code> from <a href="https://rspatial.org/" class="external-link">terra</a>
-</li>
-<li>Read Feature Services as <code>sf</code> objects</li>
-<li>Publish {sf} objects and data.frame’s as Feature Services</li>
-<li>Query and download attachments from Survey123</li>
+<li>
+<strong>Connect to any ArcGIS Data Service</strong>: Access feature services, imagery, and portal items from ArcGIS Online, Enterprise and Location Platform using familiar R objects from <code>sf</code> and <code>terra</code>.</li>
+<li>
+<strong>Publish your R objects</strong>: Turn analysis outputs into live ArcGIS services that others can access, visualize, modify, and use in their workflows.</li>
+<li>
+<strong>Modify data in place</strong>: Maintain your production datasets—update, add, or delete features in feature services directly from R.</li>
+<li>
+<strong>Attachments</strong>: query, download, and update attachments in feature services created by Survey123.</li>
 </ul>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>It is recommend you install and use the metapackage <a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a>. You can install the development version of arcgis like so:</p>
+<p><a href="https://developers.arcgis.com/r-bridge">arcgislayers</a> is part of the <a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a> metapackage, which provides the complete R-ArcGIS Bridge toolkit. For most users, installing the metapackage is recommended:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
-<span>  <span class="st">"arcgis"</span>,</span>
-<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://r-arcgis.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"arcgis"</span><span class="op">)</span></span></code></pre></div>
+<p>You can also install <a href="https://developers.arcgis.com/r-bridge">arcgislayers</a> individually from CRAN:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"arcgislayers"</span><span class="op">)</span></span></code></pre></div>
+<p>To install the development version:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"r-arcgis/arcgislayers"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
+<p>The basic workflow is: <strong>connect</strong> ➡️ <strong>query</strong> ➡️ <strong>analyze</strong> ➡️ <strong>publish</strong>. Here’s how to get started:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
-<h3 id="read-data-from-a-feature-service">Read data from a Feature Service<a class="anchor" aria-label="anchor" href="#read-data-from-a-feature-service"></a>
+<h3 id="connect-to-arcgis-data-services">Connect to ArcGIS Data Services<a class="anchor" aria-label="anchor" href="#connect-to-arcgis-data-services"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/R-ArcGIS/arcgis/" class="external-link">arcgis</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attaching core arcgis packages:</span></span>
-<span><span class="co">#&gt; → arcgisutils v0.3.3</span></span>
-<span><span class="co">#&gt; → arcgislayers v0.3.1.9000</span></span>
-<span><span class="co">#&gt; → arcgisgeocode v0.2.2</span></span>
-<span><span class="co">#&gt; → arcgisplaces v0.1.1</span></span></code></pre></div>
-<p><code><a href="reference/arc_open.html">arc_open()</a></code> takes a URL to create a reference to a remote ArcGIS layer, server, or table. The function can return any of the following classes (corresponding to different ArcGIS service types):</p>
-<ul>
-<li><code>FeatureLayer</code></li>
-<li><code>Table</code></li>
-<li><code>FeatureServer</code></li>
-<li><code>ImageServer</code></li>
-<li><code>MapServer</code></li>
-<li><code>GroupLayer</code></li>
-</ul>
-<p>For example, you can create a <code>FeatureLayer</code> object based on a Feature Server URL:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"</span></span>
+<p><code><a href="reference/arc_open.html">arc_open()</a></code> connects to any ArcGIS data service using its URL or item ID. This creates a connection to the remote data without downloading anything yet.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Connect to a feature service</span></span>
+<span><span class="va">furl</span> <span class="op">&lt;-</span> <span class="st">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"</span></span>
 <span></span>
 <span><span class="va">county_fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">furl</span><span class="op">)</span></span>
 <span><span class="va">county_fl</span></span>
@@ -106,61 +103,23 @@
 <span><span class="co">#&gt; Geometry Type: esriGeometryPolygon</span></span>
 <span><span class="co">#&gt; CRS: 4326</span></span>
 <span><span class="co">#&gt; Capabilities: Query,Extract</span></span></code></pre></div>
-<p>You can then use <code><a href="reference/arc_select.html">arc_select()</a></code> to query the feature layer object and return an <code>sf</code> object.</p>
-<p>If no arguments are provided to <code><a href="reference/arc_select.html">arc_select()</a></code> the entire feature layer is returned in memory as an <code>sf</code> object.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Simple feature collection with 3144 features and 12 fields</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; First 10 features:</span></span>
-<span><span class="co">#&gt;    OBJECTID               NAME   STATE_NAME STATE_FIPS  FIPS SQMI POPULATION</span></span>
-<span><span class="co">#&gt; 1         1 Grand Forks County North Dakota         38 38035 51.3      73170</span></span>
-<span><span class="co">#&gt; 2         2       Grant County North Dakota         38 38037  1.4       2301</span></span>
-<span><span class="co">#&gt; 3         3      Griggs County North Dakota         38 38039  3.1       2306</span></span>
-<span><span class="co">#&gt; 4         4   Hettinger County North Dakota         38 38041  2.1       2489</span></span>
-<span><span class="co">#&gt; 5         5      Kidder County North Dakota         38 38043  1.6       2394</span></span>
-<span><span class="co">#&gt; 6         6     LaMoure County North Dakota         38 38045  3.5       4093</span></span>
-<span><span class="co">#&gt; 7         7       Logan County North Dakota         38 38047  1.8       1876</span></span>
-<span><span class="co">#&gt; 8         8     McHenry County North Dakota         38 38049  2.8       5345</span></span>
-<span><span class="co">#&gt; 9         9    McIntosh County North Dakota         38 38051  2.5       2530</span></span>
-<span><span class="co">#&gt; 10       10    McKenzie County North Dakota         38 38053  5.3      14704</span></span>
-<span><span class="co">#&gt;    POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
-<span><span class="co">#&gt; 1      50.8         ND         035   0.4503702      2.961625</span></span>
-<span><span class="co">#&gt; 2       1.4         ND         037   0.5040677      3.413506</span></span>
-<span><span class="co">#&gt; 3       3.2         ND         039   0.2230339      1.949037</span></span>
-<span><span class="co">#&gt; 4       2.2         ND         041   0.3427475      2.691898</span></span>
-<span><span class="co">#&gt; 5       1.7         ND         043   0.4378065      2.719487</span></span>
-<span><span class="co">#&gt; 6       3.6         ND         045   0.3502662      2.702124</span></span>
-<span><span class="co">#&gt; 7       1.9         ND         047   0.3090110      2.454735</span></span>
-<span><span class="co">#&gt; 8       2.8         ND         049   0.5877751      3.261400</span></span>
-<span><span class="co">#&gt; 9       2.5         ND         051   0.2971127      2.421863</span></span>
-<span><span class="co">#&gt; 10      5.1         ND         053   0.8862776      4.625264</span></span>
-<span><span class="co">#&gt;                          geometry</span></span>
-<span><span class="co">#&gt; 1  POLYGON ((-96.88943 47.6739...</span></span>
-<span><span class="co">#&gt; 2  POLYGON ((-102.0034 46.0528...</span></span>
-<span><span class="co">#&gt; 3  POLYGON ((-97.96167 47.2449...</span></span>
-<span><span class="co">#&gt; 4  POLYGON ((-102.0034 46.2058...</span></span>
-<span><span class="co">#&gt; 5  POLYGON ((-100.0885 46.6357...</span></span>
-<span><span class="co">#&gt; 6  POLYGON ((-99.00921 46.2830...</span></span>
-<span><span class="co">#&gt; 7  POLYGON ((-99.04408 46.2833...</span></span>
-<span><span class="co">#&gt; 8  POLYGON ((-100.9647 47.8540...</span></span>
-<span><span class="co">#&gt; 9  POLYGON ((-99.87578 45.9435...</span></span>
-<span><span class="co">#&gt; 10 POLYGON ((-103.6744 47.3320...</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="filtering-using-where-or-filter_geom-arguments">Filtering using <code>where</code> or <code>filter_geom</code> arguments<a class="anchor" aria-label="anchor" href="#filtering-using-where-or-filter_geom-arguments"></a>
+<h3 id="query-data">Query Data<a class="anchor" aria-label="anchor" href="#query-data"></a>
 </h3>
-<p>You can also use the <code>fields</code> argument to select columns or the <code>where</code> argument to subset rows.</p>
-<p>For example, using a character vector of column names for <code>fields</code> and a simple SQL where clause for <code>where</code> you can select counties with population greater than 1,000,000:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
-<span>  <span class="va">county_fl</span>, </span>
-<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state_abbr"</span>, <span class="st">"population"</span><span class="op">)</span>, </span>
+<p><code><a href="reference/arc_select.html">arc_select()</a></code> brings data from ArcGIS into R as familiar <code>sf</code> objects. You can get everything, or be selective:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get all data (use with caution on large datasets!)</span></span>
+<span><span class="va">counties_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get specific columns and rows</span></span>
+<span><span class="va">large_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
+<span>  <span class="va">county_fl</span>,</span>
+<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state_abbr"</span>, <span class="st">"population"</span><span class="op">)</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"population &gt; 1000000"</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">large_counties</span></span>
 <span><span class="co">#&gt; Simple feature collection with 49 features and 2 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -178,51 +137,14 @@
 <span><span class="co">#&gt; 8          AZ    1043433 POLYGON ((-110.4522 31.7360...</span></span>
 <span><span class="co">#&gt; 9          CA    1682353 POLYGON ((-121.4721 37.4777...</span></span>
 <span><span class="co">#&gt; 10         CA    1165927 POLYGON ((-122.3076 37.8917...</span></span></code></pre></div>
-<p>For <code>FeatureLayer</code> and <code>Table</code> objects, and sometimes <code>ImageServer</code>s, the <code><a href="reference/utils.html">list_fields()</a></code> function can be helpful to check available attributes and build a <code>where</code> query:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             name                 type                  alias       sqlType nullable</span></span>
-<span><span class="co">#&gt; 1       OBJECTID     esriFieldTypeOID               OBJECTID  sqlTypeOther    FALSE</span></span>
-<span><span class="co">#&gt; 2           NAME  esriFieldTypeString                   Name  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 3     STATE_NAME  esriFieldTypeString             State Name  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 4     STATE_FIPS  esriFieldTypeString             State FIPS  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 5           FIPS  esriFieldTypeString                   FIPS  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 6           SQMI  esriFieldTypeDouble   Area in square miles  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 7     POPULATION esriFieldTypeInteger  2020 Total Population  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 8       POP_SQMI  esriFieldTypeDouble People per square mile  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 9     STATE_ABBR  esriFieldTypeString     State Abbreviation  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 10   COUNTY_FIPS  esriFieldTypeString            County FIPS  sqlTypeOther     TRUE</span></span>
-<span><span class="co">#&gt; 11   Shape__Area  esriFieldTypeDouble            Shape__Area sqlTypeDouble     TRUE</span></span>
-<span><span class="co">#&gt; 12 Shape__Length  esriFieldTypeDouble          Shape__Length sqlTypeDouble     TRUE</span></span>
-<span><span class="co">#&gt;    editable domain defaultValue length</span></span>
-<span><span class="co">#&gt; 1     FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 2      TRUE     NA           NA     50</span></span>
-<span><span class="co">#&gt; 3      TRUE     NA           NA     20</span></span>
-<span><span class="co">#&gt; 4      TRUE     NA           NA      2</span></span>
-<span><span class="co">#&gt; 5      TRUE     NA           NA      5</span></span>
-<span><span class="co">#&gt; 6      TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 7      TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 8      TRUE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 9      TRUE     NA           NA      2</span></span>
-<span><span class="co">#&gt; 10     TRUE     NA           NA      3</span></span>
-<span><span class="co">#&gt; 11    FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt; 12    FALSE     NA           NA     NA</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                 description</span></span>
-<span><span class="co">#&gt; 1                                                                                                                                                                                                                      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2                                                                                                                                                        {"value":"The name of the county.","fieldValueType":"nameOrTitle"}</span></span>
-<span><span class="co">#&gt; 3                                                                                                                         {"value":"The name for the state in which the county is located.","fieldValueType":"nameOrTitle"}</span></span>
-<span><span class="co">#&gt; 4                                                                                                 {"value":"The code (two-digit number) for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 5  {"value":"The combined state and county codes. County codes begin with 001 for each state; use the combined code (five-digit number) to uniquely identify a county in the country.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 6                                                                             {"value":"The area of the county in square miles using the North America Albers Equal Area Conic projection.","fieldValueType":"measurement"}</span></span>
-<span><span class="co">#&gt; 7                                                                                                                                           {"value":"The 2020 population of the county.","fieldValueType":"countOrAmount"}</span></span>
-<span><span class="co">#&gt; 8                                                                                                                             {"value":"The 2020 population of the county per square mile.","fieldValueType":"measurement"}</span></span>
-<span><span class="co">#&gt; 9                                                                                                 {"value":"The two-letter abbreviation for the state in which the county is located.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 10                                                                                                                            {"value":"The code (three-digit number) for the county.","fieldValueType":"uniqueIdentifier"}</span></span>
-<span><span class="co">#&gt; 11                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 12                                                                                                                                                                                                                     &lt;NA&gt;</span></span></code></pre></div>
-<p>You can also provide a <code>bbox</code>, <code>sfc</code>, or <code>sfg</code> object to the <code>filter_geom</code> argument to perform a spatial filter. If the <code>sfc</code> object contains more than one geometry, the object is combined with <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>. See documentation for more (<code><a href="reference/arc_select.html">?arc_select</a></code>).</p>
+</div>
+<div class="section level3">
+<h3 id="spatial-and-attribute-filtering">Spatial and Attribute Filtering<a class="anchor" aria-label="anchor" href="#spatial-and-attribute-filtering"></a>
+</h3>
+<p>Filter by location or attributes before bringing data into R:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Spatial filter: get counties that intersect with North Carolina</span></span>
+<span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `nc' from data source </span></span>
 <span><span class="co">#&gt;   `/Users/josiahparry/Library/R/arm64/4.5/library/sf/shape/nc.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
@@ -232,22 +154,24 @@
 <span><span class="co">#&gt; Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  NAD27</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
+<span><span class="va">nc_area_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_select.html">arc_select</a></span><span class="op">(</span></span>
 <span>  <span class="va">county_fl</span>,</span>
 <span>  filter_geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">nc</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nc_area_counties</span></span>
 <span><span class="co">#&gt; Simple feature collection with 6 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS  SQMI POPULATION</span></span>
-<span><span class="co">#&gt; 1      467   Johnson County      Tennessee         47 47091  58.8      17948</span></span>
-<span><span class="co">#&gt; 2     1924 Alleghany County North Carolina         37 37005  47.0      10888</span></span>
-<span><span class="co">#&gt; 3     1926      Ashe County North Carolina         37 37009  60.3      26577</span></span>
-<span><span class="co">#&gt; 4     2016   Watauga County North Carolina         37 37189 174.4      54086</span></span>
-<span><span class="co">#&gt; 5     2018    Wilkes County North Carolina         37 37193  84.9      65969</span></span>
-<span><span class="co">#&gt; 6     2995   Grayson County       Virginia         51 51077  34.1      15333</span></span>
+<span><span class="co">#&gt;   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS     SQMI POPULATION</span></span>
+<span><span class="co">#&gt; 1      467   Johnson County      Tennessee         47 47091 302.6644      17948</span></span>
+<span><span class="co">#&gt; 2     1924 Alleghany County North Carolina         37 37005 236.1822      10888</span></span>
+<span><span class="co">#&gt; 3     1926      Ashe County North Carolina         37 37009 429.3538      26577</span></span>
+<span><span class="co">#&gt; 4     2016   Watauga County North Carolina         37 37189 313.3604      54086</span></span>
+<span><span class="co">#&gt; 5     2018    Wilkes County North Carolina         37 37193 756.5252      65969</span></span>
+<span><span class="co">#&gt; 6     2995   Grayson County       Virginia         51 51077 445.7267      15333</span></span>
 <span><span class="co">#&gt;   POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length</span></span>
 <span><span class="co">#&gt; 1     59.3         TN         091  0.07960385      1.290607</span></span>
 <span><span class="co">#&gt; 2     46.1         NC         005  0.06140165      1.231232</span></span>
@@ -262,60 +186,75 @@
 <span><span class="co">#&gt; 4 POLYGON ((-81.80605 36.1046...</span></span>
 <span><span class="co">#&gt; 5 POLYGON ((-81.02037 36.0350...</span></span>
 <span><span class="co">#&gt; 6 POLYGON ((-81.34512 36.5729...</span></span></code></pre></div>
+<p>Use <code><a href="reference/utils.html">list_fields()</a></code> to explore available attributes:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/utils.html">list_fields</a></span><span class="op">(</span><span class="va">county_fl</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A data frame: 12 × 10</span></span>
+<span><span class="co">#&gt;    name  type  alias sqlType nullable editable domain defaultValue length description</span></span>
+<span><span class="co">#&gt;  * &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt;    &lt;lgl&gt;    &lt;lgl&gt;  &lt;lgl&gt;         &lt;int&gt; &lt;chr&gt;      </span></span>
+<span><span class="co">#&gt;  1 OBJE… esri… OBJE… sqlTyp… FALSE    FALSE    NA     NA               NA  &lt;NA&gt;      </span></span>
+<span><span class="co">#&gt;  2 NAME  esri… Name  sqlTyp… TRUE     TRUE     NA     NA               50 "{\"value\…</span></span>
+<span><span class="co">#&gt;  3 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA               20 "{\"value\…</span></span>
+<span><span class="co">#&gt;  4 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2 "{\"value\…</span></span>
+<span><span class="co">#&gt;  5 FIPS  esri… FIPS  sqlTyp… TRUE     TRUE     NA     NA                5 "{\"value\…</span></span>
+<span><span class="co">#&gt;  6 SQMI  esri… Area… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…</span></span>
+<span><span class="co">#&gt;  7 POPU… esri… 2020… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…</span></span>
+<span><span class="co">#&gt;  8 POP_… esri… Peop… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…</span></span>
+<span><span class="co">#&gt;  9 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2 "{\"value\…</span></span>
+<span><span class="co">#&gt; 10 COUN… esri… Coun… sqlTyp… TRUE     TRUE     NA     NA                3 "{\"value\…</span></span>
+<span><span class="co">#&gt; 11 Shap… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA  &lt;NA&gt;      </span></span>
+<span><span class="co">#&gt; 12 Shap… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA  &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="creating-a-spatraster-from-an-arcgis-imageserver">Creating a <code>SpatRaster</code> from an ArcGIS ImageServer<a class="anchor" aria-label="anchor" href="#creating-a-spatraster-from-an-arcgis-imageserver"></a>
+<h3 id="work-with-imagery">Work with Imagery<a class="anchor" aria-label="anchor" href="#work-with-imagery"></a>
 </h3>
-<p>A <code>SpatRaster</code> object from the <a href="https://rspatial.org/" class="external-link">terra</a> package can be extracted from an <code>ImageServer</code> using <code><a href="reference/arc_raster.html">arc_raster()</a></code>.</p>
-<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> will extract the area defined by <code>xmin</code>, <code>ymin</code>, <code>xmax</code>, and <code>ymax</code>. You can optionally specify the <code>width</code> and <code>height</code> of the resultant image. Use <code>format</code> to define what type of image is returned.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">img_url</span> <span class="op">&lt;-</span> <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span>
-<span></span>
+<p><code><a href="reference/arc_raster.html">arc_raster()</a></code> extracts raster data from ArcGIS ImageServers as <code>terra</code> objects:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Connect to Landsat imagery</span></span>
+<span><span class="va">img_url</span> <span class="op">&lt;-</span> <span class="st">"https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"</span></span>
 <span><span class="va">landsat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_open.html">arc_open</a></span><span class="op">(</span><span class="va">img_url</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Extract imagery for a specific area</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/arc_raster.html">arc_raster</a></span><span class="op">(</span></span>
 <span>  <span class="va">landsat</span>, </span>
-<span>  xmin <span class="op">=</span> <span class="op">-</span><span class="fl">71</span>, ymin <span class="op">=</span> <span class="fl">43</span>, </span>
-<span>  xmax <span class="op">=</span> <span class="op">-</span><span class="fl">67</span>, ymax <span class="op">=</span> <span class="fl">47.5</span>, </span>
+<span>  xmin <span class="op">=</span> <span class="op">-</span><span class="fl">71</span>, </span>
+<span>  ymin <span class="op">=</span> <span class="fl">43</span>, </span>
+<span>  xmax <span class="op">=</span> <span class="op">-</span><span class="fl">67</span>, </span>
+<span>  ymax <span class="op">=</span> <span class="fl">47.5</span>, </span>
 <span>  bbox_crs <span class="op">=</span> <span class="fl">4326</span>, </span>
-<span>  width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">500</span></span>
+<span>  width <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">500</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plotRGB.html" class="external-link">plotRGB</a></span><span class="op">(</span><span class="va">res</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">landsat</span><span class="op">[[</span><span class="st">"maxValues"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
+<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="publish-your-results">Publish Your Results<a class="anchor" aria-label="anchor" href="#publish-your-results"></a>
+</h3>
+<p>Turn your R analysis into ArcGIS services that others can access:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Publish an sf object as a feature service (requires authentication)</span></span>
+<span><span class="va">my_analysis</span> <span class="op">&lt;-</span> <span class="va">large_counties</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>density_category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">pop_sqmi</span> <span class="op">&gt;</span> <span class="fl">100</span>, <span class="st">"Dense"</span>, <span class="st">"Sparse"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/publish.html">publish_layer</a></span><span class="op">(</span></span>
+<span>  <span class="va">my_analysis</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"County Population Density Analysis"</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">"Counties categorized by population density"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="authorization-and-publication">Authorization and publication<a class="anchor" aria-label="anchor" href="#authorization-and-publication"></a>
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
-<p>Authorization is not required for reading any public data sources.</p>
-<p>Workflows that require authorization include:</p>
+<p>To learn more about about how to most effectively use <a href="https://developers.arcgis.com/r-bridge">arcgislayers</a> for your use case review the <a href="https://developers.arcgis.com/r-bridge">developer site documentation</a>.</p>
 <ul>
-<li>interacting with <a href="https://doc.arcgis.com/en/arcgis-online/share-maps/share-items.htm" class="external-link">non-public</a> services,</li>
-<li>publishing a new service (the authorized user must also have <a href="https://doc.arcgis.com/en/arcgis-online/administer/roles.htm" class="external-link">publishing privileges</a>), and</li>
-<li>modifying or deleting any existing service (the authorized user must also have <a href="https://doc.arcgis.com/en/arcgis-online/manage-data/manage-editing-hfl.htm" class="external-link">edit access</a> to the service).</li>
+<li><a href="https://developers.arcgis.com/r-bridge/authentication/">Authentication</a></li>
+<li><a href="https://developers.arcgis.com/r-bridge/layers/publishing/">Publishing Layers</a></li>
+<li><a href="https://developers.arcgis.com/r-bridge/editing/editing-overview/">Editing Feature Services</a></li>
+<li><a href="https://developers.arcgis.com/r-bridge/geocoding/overview/">Geocoding</a></li>
 </ul>
-<div class="section level3">
-<h3 id="accessing-non-public-data">Accessing non-public data<a class="anchor" aria-label="anchor" href="#accessing-non-public-data"></a>
-</h3>
-<p>The same functions for reading public ArcGIS Online and Enterprise services (such as <code><a href="reference/arc_open.html">arc_open()</a></code>,<code><a href="reference/arc_read.html">arc_read()</a></code>,<code><a href="reference/arc_select.html">arc_select()</a></code>,<code><a href="reference/arc_raster.html">arc_raster()</a></code>, etc.) can be used to read data from non-public services by using the <code>token</code> argument. For more information on tokens and authorization functions, see the <a href="https://developers.arcgis.com/r-bridge/authentication/connecting-to-a-portal/" class="external-link">authorization article</a>.</p>
-</div>
-<div class="section level3">
-<h3 id="publishing-and-modifying-services-from-r">Publishing and modifying services from R<a class="anchor" aria-label="anchor" href="#publishing-and-modifying-services-from-r"></a>
-</h3>
-<p>The package includes functions to publish data to an ArcGIS Portal:</p>
-<ul>
-<li>
-<code><a href="reference/publish.html">add_item()</a></code>: Creates a new FeatureCollection from a <code>sf</code> or <code>data.frame</code> object</li>
-<li>
-<code><a href="reference/publish.html">publish_item()</a></code>: Publishes an existing FeatureLayer</li>
-<li>
-<code><a href="reference/publish.html">publish_layer()</a></code>: is a higher level wrapper around both <code><a href="reference/publish.html">add_item()</a></code> and <code><a href="reference/publish.html">publish_item()</a></code>
-</li>
-</ul>
-<p>There are also functions to add or modify data including <code><a href="reference/modify.html">add_features()</a></code>, <code><a href="reference/modify.html">update_features()</a></code>, and <code><a href="reference/modify.html">delete_features()</a></code>. For a more detailed guide to adding, updating, and deleting features, view the tutorial on the <a href="https://developers.arcgis.com/r-bridge" class="external-link">R-ArcGIS Bridge website</a>.</p>
-<p>These functions all require authorization since data cannot be published or modified anonymously in ArcGIS Online and ArcGIS Enterprise.</p>
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
