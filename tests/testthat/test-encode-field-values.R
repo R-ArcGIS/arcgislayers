@@ -35,6 +35,7 @@ test_that("encode_field_values() encodes field values when field is set", {
 })
 
 test_that("encode_field_values() works with a range type", {
+  skip_on_cran()
   feature_layer_arc <- structure(
     list(
       currentVersion = 11.2,

@@ -1,4 +1,5 @@
 test_that("arc_select(): polygons can be parsed", {
+  skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
   flayer <- arc_open(furl)
 
@@ -7,6 +8,7 @@ test_that("arc_select(): polygons can be parsed", {
 
 
 test_that("arc_select(): tables can be parsed", {
+  skip_on_cran()
   furl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
 
   tblayer <- arc_open(furl)
@@ -15,6 +17,7 @@ test_that("arc_select(): tables can be parsed", {
 
 
 test_that("arc_select() works on `ImageServer`s", {
+  skip_on_cran()
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
   landsat <- arc_open(img_url)
@@ -25,6 +28,7 @@ test_that("arc_select() works on `ImageServer`s", {
 
 
 test_that("arc_select(): respects `n_max`", {
+  skip_on_cran()
   furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
 
   flayer <- arc_open(furl)
@@ -35,6 +39,7 @@ test_that("arc_select(): respects `n_max`", {
 })
 
 test_that("arc_select(): respects `n_max` & `page_size`", {
+  skip_on_cran()
   furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
 
   flayer <- arc_open(furl)
@@ -46,6 +51,7 @@ test_that("arc_select(): respects `n_max` & `page_size`", {
 
 
 test_that("arc_select(): respects `...`", {
+  skip_on_cran()
   furl <- "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/PLACES_LocalData_for_BetterHealth/FeatureServer/0"
 
   flayer <- arc_open(furl)
@@ -61,6 +67,7 @@ test_that("arc_select(): respects `...`", {
 })
 
 test_that("arc_select(): supports multiple filter_geom input types", {
+  skip_on_cran()
   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_State_Boundaries/FeatureServer/0"
@@ -130,6 +137,7 @@ test_that("arc_select(): supports multiple filter_geom input types", {
 })
 
 test_that("arc_select(): warns for Table layers and provides message for MULTIPOLYGON input", {
+  skip_on_cran()
   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   turl <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
@@ -147,6 +155,7 @@ test_that("arc_select(): warns for Table layers and provides message for MULTIPO
 
 
 test_that("arc_select(): errors for invalid filter_geom inputs", {
+  skip_on_cran()
   nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"))
 
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer"

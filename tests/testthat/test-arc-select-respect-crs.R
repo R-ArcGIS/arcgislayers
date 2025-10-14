@@ -1,4 +1,5 @@
 test_that("arc_select(): CRS is respected", {
+  skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
   epsg_code <- 2804
