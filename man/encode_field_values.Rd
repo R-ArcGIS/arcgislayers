@@ -8,7 +8,7 @@ encode_field_values(
   .data,
   .layer,
   field = NULL,
-  codes = c("replace-all", "replace-valid", "label"),
+  codes = c("replace", "replace-valid", "label"),
   call = rlang::caller_env()
 )
 }
@@ -21,10 +21,10 @@ encode_field_values(
 Fields that do not have coded value domains are ignored. Defaults to \code{NULL}
 to replace or label all fields with coded value domains.}
 
-\item{codes}{Use of field alias values. Defaults to \code{"replace-all"}.
+\item{codes}{Use of field alias values. Defaults to \code{"replace"}.
 There are three options:
 \itemize{
-\item \code{"replace-all"}: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with \code{NA}.
+\item \code{"replace"}: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with \code{NA}.
 \item \code{"replace-valid"}: coded values replace existing \emph{valid} column values. Any non-coded values remaing in place and are coerced to character.
 \item \code{"label"}: coded values are applied as value labels via a \code{"label"} attribute.
 }}
