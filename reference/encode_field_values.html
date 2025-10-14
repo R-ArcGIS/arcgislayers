@@ -48,7 +48,7 @@ created with <code><a href="arc_open.html">arc_open()</a></code>.</p>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">.layer</span>,</span>
 <span>  field <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"replace-all"</span>, <span class="st">"replace-valid"</span>, <span class="st">"label"</span><span class="op">)</span>,</span>
+<span>  codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"replace"</span>, <span class="st">"replace-valid"</span>, <span class="st">"label"</span><span class="op">)</span>,</span>
 <span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -72,8 +72,8 @@ to replace or label all fields with coded value domains.</p></dd>
 
 
 <dt id="arg-codes">codes<a class="anchor" aria-label="anchor" href="#arg-codes"></a></dt>
-<dd><p>Use of field alias values. Defaults to <code>"replace-all"</code>.
-There are three options:</p><ul><li><p><code>"replace-all"</code>: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with <code>NA</code>.</p></li>
+<dd><p>Use of field alias values. Defaults to <code>"replace"</code>.
+There are three options:</p><ul><li><p><code>"replace"</code>: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with <code>NA</code>.</p></li>
 <li><p><code>"replace-valid"</code>: coded values replace existing <em>valid</em> column values. Any non-coded values remaing in place and are coerced to character.</p></li>
 <li><p><code>"label"</code>: coded values are applied as value labels via a <code>"label"</code> attribute.</p></li>
 </ul></dd>
