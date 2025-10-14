@@ -1,4 +1,8 @@
-# arcgislayers (development version)
+# arcgislayers (development)
+
+## New features
+
+- `encode_field_values(codes = "replace-valid")` allows users to retain invalid values when replacing coded values. ([#267](https://github.com/R-ArcGIS/arcgislayers/issues/267))
 
 # arcgislayers 0.5.0
 
@@ -18,7 +22,7 @@
 ## Breaking changes
 
 - `update_features()` is now parallelized and sends updates in chunks see `chunk_size` argument and `progress` arguments. The return type is now a `data.frame` and not a list with `updateResults`
-- `delete_features()` is now parallelized and deletes in chunks. See above. 
+- `delete_features()` is now parallelized and deletes in chunks. See above.
 - `{arcgislayers}` now depends on R 4.2 or higher.
 - `list_service_raster_fns()` is now deprecated in favor of `list_raster_fns()`
 
