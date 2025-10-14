@@ -1,4 +1,4 @@
-url: ~
+url: "https://developers.arcgis.com/r-bridge"
 template:
   bootstrap: 5
 
@@ -17,7 +17,7 @@ reference:
       - get_all_layers
       - get_layers
       - get_layer_estimates
-      - raster_fns
+      - list_raster_fns
   - title: Publish Services
     contents:
       - create_feature_server
@@ -32,9 +32,9 @@ reference:
       - update_features
       - delete_features
       - truncate_layer
-      - add_definition
-      - update_definition
-      - delete_definition
+      - add_layer_definition
+      - update_layer_definition
+      - delete_layer_definition
   - title: Attachments
     contents:
       - query_layer_attachments

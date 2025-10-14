@@ -1,4 +1,5 @@
 test_that("arc_raster() works", {
+  skip_on_cran()
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
   landsat <- arc_open(img_url)
