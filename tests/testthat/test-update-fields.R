@@ -1,6 +1,4 @@
 test_that("Table fields can be updated", {
-
-
   skip("Must be ran interactively")
   skip_if_not_installed("dplyr")
   # set auth token
@@ -9,16 +7,16 @@ test_that("Table fields can be updated", {
   # ensure that Iris Test exists first
   # publish_layer(iris, "Iris Test")
 
-  irs <- arc_open("https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/Iris%20Test/FeatureServer/0")
+  irs <- arc_open(
+    "https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/Iris%20Test/FeatureServer/0"
+  )
 
   .df <- arc_select(irs)
 
   y <- dplyr::filter(.df, Species == "versicolor") |>
     dplyr::mutate(Sepal_Length = 999)
 
-
   expect_success(update_features(irs, y))
-
 })
 
 

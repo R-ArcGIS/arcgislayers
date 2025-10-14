@@ -9,4 +9,3 @@ test_that("Error reported for invalid url (FeatureLayer)", {
 
   expect_error(arc_open(fsurl), "Status code: 499")
 })
-
