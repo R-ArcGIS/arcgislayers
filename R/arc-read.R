@@ -402,10 +402,10 @@ label_layer_fields <- function(
 #' @param field Optional character vector with names of fields to replace.
 #'   Fields that do not have coded value domains are ignored. Defaults to `NULL`
 #'   to replace or label all fields with coded value domains.
-#' @param codes Use of field alias values. Defaults to `"replace-all"`.
+#' @param codes Use of field alias values. Defaults to `"replace"`.
 #' There are three options:
 #'
-#'  - `"replace-all"`: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with `NA`.
+#'  - `"replace"`: coded values replace existing column values. Users are warned if the selected fields contain any non-coded values and these values are replaced with `NA`.
 #'  - `"replace-valid"`: coded values replace existing _valid_ column values. Any non-coded values remaing in place and are coerced to character.
 #'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
@@ -431,7 +431,7 @@ encode_field_values <- function(
   .data,
   .layer,
   field = NULL,
-  codes = c("replace-all", "replace-valid", "label"),
+  codes = c("replace", "replace-valid", "label"),
   call = rlang::caller_env()
 ) {
   check_data_frame(.data)
@@ -439,15 +439,6 @@ encode_field_values <- function(
   check_inherits_any(.layer, c("FeatureLayer", "Table", "ImageServer"))
 
   values <- pull_coded_values(.layer, field = field, call = call)
-
-  if (identical(codes, "replace")) {
-    lifecycle::deprecate_soft(
-      ">0.4.0",
-      'encode_field_values(codes = "should not be set to \'replace\'")',
-      details = 'Please use `encode_field_values(codes = "replace-all")` instead.'
-    )
-    codes <- "replace-all"
-  }
 
   codes <- rlang::arg_match(codes, error_call = call)
 
@@ -462,7 +453,7 @@ encode_field_values <- function(
     return(.data)
   }
 
-  if (codes == "label") {
+  if (identical(codes, "label")) {
     # Label column values using new_labelled_col helper
     for (col in names(values)) {
       .data[[col]] <- new_labelled_col(
@@ -495,7 +486,7 @@ encode_field_values <- function(
         c(" ", "")
       )
 
-      if (codes == "replace-valid") {
+      if (identical(codes, "replace-valid")) {
         # retain existing invalid values
         miss_val <- miss_val | bad_val
       } else if (!rlang::is_empty(bad_val_unique)) {
