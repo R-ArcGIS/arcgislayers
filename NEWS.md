@@ -1,7 +1,5 @@
 # arcgislayers 0.5.1
 
-# arcgislayers (development)
-
 ## New features
 
 - `encode_field_values(codes = "replace-valid")` allows users to retain invalid values when replacing coded values. ([#267](https://github.com/R-ArcGIS/arcgislayers/issues/267))
