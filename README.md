@@ -60,6 +60,12 @@ The basic workflow is: **connect** ➡️ **query** ➡️ **analyze** ➡️
 
 ``` r
 library(arcgis)
+#> Attaching core arcgis packages:
+#> → arcgisutils v0.4.0
+#> → arcgislayers v0.4.0.9000
+#> → arcgisgeocode v0.3.0.9000
+#> → arcgisplaces v0.1.2
+#> → arcpbf v0.1.7.9000
 ```
 
 ### Connect to ArcGIS Data Services
@@ -144,20 +150,20 @@ nc_area_counties
 #> Dimension:     XY
 #> Bounding box:  xmin: -82.0477 ymin: 35.98946 xmax: -80.83795 ymax: 36.80746
 #> Geodetic CRS:  WGS 84
-#>   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS     SQMI POPULATION
-#> 1      467   Johnson County      Tennessee         47 47091 302.6644      17948
-#> 2     1924 Alleghany County North Carolina         37 37005 236.1822      10888
-#> 3     1926      Ashe County North Carolina         37 37009 429.3538      26577
-#> 4     2016   Watauga County North Carolina         37 37189 313.3604      54086
-#> 5     2018    Wilkes County North Carolina         37 37193 756.5252      65969
-#> 6     2995   Grayson County       Virginia         51 51077 445.7267      15333
-#>   POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length
-#> 1     59.3         TN         091  0.07960385      1.290607
-#> 2     46.1         NC         005  0.06140165      1.231232
-#> 3     61.9         NC         009  0.11428581      1.442112
-#> 4    172.6         NC         189  0.08142272      1.287674
-#> 5     87.2         NC         193  0.19911944      1.984232
-#> 6     34.4         VA         077  0.11578917      1.945424
+#>   OBJECTID             NAME     STATE_NAME STATE_FIPS  FIPS     SQMI
+#> 1      467   Johnson County      Tennessee         47 47091 302.6644
+#> 2     1924 Alleghany County North Carolina         37 37005 236.1822
+#> 3     1926      Ashe County North Carolina         37 37009 429.3538
+#> 4     2016   Watauga County North Carolina         37 37189 313.3604
+#> 5     2018    Wilkes County North Carolina         37 37193 756.5252
+#> 6     2995   Grayson County       Virginia         51 51077 445.7267
+#>   POPULATION POP_SQMI STATE_ABBR COUNTY_FIPS Shape__Area Shape__Length
+#> 1      17948     59.3         TN         091  0.07960385      1.290607
+#> 2      10888     46.1         NC         005  0.06140165      1.231232
+#> 3      26577     61.9         NC         009  0.11428581      1.442112
+#> 4      54086    172.6         NC         189  0.08142272      1.287674
+#> 5      65969     87.2         NC         193  0.19911944      1.984232
+#> 6      15333     34.4         VA         077  0.11578917      1.945424
 #>                         geometry
 #> 1 POLYGON ((-81.74091 36.3919...
 #> 2 POLYGON ((-81.2397 36.36549...
@@ -172,20 +178,21 @@ Use `list_fields()` to explore available attributes:
 ``` r
 list_fields(county_fl)
 #> # A data frame: 12 × 10
-#>    name  type  alias sqlType nullable editable domain defaultValue length description
-#>  * <chr> <chr> <chr> <chr>   <lgl>    <lgl>    <lgl>  <lgl>         <int> <chr>      
-#>  1 OBJE… esri… OBJE… sqlTyp… FALSE    FALSE    NA     NA               NA  <NA>      
-#>  2 NAME  esri… Name  sqlTyp… TRUE     TRUE     NA     NA               50 "{\"value\…
-#>  3 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA               20 "{\"value\…
-#>  4 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2 "{\"value\…
-#>  5 FIPS  esri… FIPS  sqlTyp… TRUE     TRUE     NA     NA                5 "{\"value\…
-#>  6 SQMI  esri… Area… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…
-#>  7 POPU… esri… 2020… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…
-#>  8 POP_… esri… Peop… sqlTyp… TRUE     TRUE     NA     NA               NA "{\"value\…
-#>  9 STAT… esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2 "{\"value\…
-#> 10 COUN… esri… Coun… sqlTyp… TRUE     TRUE     NA     NA                3 "{\"value\…
-#> 11 Shap… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA  <NA>      
-#> 12 Shap… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA  <NA>
+#>    name       type  alias sqlType nullable editable domain defaultValue length
+#>  * <chr>      <chr> <chr> <chr>   <lgl>    <lgl>    <lgl>  <lgl>         <int>
+#>  1 OBJECTID   esri… OBJE… sqlTyp… FALSE    FALSE    NA     NA               NA
+#>  2 NAME       esri… Name  sqlTyp… TRUE     TRUE     NA     NA               50
+#>  3 STATE_NAME esri… Stat… sqlTyp… TRUE     TRUE     NA     NA               20
+#>  4 STATE_FIPS esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2
+#>  5 FIPS       esri… FIPS  sqlTyp… TRUE     TRUE     NA     NA                5
+#>  6 SQMI       esri… Area… sqlTyp… TRUE     TRUE     NA     NA               NA
+#>  7 POPULATION esri… 2020… sqlTyp… TRUE     TRUE     NA     NA               NA
+#>  8 POP_SQMI   esri… Peop… sqlTyp… TRUE     TRUE     NA     NA               NA
+#>  9 STATE_ABBR esri… Stat… sqlTyp… TRUE     TRUE     NA     NA                2
+#> 10 COUNTY_FI… esri… Coun… sqlTyp… TRUE     TRUE     NA     NA                3
+#> 11 Shape__Ar… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA
+#> 12 Shape__Le… esri… Shap… sqlTyp… TRUE     FALSE    NA     NA               NA
+#> # ℹ 1 more variable: description <chr>
 ```
 
 ### Work with Imagery
@@ -237,9 +244,9 @@ To learn more about about how to most effectively use `{arcgislayers}`
 for your use case review the [developer site
 documentation](https://developers.arcgis.com/r-bridge).
 
-- [Authentication](https://developers.arcgis.com/r-bridge/authentication/)
+- [Authentication](https://developers.arcgis.com/r-bridge/authentication/overview/)
 - [Publishing
-  Layers](https://developers.arcgis.com/r-bridge/layers/publishing/)
+  Layers](https://developers.arcgis.com/r-bridge/layers/publishing-services/)
 - [Editing Feature
-  Services](https://developers.arcgis.com/r-bridge/editing/editing-overview/)
+  Services](http://developers.arcgis.com/r-bridge/editing/overview/)
 - [Geocoding](https://developers.arcgis.com/r-bridge/geocoding/overview/)

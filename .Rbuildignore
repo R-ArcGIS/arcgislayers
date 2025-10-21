@@ -1,4 +1,5 @@
 justfile
+README.*
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Renviron$

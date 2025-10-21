@@ -161,7 +161,7 @@ publish_layer(
 
 To learn more about about how to most effectively use `{arcgislayers}` for your use case review the [developer site documentation](https://developers.arcgis.com/r-bridge).
 
-- [Authentication](https://developers.arcgis.com/r-bridge/authentication/)
-- [Publishing Layers](https://developers.arcgis.com/r-bridge/layers/publishing/)
-- [Editing Feature Services](https://developers.arcgis.com/r-bridge/editing/editing-overview/)
+- [Authentication](https://developers.arcgis.com/r-bridge/authentication/overview/)
+- [Publishing Layers](https://developers.arcgis.com/r-bridge/layers/publishing-services/)
+- [Editing Feature Services](http://developers.arcgis.com/r-bridge/editing/overview/)
 - [Geocoding](https://developers.arcgis.com/r-bridge/geocoding/overview/)
