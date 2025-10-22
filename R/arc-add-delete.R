@@ -18,7 +18,7 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' For a more detailed guide to adding, updating, and deleting features, view the
-#' tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge/editing/editing-overview/).
+#' tutorial on the [R-ArcGIS Bridge website](https://developers.arcgis.com/r-bridge/editing/overview/).
 #'
 #' Regarding the `match_on` argument:when publishing an object to an ArcGIS Portal
 #' from R, the object's names are provided as the alias. The object's names are
