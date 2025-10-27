@@ -19,6 +19,8 @@ it is available as an object of class \code{bbox}.
 Get Estimates
 }
 \examples{
+\dontrun{
+if (identical(Sys.getenv("NOT_CRAN"), "true")) {
 furl <- paste0(
   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/",
   "USA_Counties_Generalized_Boundaries/FeatureServer/0"
@@ -26,6 +28,8 @@ furl <- paste0(
 
 county_fl <- arc_open(furl)
 get_layer_estimates(county_fl)
+}
+}
 }
 \references{
 \href{https://developers.arcgis.com/rest/services-reference/enterprise/get-estimates-feature-service-layer-.htm}{ArcGIS REST Doc}

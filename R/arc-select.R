@@ -311,7 +311,7 @@ get_query_resps <- function(
 
 #' Check if an object is a FeatureLayer or Table object
 #'
-#' [obj_check_layer()] errors if an object does not inherit either the
+#' obj_check_layer() errors if an object does not inherit either the
 #' FeatureLayer or Table class.
 #'
 #' @param x A `FeatureLayer` or `Table` class object created with [arc_open()].
@@ -338,7 +338,7 @@ obj_is_layer <- function(x) {
 
 #' Check if an object inherits from a set of classes
 #'
-#' [check_inherits_any()] wraps [rlang::inherits_any()] to error if an object
+#' check_inherits_any() wraps [rlang::inherits_any()] to error if an object
 #' does not inherit any of a set of classes.
 #'
 #' @inheritParams cli::cli_vec
@@ -399,7 +399,7 @@ update_params <- function(x, ...) {
 
 #' Add an offset to a query parameters
 #'
-#' [add_offset()] takes a list of query parameters and creates a query request.
+#' add_offset() takes a list of query parameters and creates a query request.
 #' Importantly, this creates the paginated results that will be needed for
 #' Feature Layers with more than 2000 observations.
 #'
@@ -417,7 +417,7 @@ add_offset <- function(.req, .offset, .page_size, .params) {
 
 #' Validate query parameters
 #'
-#' [validate_params()] ensures that the parameters are set to minimally
+#' validate_params() ensures that the parameters are set to minimally
 #' acceptable values.
 #'
 #' @keywords internal
@@ -502,7 +502,7 @@ count_results <- function(
 
 #' Match fields
 #'
-#' [match_fields()] ensures that fields passed to [arc_select()] match
+#' match_fields() ensures that fields passed to [arc_select()] match
 #' permissible values.
 #'
 #' @keywords internal

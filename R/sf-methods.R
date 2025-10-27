@@ -10,8 +10,8 @@ st_crs.ImageServer <- function(obj, ...) {
 #' Get a Coordinate Reference System from a FeatureLayer or ImageServer spatial
 #' reference
 #'
-#' [arc_sr_as_crs()] converts a FeatureLayer or ImageServer into a coordinate
-#' reference system (CRS) using [sf::st_crs()].
+#' arc_sr_as_crs() converts a FeatureLayer or ImageServer into a coordinate
+#' reference system (CRS) using sf::st_crs().
 #'
 #' @param x A FeatureLayer or ImageServer or another object with a named
 #'   `"spatialReference"` element that can be converted to a coordinate
