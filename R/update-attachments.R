@@ -1,8 +1,14 @@
-#' Update Feature Service Attachments
+#' Feature Service Attachments
+#'
+#' @description
 #'
 #' Feature Services can contain attachments that are associated with a single feature ID.
-#' `update_features()` enables you to update the attachments of multiple features at once
-#' by generating multiple update requests and performing them in parallel.
+#'
+#' - Use `add_features()` to add attachments to a feature service
+#' - Use `update_features()` to update the attachments of a feature service
+#' - Use `query_layer_attachments()` to list attachments of a feature service
+#' - Use `download_attachments()` with the results of `query_layer_attachments()`
+#' to download the attachments from a feature service locally
 #'
 #' @details
 #'  `r lifecycle::badge("experimental")`
@@ -18,6 +24,7 @@
 #' @param attachment_id the ID of the attachment—this corresponds to the `id` column returned from `query_layer_attachments()`
 #' @returns a `data.frame` with 2 columns returning the status of the update.
 #' @references See [API documentation](https://developers.arcgis.com/rest/services-reference/enterprise/update-attachment/#request-parameters) for more.
+#' @rdname attachments
 #' @export
 #' @examples
 #' \dontrun{

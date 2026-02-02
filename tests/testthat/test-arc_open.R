@@ -3,6 +3,7 @@
 
 test_that("arc_open(): Feature Layer", {
   skip_on_cran()
+  unset_arc_token()
   ft_url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
   lyr <- arc_open(ft_url)
@@ -19,6 +20,7 @@ test_that("arc_open(): Feature Layer", {
 
 test_that("arc_open(): Table", {
   skip_on_cran()
+  unset_arc_token()
   tbl_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/List_of_Providers/FeatureServer/27"
 
   expect_no_error(arc_open(tbl_url))
@@ -26,12 +28,14 @@ test_that("arc_open(): Table", {
 
 test_that("arc_open(): Feature Server", {
   skip_on_cran()
+  unset_arc_token()
   server_url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/ArcGIS/rest/services/hexagons_state/FeatureServer"
   expect_no_error(arc_open(server_url))
 })
 
 test_that("arc_open(): Map Server", {
   skip_on_cran()
+  unset_arc_token()
   map_url <- paste0(
     "https://services.arcgisonline.com/ArcGIS/rest/services/",
     "World_Imagery/MapServer"
@@ -42,6 +46,7 @@ test_that("arc_open(): Map Server", {
 
 test_that("arc_open(): Image Server", {
   skip_on_cran()
+  unset_arc_token()
   img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 
   expect_no_error(arc_open(img_url))
@@ -49,21 +54,24 @@ test_that("arc_open(): Image Server", {
 
 test_that("arc_open(): GroupLayer", {
   skip_on_cran()
+  unset_arc_token()
   gurl <- "https://geodata.baltimorecity.gov/egis/rest/services/CitiMap/DOT_Layers/MapServer/0"
   expect_no_error(arc_open(gurl))
 })
 
 test_that("arc_open(): doesn't filter NULL properties", {
   skip_on_cran()
-  furl <- "https://geodata.md.gov/imap/rest/services/Transportation/MD_Transit/FeatureServer/8"
+  unset_arc_token()
+  furl <- "https://mdgeodata.md.gov/imap/rest/services/Transportation/MD_Transit/FeatureServer/8"
 
   flayer <- arc_open(furl)
 
-  expect_identical(length(flayer), 56L)
+  expect_identical(length(flayer), 76L)
 })
 
 test_that("arc_open(): generic item support", {
   skip_on_cran()
+  unset_arc_token()
   test_cases <- c(
     map_server = "https://image.discomap.eea.europa.eu/arcgis/rest/services/Corine/CLC2000_WM/MapServer",
     feature_layer = "https://image.discomap.eea.europa.eu/arcgis/rest/services/Corine/CLC2000_WM/MapServer/0",
@@ -139,11 +147,13 @@ test_that("arc_open(): generic item support", {
 
 test_that("arc_open(): informative error with unsupported type", {
   skip_on_cran()
+  unset_arc_token()
   expect_error(arc_open("https://www.google.com/"))
 })
 
 test_that("arc_open(): can open service folders", {
   skip_on_cran()
+  unset_arc_token()
   url <- "https://egisdata.baltimorecity.gov/egis/rest/services/BaseMaps"
   expect_equal(class(arc_open(url)), "list")
 })

@@ -99,7 +99,7 @@ test_that("arc_read(): no error on tricky polylines", {
   url <- "https://gisportalp.itd.idaho.gov/xserver/rest/services/RH_GeneralService/MapServer/1"
 
   res <- arc_read(url, where = "OBJECTID = 440013")
-  expect_equal(res, structure(data.frame(), null_elements = integer()))
+  expect_length(res, 15L)
 })
 
 test_that("arc_read(): error with invalid col_names", {

@@ -1,10 +1,11 @@
 # arcgislayers (development version)
 
 ## New features
-
+- `add_attachment()`: a new function to add attachments to a set of features in a feature layer.
 ## Bug Fixes
 
 - `arc_select()` returns an empty `data.frame` instead of `NULL` when no features are returned from a query
+
 
 ## Breaking changes
 
