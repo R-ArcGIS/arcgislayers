@@ -81,7 +81,9 @@ publish_layer(
 
 - token:
 
-  an `httr2_token` as created by `auth_code()` or similar
+  an `httr2_token` as created by
+  [`auth_code()`](https://rdrr.io/pkg/arcgisutils/man/auth.html) or
+  similar
 
 - item_id:
 

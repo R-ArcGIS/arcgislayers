@@ -4,7 +4,8 @@
 
 ### New features
 
-### Bug Fixes
+- `add_attachment()`: a new function to add attachments to a set of
+  features in a feature layer. \## Bug Fixes
 
 - [`arc_select()`](https://developers.arcgis.com/r-bridge/reference/arc_select.md)
   returns an empty `data.frame` instead of `NULL` when no features are
@@ -29,7 +30,7 @@ CRAN release: 2025-09-19
 ### New features
 
 - New
-  [`update_attachments()`](https://developers.arcgis.com/r-bridge/reference/update_attachments.md)
+  [`update_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
   function modifies a feature service’s attachments
   <https://github.com/R-ArcGIS/arcgislayers/pull/277>
 - [`arc_open()`](https://developers.arcgis.com/r-bridge/reference/arc_open.md)

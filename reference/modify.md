@@ -70,7 +70,9 @@ update_features(
 
 - token:
 
-  default `arc_token()`. An `httr2_token`.
+  default
+  [`arc_token()`](https://rdrr.io/pkg/arcgisutils/man/token.html). An
+  `httr2_token`.
 
 - object_ids:
 

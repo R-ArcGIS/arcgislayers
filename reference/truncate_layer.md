@@ -28,7 +28,9 @@ truncate_layer(x, async = FALSE, attachment_only = FALSE, token = arc_token())
 
 - token:
 
-  an `httr2_token` as created by `auth_code()` or similar
+  an `httr2_token` as created by
+  [`auth_code()`](https://rdrr.io/pkg/arcgisutils/man/auth.html) or
+  similar
 
 ## Value
 

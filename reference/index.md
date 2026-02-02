@@ -46,11 +46,11 @@
 
 ## Attachments
 
-- [`query_layer_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
+- [`add_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
+  [`query_layer_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
   [`download_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
+  [`update_attachments()`](https://developers.arcgis.com/r-bridge/reference/attachments.md)
   : Query and Download Feature Service Attachments
-- [`update_attachments()`](https://developers.arcgis.com/r-bridge/reference/update_attachments.md)
-  : Update Feature Service Attachments
 
 ## Utilities
 
