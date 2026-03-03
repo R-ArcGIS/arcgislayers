@@ -1,4 +1,4 @@
-# arcgislayers (development version)
+# arcgislayers 0.6.0
 
 ## New features
 - `add_attachment()`: a new function to add attachments to a set of features in a feature layer.
