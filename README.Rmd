@@ -27,6 +27,9 @@ library(pillar)
 
 `{arcgislayers}` is the core data access package in the R-ArcGIS Bridge, providing a unified interface for working with ArcGIS data services. As part of the `{arcgis}` metapackage, it enables seamless integration between R and the ArcGIS Web GIS ecosystem, including ArcGIS Online, Enterprise, and Location Platform.
 
+::: callout-tip
+An [`llms.txt`](https://r.esri.com/arcgislayers/llms.txt) file is available to provide context for LLMs when working with this package.
+:::
 
 ## Capabilities
 
