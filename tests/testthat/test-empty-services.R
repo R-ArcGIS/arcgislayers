@@ -1,4 +1,5 @@
 test_that("empty feature services returns empty df", {
+  skip_on_cran()
   furl <- "https://services1.arcgis.com/hLJbHVT9ZrDIzK0I/arcgis/rest/services/test-empty/FeatureServer/0"
 
   layer <- arc_open(furl)

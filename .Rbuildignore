@@ -1,3 +1,4 @@
+llms.txt
 justfile
 README.*
 ^.*\.Rproj$
