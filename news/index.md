@@ -1,11 +1,14 @@
 # Changelog
 
-## arcgislayers (development version)
+## arcgislayers 0.6.0
 
 ### New features
 
 - `add_attachment()`: a new function to add attachments to a set of
-  features in a feature layer. \## Bug Fixes
+  features in a feature layer.
+- Adds `llms.txt`
+
+### Bug Fixes
 
 - [`arc_select()`](https://developers.arcgis.com/r-bridge/reference/arc_select.md)
   returns an empty `data.frame` instead of `NULL` when no features are
