@@ -1,0 +1,207 @@
+# arcgislayers
+
+`arcgislayers` is the core data access package in the R-ArcGIS Bridge. It provides a unified interface for reading, writing, and publishing vector and raster data via ArcGIS REST API endpoints from ArcGIS Online, ArcGIS Enterprise, and ArcGIS Location Platform.
+
+- Version: 0.5.2.9000
+- License: Apache 2.0
+- Part of the `arcgis` metapackage
+- Documentation: https://developers.arcgis.com/r-bridge
+- Source: https://github.com/R-ArcGIS/arcgislayers
+
+## Authentication
+
+Authentication is handled by the `arcgisutils` package. Use `arcgisutils::auth_user()`, `arcgisutils::auth_client()`, or `arcgisutils::auth_code()` to authenticate, then `arcgisutils::arc_token()` to retrieve the token passed to most functions. See the arcgisutils llms.txt for full details.
+
+## Object Classes
+
+All objects returned by `arc_open()` are named lists with a class attribute. They contain the service's metadata properties (e.g., `name`, `url`, `fields`, `capabilities`, `extent`, `spatialReference`).
+
+- `FeatureLayer` — a single vector layer with geometry from a FeatureServer or MapServer
+- `Table` — a tabular layer without geometry from a FeatureServer
+- `FeatureServer` — a feature service containing one or more FeatureLayers and/or Tables
+- `MapServer` — a map service containing one or more layers
+- `ImageServer` — a raster/imagery service
+- `GroupLayer` — a named group of sublayers within a MapServer or FeatureServer
+- `PortalItem` — a portal item from ArcGIS Online or Enterprise (returned when a non-service item ID is provided)
+
+## Core Workflow
+
+```r
+library(arcgis)
+
+fl <- arc_open("https://.../FeatureServer/0")
+
+res <- arc_select(fl, fields = c("name", "pop"), where = "pop > 1000000")
+
+res$density <- res$pop / as.numeric(sf::st_area(res))
+
+publish_layer(res, title = "My Analysis")
+```
+
+## Functions
+
+### Connecting
+
+**`arc_open(url, host = arc_host(), token = arc_token())`**
+Opens a connection to any ArcGIS service or portal item. `url` can be a REST endpoint URL or a portal item ID. Returns the appropriate class object (`FeatureLayer`, `Table`, `FeatureServer`, `MapServer`, `ImageServer`, `PortalItem`, etc.) without downloading data.
+
+### Reading Data
+
+**`arc_select(x, ..., fields = NULL, where = NULL, crs = sf::st_crs(x), geometry = TRUE, filter_geom = NULL, predicate = "intersects", n_max = Inf, page_size = NULL, token = arc_token())`**
+Queries a `FeatureLayer`, `Table`, or `ImageServer` and returns an `sf` object or `data.frame`. Handles pagination automatically. Use `fields` for column selection, `where` for SQL filtering, `filter_geom` (an `sfc`, `sfg`, or `bbox`) for spatial filtering, and `page_size` to reduce features per request when timeouts occur.
+
+**`arc_read(url, col_names = TRUE, col_select = NULL, n_max = Inf, name_repair = "unique", crs = NULL, ..., fields = NULL, alias = "drop", token = arc_token())`**
+Convenience wrapper combining `arc_open()` and `arc_select()` (or `arc_raster()` for ImageServers) in a single call. `alias` controls field alias handling: `"drop"` (default), `"label"` (adds label attribute), or `"replace"` (renames columns). Respects `options("arcgislayers.n_max")`.
+
+**`arc_raster(x, xmin, xmax, ymin, ymax, bbox_crs = NULL, crs = sf::st_crs(x), width = NULL, height = NULL, format = "tiff", ..., raster_fn = NULL, token = arc_token())`**
+Exports a region of an `ImageServer` as a `terra::SpatRaster`. Bounding box coordinates are required. `raster_fn` applies a named server-side raster function.
+
+### Field Utilities
+
+**`list_fields(x)`**
+Returns a `data.frame` of field metadata (name, alias, type, etc.) for a `FeatureLayer`, `Table`, or `ImageServer`.
+
+**`pull_field_aliases(x)`**
+Returns a named character vector mapping field names to their aliases for a `FeatureLayer`, `Table`, or `ImageServer`.
+
+**`set_layer_aliases(.data, .layer, name_repair = "unique", alias = c("replace", "label"), call)`**
+Applies field aliases from a `FeatureLayer` or `Table` to a `data.frame` returned by `arc_select()`. `"replace"` renames columns; `"label"` adds a `label` attribute to each column.
+
+**`encode_field_values(.data, .layer, field = NULL, codes = c("replace", "replace-valid", "label"), call)`**
+Replaces or labels column values using coded value domains from the layer definition. `"replace"` substitutes codes with descriptions (non-coded values become `NA`); `"replace-valid"` keeps non-coded values in place; `"label"` applies value labels compatible with the `haven` package.
+
+### Server Navigation
+
+**`get_layer(x, id = NULL, name = NULL, token = arc_token())`**
+Extracts a single `FeatureLayer` or `Table` from a `FeatureServer`, `MapServer`, or `GroupLayer` by numeric `id` or character `name`.
+
+**`get_layers(x, id = NULL, name = NULL, token = arc_token())`**
+Extracts multiple layers by a vector of `id` or `name` values. Returns a named list.
+
+**`get_all_layers(x, token = arc_token())`**
+Returns all layers and tables from a `FeatureServer`, `MapServer`, or `ImageServer` as a list with elements `"layers"` and `"tables"`.
+
+### Modifying Features
+
+**`add_features(x, .data, chunk_size = 500, match_on = c("name", "alias"), rollback_on_failure = TRUE, progress = TRUE, token = arc_token())`**
+Adds features from an `sf` object or `data.frame` to a `FeatureLayer`. Returns a `data.frame` with `objectId`, `uniqueId`, `globalId`, and `success` columns.
+
+**`update_features(x, .data, chunk_size = 500, match_on = c("name", "alias"), rollback_on_failure = TRUE, progress = TRUE, token = arc_token())`**
+Updates existing features in a `FeatureLayer`. `.data` must contain the ObjectID field. Returns a `data.frame` of update results.
+
+**`delete_features(x, object_ids = NULL, where = NULL, filter_geom = NULL, predicate = "intersects", rollback_on_failure = TRUE, chunk_size = 500, progress = TRUE, token = arc_token())`**
+Deletes features by object IDs, SQL where clause, or spatial filter. Returns a `data.frame` of delete results.
+
+**`truncate_layer(x, async = FALSE, attachment_only = FALSE, token = arc_token())`**
+Removes all features from a `FeatureLayer`. Set `attachment_only = TRUE` to delete only attachments. Returns a named list with `success = TRUE/FALSE`.
+
+### Attachments
+
+**`add_attachments(x, feature_id, path, file_name = basename(path), .progress = TRUE, token = arc_token())`**
+Uploads files as attachments to features in a `FeatureLayer`. `feature_id` is a vector of object IDs (recycled to match `path`). Returns a `data.frame` of attachment metadata.
+
+**`update_attachments(x, feature_id, attachment_id, path, .progress = TRUE, token = arc_token())`**
+Replaces existing attachments identified by `attachment_id`. Returns a `data.frame` of update status.
+
+**`query_layer_attachments(x, definition_expression = "1=1", attachments_definition_expression = NULL, object_ids = NULL, global_ids = NULL, attachment_types = NULL, keywords = NULL, return_metadata = TRUE, ..., token = arc_token())`**
+Queries attachment metadata from a `FeatureLayer`. Returns a `data.frame` with attachment info including IDs, names, sizes, and content types.
+
+**`download_attachments(attachments, out_dir, ..., overwrite = FALSE, .progress = TRUE, token = arc_token())`**
+Downloads attachments returned by `query_layer_attachments()` to a local directory. Returns a list of file paths or error conditions.
+
+### Publishing
+
+**`publish_layer(x, title, ..., publish_params = .publish_params(title, target_crs = sf::st_crs(x)), token = arc_token())`**
+High-level function that adds an `sf` or `data.frame` as a portal item and publishes it as a hosted feature service in one step. Returns published service metadata.
+
+**`add_item(x, title, description = "", tags = character(0), snippet = "", categories = character(0), async = FALSE, type = "Feature Service", token = arc_token())`**
+Adds an `sf` or `data.frame` as a `FeatureCollection` portal item. Returns a `data.frame` with item metadata including the item ID.
+
+**`publish_item(item_id, publish_params = .publish_params(), file_type = "featureCollection", token = arc_token())`**
+Publishes an existing portal item as a hosted feature service. Returns a list with the encoded service URL.
+
+**`create_feature_server(service_name, description = "", crs = 3857, capabilities = c("create", "delete", "query", "update", "editing"), query_formats = c("json", "geojson"), initial_extent = list(xmin = NULL, xmax = NULL, ymin = NULL, ymax = NULL), max_record_count = 1000L, allow_updates = TRUE, copyright = "", has_static_data = FALSE, xss_prevention = xss_defaults(), token = arc_token())`**
+Creates an empty hosted `FeatureServer` on ArcGIS Online or Enterprise.
+
+**`xss_defaults()`**
+Returns the default XSS prevention settings list used by `create_feature_server()`.
+
+### Layer Definition
+
+**`add_layer_definition(x, ..., async = FALSE, token = arc_token())`**
+Adds fields or other properties to a layer's definition. Returns the updated layer object.
+
+**`update_layer_definition(x, ..., async = FALSE, token = arc_token())`**
+Modifies existing properties in a layer's definition. Returns the updated layer object.
+
+**`delete_layer_definition(x, ..., async = FALSE, token = arc_token())`**
+Removes properties from a layer's definition. Returns the updated layer object.
+
+### Raster Functions
+
+**`list_raster_fns(x)`**
+Lists available server-side raster functions for an `ImageServer`. Returns a `data.frame` with function names and descriptions.
+
+### Utilities
+
+**`update_params(x, ...)`**
+Stores named query parameters on a `FeatureLayer` or `Table` object without executing a request. Used to pre-configure queries before calling `arc_select()`.
+
+**`clear_query(x)`**
+Removes any stored query parameters from a layer object.
+
+**`refresh_layer(x)`**
+Re-fetches metadata from the remote service, returning an updated layer object while preserving any stored query parameters.
+
+**`get_layer_estimates(x, token = arc_token())`**
+Returns estimation information for a layer (e.g., feature count, extent) as a named list.
+
+**`prepare_spatial_filter(filter_geom, crs, predicate, error_call)`**
+Converts an `sfc`, `sfg`, or `bbox` object into the named list of Esri JSON parameters needed for spatial filtering. Valid predicates: `"intersects"`, `"contains"`, `"crosses"`, `"overlaps"`, `"touches"`, `"within"`.
+
+**`sf::st_crs(<FeatureLayer>)`** / **`sf::st_crs(<ImageServer>)`**
+S3 methods are registered so `sf::st_crs()` works directly on `FeatureLayer` and `ImageServer` objects.
+
+## Common Patterns
+
+### Read with field aliases
+```r
+fl <- arc_open(url)
+data <- arc_read(url, alias = "replace")
+```
+
+### Spatial filter
+```r
+bbox <- sf::st_bbox(my_polygon)
+result <- arc_select(fl, filter_geom = bbox)
+```
+
+### Paginated query for large layers
+```r
+result <- arc_select(fl, page_size = 100)
+```
+
+### Add features then update
+```r
+add_features(fl, new_sf)
+update_features(fl, modified_sf)  # must contain ObjectID
+```
+
+### Work with coded domains
+```r
+data <- arc_select(fl)
+data <- encode_field_values(data, fl)
+```
+
+### Download Survey123 attachments
+```r
+att <- query_layer_attachments(fl)
+download_attachments(att, out_dir = tempdir())
+```
+
+### Navigate a FeatureServer
+```r
+fs <- arc_open("https://.../FeatureServer")
+layers <- get_all_layers(fs)
+fl <- get_layer(fs, name = "Parcels")
+```
