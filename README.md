@@ -13,10 +13,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 <!-- badges: end -->
 
 `{arcgislayers}` is the core data access package in the R-ArcGIS Bridge,
-providing a unified interface for working with ArcGIS data services. As
-part of the `{arcgis}` metapackage, it enables seamless integration
-between R and the ArcGIS Web GIS ecosystem, including ArcGIS Online,
-Enterprise, and Location Platform.
+providing a unified interface for working with ArcGIS data and location services. As
+part of the `{arcgis}` meta-package, it enables seamless integration
+between R and the ArcGIS web GIS ecosystem, including ArcGIS Online,
+ArcGIS Enterprise, and ArcGIS Location Platform.
 
 <div class="callout-tip">
 
@@ -27,9 +27,9 @@ available to provide context for LLMs when working with this package.
 
 ## Capabilities
 
-- **Connect to any ArcGIS Data Service**: Access feature services,
-  imagery, and portal items from ArcGIS Online, Enterprise and Location
-  Platform using familiar R objects from `sf` and `terra`.
+- **Connect to any ArcGIS data service**: Access feature services,
+  imagery, and portal items from ArcGIS Online, ArcGIS Enterprise and ArcGIS Location
+  Platform using familiar R objects from `{sf}` and `{terra}`.
 - **Publish your R objects**: Turn analysis outputs into live ArcGIS
   services that others can access, visualize, modify, and use in their
   workflows.
@@ -40,9 +40,9 @@ available to provide context for LLMs when working with this package.
 
 ## Installation
 
-`{arcgislayers}` is part of the `{arcgis}` metapackage, which provides
+`{arcgislayers}` is part of the `{arcgis}` meta-package, which provides
 the complete R-ArcGIS Bridge toolkit. For most users, installing the
-metapackage is recommended:
+meta-package is recommended:
 
 ``` r
 install.packages("arcgis")
@@ -96,7 +96,7 @@ county_fl
 
 ### Query Data
 
-`arc_select()` brings data from ArcGIS into R as familiar `sf` objects.
+`arc_select()` brings data from ArcGIS into R as familiar `{sf}` objects.
 You can get everything, or be selective:
 
 ``` r
@@ -204,7 +204,7 @@ list_fields(county_fl)
 
 ### Work with Imagery
 
-`arc_raster()` extracts raster data from ArcGIS ImageServers as `terra`
+`arc_raster()` extracts raster data from ArcGIS ImageServers as `{terra}`
 objects:
 
 ``` r
@@ -247,7 +247,7 @@ publish_layer(
 
 ## Learn more
 
-To learn more about about how to most effectively use `{arcgislayers}`
+To learn more about how to most effectively use `{arcgislayers}`
 for your use case review the [developer site
 documentation](https://developers.arcgis.com/r-bridge).
 
