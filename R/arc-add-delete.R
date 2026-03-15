@@ -10,6 +10,7 @@
 #' @param rollback_on_failure if anything errors, roll back writes.
 #'  Defaults to `TRUE`.
 #' @param progress default `TRUE`. A progress bar to be rendered by `httr2` to track requests.
+#' @param interactive default `TRUE`. Force everything to run in specified interactive mode.
 #' @param token your authorization token.
 #'
 #' @inheritParams arc_select
@@ -54,6 +55,7 @@ add_features <- function(
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
+  interactive = TRUE,
   token = arc_token()
 ) {
   # initial check for type of `x`
@@ -102,7 +104,8 @@ add_features <- function(
 
   inform_nin_feature(
     # columns not in the feature layer
-    setdiff(cnames[!present_index], geo_col)
+    setdiff(cnames[!present_index], geo_col),
+    interactive
   )
 
   # subset accordingly
@@ -173,7 +176,11 @@ add_features <- function(
 
 
 #' @noRd
-inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
+inform_nin_feature <- function(
+  nin_feature,
+  interactive_state,
+  error_call = rlang::caller_call()
+) {
   if (length(nin_feature) == 0) {
     return(invisible(NULL))
   }
@@ -190,7 +197,7 @@ inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
     )
   )
 
-  if (interactive()) {
+  if (interactive() && interactive_state) {
     cont <- utils::menu(
       c("Yes", "No"),
       title = "Columns not found in feature service. Would you like to continue?"
