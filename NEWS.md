@@ -4,6 +4,7 @@
 
 - `add_attachment()`: a new function to add attachments to a set of features in a feature layer.
 - Adds `llms.txt`
+- `add_features()` now has an option `interactive` that can force it to run in non-interactive mode.
 
 ## Bug Fixes
 

@@ -11,6 +11,7 @@
 #'  Defaults to `TRUE`.
 #' @param progress default `TRUE`. A progress bar to be rendered by `httr2` to track requests.
 #' @param interactive default `TRUE`. Force everything to run in specified interactive mode.
+#' @param ignore_exra_cols default `FALSE`. Ignore columns that are in `.data` but not in Feature Layer.
 #' @param token your authorization token.
 #'
 #' @inheritParams arc_select
@@ -56,6 +57,7 @@ add_features <- function(
   rollback_on_failure = TRUE,
   progress = TRUE,
   interactive = TRUE,
+  ignore_extra_cols = FALSE,
   token = arc_token()
 ) {
   # initial check for type of `x`
@@ -101,12 +103,13 @@ add_features <- function(
     }
     colnames(.data) <- cnames
   }
-
-  inform_nin_feature(
-    # columns not in the feature layer
-    setdiff(cnames[!present_index], geo_col),
-    interactive
-  )
+  if (!ignore_extra_cols) {
+    inform_nin_feature(
+      # columns not in the feature layer
+      setdiff(cnames[!present_index], geo_col),
+      interactive
+    )
+  }
 
   # subset accordingly
   .data <- .data[, present_index, drop = FALSE]
