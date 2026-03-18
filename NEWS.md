@@ -4,12 +4,12 @@
 
 - `add_attachment()`: a new function to add attachments to a set of features in a feature layer.
 - Adds `llms.txt`
-- `add_features()` now has an option `interactive` that can force it to run in non-interactive mode.
+
 
 ## Bug Fixes
 
 - `arc_select()` returns an empty `data.frame` instead of `NULL` when no features are returned from a query
-
+- `add_features()` uses `rlang::is_interactive()` to determine if the user is running in an interactive session instead of `base::interactive()`. This allows for the specification of which mode the function should run in using `rlang::with_interactive()` or `rlang::local_interactive()`.
 
 
 ## Breaking changes
