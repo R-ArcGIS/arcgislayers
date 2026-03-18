@@ -99,12 +99,10 @@ add_features <- function(
     }
     colnames(.data) <- cnames
   }
-  if (!ignore_extra_cols) {
-    inform_nin_feature(
-      # columns not in the feature layer
-      setdiff(cnames[!present_index], geo_col)
-    )
-  }
+  inform_nin_feature(
+    # columns not in the feature layer
+    setdiff(cnames[!present_index], geo_col)
+  )
 
   # subset accordingly
   .data <- .data[, present_index, drop = FALSE]
