@@ -13,8 +13,6 @@ add_features(
   match_on = c("name", "alias"),
   rollback_on_failure = TRUE,
   progress = TRUE,
-  interactive = TRUE,
-  ignore_extra_cols = FALSE,
   token = arc_token()
 )
 
@@ -55,8 +53,6 @@ applied only if all submitted edits succeed.}
 
 \item{progress}{default \code{TRUE}. A progress bar to be rendered by \code{httr2} to track requests.}
 
-\item{interactive}{default \code{TRUE}. Force everything to run in specified interactive mode.}
-
 \item{token}{default \code{arc_token()}. An \code{httr2_token}.}
 
 \item{object_ids}{a numeric vector of object IDs to be deleted.}
@@ -71,8 +67,6 @@ query results based on a predicate function.}
 \item{predicate}{Spatial predicate to use with \code{filter_geom}. Default
 \code{"intersects"}. Possible options are \code{"intersects"}, \code{"contains"},
 \code{"crosses"},  \code{"overlaps"},  \code{"touches"}, and \code{"within"}.}
-
-\item{ignore_exra_cols}{default \code{FALSE}. Ignore columns that are in \code{.data} but not in Feature Layer.}
 }
 \value{
 \itemize{
