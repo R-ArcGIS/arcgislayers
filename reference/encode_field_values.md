@@ -71,6 +71,8 @@ A data.frame with fields encoded with their respective domains.
 layer <- arc_open(
   "https://geodata.baltimorecity.gov/egis/rest/services/Housing/dmxOwnership/MapServer/0"
 )
+#> Error in as_layer_class(clear_url_query(url), token, layer_type): Status code: 500
+#> Error: json
 
 res <- arc_select(
   layer,
@@ -78,11 +80,10 @@ res <- arc_select(
   where = "RESPAGCY <> '  '",
   fields = "RESPAGCY"
 )
-#> ℹ Query results limited to 100 out of 10448 available features.
+#> Error: object 'layer' not found
 encoded <- encode_field_values(res, layer)
+#> Error: object 'res' not found
 table(encoded$RESPAGCY)
-#> 
-#>                 Education                   NPA/HCD Office of the Comptroller 
-#>                         4                        83                        13 
+#> Error: object 'encoded' not found
 # }
 ```

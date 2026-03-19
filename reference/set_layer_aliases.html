@@ -103,28 +103,15 @@ When <code>alias = "label"</code> each column has a new <code>label</code> attri
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># select first five rows</span></span></span>
 <span class="r-in"><span><span class="va">five_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="arc_select.html">arc_select</a></span><span class="op">(</span><span class="va">flayer</span>, n_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Query results limited to 5 out of 3144 available features.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> HTTP 504 Gateway Timeout.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add aliases</span></span></span>
 <span class="r-in"><span><span class="va">with_aliases</span> <span class="op">&lt;-</span> <span class="fu">set_layer_aliases</span><span class="op">(</span><span class="va">five_counties</span>, <span class="va">flayer</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'five_counties' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># preview the new names</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">with_aliases</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Classes ‘sf’ and 'data.frame':	5 obs. of  13 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ OBJECTID              : num  1 2 3 4 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Name                  : chr  "Grand Forks County" "Grant County" "Griggs County" "Hettinger County" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ State Name            : chr  "North Dakota" "North Dakota" "North Dakota" "North Dakota" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ State FIPS            : chr  "38" "38" "38" "38" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ FIPS                  : chr  "38035" "38037" "38039" "38041" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Area in square miles  : num  1440 1644 721 1131 1408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ 2020 Total Population : num  73170 2301 2306 2489 2394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ People per square mile: num  50.8 1.4 3.2 2.2 1.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ State Abbreviation    : chr  "ND" "ND" "ND" "ND" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ County FIPS           : chr  "035" "037" "039" "041" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Shape__Area           : num  0.45 0.504 0.223 0.343 0.438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Shape__Length         : num  2.96 3.41 1.95 2.69 2.72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geometry              :sfc_POLYGON of length 5; first list element: List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:26, 1:2] -96.9 -97.5 -97.9 -97.9 -97.9 ...</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'with_aliases' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

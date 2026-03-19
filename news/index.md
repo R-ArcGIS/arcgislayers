@@ -2,6 +2,8 @@
 
 ## arcgislayers 0.6.0
 
+CRAN release: 2026-03-04
+
 ### New features
 
 - `add_attachment()`: a new function to add attachments to a set of
@@ -13,6 +15,16 @@
 - [`arc_select()`](https://developers.arcgis.com/r-bridge/reference/arc_select.md)
   returns an empty `data.frame` instead of `NULL` when no features are
   returned from a query
+- [`add_features()`](https://developers.arcgis.com/r-bridge/reference/modify.md)
+  uses
+  [`rlang::is_interactive()`](https://rlang.r-lib.org/reference/is_interactive.html)
+  to determine if the user is running in an interactive session instead
+  of [`base::interactive()`](https://rdrr.io/r/base/interactive.html).
+  This allows for the specification of which mode the function should
+  run in using
+  [`rlang::with_interactive()`](https://rlang.r-lib.org/reference/is_interactive.html)
+  or
+  [`rlang::local_interactive()`](https://rlang.r-lib.org/reference/is_interactive.html).
 
 ### Breaking changes
 
