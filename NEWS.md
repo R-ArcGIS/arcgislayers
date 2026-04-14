@@ -8,6 +8,7 @@
 
 ## Bug Fixes
 
+- `st_crs()` on a FeatureLayer or ImageServer uses `arcgisutils::from_spatial_reference()`. This allows for support of data with a CRS within the ESRI authority ([#291](https://github.com/R-ArcGIS/arcgislayers/issues/291))
 - `arc_select()` returns an empty `data.frame` instead of `NULL` when no features are returned from a query
 - `add_features()` uses `rlang::is_interactive()` to determine if the user is running in an interactive session instead of `base::interactive()`. This allows for the specification of which mode the function should run in using `rlang::with_interactive()` or `rlang::local_interactive()`.
 
