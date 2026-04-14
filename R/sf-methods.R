@@ -5,7 +5,11 @@ st_crs.FeatureLayer <- function(obj, ...) {
 }
 
 st_crs.ImageServer <- function(obj, ...) {
-  spatialReference <- obj[["extent"]][["spatialReference"]]
+ if (rlang::has_name(obj, "extent")) {
+    spatialReference <- obj[["extent"]][["spatialReference"]]
+  } else {
+    spatialReference <- obj[["spatialReference"]] %||% list()
+  }
   arcgisutils::from_spatial_reference(spatialReference)
 }
 
