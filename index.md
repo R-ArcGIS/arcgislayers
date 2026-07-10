@@ -31,6 +31,7 @@ provides the complete R-ArcGIS Bridge toolkit. For most users,
 installing the metapackage is recommended:
 
 ``` r
+
 install.packages("arcgis")
 ```
 
@@ -39,12 +40,14 @@ You can also install
 CRAN:
 
 ``` r
+
 install.packages("arcgislayers")
 ```
 
 To install the development version:
 
 ``` r
+
 pak::pak("r-arcgis/arcgislayers")
 ```
 
@@ -54,6 +57,7 @@ The basic workflow is: **connect** ➡️ **query** ➡️ **analyze** ➡️
 **publish**. Here’s how to get started:
 
 ``` r
+
 library(arcgis)
 #> Attaching core arcgis packages:
 #> → arcgisutils v0.4.0.9001
@@ -71,6 +75,7 @@ creates a connection to the remote data without downloading anything
 yet.
 
 ``` r
+
 # Connect to a feature service
 furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
 
@@ -90,6 +95,7 @@ brings data from ArcGIS into R as familiar `sf` objects. You can get
 everything, or be selective:
 
 ``` r
+
 # Get all data (use with caution on large datasets!)
 counties_all <- arc_select(county_fl)
 
@@ -125,6 +131,7 @@ large_counties
 Filter by location or attributes before bringing data into R:
 
 ``` r
+
 # Spatial filter: get counties that intersect with North Carolina
 nc <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #> Reading layer `nc' from data source 
@@ -175,6 +182,7 @@ Use
 to explore available attributes:
 
 ``` r
+
 list_fields(county_fl)
 #> # A data frame: 12 × 10
 #>    name         type  alias sqlType nullable editable domain defaultValue length
@@ -200,6 +208,7 @@ list_fields(county_fl)
 extracts raster data from ArcGIS ImageServers as `terra` objects:
 
 ``` r
+
 # Connect to Landsat imagery
 img_url <- "https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer"
 landsat <- arc_open(img_url)
@@ -226,6 +235,7 @@ terra::plot(res)
 Turn your R analysis into ArcGIS services that others can access:
 
 ``` r
+
 # Publish an sf object as a feature service (requires authentication)
 my_analysis <- large_counties |>
   dplyr::mutate(density_category = ifelse(pop_sqmi > 100, "Dense", "Sparse"))

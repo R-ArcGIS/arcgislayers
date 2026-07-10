@@ -1,5 +1,11 @@
 # Changelog
 
+## arcgislayers 0.6.1
+
+- Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values
+  were serialized as [`{}`](https://rdrr.io/r/base/Paren.html) when
+  publishing an item
+
 ## arcgislayers 0.6.0
 
 CRAN release: 2026-03-04

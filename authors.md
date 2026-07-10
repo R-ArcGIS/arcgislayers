@@ -23,12 +23,12 @@ Source:
 [`DESCRIPTION`](https://github.com/R-ArcGIS/arcgislayers/blob/main/DESCRIPTION)
 
 Parry J (2026). *arcgislayers: Harness ArcGIS Data Services*. R package
-version 0.6.0, <https://developers.arcgis.com/r-bridge>.
+version 0.6.1, <https://developers.arcgis.com/r-bridge>.
 
     @Manual{,
       title = {arcgislayers: Harness ArcGIS Data Services},
       author = {Josiah Parry},
       year = {2026},
-      note = {R package version 0.6.0},
+      note = {R package version 0.6.1},
       url = {https://developers.arcgis.com/r-bridge},
     }
