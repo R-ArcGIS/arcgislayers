@@ -1,3 +1,5 @@
+# arcgislayers 0.6.1
+
 # arcgislayers 0.6.0
 
 ## New features

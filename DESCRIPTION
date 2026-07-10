@@ -1,7 +1,7 @@
 Type: Package
 Package: arcgislayers
 Title: Harness ArcGIS Data Services
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Josiah", "Parry", , "josiah.parry@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9910-865X")),
@@ -35,7 +35,8 @@ Imports:
     rlang,
     sf,
     terra,
-    utils
+    utils,
+    yyjsonr
 Suggests: 
     testthat (>= 3.0.0),
     vctrs,
