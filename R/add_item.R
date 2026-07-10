@@ -111,7 +111,7 @@ add_item <- function(
   req_url <- paste0(host, "/sharing/rest/content/users/", user, "/addItem")
 
   # create the feature collection json
-  feature_collection <- as_feature_collection(
+  feature_collection_json <- as_feature_collection_json(
     list(as_layer(x, title, title))
   )
 
@@ -133,7 +133,7 @@ add_item <- function(
       description = description,
       tags = tags,
       snippet = snippet,
-      text = unclass(jsonify::to_json(feature_collection, unbox = TRUE)),
+      text = feature_collection_json,
       extent = extent,
       spatialReference = spatial_reference,
       categories = categories,
@@ -335,4 +335,27 @@ publish_layer <- function(
       targetSR = target_sr
     )
   )
+}
+
+
+#' Create FeatureCollection JSON
+#'
+#' Converts a list of layers into the FeatureCollection JSON string used as the
+#' `text` field when adding an item to a portal.
+#'
+#' @param layers a list of layers created by [arcgisutils::as_layer()].
+#' @param error_call the calling environment used for error reporting.
+#' @returns a length 1 character vector of FeatureCollection JSON.
+#' @keywords internal
+#' @noRd
+as_feature_collection_json <- function(
+  layers,
+  error_call = rlang::caller_call()
+) {
+  feature_collection <- as_feature_collection(layers)
+
+  unclass(yyjsonr::write_json_str(
+    feature_collection,
+    auto_unbox = TRUE
+  ))
 }

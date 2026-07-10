@@ -1,5 +1,7 @@
 # arcgislayers 0.6.1
 
+- Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
+
 # arcgislayers 0.6.0
 
 ## New features
@@ -10,7 +12,6 @@
 ## Bug Fixes
 
 - `arc_select()` returns an empty `data.frame` instead of `NULL` when no features are returned from a query
-
 
 
 ## Breaking changes

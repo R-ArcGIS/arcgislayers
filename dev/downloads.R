@@ -29,6 +29,36 @@ ggplot(downloads) +
   facet_wrap("package", scales = "free_y", ncol = 2) +
   labs(y = "Cumulative downloads", x = "")
 
+# since the begining of this year
+cumulative <- downloads |>
+  filter(week_of >= "2025-01-01") |> 
+  group_by(week_of) |>
+  summarise(downloads = sum(downloads)) |>
+  mutate(total_downloads = cumsum(downloads)) |>
+  ggplot(aes(week_of, total_downloads)) +
+  geom_line(lwd = 0.8, color = "white") +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(y = "Cumulative downloads", x = "", title = "All packages combined") +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    panel.grid.major = element_line(color = "#ffffff20"),
+    panel.grid.minor = element_line(color = "#ffffff50"),
+    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.background = element_rect(fill = "transparent"),
+    legend.key = element_rect(fill = "transparent"),
+    axis.text = element_text(color = "white"),
+    title = element_text(color = "white")
+  )
+
+
+ggsave(
+  filename = "~/downloads/pre-uc-pkg-dls.png",
+  width = 1920,
+  height = 1080,
+  units = "px"
+)
+
 downloads |>
   summarise(downloads = sum(downloads), .by = package) |>
   arrange(desc(downloads))
