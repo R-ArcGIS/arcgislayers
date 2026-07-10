@@ -99,7 +99,6 @@ add_features <- function(
     }
     colnames(.data) <- cnames
   }
-
   inform_nin_feature(
     # columns not in the feature layer
     setdiff(cnames[!present_index], geo_col)
@@ -173,7 +172,10 @@ add_features <- function(
 
 
 #' @noRd
-inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
+inform_nin_feature <- function(
+  nin_feature,
+  error_call = rlang::caller_call()
+) {
   if (length(nin_feature) == 0) {
     return(invisible(NULL))
   }
@@ -190,7 +192,7 @@ inform_nin_feature <- function(nin_feature, error_call = rlang::caller_call()) {
     )
   )
 
-  if (interactive()) {
+  if (rlang::is_interactive()) {
     cont <- utils::menu(
       c("Yes", "No"),
       title = "Columns not found in feature service. Would you like to continue?"
