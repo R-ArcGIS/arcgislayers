@@ -1,6 +1,7 @@
 ## R CMD check results
 
-Maintenance update.
+Minor bug fix in creation json.
+
 This package requires active internet connection and credentials for many functions.
 Many examples are skipped due to this. 
 

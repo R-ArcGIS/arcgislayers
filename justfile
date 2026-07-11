@@ -9,3 +9,6 @@ fmt:
 
 prune:
   git branch | grep -v "main" | xargs git branch -D
+
+update:
+  git add . && git commit -m "update" && git push

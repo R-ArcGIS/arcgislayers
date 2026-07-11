@@ -68,11 +68,11 @@ The basic workflow is: **connect** ➡️ **query** ➡️ **analyze** ➡️
 ``` r
 library(arcgis)
 #> Attaching core arcgis packages:
-#> → arcgisutils v0.4.0.9001
-#> → arcgislayers v0.5.2
-#> → arcgisgeocode v0.3.0.9000
+#> → arcgisutils v0.6.0
+#> → arcgislayers v0.6.1
+#> → arcgisgeocode v0.4.0
 #> → arcgisplaces v0.1.2
-#> → arcpbf v0.1.7.9000
+#> → arcpbf v0.2.0
 ```
 
 ### Connect to ArcGIS Data Services
@@ -220,14 +220,14 @@ res <- arc_raster(
   xmax = -67, 
   ymax = 47.5, 
   bbox_crs = 4326, 
-  width = 500,
-  height = 500
+  width = 250,
+  height = 250,
 )
 
 terra::plot(res)
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" />
 
 ### Publish Your Results
 

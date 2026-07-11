@@ -137,8 +137,8 @@ res <- arc_raster(
   xmax = -67, 
   ymax = 47.5, 
   bbox_crs = 4326, 
-  width = 500,
-  height = 500
+  width = 250,
+  height = 250,
 )
 
 terra::plot(res)
