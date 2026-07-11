@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# arcgislayers <img src="man/figures/logo.svg" align="right" height="139" alt="" />
+# arcgislayers <a href="https://developers.arcgis.com/r-bridge"><img src="man/figures/logo.png" align="right" height="138" alt="arcgislayers website" /></a>
 
 <!-- badges: start -->
 
