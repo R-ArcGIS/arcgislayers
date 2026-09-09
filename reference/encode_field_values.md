@@ -78,7 +78,7 @@ res <- arc_select(
   where = "RESPAGCY <> '  '",
   fields = "RESPAGCY"
 )
-#> ℹ Query results limited to 100 out of 10510 available features.
+#> ℹ Query results limited to 100 out of 10565 available features.
 encoded <- encode_field_values(res, layer)
 table(encoded$RESPAGCY)
 #> 

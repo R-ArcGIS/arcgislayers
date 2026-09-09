@@ -17,6 +17,9 @@
 - **Antony Barja**. Contributor.
   [](https://orcid.org/0000-0001-5921-2858)
 
+- **Ryan Zomorrodi**. Contributor.
+  [](https://orcid.org/0009-0003-6417-5985)
+
 ## Citation
 
 Source:

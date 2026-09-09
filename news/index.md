@@ -20,6 +20,10 @@ CRAN release: 2026-03-04
 
 ### Bug Fixes
 
+- `st_crs()` on a FeatureLayer or ImageServer uses
+  [`arcgisutils::from_spatial_reference()`](https://rdrr.io/pkg/arcgisutils/man/gp_params.html).
+  This allows for support of data with a CRS within the ESRI authority
+  ([\#291](https://github.com/R-ArcGIS/arcgislayers/issues/291))
 - [`arc_select()`](https://developers.arcgis.com/r-bridge/reference/arc_select.md)
   returns an empty `data.frame` instead of `NULL` when no features are
   returned from a query

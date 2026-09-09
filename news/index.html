@@ -47,6 +47,8 @@
 <div class="section level3">
 <h3 id="bug-fixes-0-6-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0"></a></h3>
 <ul><li>
+<code>st_crs()</code> on a FeatureLayer or ImageServer uses <code><a href="https://rdrr.io/pkg/arcgisutils/man/gp_params.html" class="external-link">arcgisutils::from_spatial_reference()</a></code>. This allows for support of data with a CRS within the ESRI authority (<a href="https://github.com/R-ArcGIS/arcgislayers/issues/291" class="external-link">#291</a>)</li>
+<li>
 <code><a href="../reference/arc_select.html">arc_select()</a></code> returns an empty <code>data.frame</code> instead of <code>NULL</code> when no features are returned from a query</li>
 <li>
 <code><a href="../reference/modify.html">add_features()</a></code> uses <code><a href="https://rlang.r-lib.org/reference/is_interactive.html" class="external-link">rlang::is_interactive()</a></code> to determine if the user is running in an interactive session instead of <code><a href="https://rdrr.io/r/base/interactive.html" class="external-link">base::interactive()</a></code>. This allows for the specification of which mode the function should run in using <code><a href="https://rlang.r-lib.org/reference/is_interactive.html" class="external-link">rlang::with_interactive()</a></code> or <code><a href="https://rlang.r-lib.org/reference/is_interactive.html" class="external-link">rlang::local_interactive()</a></code>.</li>
