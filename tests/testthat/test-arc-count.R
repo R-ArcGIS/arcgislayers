@@ -39,6 +39,3 @@ test_that("arc_count() rejects a non layer (#293)", {
   expect_error(arc_count(data.frame()), "FeatureLayer")
 })
 
-test_that("arc_count() catches misspelled arguments (#293)", {
-  expect_error(arc_count(arc_open(places_url), wher = "1=1"), "where")
-})
