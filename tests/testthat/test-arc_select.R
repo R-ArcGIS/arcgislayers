@@ -23,7 +23,18 @@ test_that("arc_select() works on `ImageServer`s", {
   landsat <- arc_open(img_url)
 
   tmp <- arc_select(landsat, n_max = 2, where = "Month = 2")
-  expect_snapshot(tmp)
+
+  expect_s3_class(tmp, "sf")
+  expect_identical(nrow(tmp), 2L)
+  expect_identical(sf::st_crs(tmp), sf::st_crs(3857))
+  expect_true(all(sf::st_geometry_type(tmp) == "MULTIPOLYGON"))
+  expect_true(
+    all(
+      c("OBJECTID", "Name", "SensorName", "AcquisitionDate", "Month") %in%
+        names(tmp)
+    )
+  )
+  expect_identical(unique(tmp[["Month"]]), 2L)
 })
 
 
