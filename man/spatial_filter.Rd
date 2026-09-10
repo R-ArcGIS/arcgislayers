@@ -57,7 +57,7 @@ If an \code{sfc} object is provided it will be transformed to the layers spatial
 reference. If the \code{sfc} is missing a CRS (or is an \code{sfg} object) it is
 assumed to use the same spatial reference as the FeatureLayer. If the \code{sfc}
 object has multiple features, the features are unioned with
-\code{\link[sf:geos_combine]{sf::st_union()}}. If an \code{sfc} object has \code{MULTIPOLYGON} geometry, the
+\code{\link[sf:st_union]{sf::st_union()}}. If an \code{sfc} object has \code{MULTIPOLYGON} geometry, the
 features are cast to \code{POLYGON} geometry and only the first element is used.
 }
 \examples{

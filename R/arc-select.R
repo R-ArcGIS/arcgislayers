@@ -701,3 +701,63 @@ determine_format <- function(
     "json"
   }
 }
+
+#' Count features matching a query
+#'
+#' Returns the number of features a query would return without downloading them.
+#'
+#' @inheritParams arc_select
+#' @export
+#' @examples
+#' \dontrun{
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#' )
+#'
+#' flayer <- arc_open(furl)
+#'
+#' arc_count(flayer)
+#' arc_count(flayer, where = "StateAbbr = 'RI'")
+#' }
+#' @returns A scalar integer
+arc_count <- function(
+  x,
+  ...,
+  where = NULL,
+  filter_geom = NULL,
+  predicate = "intersects",
+  token = arc_token()
+) {
+  error_call <- rlang::caller_call()
+  check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
+  check_string(where, allow_null = TRUE, allow_empty = FALSE)
+
+  dots <- rlang::list2(...)
+  check_dots_named(dots)
+  check_dots_query_names(names(dots), call = error_call)
+
+  query <- attr(x, "query")
+  query[["where"]] <- where %||% query[["where"]]
+  query[["returnGeometry"]] <- FALSE
+
+  if (!is.null(filter_geom) && inherits(x, "FeatureLayer")) {
+    query <- c(
+      query,
+      prepare_spatial_filter(
+        filter_geom,
+        crs = sf::st_crs(x),
+        predicate = predicate,
+        error_call = error_call
+      )
+    )
+  }
+
+  for (nm in names(dots)) {
+    query[[nm]] <- dots[[nm]]
+  }
+
+  req <- arc_base_req(x[["url"]], token)
+
+  count_results(req, query, error_call = error_call)
+}
