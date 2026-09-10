@@ -121,7 +121,6 @@ arc_select <- function(
 
   # extract dots names
   dots_names <- names(dots)
-  check_dots_query_names(dots_names, call = error_call)
 
   # insert into query
   for (i in seq_along(dots)) {
@@ -431,45 +430,6 @@ update_params <- function(x, ...) {
   x
 }
 
-# `...` forwards arbitrary Esri query parameters, so only near-misses of a real
-# argument are treated as typos.
-check_dots_query_names <- function(
-  dots_names,
-  call = rlang::caller_env()
-) {
-  if (rlang::is_empty(dots_names)) {
-    return(invisible(dots_names))
-  }
-
-  args <- c(
-    "fields",
-    "where",
-    "crs",
-    "geometry",
-    "filter_geom",
-    "predicate",
-    "n_max",
-    "page_size",
-    "token"
-  )
-
-  dists <- utils::adist(dots_names, args, ignore.case = TRUE)
-  closest <- args[max.col(-dists, ties.method = "first")]
-  typos <- apply(dists, 1, min) <= 2
-
-  if (any(typos)) {
-    cli::cli_abort(
-      c(
-        "Unknown argument{?s} in {.arg ...}: {.arg {dots_names[typos]}}",
-        "i" = "Did you mean {.arg {closest[typos]}}?"
-      ),
-      call = call
-    )
-  }
-
-  invisible(dots_names)
-}
-
 #' Add an offset to a query parameters
 #'
 #' add_offset() takes a list of query parameters and creates a query request.
@@ -743,7 +703,6 @@ arc_count <- function(
 
   dots <- rlang::list2(...)
   check_dots_named(dots)
-  check_dots_query_names(names(dots), call = error_call)
 
   query <- attr(x, "query")
   query[["where"]] <- where %||% query[["where"]]
