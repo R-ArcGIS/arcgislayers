@@ -7,6 +7,7 @@
 - Removes the unused `print_definition_values()` helper, which printed whole definition objects ([#256](https://github.com/R-ArcGIS/arcgislayers/issues/256))
 - New `arc_count()` returns the number of features a query would return without downloading them ([#293](https://github.com/R-ArcGIS/arcgislayers/issues/293))
 - Documents and tests passing Esri query parameters such as `returnDistinctValues` through `...` ([#233](https://github.com/R-ArcGIS/arcgislayers/issues/233))
+- `download_attachments()` now rejects `NA` and empty values in the `name`, `url`, and `contentType` columns. The checks were written but silently ignored
 
 # arcgislayers 0.6.0
 
