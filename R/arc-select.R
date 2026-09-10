@@ -172,7 +172,11 @@ arc_select <- function(
   x <- update_params(x, !!!query)
 
   # sets token and agent
-  req <- arc_base_req(x[["url"]], token)
+  req <- httr2::req_retry(
+    arc_base_req(x[["url"]], token),
+    max_tries = 3,
+    retry_on_failure = TRUE
+  )
 
   # extract existing query
   query <- attr(x, "query")
@@ -304,7 +308,28 @@ get_query_resps <- function(
   )
 
   # make all requests and store responses in list
-  httr2::req_perform_parallel(all_requests, on_error = "continue")
+  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
+
+  check_resp_failures(all_resps, call = error_call)
+}
+
+# req_perform_parallel(on_error = "continue") returns condition objects for
+# failed pages, which every downstream parser treats as responses
+check_resp_failures <- function(resps, call = rlang::caller_env()) {
+  failed <- vapply(resps, inherits, logical(1), what = "error")
+
+  if (!any(failed)) {
+    return(resps)
+  }
+
+  cli::cli_abort(
+    c(
+      "{sum(failed)} of {length(resps)} page{?s} failed to download.",
+      "x" = conditionMessage(resps[[which(failed)[1]]]),
+      "i" = "Retry, or lower {.arg page_size} if the service is timing out."
+    ),
+    call = call
+  )
 }
 
 
