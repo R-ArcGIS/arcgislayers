@@ -1,6 +1,7 @@
 # arcgislayers 0.6.1
 
 - Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
+- `arc_select()` aborts when a name in `...` is a near-miss of one of its arguments. `wher = "1=1"` was previously forwarded to the service, ignored, and every feature returned ([#226](https://github.com/R-ArcGIS/arcgislayers/issues/226))
 
 # arcgislayers 0.6.0
 
