@@ -95,5 +95,13 @@ arc_select(
   fields = c("OBJECTID", "PlaceName"),
   where = "TotalPopulation > 1000000"
 )
+
+# any Esri query parameter can be passed through `...`
+arc_select(
+  flayer,
+  fields = "StateAbbr",
+  geometry = FALSE,
+  returnDistinctValues = TRUE
+)
 }
 }

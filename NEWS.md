@@ -6,6 +6,7 @@
 - `arc_select()` retries transient request failures and, if a page still fails, reports how many failed and why. Failed pages were previously passed to the parser as if they were responses, surfacing as `subscript out of bounds` ([#242](https://github.com/R-ArcGIS/arcgislayers/issues/242), [#283](https://github.com/R-ArcGIS/arcgislayers/issues/283))
 - Removes the unused `print_definition_values()` helper, which printed whole definition objects ([#256](https://github.com/R-ArcGIS/arcgislayers/issues/256))
 - New `arc_count()` returns the number of features a query would return without downloading them ([#293](https://github.com/R-ArcGIS/arcgislayers/issues/293))
+- Documents and tests passing Esri query parameters such as `returnDistinctValues` through `...` ([#233](https://github.com/R-ArcGIS/arcgislayers/issues/233))
 
 # arcgislayers 0.6.0
 
