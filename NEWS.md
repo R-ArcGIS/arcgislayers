@@ -4,6 +4,7 @@
 - `arc_select()` aborts when a name in `...` is a near-miss of one of its arguments. `wher = "1=1"` was previously forwarded to the service, ignored, and every feature returned ([#226](https://github.com/R-ArcGIS/arcgislayers/issues/226))
 - `arc_select(fields = "")` returns geometry only for a layer, and rows without columns for a table. It previously aborted with `argument is of length zero` ([#248](https://github.com/R-ArcGIS/arcgislayers/issues/248))
 - `arc_select()` retries transient request failures and, if a page still fails, reports how many failed and why. Failed pages were previously passed to the parser as if they were responses, surfacing as `subscript out of bounds` ([#242](https://github.com/R-ArcGIS/arcgislayers/issues/242), [#283](https://github.com/R-ArcGIS/arcgislayers/issues/283))
+- Removes the unused `print_definition_values()` helper, which printed whole definition objects ([#256](https://github.com/R-ArcGIS/arcgislayers/issues/256))
 
 # arcgislayers 0.6.0
 

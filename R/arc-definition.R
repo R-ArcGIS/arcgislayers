@@ -188,67 +188,6 @@ delete_layer_definition <- function(
   x
 }
 
-#' Print existing and (optionally) updated definition values
-#' @noRd
-print_definition_values <- function(
-  existing,
-  updated = NULL,
-  what = "Feature Layer",
-  action = "Updated"
-) {
-  cli::cli_inform(
-    c(
-      "Set the {.field cliExtras.quiet} option to stop printing definition values.",
-      "*" = "Use {.code options(cli.default_handler = suppressMessages)} to set the option."
-    ),
-    .frequency = "once",
-    .frequency_id = "print_definition_values"
-  )
-
-  # Customize theme for messages
-  dl_theme <- cli::cli_div(
-    theme = list(
-      dl = list(`list-style-type` = cli::symbol$bullet),
-      span.dt = list(before = "`", after = "`"),
-      span.dd = list(color = "blue")
-    )
-  )
-
-  cli::cli_rule(
-    "{cli::symbol$tick} {action} {length(existing)} {what} definition{?s}."
-  )
-
-  if (is.null(updated)) {
-    lapply(
-      seq_along(existing),
-      function(x) {
-        cli::cli_bullets(
-          c(" " = "{.dt {names(existing)[x]}} {.dd {existing[x]}}")
-        )
-      }
-    )
-  } else {
-    # Fill blank values for missing names in existing
-    diff_nm <- is.element(names(updated), names(existing))
-    if (!all(diff_nm)) {
-      existing[!diff_nm] <- rep(" ", sum(!diff_nm))
-      names(existing) <- names(updated)
-    }
-
-    lapply(
-      seq_along(existing),
-      function(x) {
-        cli::cli_bullets(
-          c(
-            " " = "{.dt {names(existing)[x]}} {.dd {existing[x]}} {cli::symbol$arrow_right} {.dd {updated[x]}}"
-          )
-        )
-      }
-    )
-  }
-
-  cli::cli_end(dl_theme)
-}
 
 #' Convert object URL to adminservicecatalog url
 #' See <https://developers.arcgis.com/rest/services-reference/online/>
