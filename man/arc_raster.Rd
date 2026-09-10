@@ -42,7 +42,7 @@ If not specified, uses the CRS of \code{x}.}
 
 \item{format}{default \code{"tiff"}. Must be one of "jpgpng", "png", "png8", "png24", "jpg", "bmp", "gif", "tiff", "png32", "bip", "bsq", "lerc".}
 
-\item{...}{additional key value pairs to be passed to \code{\link[httr2:req_body]{httr2::req_body_form()}}.}
+\item{...}{additional key value pairs to be passed to \code{\link[httr2:req_body_form]{httr2::req_body_form()}}.}
 
 \item{raster_fn}{a scalar string with the name of the service's raster function. See \code{\link[=list_raster_fns]{list_raster_fns()}} for available raster functions.}
 

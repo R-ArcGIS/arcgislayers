@@ -229,54 +229,8 @@ download_attachments <- function(
   check_bool(overwrite)
   check_bool(.progress)
 
-  if (is.null(attachments[["name"]])) {
-    cli::cli_abort(
-      c(
-        "{.val name} is missing from {.arg attachments} argument.",
-        "i" = "provide the output from {.fn query_layer_attachments}"
-      )
-    )
-  } else {
-    check_character(
-      attachments[["name"]],
-      allow_empty = FALSE,
-      allow_na = FALSE,
-      allow_null = FALSE
-    )
-  }
-
-  if (is.null(attachments[["url"]])) {
-    cli::cli_abort(
-      c(
-        "{.val url} is missing from {.arg attachments} argument.",
-        "i" = "provide the output from {.fn query_layer_attachments}"
-      )
-    )
-  } else {
-    check_character(
-      attachments[["url"]],
-      allow_empty = FALSE,
-      allow_na = FALSE,
-      allow_null = FALSE
-    )
-  }
-
-  # ensure that we still have the content-type this is going to be used
-  # to check that the the resopns type is the correct mime type
-  if (is.null(attachments[["contentType"]])) {
-    cli::cli_abort(
-      c(
-        "{.val contentType} is missing from {.arg attachments} argument.",
-        "i" = "provide the output from {.fn query_layer_attachments}"
-      )
-    )
-  } else {
-    check_character(
-      attachments[["contentType"]],
-      allow_empty = FALSE,
-      allow_na = FALSE,
-      allow_null = FALSE
-    )
+  for (col in c("name", "url", "contentType")) {
+    check_attachment_col(attachments, col)
   }
 
   # Create the output directory if it doesn't yet exists
@@ -343,4 +297,31 @@ download_attachments <- function(
   # the file
   writeBin(httr2::resp_body_raw(.resp), .fp)
   invisible(.fp)
+}
+
+# check_character() takes ... before its options, so allow_empty and allow_na
+# were silently dropped
+check_attachment_col <- function(attachments, col, call = rlang::caller_env()) {
+  x <- attachments[[col]]
+
+  if (is.null(x)) {
+    cli::cli_abort(
+      c(
+        "{.val {col}} is missing from {.arg attachments} argument.",
+        "i" = "provide the output from {.fn query_layer_attachments}"
+      ),
+      call = call
+    )
+  }
+
+  check_character(x, arg = col, call = call)
+
+  if (anyNA(x) || !all(nzchar(x))) {
+    cli::cli_abort(
+      "{.val {col}} must not contain missing or empty values.",
+      call = call
+    )
+  }
+
+  invisible(x)
 }

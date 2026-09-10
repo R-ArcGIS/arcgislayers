@@ -60,6 +60,14 @@
 #'   fields = c("OBJECTID", "PlaceName"),
 #'   where = "TotalPopulation > 1000000"
 #' )
+#'
+#' # any Esri query parameter can be passed through `...`
+#' arc_select(
+#'   flayer,
+#'   fields = "StateAbbr",
+#'   geometry = FALSE,
+#'   returnDistinctValues = TRUE
+#' )
 #' }
 #' @returns An sf object, or a data.frame
 arc_select <- function(
@@ -113,6 +121,7 @@ arc_select <- function(
 
   # extract dots names
   dots_names <- names(dots)
+  check_dots_query_names(dots_names, call = error_call)
 
   # insert into query
   for (i in seq_along(dots)) {
@@ -171,7 +180,11 @@ arc_select <- function(
   x <- update_params(x, !!!query)
 
   # sets token and agent
-  req <- arc_base_req(x[["url"]], token)
+  req <- httr2::req_retry(
+    arc_base_req(x[["url"]], token),
+    max_tries = 3,
+    retry_on_failure = TRUE
+  )
 
   # extract existing query
   query <- attr(x, "query")
@@ -243,7 +256,7 @@ arc_select <- function(
   }
 
   # if the result is empty we return a nothing with a message
-  if (rlang::is_empty(res)) {
+  if (NROW(res) == 0L) {
     cli::cli_alert_info("No features returned from query")
     return(arcgisutils::fields_as_ptype_df(list_fields(x)))
   }
@@ -303,7 +316,28 @@ get_query_resps <- function(
   )
 
   # make all requests and store responses in list
-  httr2::req_perform_parallel(all_requests, on_error = "continue")
+  all_resps <- httr2::req_perform_parallel(all_requests, on_error = "continue")
+
+  check_resp_failures(all_resps, call = error_call)
+}
+
+# req_perform_parallel(on_error = "continue") returns condition objects for
+# failed pages, which every downstream parser treats as responses
+check_resp_failures <- function(resps, call = rlang::caller_env()) {
+  failed <- vapply(resps, inherits, logical(1), what = "error")
+
+  if (!any(failed)) {
+    return(resps)
+  }
+
+  cli::cli_abort(
+    c(
+      "{sum(failed)} of {length(resps)} page{?s} failed to download.",
+      "x" = conditionMessage(resps[[which(failed)[1]]]),
+      "i" = "Retry, or lower {.arg page_size} if the service is timing out."
+    ),
+    call = call
+  )
 }
 
 
@@ -395,6 +429,45 @@ update_params <- function(x, ...) {
 
   attr(x, "query") <- query
   x
+}
+
+# `...` forwards arbitrary Esri query parameters, so only near-misses of a real
+# argument are treated as typos.
+check_dots_query_names <- function(
+  dots_names,
+  call = rlang::caller_env()
+) {
+  if (rlang::is_empty(dots_names)) {
+    return(invisible(dots_names))
+  }
+
+  args <- c(
+    "fields",
+    "where",
+    "crs",
+    "geometry",
+    "filter_geom",
+    "predicate",
+    "n_max",
+    "page_size",
+    "token"
+  )
+
+  dists <- utils::adist(dots_names, args, ignore.case = TRUE)
+  closest <- args[max.col(-dists, ties.method = "first")]
+  typos <- apply(dists, 1, min) <= 2
+
+  if (any(typos)) {
+    cli::cli_abort(
+      c(
+        "Unknown argument{?s} in {.arg ...}: {.arg {dots_names[typos]}}",
+        "i" = "Did you mean {.arg {closest[typos]}}?"
+      ),
+      call = call
+    )
+  }
+
+  invisible(dots_names)
 }
 
 #' Add an offset to a query parameters
@@ -635,4 +708,64 @@ determine_format <- function(
   } else {
     "json"
   }
+}
+
+#' Count features matching a query
+#'
+#' Returns the number of features a query would return without downloading them.
+#'
+#' @inheritParams arc_select
+#' @export
+#' @examples
+#' \dontrun{
+#' furl <- paste0(
+#'   "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/",
+#'   "PLACES_LocalData_for_BetterHealth/FeatureServer/0"
+#' )
+#'
+#' flayer <- arc_open(furl)
+#'
+#' arc_count(flayer)
+#' arc_count(flayer, where = "StateAbbr = 'RI'")
+#' }
+#' @returns A scalar integer
+arc_count <- function(
+  x,
+  ...,
+  where = NULL,
+  filter_geom = NULL,
+  predicate = "intersects",
+  token = arc_token()
+) {
+  error_call <- rlang::caller_call()
+  check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
+  check_string(where, allow_null = TRUE, allow_empty = FALSE)
+
+  dots <- rlang::list2(...)
+  check_dots_named(dots)
+  check_dots_query_names(names(dots), call = error_call)
+
+  query <- attr(x, "query")
+  query[["where"]] <- where %||% query[["where"]]
+  query[["returnGeometry"]] <- FALSE
+
+  if (!is.null(filter_geom) && inherits(x, "FeatureLayer")) {
+    query <- c(
+      query,
+      prepare_spatial_filter(
+        filter_geom,
+        crs = sf::st_crs(x),
+        predicate = predicate,
+        error_call = error_call
+      )
+    )
+  }
+
+  for (nm in names(dots)) {
+    query[[nm]] <- dots[[nm]]
+  }
+
+  req <- arc_base_req(x[["url"]], token)
+
+  count_results(req, query, error_call = error_call)
 }
