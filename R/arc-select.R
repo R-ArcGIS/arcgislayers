@@ -244,7 +244,7 @@ arc_select <- function(
   }
 
   # if the result is empty we return a nothing with a message
-  if (rlang::is_empty(res)) {
+  if (NROW(res) == 0L) {
     cli::cli_alert_info("No features returned from query")
     return(arcgisutils::fields_as_ptype_df(list_fields(x)))
   }

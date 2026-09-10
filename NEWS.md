@@ -2,6 +2,7 @@
 
 - Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
 - `arc_select()` aborts when a name in `...` is a near-miss of one of its arguments. `wher = "1=1"` was previously forwarded to the service, ignored, and every feature returned ([#226](https://github.com/R-ArcGIS/arcgislayers/issues/226))
+- `arc_select(fields = "")` returns geometry only for a layer, and rows without columns for a table. It previously aborted with `argument is of length zero` ([#248](https://github.com/R-ArcGIS/arcgislayers/issues/248))
 
 # arcgislayers 0.6.0
 
