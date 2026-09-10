@@ -7,7 +7,9 @@
 arc_count(
   x,
   ...,
+  fields = NULL,
   where = NULL,
+  crs = sf::st_crs(x),
   filter_geom = NULL,
   predicate = "intersects",
   token = arc_token()
@@ -18,8 +20,15 @@ arc_count(
 
 \item{...}{additional query parameters passed to the API.}
 
+\item{fields}{a character vector of the field names that you wish to be
+returned. By default all fields are returned.}
+
 \item{where}{a simple SQL where statement indicating which features should be
 selected.}
+
+\item{crs}{the spatial reference to be returned. If the CRS is different than
+the CRS for the input \code{FeatureLayer}, a transformation will occur
+server-side. Ignored if x is a \code{Table}.}
 
 \item{filter_geom}{an object of class \code{bbox}, \code{sfc} or \code{sfg} used to filter
 query results based on a predicate function.}
@@ -47,5 +56,6 @@ flayer <- arc_open(furl)
 
 arc_count(flayer)
 arc_count(flayer, where = "StateAbbr = 'RI'")
+arc_count(flayer, fields = "StateAbbr", returnDistinctValues = "true")
 }
 }

@@ -1,5 +1,7 @@
 # arcgislayers 0.6.1
 
+- `arc_count()` gains `fields` and `crs`, matching `arc_select()`. `fields` is validated against the layer and enables distinct counts via `returnDistinctValues`
+
 - Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
 - `arc_select(fields = "")` returns geometry only for a layer, and rows without columns for a table. It previously aborted with `argument is of length zero` ([#248](https://github.com/R-ArcGIS/arcgislayers/issues/248))
 - `arc_select()` retries transient request failures and, if a page still fails, reports how many failed and why. Failed pages were previously passed to the parser as if they were responses, surfacing as `subscript out of bounds` ([#242](https://github.com/R-ArcGIS/arcgislayers/issues/242), [#283](https://github.com/R-ArcGIS/arcgislayers/issues/283))

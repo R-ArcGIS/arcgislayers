@@ -687,12 +687,15 @@ determine_format <- function(
 #'
 #' arc_count(flayer)
 #' arc_count(flayer, where = "StateAbbr = 'RI'")
+#' arc_count(flayer, fields = "StateAbbr", returnDistinctValues = "true")
 #' }
 #' @returns A scalar integer
 arc_count <- function(
   x,
   ...,
+  fields = NULL,
   where = NULL,
+  crs = sf::st_crs(x),
   filter_geom = NULL,
   predicate = "intersects",
   token = arc_token()
@@ -700,6 +703,7 @@ arc_count <- function(
   error_call <- rlang::caller_call()
   check_inherits_any(x, c("FeatureLayer", "Table", "ImageServer"))
   check_string(where, allow_null = TRUE, allow_empty = FALSE)
+  check_character(fields, allow_null = TRUE)
 
   dots <- rlang::list2(...)
   check_dots_named(dots)
@@ -708,12 +712,20 @@ arc_count <- function(
   query[["where"]] <- where %||% query[["where"]]
   query[["returnGeometry"]] <- FALSE
 
+  fields <- fields %||% query[["outFields"]]
+
+  query[["outFields"]] <- match_fields(
+    fields = fields,
+    values = c(x[["fields"]][["name"]], ""),
+    error_call = error_call
+  )
+
   if (!is.null(filter_geom) && inherits(x, "FeatureLayer")) {
     query <- c(
       query,
       prepare_spatial_filter(
         filter_geom,
-        crs = sf::st_crs(x),
+        crs = crs,
         predicate = predicate,
         error_call = error_call
       )

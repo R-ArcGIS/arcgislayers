@@ -39,3 +39,33 @@ test_that("arc_count() rejects a non layer (#293)", {
   expect_error(arc_count(data.frame()), "FeatureLayer")
 })
 
+
+test_that("arc_count() gains fields and crs like arc_select()", {
+  select_args <- names(formals(arc_select))
+  count_args <- names(formals(arc_count))
+
+  expect_true(all(c("fields", "crs") %in% count_args))
+  expect_identical(
+    count_args,
+    intersect(select_args, count_args)
+  )
+})
+
+test_that("arc_count() counts distinct values of fields", {
+  skip_on_cran()
+  furl <- "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/2"
+  lyr <- arc_open(furl)
+
+  expect_identical(
+    arc_count(lyr, fields = "LAY_CLASS", returnDistinctValues = "true"),
+    84L
+  )
+})
+
+test_that("arc_count() validates fields", {
+  skip_on_cran()
+  expect_error(
+    arc_count(arc_open(places_url), fields = "not_a_field"),
+    "not_a_field"
+  )
+})
