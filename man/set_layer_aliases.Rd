@@ -44,6 +44,7 @@ field aliases from a corresponding \code{Table} or \code{FeatureLayer} object cr
 with \code{arc_open()}. Optionally repair names using \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}.
 }
 \examples{
+\dontshow{if (curl::has_internet() && nzchar(Sys.getenv("NOT_CRAN"))) withAutoprint(\{ # examplesIf}
 furl <- paste0(
   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
   "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
@@ -60,4 +61,5 @@ with_aliases <- set_layer_aliases(five_counties, flayer)
 
 # preview the new names
 str(with_aliases, give.attr = FALSE)
+\dontshow{\}) # examplesIf}
 }

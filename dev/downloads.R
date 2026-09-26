@@ -8,7 +8,9 @@ downloads <- cranlogs::cran_downloads(
     "arcgisplaces",
     "calcite",
     "arcpbf",
-    "arcgisutils"
+    "arcgisutils",
+    "arcgisrouting",
+    "arcgis"
   ),
   from = "2024-01-11",
   to = Sys.Date()
@@ -31,7 +33,7 @@ ggplot(downloads) +
 
 # since the begining of this year
 cumulative <- downloads |>
-  filter(week_of >= "2025-01-01") |> 
+  filter(week_of >= "2025-01-01") |>
   group_by(week_of) |>
   summarise(downloads = sum(downloads)) |>
   mutate(total_downloads = cumsum(downloads)) |>

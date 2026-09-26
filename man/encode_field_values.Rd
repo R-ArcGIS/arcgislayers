@@ -43,7 +43,7 @@ type field domains from a corresponding \code{Table} or \code{FeatureLayer} obje
 created with \code{arc_open()}.
 }
 \examples{
-\donttest{
+\dontshow{if (curl::has_internet() && nzchar(Sys.getenv("NOT_CRAN"))) withAutoprint(\{ # examplesIf}
 layer <- arc_open(
   "https://geodata.baltimorecity.gov/egis/rest/services/Housing/dmxOwnership/MapServer/0"
 )
@@ -56,5 +56,5 @@ res <- arc_select(
 )
 encoded <- encode_field_values(res, layer)
 table(encoded$RESPAGCY)
-}
+\dontshow{\}) # examplesIf}
 }

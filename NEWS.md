@@ -1,14 +1,18 @@
-# arcgislayers 0.6.1
+# arcgislayers 0.6.2
 
+- New `upload_parquet()` adds a local parquet file to your portal as an `"Apache Parquet"` item, and `read_parquet_layer()` reads one back into R. Both are experimental. `arrow` and `geoarrow` are now suggested packages
+- Tests and examples that require internet access no longer run on CRAN
 - `arc_count()` gains `fields` and `crs`, matching `arc_select()`. `fields` is validated against the layer and enables distinct counts via `returnDistinctValues`
-
-- Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
 - `arc_select(fields = "")` returns geometry only for a layer, and rows without columns for a table. It previously aborted with `argument is of length zero` ([#248](https://github.com/R-ArcGIS/arcgislayers/issues/248))
 - `arc_select()` retries transient request failures and, if a page still fails, reports how many failed and why. Failed pages were previously passed to the parser as if they were responses, surfacing as `subscript out of bounds` ([#242](https://github.com/R-ArcGIS/arcgislayers/issues/242), [#283](https://github.com/R-ArcGIS/arcgislayers/issues/283))
 - Removes the unused `print_definition_values()` helper, which printed whole definition objects ([#256](https://github.com/R-ArcGIS/arcgislayers/issues/256))
 - New `arc_count()` returns the number of features a query would return without downloading them ([#293](https://github.com/R-ArcGIS/arcgislayers/issues/293))
 - Documents and tests passing Esri query parameters such as `returnDistinctValues` through `...` ([#233](https://github.com/R-ArcGIS/arcgislayers/issues/233))
 - `download_attachments()` now rejects `NA` and empty values in the `name`, `url`, and `contentType` columns. The checks were written but silently ignored
+
+# arcgislayers 0.6.1
+
+- Adds `yyjsonr` as a dependency and fixes a bug where `NULL` values were serialized as `{}` when publishing an item
 
 # arcgislayers 0.6.0
 

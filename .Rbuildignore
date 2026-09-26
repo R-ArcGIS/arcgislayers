@@ -19,3 +19,4 @@ README.*
 ^CRAN-SUBMISSION$
 ^README\.md$
 ^R/dplyr-features\.R$
+^CLAUDE\.md$

@@ -283,7 +283,7 @@ set_col_names <- function(
 #' A data.frame. When `alias = "replace"`, the column names are modified.
 #' When `alias = "label"` each column has a new `label` attribute.
 #'
-#' @examples
+#' @examplesIf curl::has_internet() && nzchar(Sys.getenv("NOT_CRAN"))
 #' furl <- paste0(
 #'   "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/",
 #'   "rest/services/USA_Counties_Generalized_Boundaries/FeatureServer/0"
@@ -410,8 +410,7 @@ label_layer_fields <- function(
 #'  - `"label"`: coded values are applied as value labels via a `"label"` attribute.
 #' @inheritParams rlang::args_error_context
 #' @export
-#' @examples
-#' \donttest{
+#' @examplesIf curl::has_internet() && nzchar(Sys.getenv("NOT_CRAN"))
 #' layer <- arc_open(
 #'   "https://geodata.baltimorecity.gov/egis/rest/services/Housing/dmxOwnership/MapServer/0"
 #' )
@@ -424,7 +423,6 @@ label_layer_fields <- function(
 #' )
 #' encoded <- encode_field_values(res, layer)
 #' table(encoded$RESPAGCY)
-#' }
 #' @returns
 #' A data.frame with fields encoded with their respective domains.
 encode_field_values <- function(

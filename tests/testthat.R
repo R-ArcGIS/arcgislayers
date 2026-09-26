@@ -8,4 +8,6 @@
 library(testthat)
 library(arcgislayers)
 
-test_check("arcgislayers")
+if (nzchar(Sys.getenv("NOT_CRAN"))) {
+  test_check("arcgislayers")
+}
