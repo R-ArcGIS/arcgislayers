@@ -255,9 +255,16 @@ arc_select <- function(
   }
 
   # if the result is empty we return a nothing with a message
-  if (NROW(res) == 0L) {
+  if (vctrs::vec_is_empty(res)) {
     cli::cli_alert_info("No features returned from query")
-    return(arcgisutils::fields_as_ptype_df(list_fields(x)))
+    res <- arcgisutils::fields_as_ptype_df(list_fields(x))
+
+    if (has_out_fields) {
+      match_nm <- match(tolower(out_fields), tolower(names(res)))
+      res <- res[, match_nm[!is.na(match_nm)], drop = FALSE]
+    }
+
+    return(res)
   }
 
   # we ensure that the CRS is added

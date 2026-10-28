@@ -1,5 +1,6 @@
-# arcgislayers 0.6.2
+# arcgislayers 0.7.0
 
+- `arc_select()` returns only the columns in `fields` when the query returns no features. It previously returned every field in the layer ([#304](https://github.com/R-ArcGIS/arcgislayers/issues/304))
 - New `upload_parquet()` adds a local parquet file to your portal as an `"Apache Parquet"` item, and `read_parquet_layer()` reads one back into R. Both are experimental. `arrow` and `geoarrow` are now suggested packages
 - Tests and examples that require internet access no longer run on CRAN
 - `arc_count()` gains `fields` and `crs`, matching `arc_select()`. `fields` is validated against the layer and enables distinct counts via `returnDistinctValues`

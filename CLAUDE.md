@@ -27,10 +27,6 @@ devtools::load_all(".")
 
 `check_character(x, ..., allow_null, arg, call)` and `check_number_whole(x, ..., min, max, ...)` put everything positional into `...` and drop it silently. `check_number_whole(n, 1, 100)` enforces nothing, and `check_character(x, allow_empty = FALSE)` is a no-op because `check_character()` has no such argument. Always name the option and confirm it exists in `R/import-standalone-types-check.R`.
 
-### `rlang::is_empty()` on a data.frame counts columns
-
-A query for no fields returns rows with zero columns, which `is_empty()` reports as empty. Use `NROW()` when you mean rows.
-
 ### `req_perform_parallel(on_error = "continue")` returns conditions
 
 Failed pages come back as error objects in the response list, not responses. Passing them to a parser produces errors far from the cause. `check_resp_failures()` catches them.

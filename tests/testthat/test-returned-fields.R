@@ -50,6 +50,20 @@ test_that("arc_select() doesnt remove OID with fields", {
   )
 })
 
+test_that("arc_select() respects fields when no features are returned", {
+  skip_on_cran()
+  furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"
+
+  flayer <- arc_open(furl)
+  res <- arc_select(
+    flayer,
+    fields = c("state_abbr", "objectid"),
+    where = "1=0",
+    geometry = FALSE
+  )
+  expect_identical(colnames(res), c("STATE_ABBR", "OBJECTID"))
+})
+
 test_that("arc_select() with fields works on tables", {
   skip_on_cran()
   furl <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities_/FeatureServer/0"
